@@ -8,7 +8,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
     [Area("AdminCMS")]
     public class AdminManageController : Controller
     {
-        private readonly cachaContext _context; //新的注入方法
+        private readonly cachaContext _context;
         public AdminManageController(cachaContext context)
         {
             _context = context;
