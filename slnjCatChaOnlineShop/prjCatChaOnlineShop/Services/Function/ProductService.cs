@@ -20,15 +20,14 @@ namespace prjCatChaOnlineShop.Services.Function
                        where i.ProductId == p.ProductId
                        select new CProductItem
                        {
-                           product = p,
-                           //pId = p.ProductId,
-                           //pName = p.ProductName,
-                           //pPrice = p.ProductPrice,
-                           //pDiscount = p.Discount,
-                           //pCategory = p.ProductCategory.CategoryName,
-                           //p上架時間 = p.ReleaseDate,
-                           //p剩餘庫存 = p.RemainingQuantity,
-                           //p子項目 = p.Attributes,
+                           pId = p.ProductId,
+                           pName = p.ProductName,
+                           pPrice = p.ProductPrice,
+                           pDiscount = p.Discount,
+                           pCategory = p.ProductCategory.CategoryName,
+                           p上架時間 = p.ReleaseDate,
+                           p剩餘庫存 = p.RemainingQuantity,
+                           p子項目 = p.Attributes,
                            pImgPath = i.ProductPhoto
                        };
             List<CProductItem> items = data.ToList();
@@ -42,15 +41,14 @@ namespace prjCatChaOnlineShop.Services.Function
                        where i.ProductId == p.ProductId
                        select new CProductItem
                        {
-                           product = p,
-                           //pId = p.ProductId,
-                           //pName = p.ProductName,
-                           //pPrice = p.ProductPrice,
-                           //pDiscount = p.Discount,
-                           //pCategory = p.ProductCategory.CategoryName,
-                           //p上架時間 = p.ReleaseDate,
-                           //p剩餘庫存 = p.RemainingQuantity,
-                           //p子項目 = p.Attributes,
+                           pId = p.ProductId,
+                           pName = p.ProductName,
+                           pPrice = p.ProductPrice,
+                           pDiscount = p.Discount,
+                           pCategory = p.ProductCategory.CategoryName,
+                           p上架時間 = p.ReleaseDate,
+                           p剩餘庫存 = p.RemainingQuantity,
+                           p子項目 = p.Attributes,
                            pImgPath = i.ProductPhoto
                        };
             CProductItem item = data.FirstOrDefault();
@@ -66,15 +64,15 @@ namespace prjCatChaOnlineShop.Services.Function
                        where i.ProductId == p.ProductId
                        select new CProductItem
                        {
-                           product = p,
-                           //pId = p.ProductId,
-                           //pName = p.ProductName,
-                           //pPrice = p.ProductPrice,
-                           //pDiscount = p.Discount,
-                           //pCategory = p.ProductCategory.CategoryName,
-                           //p上架時間 = p.ReleaseDate,
-                           //p剩餘庫存 = p.RemainingQuantity,
-                           //p子項目 = p.Attributes,
+
+                           pId = p.ProductId,
+                           pName = p.ProductName,
+                           pPrice = p.ProductPrice,
+                           pDiscount = p.Discount,
+                           pCategory = p.ProductCategory.CategoryName,
+                           p上架時間 = p.ReleaseDate,
+                           p剩餘庫存 = p.RemainingQuantity,
+                           p子項目 = p.Attributes,
                            pImgPath = i.ProductPhoto
                        };
             List<CProductItem> items = data.ToList();

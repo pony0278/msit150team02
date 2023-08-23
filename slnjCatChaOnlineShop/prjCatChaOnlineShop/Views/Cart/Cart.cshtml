@@ -61,7 +61,15 @@
 
                                                             @foreach (var group in Model.GroupBy(item => item.cName))
                                                             {
-                                                                <option>@group.Select(i => i.c子選項);</option>
+                                                                if (@group.Select(i => i.c子選項)!=null)
+                                                                {
+                                                                    <option>@group.Select(i => i.c子選項)</option>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <option>商品</option>
+                                                                }
+
                                                             }
                                                         </select>
                                                     </div>
@@ -74,7 +82,7 @@
                                             <span>數量</span>
                                             <select id="#SelectedQuantity" class="form-select me-4 for-count-select">
 
-                                                <option selected value="1">@item.c數量</option>
+                                                <option>@item.c數量</option>
 
 
                                             </select>
@@ -276,17 +284,7 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
-    <script>
-        $(document).ready(function () {
-            $("#selectedOption").on("change", function () {
-                var selectedValue = parseFloat($(this).val());
-                var price = parseFloat(@Model.);
-
-                var result = selectedValue * price;
-                $("#result").text(result.toFixed(2)); // Display result with 2 decimal places
-            });
-        });
-    </script>
+    
 }
 
 
