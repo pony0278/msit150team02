@@ -127,9 +127,10 @@
     padding: 10px;
     width: 100%;
     border: none;
-    border-top: 1px dashed #666;
     margin-left: -1px;
 }
+
+
 
 .text-center {
     text-align: center;
@@ -157,6 +158,12 @@
     padding: 0 10px;
     width: 100px;
 }
+
+ #getCouponList .coupon-status button:hover 
+ {
+        background-color: #B98046;
+ }
+
 
 #getCouponList .coupon_cancel button {
     border: 2px solid #b4793594;
