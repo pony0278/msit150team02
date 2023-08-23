@@ -2,7 +2,7 @@
 {
     public class CProductItem
     {
-        public ShopProductTotal product{get;set;}
+        public ShopProductTotal? product { get; set; }
         //public int pId { get; set; }
         //public string? pName { get; set; }
         //public decimal? pSalePrice
