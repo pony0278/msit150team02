@@ -19,47 +19,38 @@ let 道具ID = [];
 const playerDataArray = [];
 
 // 當使用者進行抽獎時，將抽獎數據添加到 playerDataArray
-async function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, isTenDraw = false) {
+function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID,) {
     const apiUrl = '/api/Api/TestDBLogin';
-    const 道具ID陣列 = Array.isArray(道具ID) ? 道具ID : [道具ID];
 
-    async function processItem(id) {
-        const userData = {
-            MemberId: 使用者ID,
-            ProductId: parseInt(id),
-            CatCoinQuantity: 貓幣數量,
-            LoyaltyPoints: 紅利數量,
-        };
+    // 遍歷道具ID陣列，每次處理一個ProductId
 
-        try {
-            const response = await fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(userData),
+    const userData = {
+        MemberId: 使用者ID,
+        ProductIds: 道具ID,
+        CatCoinQuantity: 貓幣數量,
+        LoyaltyPoints: 紅利數量,
+    }
+
+        // 發送 POST 請求
+        fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('發送數據時發生錯誤GGGGGG');
+                }
+                return response.json();
+            })
+            .then(responseData => {
+                console.log('數據已成功發送:', responseData);
+            })
+            .catch(error => {
+                console.error('發送數據時發生錯誤:', error);
             });
-
-            if (!response.ok) {
-                throw new Error('發送數據時發生錯誤GGGGGG');
-            }
-
-            const responseData = await response.json();
-            console.log(`第 ${id} 次轉蛋數據已成功發送:`, responseData);
-            return responseData; // 返回成功的數據
-        } catch (error) {
-            console.error('發送數據時發生錯誤:', error);
-            throw error; // 重新拋出錯誤
-        }
-    }
-
-    // 使用Promise.all等待所有POST請求完成
-    try {
-        const responses = await Promise.all(道具ID陣列.map(id => processItem(id)));
-        console.log('所有數據已成功發送:', responses);
-    } catch (error) {
-        console.error('發送數據時發生錯誤:', error);
-    }
 }
 
 
@@ -100,7 +91,7 @@ CatPointTenDrows.addEventListener('click', async function () {
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
                     allproductid.push(drawnItem.productId);
-                    道具ID = allproductid.join(','); 
+                    道具ID = allproductid;
                     console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
@@ -116,7 +107,7 @@ CatPointTenDrows.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, true, allItemName)
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, true)
             // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
             if (maxResult) {
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
@@ -166,7 +157,7 @@ RubyTenDrows.addEventListener('click', async function () {
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
                     allproductid.push(drawnItem.productId);
-                    道具ID = allproductid.join(','); 
+                    道具ID = allproductid;
                     console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
@@ -233,7 +224,7 @@ CatPointSingleDrow.addEventListener('click', async function () {
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
                     allproductid.push(drawnItem.productId);
-                    道具ID = allproductid.join(','); 
+                    道具ID = allproductid;
                     console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
@@ -300,7 +291,7 @@ RubySingleDrow.addEventListener('click', async function () {
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
                     allproductid.push(drawnItem.productId);
-                    道具ID = allproductid.join(','); 
+                    道具ID = allproductid;
                     console.log(`第 ${i + 1} 次轉蛋：你獲得了${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage},${drawnItem.productId}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎

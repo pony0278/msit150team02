@@ -135,7 +135,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02.database.windows.net;Initial Catalog=msit150team02resouce;User ID=msit150team02resoucegroup;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02.database.windows.net;Initial Catalog=msit150team02resouce;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -866,14 +866,12 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<ShopMemberStatus>(entity =>
         {
-            entity.HasKey(e => e.StatusId);
+            entity
+                .HasNoKey()
+                .ToTable("Shop.MemberStatus");
 
-            entity.ToTable("Shop.MemberStatus");
-
-            entity.Property(e => e.StatusId)
-                .ValueGeneratedNever()
-                .HasColumnName("StatusID");
             entity.Property(e => e.Status).HasMaxLength(50);
+            entity.Property(e => e.StatusId).HasColumnName("StatusID");
         });
 
         modelBuilder.Entity<ShopMyCatNameList>(entity =>
@@ -1082,7 +1080,6 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
             entity.Property(e => e.Attributes).HasMaxLength(50);
             entity.Property(e => e.Discount).HasColumnType("decimal(18, 0)");
-            entity.Property(e => e.DiscountId).HasColumnName("Discount ID");
             entity.Property(e => e.OffDay)
                 .HasColumnType("datetime")
                 .HasColumnName("offDay");
@@ -1136,9 +1133,10 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<ShopReturnDataTable>(entity =>
         {
-            entity.ToTable("Shop.Return Data Table");
+            entity
+                .HasNoKey()
+                .ToTable("Shop.Return Data Table");
 
-            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OrderId).HasColumnName("Order ID");
             entity.Property(e => e.ProcessingStatusId).HasColumnName("Processing Status ID");
             entity.Property(e => e.ReturnDate)
@@ -1146,13 +1144,12 @@ public partial class cachaContext : DbContext
                 .HasColumnName("Return Date");
             entity.Property(e => e.ReturnReasonId).HasColumnName("Return Reason ID");
 
-            entity.HasOne(d => d.ProcessingStatus).WithMany(p => p.ShopReturnDataTable)
+            entity.HasOne(d => d.ProcessingStatus).WithMany()
                 .HasForeignKey(d => d.ProcessingStatusId)
                 .HasConstraintName("FK_Shop.退換貨資料表_Shop.退換貨處理狀態資料表");
 
-            entity.HasOne(d => d.ReturnReason).WithMany(p => p.ShopReturnDataTable)
+            entity.HasOne(d => d.ReturnReason).WithMany()
                 .HasForeignKey(d => d.ReturnReasonId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Shop.退換貨資料表_Shop.退換貨原因資料表");
         });
 
