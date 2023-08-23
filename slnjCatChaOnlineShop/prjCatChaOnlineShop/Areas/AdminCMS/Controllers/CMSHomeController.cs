@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 using prjCatChaOnlineShop.Models;
@@ -10,6 +11,11 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
     [Area("AdminCMS")]
     public class CMSHomeController : Controller
     {
+        private readonly cachaContext _context;
+        public CMSHomeController(cachaContext context)
+        {
+            _context = context;
+        }
         public IActionResult Login()
         {
             //判斷是否有登入
@@ -18,6 +24,13 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 return RedirectToAction("Member", "Member");
             }
             return View();
+        }
+        //=============檢查是否有此帳號跟密碼
+        public IActionResult CheckAdminLogin(string account, string password)
+        {
+            bool result = _context.ShopGameAdminData != null && _context.ShopGameAdminData.Any(c => c.AdminAccount == account && c.AdminPassword == password);
+
+            return Json(new { IsDuplicate = result });
         }
         [HttpPost]
         public ActionResult Login(CAdminLoginVM vm)

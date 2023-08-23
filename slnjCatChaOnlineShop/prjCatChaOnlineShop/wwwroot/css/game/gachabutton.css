@@ -1,13 +1,13 @@
 #summon-buttons {
-position:absolute;
-top: 76%;
-left: 0%;
+    position: absolute;
+    top: 76%;
+    left: 0%;
 }
 
 .buttonRow {
-display:flex;
-justify-content:space-around;
-width:400px;
+    display: flex;
+    justify-content: space-around;
+    width: 400px;
 }
 
 #gachaCCoinIcon {
@@ -21,6 +21,7 @@ width:400px;
     left: 164px;
     top: 25px;
 }
+
 #gachaRubyIcon {
     position: absolute;
     background: transparent;
@@ -32,10 +33,11 @@ width:400px;
     left: 282px;
     top: 25px;
 }
+
 #gachaTextCCoin {
     position: absolute;
     font-size: 25px;
-    font-family: fantasy ;
+    font-family: fantasy;
     left: 200px;
     top: 20px;
     color: black;
@@ -59,6 +61,7 @@ width:400px;
     background-position: center; /* 設定背景圖片居中對齊 */
     border: none; /* 移除按鈕邊框 */
 }
+
 #RubyTenDrows {
     background: transparent;
     width: 120px; /* 設定按鈕寬度 */

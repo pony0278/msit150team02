@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Experimental.ProjectCache;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using NuGet.Protocol;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Services.Function;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -18,6 +21,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             _context = context;
         }
+        
         public IActionResult Membership()
         {
             return View();
@@ -48,6 +52,39 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得帳戶優惠券資料
+        public IActionResult GetMemberCouponData()
+        {
+            try
+            {
+                var query = from coupons in _context.ShopMemberCouponData
+                            where coupons.MemberId == 1 & coupons.CouponStatusId == true
+                            orderby coupons.Coupon.ExpiryDate
+                            select new
+                            {
+                                coupons.Coupon.CouponName,
+                                coupons.Coupon.CouponContent,
+                                coupons.Coupon.ExpiryDate
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+
         //更新帳戶基本資料到資料庫
         public IActionResult UpdateMemberInfo(ShopMemberInfo member)
         {
@@ -72,6 +109,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Content("修改失敗：" + ex.Message);
             }
         }
+
+
+
 
         /*2.消費紀錄*/
 
@@ -140,23 +180,23 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-        /*3.退換紀錄*/
+        /*3.退貨紀錄*/
 
-        //取得退貨紀錄:待處理
+        //取得退貨紀錄
         public IActionResult GetReturnRecord()
         {
+
             try
             {
-                var datas = from p in _context.ShopOrderTotalTable
-                            where p.MemberId == 1
+                var datas = from p in _context.ShopReturnDataTable
+                            join q in _context.ShopOrderTotalTable on p.OrderId equals q.OrderId
+                            where q.MemberId == 1
                             select new
                             {
-                                p.OrderId, //訂單編號
-                                p.OrderCreationDate,  //訂單成立日期
-                                p.Address, //收款地址
-                                p.RecipientName, //收款人
-                                p.RecipientPhone,  //收款電話
-                                p.ShippingMethod, //付款方式
+                                p.OrderId,
+                                p.ProcessingStatus.StatusName,
+                                p.ReturnDate,
+                                p.ReturnReason.ReturnReason,
                             };
 
                 if (datas.Any())
@@ -171,7 +211,48 @@ namespace prjCatChaOnlineShop.Controllers.Home
             catch (Exception ex)
             {
                 return Content(ex.Message);
+            } 
+
+        }
+
+
+        /*5.收藏紀錄*/
+
+        //取得退貨紀錄
+        public IActionResult GetFavoriteData()
+        {
+
+            try
+            {
+
+                var datas = from p in _context.ShopFavoriteDataTable
+                            join q in _context.ShopProductImageTable on p.ProductId equals q.ProductId
+                            where p.MemberId == 1
+                            select new
+                            {
+                                p.Product.ProductName,
+                                p.Product.ProductPrice,
+                                p.Product.RemainingQuantity,
+                                p.Product.ProductDescription,
+                                p.Product.ProductId,
+                                q.ProductPhoto
+                            };
+
+
+                if (datas.Any())
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+
         }
 
         /*6.客服中心*/

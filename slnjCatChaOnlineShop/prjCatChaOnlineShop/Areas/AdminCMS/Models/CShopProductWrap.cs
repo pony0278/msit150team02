@@ -3,11 +3,11 @@ using System.ComponentModel;
 
 namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 {
-    public class CShopProductTotalWrap
+    public class CShopProductWrap
     {
         private ShopProductTotal _sprod = null;
         public ShopProductTotal shopproduct { get { return _sprod; } set { _sprod = value; } }
-        public CShopProductTotalWrap()
+        public CShopProductWrap()
         {
             _sprod = new ShopProductTotal();
         }
