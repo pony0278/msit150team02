@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure.Identity;
+using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -14,8 +17,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _context = context;
             _productService = productService;
         }
-        public IActionResult ShopDetail()
-        {
+        public IActionResult ShopDetail() 
+        { 
             return View();
         }
         public IActionResult Shop()
