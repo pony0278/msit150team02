@@ -30,13 +30,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-        public IActionResult ShopItemPerPage(int itemPerPage, int? categoryId)
+        public IActionResult ShopItemPerPage(int itemPerPage)
         {
-            if (categoryId != null) 
-            {
-                var itemsCat = _productService.GetProductByCategoryId(categoryId).DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項;
-                return Json(itemsCat);
-            }
+            
             var items = _productService.GetProductItems().DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項
             return Json(items);
         }

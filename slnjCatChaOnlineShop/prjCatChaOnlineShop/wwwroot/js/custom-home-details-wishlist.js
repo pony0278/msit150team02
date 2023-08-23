@@ -275,10 +275,6 @@
   $(".brand-box").niceScroll({
     cursorcolor: "#9b9b9c",
   });
-})(jQuery);
-
-//----------------------------------自訂Ajax----------------------------------
-//下拉選單顯示筆數
 $(document).ready(async function () {
 
     var itemPerPageSelect = $('#itemPerPageSelect');
@@ -399,6 +395,11 @@ $(document).ready(async function () {
     });
 
 });
+
+})(jQuery);
+
+//----------------------------------自訂Ajax----------------------------------
+//下拉選單顯示筆數
 
 $('.kv-ltr-theme-fas-star').rating({
     hoverOnClear: false,

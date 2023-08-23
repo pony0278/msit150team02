@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<prjCatChaOnlineShop.Models.CModels.CProductItem>
+@{
     ViewData["Title"] = "Shop";
 }
 
@@ -28,12 +29,12 @@
         <!--增加:End當前分類-->
         <div class="row">
 
-            @foreach (var item in Model)
+            @foreach (var item in Model.DistinctBy(item=>item.product.ProductCategoryId))
             {
                 <div class="col-md-2 col-4">
                     <div class="shop-cat-boxs">
                         <a href="#">
-                            <img class="img-fluid" src="@item.product.ProductCategory.CategoryDescription" alt="" />
+                            <img class="img-fluid" src=" ~/images/categories_img_01.jpg" />" alt="" />
                             <span>@item.product.ProductCategory.CategoryName</span>
                         </a>
                     </div>
@@ -81,7 +82,7 @@
                         </div>
                     </div>
                     <div class="d-flex text-center align-items-center justify-content-between">
-                        <span> 共 x 項商品</span>
+                        <span> 共 @Model.Count() 項商品</span>
                         <div class="filter">
                             <span>顯示</span>
                             <div class="shop-filter-select">
@@ -135,7 +136,7 @@
     <script src="~/js/jquery.nicescroll.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    @* <script src="~/js/custom.js"></script> *@
     <link href="~/css/custom-home-details-wishlist.css" rel="stylesheet" />
 }
 
