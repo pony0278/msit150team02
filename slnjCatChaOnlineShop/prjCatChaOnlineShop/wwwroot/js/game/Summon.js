@@ -19,50 +19,49 @@ let 道具ID = [];
 const playerDataArray = [];
 
 // 當使用者進行抽獎時，將抽獎數據添加到 playerDataArray
-function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, isTenDraw = false, allItemName) {
+async function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, isTenDraw = false) {
     const apiUrl = '/api/Api/TestDBLogin';
-
-    // 確保道具ID是陣列
     const 道具ID陣列 = Array.isArray(道具ID) ? 道具ID : [道具ID];
 
-    // 遍歷道具ID陣列，每次處理一個ProductId
-    道具ID陣列.forEach(id => {
+    async function processItem(id) {
         const userData = {
-/*            ItemName: allItemName,*/
             MemberId: 使用者ID,
             ProductId: parseInt(id),
             CatCoinQuantity: 貓幣數量,
             LoyaltyPoints: 紅利數量,
         };
 
-        // 發送 POST 請求
-        fetch(apiUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('發送數據時發生錯誤GGGGGG');
-                }
-                return response.json();
-            })
-            .then(responseData => {
-                console.log('數據已成功發送:', responseData);
-            })
-            .catch(error => {
-                console.error('發送數據時發生錯誤:', error);
+        try {
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
             });
-    });
+
+            if (!response.ok) {
+                throw new Error('發送數據時發生錯誤GGGGGG');
+            }
+
+            const responseData = await response.json();
+            console.log(`第 ${id} 次轉蛋數據已成功發送:`, responseData);
+        } catch (error) {
+            console.error('發送數據時發生錯誤:', error);
+        }
+    }
+
+    for (const id of 道具ID陣列) {
+        await processItem(id);
+    }
 }
+
 
 CatPointTenDrows.addEventListener('click', async function () {
     if (貓幣數量 >= 9000) {
         try {
             const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 100;
+            const numDraws = 10;
             const drawResults = [];
             const allImages = [];
             const allItemName = [];

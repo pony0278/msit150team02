@@ -84,9 +84,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     // 如果存在相同記錄，則執行更新操作
                     existingRecord.QuantityOfInGameItems+=1; // 更新其他屬性
-                                                                    // 更新其他需要更新的屬性
-
-                    _context.SaveChanges(); // 儲存更改
                 }
                 else
                 {
@@ -95,9 +92,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     {
                         MemberId = rgm.MemberId,
                         ProductId = rgm.ProductId,
-                        //ItemName=rgm.ItemName
-                        // 設定其他屬性
-                    };
+                        QuantityOfInGameItems = 1,
+                    //ItemName=rgm.ItemName
+                    // 設定其他屬性
+                };
                     _context.GameItemPurchaseRecord.Add(dbItemModel);
                     var existingRecord2 = _context.ShopMemberInfo
                         .FirstOrDefault(record => record.MemberId == rgm.MemberId);
@@ -108,10 +106,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         existingRecord2.LoyaltyPoints = rgm.LoyaltyPoints;
                         _context.SaveChanges() ;
                     }
-
- 
-
-                    _context.SaveChanges(); // 儲存新增的記錄
+                    _context.SaveChanges(); // 儲存更改
                 }
 
 
