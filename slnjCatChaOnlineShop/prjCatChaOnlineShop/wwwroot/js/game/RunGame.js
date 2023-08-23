@@ -217,9 +217,9 @@ function checkPoint() {//檢查是否符合得分條件
 
         rcat.currentScore++;
         userScore = rcat.currentScore;
-        if (hightestScore <= userScore)//如果當前分數>最高分數，則兩個分數同步
+        if (hightestScore <= userScore)//如果當前分數>最高分數，則兩個分數同步 
         {
-            hightestScore = userScore;
+            hightestScore = userScore;//TODO 分數創新高時，更新回資料庫
         }
         checkmachine = true;//檢查加過分之後，把機器設為true，確保在降落之前不會再觸發上面的加分機制，機器會在貓落地的時後再次關閉
     }

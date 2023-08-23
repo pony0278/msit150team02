@@ -22,13 +22,50 @@ let gachaTextRuby = document.getElementById('gachaTextRuby')
 
 //載入資料庫資訊
 function initialize() {
-    //UserName = userInfo.name;
-    /*Ccoin = gachaTextCCoin.innerHTML =   userInfo.CCoin;*/
-    Ruby = gachaTextRuby.innerHTML = userInfo.Ruby;
-    milkCount = userBagData.milk;
-    canCount = userBagData.can;
-    hightestScore = userInfo.runGameHighestScore
-    loadUserBagCatInfo();
+    $.ajax({
+        url: '/Api/Api/TestDBLogin',
+        type: 'GET',
+        success: function (data) {
+            if (data.length > 0) {
+                UserName = data[0].characterName; //登入時載入使用者名稱
+                Ccoin = gachaTextCCoin.innerHTML = data[0].catCoinQuantity; //貓幣數量
+                Ruby = gachaTextRuby.innerHTML = data[0].loyaltyPoints; //紅利數量
+
+                if (data[0].gameItemInfo.find(item => item.productId === 7))
+                    milkCount = data[0].gameItemInfo.find(item => item.productId === 7).quantityOfInGameItems; //牛奶數量id7
+                if (data[0].gameItemInfo.find(item => item.productId === 8))
+                    canCount = data[0].gameItemInfo.find(item => item.productId === 8).quantityOfInGameItems;//罐罐數量id8
+
+                hightestScore = data[0].runGameHighestScore
+                //載入使用者貓貓資訊
+                //id 1=>gy，id 2=>OG，id3=>BK，id14=>BB
+                //function catExist(id,color) 
+                //{
+                //    if (data[0].gameItemInfo.find(item => item.productId === id))
+                //        return userBagData.catGY = true;
+                //}
+                if (data[0].gameItemInfo.find(item => item.productId === 1) &&
+                    data[0]["gameItemInfo"][0]["quantityOfInGameItems"] > 0)
+                    userBagData.catGY = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 2) &&
+                    data[0]["gameItemInfo"][1]["quantityOfInGameItems"] > 0)
+                    userBagData.catOG = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                    data[0]["gameItemInfo"][2]["quantityOfInGameItems"] > 0)
+                    userBagData.catBB = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
+                    data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
+                    userBagData.catBK = true;
+                loadUserBagCatInfo()
+            }
+        },
+        error: function () {
+            console.error('載入資料失敗');
+        }
+    });
 }
 
 //使用者背包貓咪資訊
@@ -59,6 +96,8 @@ function closeConfirmWin() {
     confirmWin.style.display = 'none';//關閉確認視窗
     initialize();//初始化使用者資料
 }
+
+
 
 // 初始化目前被選擇的貓咪
 let selectedCatName = null;
@@ -106,7 +145,7 @@ function chooseCatBeforeGame() {
 
 
 
-    // 貓貓點擊事件
+    // 小遊戲選擇貓貓的點擊事件
     catNames.forEach(catName => {
         const cat = document.getElementById(`${catName}_select`);
         const catArrow = document.getElementById(`${catName}_arrow`);

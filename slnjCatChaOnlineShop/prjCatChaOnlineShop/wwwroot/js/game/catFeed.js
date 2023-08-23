@@ -60,13 +60,13 @@ function consumeFood() { //扣除食物數量邏輯，數量為0就不能被扣
         if (milkCount === 0) {
             return;
         }
-        userBagData.milk--;
+        userBagData.milk--;//TODO 改成 先寫回資料庫，再重新讀取回來
     }
     if (itmCan.isSelected) {
         if (canCount === 0) {
             return;
         }
-        userBagData.can--;
+        userBagData.can--;//TODO 改成 先寫回資料庫，再重新讀取回來
     }
 }
 
@@ -81,18 +81,18 @@ function feedAndGetReward() {//隨機獲得貓幣方法
     console.log(num);
     switch (true) {
         case num <= 2:
-            confirmWin_text.innerHTML = '貓抓抓商城 50元折價券*1'
+            confirmWin_text.innerHTML = '貓抓抓商城 50元折價券*1'//TODO 改成 先寫回資料庫，再重新讀取回來
 
             break;
         case num <= 10 && num > 2:
             confirmWin_text.innerHTML = '紅利 50'
-            userInfo.Ruby += 50;
+            userInfo.Ruby += 50;//TODO 改成 先寫回資料庫，再重新讀取回來
 
             break;
         default:
 
             confirmWin_text.innerHTML = '貓幣 200'
-            userInfo.CCoin += 200;
+            userInfo.CCoin += 200;//TODO 改成 先寫回資料庫，再重新讀取回來
 
             break;
     }

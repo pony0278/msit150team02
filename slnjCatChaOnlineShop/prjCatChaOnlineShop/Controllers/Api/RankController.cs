@@ -26,7 +26,9 @@ namespace prjCatChaOnlineShop.Controllers.Api
                              p.RunGameHighestScore,
                          })
                          .OrderByDescending(p => p.RunGameHighestScore)
-                         .ToList(); // 轉換為 List
+                         .Take(10)
+                         .ToList(); 
+            //TODO 這邊之後加入新功能: 如果使用者在前10名，則標示出來，沒有在前10名，則把使用者放在第11行，並標示排名
 
             // 在這裡處理結果，將集合中的元素合併
 

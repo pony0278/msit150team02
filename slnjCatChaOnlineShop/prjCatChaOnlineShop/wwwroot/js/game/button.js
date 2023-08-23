@@ -1,6 +1,5 @@
 //這邊放的是HTML製作的按鈕的功能
 
-
 const commonbackBTN = document.getElementById('commonbackBTN');//轉蛋返回按鈕
 const CatchaGatCha = document.getElementById('CatchaGatCha');//開轉蛋畫面
 const CanvasRank = document.getElementById("CanvasRank");//排行榜頁面
@@ -28,66 +27,25 @@ commonbackBTN.addEventListener("click", () => {
   pagesControl(Canvaslobby);
   });
 
-//跑步遊戲說明
+//小遊戲說明
 startRunGameBTN.addEventListener("click", () => {
     chooseCatBeforeGame()
     hideInstructions()
 });
 
-
+//關閉小遊戲說明
 closeinstruction.addEventListener("click", () => {
     showPage('a'); //下次開啟時從第一頁開始
     pagesControl(Canvaslobby); //畫面返回大廳
 });
-
+//TODO 這邊沒有作用，怪怪的
+const confirmWin_close = document.getElementById('confirmWin-close');
+//確認視窗關閉
+confirmWin_close.addEventListener("click", () => {
+    closeConfirmWin();
+});
 
 //測試連動資料庫登入
 testlogin.addEventListener("click", () => {
-
-    // 使用 AJAX 請求呼叫 API
-    $.ajax({
-        url: '/Api/Api/TestDBLogin',
-        type: 'GET',
-        success: function (data) {
-            if (data.length > 0) {
-                UserName = data[0].characterName; //登入時載入使用者名稱
-                Ccoin = gachaTextCCoin.innerHTML = data[0].catCoinQuantity; //貓幣數量
-                Ruby = gachaTextRuby.innerHTML = data[0].loyaltyPoints; //紅利數量
-
-                if (data[0].gameItemInfo.find(item => item.productId === 7))
-                    milkCount = data[0].gameItemInfo.find(item => item.productId === 7).quantityOfInGameItems; //牛奶數量id7
-                if (data[0].gameItemInfo.find(item => item.productId === 8))
-                    canCount = data[0].gameItemInfo.find(item => item.productId === 8).quantityOfInGameItems;//罐罐數量id8
-
-                hightestScore = data[0].runGameHighestScore
-                //載入使用者貓貓資訊
-                //id 1=>gy，id 2=>OG，id3=>BK，id14=>BB
-                //function catExist(id,color) 
-                //{
-                //    if (data[0].gameItemInfo.find(item => item.productId === id))
-                //        return userBagData.catGY = true;
-                //}
-                if (data[0].gameItemInfo.find(item => item.productId === 1)&&
-                    data[0]["gameItemInfo"][0]["quantityOfInGameItems"] > 0)
-                    userBagData.catGY = true;
-
-                if (data[0].gameItemInfo.find(item => item.productId === 2) &&
-                    data[0]["gameItemInfo"][1]["quantityOfInGameItems"] > 0)
-                    userBagData.catOG = true;
-
-                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
-                    data[0]["gameItemInfo"][2]["quantityOfInGameItems"] > 0)
-                    userBagData.catBB = true;
-
-                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
-                    data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
-                    userBagData.catBK = true;
-                loadUserBagCatInfo()
-            }
-        },
-        error: function () {
-            console.error('載入資料失敗');
-        }
-    });
-
+    initialize()
 });

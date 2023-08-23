@@ -75,6 +75,7 @@
         <!-- Start 獲得物品確認視窗 -->
         <div id="confirmWin">
             <div id="confirmWin-container">
+                <div id="confirmWin-close" >X</div>
                 <div id="confirmWin-title">
                     N/A
                 </div>
@@ -137,8 +138,6 @@
     <script src="~/js/game/loadImages.js"></script>
     <script src="~/js/game/instructions.js"></script>
     <script src="~/js/game/catFeed.js"></script>
-        <<<<<<< HEAD
-
 
     <!--排行榜測試資料-->
     <script>
@@ -148,15 +147,6 @@
 
             ]
         };
-
-        const datas = rank.排名.map(r => `
-                                            <tr>
-                                                 <td>${r.排名}</td>
-                                                 <td>${r.name}</td>
-                                                 <td>${r.分數}</td>
-                                            </tr>
-                                            ` );
-        document.querySelector('#emTable > tbody').innerHTML = datas.join("")
     </script>
 
         }
