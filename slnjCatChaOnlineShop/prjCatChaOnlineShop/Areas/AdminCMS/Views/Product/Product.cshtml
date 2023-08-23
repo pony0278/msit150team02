@@ -1,4 +1,4 @@
-﻿
+﻿@model prjCatChaOnlineShop.Models.ShopProductTotal
 @{
     ViewData["Title"] = "Product";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
@@ -68,24 +68,28 @@
                 <div class="modal-body">
                     <form>
                         <div class="form-group">
-                            <!-- <label>ID：</label> -->
-                            <input type="hidden" class="form-control" disabled
-                                   readonly>
+                            <input type="hidden" class="form-control" id="CreateID" name="ProductId"
+                                   disabled readonly>
                         </div>
 
                         <div class="form-group">
                             <label>名稱：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreateName" name="ProductName">
+                        </div>
+
+                        <div class="form-group">
+                            <label>描述：</label>
+                            <input type="text" class="form-control" id="CreateDescription" name="ProductDescription">
                         </div>
 
                         <div class="form-group">
                             <label>價格：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreatePrice" name="ProductPrice">
                         </div>
 
                         <div class="form-group">
                             <label>商品類別：</label>
-                            <select class="form-control">
+                            <select class="form-control" id="CreateCategory" name="ProductCategory">
                                 <option value="ProductCatgory1">零食</option>
                                 <option value="ProductCatgory2">玩具</option>
                             </select>
@@ -93,32 +97,32 @@
 
                         <div class="form-group">
                             <label>剩餘數量：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreateRemainingQuantity" name="RemainingQuantity">
                         </div>
 
                         <div class="form-group">
                             <label>上架日期：</label>
-                            <input type="date" class="form-control">
+                            <input type="date" class="form-control" id="CreateReleaseDate" name="ReleaseDate">
                         </div>
 
                         <div class="form-group">
                             <label>尺寸：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreateSize" name="Size">
                         </div>
 
                         <div class="form-group">
                             <label>重量：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreateWeight" name="Weight">
                         </div>
 
                         <div class="form-group">
                             <label>供應商：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="CreateSupplier" name="Supplier">
                         </div>
 
                         <div class="form-group">
                             <label>是否停售：</label>
-                            <select class="form-control">
+                            <select class="form-control" id="CreateDiscontinued" name="Discontinued">
                                 <option value="是">是</option>
                                 <option value="否">否</option>
                             </select>
@@ -126,10 +130,10 @@
 
                         <div class="col-md-12">
                             <label>圖片</label>
-                            <input type="file" class="form-control">
+                            <input type="file" class="form-control" id="CreateImage" name="ShopProductImageTable">
                         </div>
 
-                        <button class="btn btn-danger btn-block"
+                        <button id="CreateProduct" class="btn btn-danger btn-block"
                                 style="width: 100%;">
                             儲存
                         </button>
@@ -139,7 +143,6 @@
         </div>
     </div>
     <!---新增產品 modal-->
-
     <!---篩選上架日期-->
     <div class="container-fluid mt-4 mb-3">
         <div class="row align-items-center">
@@ -147,8 +150,6 @@
         </div>
     </div>
     <!---篩選上架日期-->
-
-
     <!---篩選類別/是否停售-->
     <div class="container-fluid mt-4 mb-3">
         <div class="row align-items-center">
@@ -163,127 +164,51 @@
             </div>
         </div>
 
-@*        <div class="row align-items-center">
-            停售狀態篩選：
-            <div class="col d-flex justify-content-between">
-                <select class="form-select" id="DpayList">
-                    <option value="" selected disabled>請選擇狀態</option>
-                    <option value="">全部訂單</option>
-                    <option value="是">是</option>
-                    <option value="否">否</option>
-                </select>
-            </div>
+        @*        <div class="row align-items-center">
+        停售狀態篩選：
+        <div class="col d-flex justify-content-between">
+        <select class="form-select" id="DpayList">
+        <option value="" selected disabled>請選擇狀態</option>
+        <option value="">全部訂單</option>
+        <option value="是">是</option>
+        <option value="否">否</option>
+        </select>
         </div>
-    </div>*@
-    <!---篩選類別-->
+        </div>
+        </div>*@
+        <!---篩選類別-->
 
-    <div class="container-fluid mt-4">
-        <div class="row">
-            <div class="col-12">
-                <!--表格-->
-                <table id="Product-table" class="table table-striped nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <!-- <th>序號</th> -->
-                            <th>ID</th>
-                            <th>商品名稱</th>
-                            <th>商品描述</th>
-                            <th>商品價格</th>
-                            <th>剩餘數量</th>
-                            <th>商品類別</th>
-                            <th>商品圖片</th>
-                            <th>上架日期</th>
-                            <th>尺寸</th>
-                            <th>重量</th>
-                            <th>供應商</th>
-                            <th>是否停售</th>
-                            <th>編輯/刪除</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <!-- <td>1</td> -->
-                            <td>1</td>
-                            <td>喵洽普｜貓咪營養肉泥</td>
-                            <td>◆無穀物、無抗生素、無防腐劑</td>
-                            <td>65.00</td>
-                            <td>500</td>
-                            <td>食品</td>
-                            <td class="test">
-                                <img src="~/images/prod-eg-7.jpg"
-                                     width="100" height="100" class="thumbnail-image">
-                                <!-- 原始圖片的視窗 -->
-                                <div class="image-popup">
-                                    <img src="~/images/prod-eg-7.jpg"
-                                         alt="Original Image">
-                                </div>
-                            </td>
-                            <td>2023-07-02</td>
-                            <td>一包四入</td>
-                            <td></td>
-                            <td>1</td>
-                             <td>是</td>
-                            <td>
-                                <a href="#">
-                                    <button class="btn" data-bs-toggle="modal"
-                                            href="#exampleModalToggle" role="button">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </a> | <button class="btn"
-                                               onclick="userDelete()">
-                                    <a href="#" id="b5">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <!-- <td>2</td> -->
-                            <td>2</td>
-                            <td>寵物派對｜凍乾零食</td>
-                            <td>◆嚴格篩選人類食用等級的頂級食材</td>
-                            <td>266.00</td>
-                            <td>500</td>
-                            <td>零食</td>
-                            <td class="test">
-                                <img src="~/images/prod-eg-6.jpg"
-                                     width="100" height="100" class="thumbnail-image">
-                                <!-- 原始圖片的視窗 -->
-                                <div class="image-popup">
-                                    <img src="~/images/prod-eg-6.jpg"
-                                         alt="Original Image">
-                                </div>
-                            </td>
-                            <td>2023-07-03</td>
-                            <td></td>
-                            <td>50g</td>
-                            <td>1</td>
-                            <td>否</td>
-                            <td>
-                                <a href="#">
-                                    <button class="btn" data-bs-toggle="modal"
-                                            href="#exampleModalToggle" role="button">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </a> | <button class="btn"
-                                               onclick="userDelete()">
-                                    <a href="#" id="b5">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
-
-
-
+        <div class="container-fluid mt-4">
+            <div class="row">
+                <div class="col-12">
+                    <!--表格-->
+                    <table id="Product-table" class="table table-striped nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>序號</th>
+                                <th>商品名稱</th>
+                                <th>描述</th>
+                                <th>價格</th>
+                                <th>剩餘數量</th>
+                                <th>類別</th>
+                                <th>圖片</th>
+                                <th>上架日期</th>
+                                <th>尺寸</th>
+                                <th>重量</th>
+                                <th>供應商</th>
+                                <th>是否停售</th>
+                                <th>編輯/刪除</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
                         <!--編輯彈出視窗-->
-                        <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-                             aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                        <div class="modal fade" id="EditProductModalToggle" aria-hidden="true"
+                             aria-labelledby="EditProductModalToggleLabel" tabindex="-1">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalToggleLabel">編輯 Edit</h5>
+                                        <h5 class="modal-title" id="EditProductModalToggleLabel">編輯 Edit</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
@@ -292,56 +217,61 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <label>ID</label>
-                                                <input type="text" class="form-control" readonly disabled>
+                                                <input type="text" id="editor-id" name="ProductId" class="form-control" readonly disabled>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>名稱</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-name" class="form-control" name="ProductName">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>描述</label>
+                                                <textarea id="editor-description" class="form-control" name="ProductDescription"></textarea>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>價格</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-price" class="form-control" name="ProductPrice">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>剩餘數量</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-remainingquantity" class="form-control" name="RemainingQuantity">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>商品類別</label>
-                                                <select class="form-control">
-                                                    <option value="ProductCatgory1">零食</option>
-                                                    <option value="ProductCatgory2">玩具</option>
+                                                <select class="form-control" id="editor-category" name="ProductCategory">
+                                                    <option selected>請選擇</option>
+                                                    @*                                                    @foreach (var product in Model)
+                                                    {
+                                                    <option value="@product.ProductCategoryId">@product.ProductCategory</option>
+                                                    }*@
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>上架日期</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-releasedate" class="form-control" name="ReleaseDate">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>尺寸</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-size" class="form-control" name="Size">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>重量</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-weight" class="form-control" name="Weight">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>供應商</label>
-                                                <input type="text" class="form-control">
+                                                <input type="text" id="editor-supplier" class="form-control" name="Supplier">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>是否停售</label>
-                                                <select class="form-control">
-                                                    <option value="是">是</option>
-                                                    <option value="否">否</option>
+                                                <select class="form-control" id="editor-discontinued" name="Discontinued">
                                                 </select>
                                             </div>
                                             <div class="col-md-12">
                                                 <label>圖片</label>
-                                                <input type="file" class="form-control">
+                                                <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable">
                                             </div>
 
-                                            <button type="submit" class="mt-3 btn btn-primary btn-block"
+                                            <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior"
                                                     style="width: 100%;">
                                                 儲存
                                             </button>
@@ -352,28 +282,72 @@
                             </div>
                         </div>
                         <!--編輯彈出視窗-->
-                    </tbody>
-                </table>
-                <!--表格-->
+                    </table>
+                    <!--表格-->
+                </div>
             </div>
         </div>
+
     </div>
 
-</div>
+    @section Scripts{
+        @*引用日期插件*@
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-@section Scripts{
-    @*引用日期插件*@
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+        <script>
+            // 查看json結構
+            $(document).ready(function () {
+                $.ajax({
+                    url: '@Url.Action("LoadDatatable", "Product")',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            });
 
-    <script>
+            //初始化表格==================================================
+            $(document).ready(function () {
+                var table = $('#Product-table').DataTable({
+                    responsive: true,
+                    "paging": true,
+                    "ajax": {
+                        "url": "@Url.Action("LoadDatatable", "Product" , new{ area="AdminCMS"})",
+                        type: 'GET',
+                    },
+                    //載入欄位資料庫資料==========================================
+                    "columns": [
+                        { "data": "productId" },
+                        { "data": "productName" },
+                        { "data": "productDescription" },
+                        { "data": "productPrice" },
+                        { "data": "remainingQuantity" },
+                        { "data": "productCategory" },
+                        { "data": "shopProductImageTable" },
+                        { "data": "releaseDate" },
+                        { "data": "size" },
+                        { "data": "weight" },
+                        { "data": "supplier" },
+                        { "data": "discontinued" },
+                        {
+                            "data": "productId",
+                            "render": function (data, type, row) {
+                                var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
+                                deleteUrl = deleteUrl.replace('productId', row.productIdd);
+                                return `<button class="edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> |
+                                                                <a href="${deleteUrl}" onclick="return confirm('確定要刪除嗎?')"><i class="fas fa-trash-alt"></i></a>`;
+                            }
+                        }
+                    ]
+                });
 
 
-        //篩選類別
-        $(document).ready(function () {
-            var table = $('#Product-table').DataTable({
-                responsive: true,
+                //篩選類別==============================================
                 // 在這裡指定需要過濾的列，商品類別為第六列->索引5
                 columnDefs: [
                     { targets: 5, searchable: true }
@@ -394,59 +368,214 @@
             //    table.column(11).search(filterOption2).draw();
             //});
 
-        });
+            ;
 
-        // 當頁面載入完成後執行
-        document.addEventListener("DOMContentLoaded", function () {
-            // 獲取所有包含縮略圖片和視窗的元素
-            const thumbnailImages = document.querySelectorAll(".thumbnail-image");
-            const imagePopups = document.querySelectorAll(".image-popup");
+            //圖片預覽-當頁面載入完成後執行==================================
 
-            // 對每個圖片進行事件處理
-            thumbnailImages.forEach((thumbnailImage, index) => {
-                // 當滑鼠懸停在圖片上時
-                thumbnailImage.addEventListener("mouseover", function () {
-                    // 顯示對應的原始圖片的視窗
-                    imagePopups[index].style.display = "block";
-                });
+            document.addEventListener("DOMContentLoaded", function () {
+                // 獲取所有包含縮略圖片和視窗的元素
+                const thumbnailImages = document.querySelectorAll(".thumbnail-image");
+                const imagePopups = document.querySelectorAll(".image-popup");
 
-                // 當滑鼠移開圖片時
-                thumbnailImage.addEventListener("mouseout", function () {
-                    // 隱藏對應的原始圖片的視窗
-                    imagePopups[index].style.display = "none";
+                // 對每個圖片進行事件處理
+                thumbnailImages.forEach((thumbnailImage, index) => {
+                    // 當滑鼠懸停在圖片上時
+                    thumbnailImage.addEventListener("mouseover", function () {
+                        // 顯示對應的原始圖片的視窗
+                        imagePopups[index].style.display = "block";
+                    });
+
+                    // 當滑鼠移開圖片時
+                    thumbnailImage.addEventListener("mouseout", function () {
+                        // 隱藏對應的原始圖片的視窗
+                        imagePopups[index].style.display = "none";
+                    });
                 });
             });
-        });
 
-
-        //日期篩選器
-        $('input[name="dates"]').daterangepicker();
-        $(document).ready(function () {
-            var table = $('#salon-table').DataTable({
-                responsive: true,
+            //日期篩選器==============================
+            $('input[name="dates"]').daterangepicker();
+            $(document).ready(function () {
+                var table = $('#salon-table').DataTable({
+                    responsive: true,
+                });
             });
-        });
 
+            //刪除按鈕================================
+            function userDelete() {
+                Swal.fire({
+                    title: '確定要刪除嗎?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }
+                })
+            }
 
+            //編輯按鈕==============================================
+            $('#Product-table').on('click', '.edit-button', function () {
+                let id = $(this).data('id')
+                $.ajax({
+                    url: '/AdminCMS/Product/EditShopProducts?id=' + id,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editor-id').val(response.data.productId);
+                            $('#editor-name').val(response.data.productName);
+                            $('#editor-description').val(response.data.productDescription);
+                            $('#editor-price').val(response.data.productPrice);
+                            $('#editor-remainingquantity').val(response.data.remainingQuantity);
+                            $('#editor-category').val(response.data.productCategory);
+                            $('#editor-releasedate').val(response.data.releaseDate);
+                            $('#editor-size').val(response.data.size);
+                            $('#editor-weight').val(response.data.weight);
+                            $('#editor-supplier').val(response.data.supplier);
+                            $('#editor-discontinued').val(response.data.discontinued);
+                            $('#editor-image').val(response.data.shopproductImagetable);
+                            console.log(response.data)
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+            //儲存按鈕==============================
+            $('#submitButton-edior').click(function () {
+                var id = $('#editor-id').val
+                var name = $('#editor-name').val
+                var description = $('#editor-description').val
+                var price = $('#editor-price').val
+                var remainingquantity = $('#editor-remainingquantity').val
+                var category = $('#editor-category').val
+                var releasedate = $('#editor-releasedate').val
+                var size = $('#editor-size').val
+                var weight = $('#editor-weight').val
+                var supplier = $('#editor-supplier').val
+                var discontinued = $('#editor-discontinued').val
+                var image = $('#editor-image').val
 
-        function userDelete() {
-            Swal.fire({
-                title: '確定要刪除嗎?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
+                var formData = new FormData();
+                formData.append("productid", id);
+                formData.append("productname", name);
+                formData.append("productdescription", description);
+                formData.append("productprice", price);
+                formData.append("remainingquantity", remainingquantity);
+                formData.append("productcategory", category);
+                formData.append("releasedate", releasedate);
+                formData.append("size", size);
+                formData.append("weight", weight);
+                formData.append("supplier", supplier);
+                formData.append("discontinued", discontinued);
+                formData.append("shopproductimagetable", image);
+
+                $.ajax({
+                    url: "@Url.Action("EditShopProducts","Product" , new { area="AdminCMS" })",
+                    type: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        alert("Content saved successfully!");
+                        window.location.reload();
+                    }
+                });
+            });
+
+            //新增商品================================================
+            $('#CreatMember').click(function () {
+
+                var id = $('#CreateID').val
+                var name = $('#CreateName').val
+                var description = $('#CreateDescription').val
+                var price = $('#CreatePrice').val
+                var remainingquantity = $('#Createremainingquantity').val
+                var category = $('#Createcategory').val
+                var releasedate = $('#Createreleasedate').val
+                var size = $('#Createsize').val
+                var weight = $('#Createweight').val
+                var supplier = $('#Createsupplier').val
+                var discontinued = $('#Creatediscontinued').val
+                var image = $('#Createimage').val
+
+                // 檢查必填欄位是否有值
+                if (!id || !name || !description || !price || !remainingquantity || !category || !releasedate || !size || !weight || !supplier || !discontinued || !image) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: '請填寫所有必填欄位。'
+                    });
+                    return; // 不執行後續動作
                 }
-            })
-        }
 
-    </script>
-}
+                // 檢查帳號是否已存在或者isVaild只要是false就return
+                if (CheckAccResult == true || isVaild == false) {
+                    return; // 不執行後續動作
+                }
+
+                var newProduct = {
+                    id: id,
+                    name: name,
+                    description: description,
+                    price: price,
+                    remainingquantity: remainingquantity,
+                    category: category,
+                    releasedate: releasedate,
+                    size: size,
+                    weight: weight,
+                    supplier: supplier,
+                    discontinued: discontinued,
+                    image: image
+                };
+
+                try {
+                    $.ajax({
+                        url: '/AdminCMS/Product/CreateProduct',
+                        type: 'POST',
+                        data: { newProduct: newProduct },
+                        success: function (response) {
+                            // console.log(result)
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    text: response.message
+                                });
+
+                                // 關閉modal
+                                $('#addProductModalToggle').modal('hide');
+
+                                // 重新整理dataTable
+                                $('#Product-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '錯誤',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: "An error occurred: " + xhr.responseText
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+        </script>
+    }
+
