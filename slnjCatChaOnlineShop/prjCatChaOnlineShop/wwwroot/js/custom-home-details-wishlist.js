@@ -287,7 +287,7 @@ $(document).ready(async function () {
     var itemPerPageSelect = $('#itemPerPageSelect');
     var productList = $('#productList');
     var showMoreButton = $('#showMore')
-
+    //var addto = $('#addto')
     var displayedItemCount = 0; // 已顯示的資料筆數
     var initialItemsToShow = parseInt(itemPerPageSelect.val());
 
@@ -305,13 +305,13 @@ $(document).ready(async function () {
                     var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
                     var productDiv = $('<div class="products-single fix"></div>');
                     var boxImgHover = $('<div class="box-img-hover shop-image"></div>');
-                    var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');
+                   /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
 
                     var productLink = $('<a href="/Index/ShopDetail"></a>');
                     var productImg = $(`<img src=${item.pImgPath} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
 
                     productLink.append(productImg);
-                    boxImgHover.append(typeLb);
+                    //boxImgHover.append(typeLb);
                     boxImgHover.append(productLink);
 
                     var whyText = $('<div class="why-text"></div>');
@@ -354,7 +354,18 @@ $(document).ready(async function () {
     // 初始載入商品
     await fetchMoreProducts();
 
-    // 點擊商品時獲取識別ID
+    
+    showMoreButton.click(async function () {
+        await fetchMoreProducts();
+    });
+
+    itemPerPageSelect.change(async function () {
+        displayedItemCount = 0; // 重置已顯示的資料筆數
+        productList.empty();
+        initialItemsToShow = parseInt(itemPerPageSelect.val());
+        await fetchMoreProducts();
+    });
+// 點擊商品時獲取識別ID
     productList.on('click', '.img-fluid', function () {
         var productId = $(this).data('product-id');
         console.log('Clicked product ID:', productId);
@@ -370,9 +381,9 @@ $(document).ready(async function () {
             url: '/ProductApi/AddToCart',
             type: 'POST',
             data: { pId: productId },
-            dataType: 'Json',
+            dataType: 'json',
             success: function (response) {
-                // 處理成功回應，例如更新購物車數量或顯示訊息
+                alert('商品已成功加入購物車！');
                 console.log('Added to Cart:', response.message);
             },
             error: function (error) {
@@ -381,26 +392,30 @@ $(document).ready(async function () {
         });
     });
 
+//    addto.on('click', '.img-fluid', function () {
+//        var productId = $(this).data('product-id');
+//        console.log('Clicked product ID:', productId);
+//        // 在這裡進行你的後續操作，例如導向到商品詳細頁面等
+//    });
 
-   
-
-    // 點擊商品時獲取識別ID
-    productList.on('click', '.img-fluid', function () {
-        var productId = $(this).data('product-id');
-        console.log('Clicked product ID:', productId);
-        // 在這裡進行你的後續操作，例如導向到商品詳細頁面等
-    });
-
-    showMoreButton.click(async function () {
-        await fetchMoreProducts();
-    });
-
-    itemPerPageSelect.change(async function () {
-        displayedItemCount = 0; // 重置已顯示的資料筆數
-        productList.empty();
-        initialItemsToShow = parseInt(itemPerPageSelect.val());
-        await fetchMoreProducts();
-    });
-
+//    // 點擊加入購物車按鈕
+//    addto.on('click', '.add-to-cart-coustom', function () {
+//        var productId = $(this).data('product-id');
+//        console.log('Clicked Add to Cart, Product ID:', productId);
+//        // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+//        $.ajax({
+//            url: '/ProductApi/AddToCart',
+//            type: 'POST',
+//            data: { pId: productId },
+//            dataType: 'json',
+//            success: function (response) {
+//                alert('商品已成功加入購物車！');
+//                console.log('Added to Cart:', response.message);
+//            },
+//            error: function (error) {
+//                console.error('Ajax Error:', error);
+//            }
+//        });
+//    });
 });
 
