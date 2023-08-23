@@ -33,11 +33,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
         
         public IActionResult ShopItemPerPage(int itemPerPage)
         {
-            var items = _productService.GetProductItems().DistinctBy(item => item.pName).Take(itemPerPage);//只出現商品名稱不同的品項
+            var items = _productService.GetProductItems().Take(itemPerPage);//只出現商品名稱不同的品項
             return Json(items);
         }
 
-        [HttpPost]
+
         //public IActionResult AddToCart(int pId)
         //{
         //    var prodItem=_productService.GetProductById(pId);
@@ -94,6 +94,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         //    return RedirectToAction("Shop");
         //}
+        [HttpPost]
         public IActionResult AddToCart(int pId)
         {
             var prodItem = _productService.GetProductById(pId);

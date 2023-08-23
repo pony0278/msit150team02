@@ -129,7 +129,7 @@
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
                     <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                    <div id="productList" class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
                             <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
                                 <div class="box-img-hover">
@@ -150,7 +150,7 @@
                                 {
                                     <h5>$@item.pPrice</h5>
                                 }
-                                <a asp-controller="ProductApi" asp-action="AddToCart" class="add-to-cart-coustom">
+                                <a href="" data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
                                 <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
@@ -204,7 +204,7 @@
                 </div>
             </div>
         </div>
-        <div class="row special-list">
+        <div id="productList" class="row special-list">
 
             @{
 
@@ -231,7 +231,7 @@
                                 {
                                     <h5>$ @item.pPrice</h5>
                                 }
-                                <a asp-controller="ProductApi" asp-action="AddToCart" class="add-to-cart-coustom">
+                                <a href="" data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
                                 <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
