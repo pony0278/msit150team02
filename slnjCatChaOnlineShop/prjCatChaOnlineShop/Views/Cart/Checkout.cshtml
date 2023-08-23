@@ -1,4 +1,18 @@
-﻿@{
+﻿@using System.Text.Json;
+@using prjCatChaOnlineShop.Models.CDictionary;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model prjCatChaOnlineShop.Models.ViewModels.CCheckoutViewModel
+@{
+    var jsonString = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
+    ShopMemberInfo memberinfo = null;
+
+    if (jsonString != null)
+    {
+        memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
+    }
+}
+
+@{
     ViewData["Title"] = "Checkout";
 }
 
@@ -38,7 +52,6 @@
             align-self: center;
             vertical-align: middle;
         }
-
     </style>
 }
 
@@ -106,13 +119,16 @@
                     <div class="title-left">
                         <h3>貓幣折抵</h3>
                     </div>
-                    <form class="needs-validation" novalidate>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="use_CatCoin">
-                            <label class="custom-control-label" for="use_CatCoin">使用1000貓幣折抵NT100</label>
-                        </div>
-                        <div class="ml-4 mb-2 small">您有75648個貓幣，單筆訂單最多可折抵10%商品金額</div>
-                    </form>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                    {
+                        <form class="needs-validation">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="use_CatCoin">
+                                <label class="custom-control-label" for="use_CatCoin">使用1000貓幣折抵NT100</label>
+                            </div>
+                            <div class="ml-4 mb-2 small">您有 @memberinfo.CatCoinQuantity 個貓幣，單筆訂單最多可折抵10%商品金額</div>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
@@ -128,23 +144,11 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
-                                <input type="text" class="form-control" placeholder="請輸入優惠券代碼(英數字)"
-                                       aria-label="請輸入優惠券代碼(英數字)" aria-describedby="button-addon2">
-                                <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
-                                        id="button-couponCode">
-                                    使用優惠券
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-1  coupon-box-a">
-                            <a>或</a>
-                        </div>
-                        <div class="col-md-5 mb-2">
-                            <label for="cc-name">使用我的優惠券</label>
-                            <div class="input-group mb-3">
+                                <input type="text" class="form-control" placeholder="請選擇優惠券"
+                                       aria-label="請選擇優惠券" aria-describedby="button-addon2">
                                 <!-- 觸發互動視窗的按鈕 -->
-                                <button type="button" class="coupon-box-btn btn hvr-hover coupon-box" data-bs-toggle="modal"
-                                        data-bs-target="#myCouponBackdrop">
+                                <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#myCouponBackdrop">
                                     我的優惠券
                                 </button>
                             </div>
@@ -163,39 +167,42 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="getCouponList" class="modal-body">
-                                        <div class="coupon-content flex-container">
-                                            <div class="coupon-left flex-container flex-1">
-                                                <div class="coupon-intro text-center">
-                                                    <div class="intro green">免運<br>運費折抵</div>
-                                                </div>
-                                                <div class="coupon-middle flex-container flex-1">
-                                                    <div class="middle-left flex-1">
-                                                        <span class="coupon-tag">
-                                                            限用 1
-                                                            次
-                                                        </span>&ensp;<span class="coupon-name">2023買飼料免運費八月份</span>
-                                                        <div class="coupon-description">
-                                                            買貓狗飼料免運費，指名來好物快寵
+                                        @if (Model.memberUsableCoupon != null)
+                                        {
+                                            @foreach (var coupon in Model.memberUsableCoupon)
+                                            {
+
+                                                <div class="coupon-content flex-container">
+                                                    <div class="coupon-left flex-container flex-1">
+                                                        <div class="coupon-intro  text-center">
+                                                            <!--刪除MyCss.css 123行，增加160行hover-->
+                                                            <div class="coupon-status align-middle text-center">
+                                                                <button type="button" class=" btn">使用</button>
+                                                            </div>
                                                         </div>
-                                                        <div class="coupon-time">
-                                                            有效期限：2023-09-01 00:00
+                                                        <div class="coupon-middle flex-container flex-1">
+                                                            <div class="middle-left flex-1">
+                                                                <span class="coupon-tag">
+                                                                    限用1次
+                                                                </span>&ensp;<span class="coupon-name"> @coupon.CouponName </span>
+                                                                <div class="coupon-description">
+                                                                    @coupon.CouponContent
+                                                                </div>
+                                                                <div class="coupon-time">
+                                                                    有效期限：@coupon.ExpiryDate
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                            <div class="coupon-status text-center">
-                                                <div class="coupon-status-left flex-1 text-left">
-                                                    <span>優惠碼</span>
-                                                    <div class="coupon-code">PetFoodFree08</div>
-                                                </div>
-                                                <button type="button" class="btn">立即使用</button>
-                                            </div>
-                                        </div>
-                                    </div>
 
+                                            }
+                                        }
+                                    </div>
                                 </div>
+                                <!--增加style-->
                                 <div class=" modal-footer ">
-                                    <button type=" button" class="coupon-btn"
+                                    <button type="button" class="coupon-btn" style="font-weight:bold;"
                                             data-bs-dismiss="modal">
                                         不使用優惠券
                                     </button>
@@ -214,12 +221,16 @@
                     <h3>訂購人資料</h3>
                 </div>
                 <div>
-                    <ul class="customer_info">
-                        <li>姓名：徐雅莉</li>
-                        <li>電話：0923468145</li>
-                        <li>Email：seoari@gmail.com</li>
-                        <li>地址： 台北市信義區松壽路12號</li>
-                    </ul>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                    {
+                        <ul class="customer_info">
+                            <li>姓名: @memberinfo.Name </li>
+                            <li>電話: @memberinfo.PhoneNumber</li>
+                            <li>Email： @memberinfo.Email</li>
+                            <li>地址： @memberinfo.Address</li>
+                        </ul>
+                    }
+
                 </div>
             </div>
         </div>

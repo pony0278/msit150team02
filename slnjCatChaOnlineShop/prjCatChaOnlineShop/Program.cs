@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,11 @@ builder.Services.AddSession(options => {
     options.IdleTimeout = TimeSpan.FromMinutes(3); // 測試:這裡設定為 3 分鐘
 });
 builder.Services.AddScoped<ProductService>();
+// 註冊 CheckoutService 服務
+builder.Services.AddScoped<CheckoutService>();
+
+//訪問當前 HTTP 要求的相關資訊，例如 HTTP 上下文、Session、Cookies
+builder.Services.AddHttpContextAccessor();
 
 //註冊session要加這個
 builder.Services.AddSession();
