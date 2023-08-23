@@ -92,6 +92,7 @@
         <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
         <div id="rank-container">
             <div id="rankpage-title">小遊戲排行榜</div>
+
             <table id="emTable" class="table table-striped">
                 <thead>
                     <tr>
@@ -101,70 +102,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
+                
                 </tbody>
             </table>
         </div>
-
     </div>
     <!-- End 排行榜 -->
     <canvas id="CanvasCheckIn"></canvas>
@@ -203,23 +144,19 @@
     <script>
         const rank = {
             "排名": [
-                { "name": "艾主席", "排名": 1, "分數": 50 },
-                { "name": "貓仔", "排名": 2, "分數": 30 },
-                { "name": "遊戲之鬼", "排名": 3, "分數": 20 }
+                { "name": "N/A", "排名": "N/A", "分數": "N/A" },
+
             ]
         };
 
         const datas = rank.排名.map(r => `
                                             <tr>
-                                                         <td>${r.排名}</td>
+                                                 <td>${r.排名}</td>
                                                  <td>${r.name}</td>
                                                  <td>${r.分數}</td>
                                             </tr>
                                             ` );
         document.querySelector('#emTable > tbody').innerHTML = datas.join("")
-
-
-
     </script>
 
         }

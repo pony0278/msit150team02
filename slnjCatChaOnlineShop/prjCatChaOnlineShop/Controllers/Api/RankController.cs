@@ -19,12 +19,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
         public IActionResult Rank()
         {
             var datas = (from p in _context.ShopMemberInfo
+                         where p.RunGameHighestScore.HasValue
                          select new
                          {
                              p.CharacterName,
                              p.RunGameHighestScore,
                          })
-                         .Distinct()
                          .OrderByDescending(p => p.RunGameHighestScore)
                          .ToList(); // 轉換為 List
 

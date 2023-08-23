@@ -117,22 +117,20 @@
         background-color: rgba(0, 0, 0, 0.5);
         display: none;
     }
+
     /* 網頁捲軸【寬度】 */
     /*::-webkit-scrollbar {
         width: 30px;
     }*/
-
     /* 網頁捲軸【背景】顏色 */
     /*::-webkit-scrollbar-track {
         background: #437c97;
     }*/
-
     /* 網頁捲軸【把手】顏色 */
     /*::-webkit-scrollbar-thumb {
         background: #c7bba5;
         border-radius: 
     }*/
-
     /* 網頁捲軸【滑過時】把手的顏色 */
     /*::-webkit-scrollbar-thumb:hover {
             background: #fff;
@@ -147,6 +145,7 @@
         flex-direction: column;
         background: white;
         margin: 10px;
+        table-layout: fixed;
     }
 
     #rankpage-title {

@@ -137,6 +137,7 @@ function chooseCatBeforeGame() {
 }
 
 
+
 //遊戲本體RWD方法
 function resizeCanvas() {
     const screenWidth = window.innerWidth;

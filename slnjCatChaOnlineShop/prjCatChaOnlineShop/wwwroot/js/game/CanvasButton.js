@@ -5,6 +5,37 @@ function isInBtnRange(btn, x, y)//判斷滑鼠點到哪一個按鈕，參數btn�
     return x >= btn.x && x <= btn.x + btn.width && y >= btn.y && y <= btn.y + btn.height;
 }
 
+//載入排行榜資料
+function loadRankData() {
+    $.ajax({
+        url: '/Api/Rank',
+        type: 'GET',
+        success: function (data) {
+            if (data.length > 0) {
+                const rank = {
+                    "排名": data.map((item, index) => ({
+                        "name": item.characterName,
+                        "排名": index + 1,
+                        "分數": item.runGameHighestScore
+                    }))
+                };
+                const rankDatas = rank.排名.map(r => `
+                                            <tr>
+                                                 <td>${r.排名}</td>
+                                                 <td>${r.name}</td>
+                                                 <td>${r.分數}</td>
+                                            </tr>
+                                            ` );
+                document.querySelector('#emTable > tbody').innerHTML = rankDatas.join("")
+
+            }
+        },
+        error: function () {
+            console.error('載入資料失敗');
+        }
+    });
+}
+
 CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後詢問頁面
     const rect = CanvasDoubleCheck.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -116,14 +147,14 @@ canvas.addEventListener('click', (event) => {
 
     if (isInBtnRange(gotoGacha, x, y)) { //轉蛋
         pagesControl(CatchaGatCha);
-        console.log('HI');
         return;
     }
 
     if (isInBtnRange(rankBTN, x, y)) { //Rank
         pagesControl(CanvasRank);
         Canvaslobby.style.display = "block"
-        console.log('HI');
+        //載入資料庫排行榜資料
+        loadRankData();
         return;
     }
 
