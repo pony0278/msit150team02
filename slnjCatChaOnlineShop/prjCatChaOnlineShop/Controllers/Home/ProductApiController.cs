@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Features;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
@@ -30,13 +29,68 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-        public IActionResult ShopItemPerPage(int itemPerPage, int? categoryId)
+        
+        //以下為測試功能
+        public IActionResult imgUpload()
         {
-            if (categoryId != null) 
+            return View();
+        }
+        [HttpPost]
+        public ActionResult imgUpload(ShopProductImageTable img, IFormFile photo, testAddImageViewModel vm)
+        {
+            string path = _host.WebRootPath + $"/images/prod-{vm.txtPId}.jpg";
+            photo.CopyTo(new FileStream(path, FileMode.Create));
+            var data = from i in _context.ShopProductImageTable
+                       select i.ProductId;
+            foreach (var i in data)
             {
-                var itemsCat = _productService.GetProductByCategoryId(categoryId).DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項;
-                return Json(itemsCat);
+                if (i != vm.txtPId)
+                {
+                    img.ProductId = vm.txtPId;
+                    img.ProductPhoto = photo.FileName;
+
+                    _context.ShopProductImageTable.Add(img);
+                    _context.SaveChanges();
+                    return Content("資料庫已更新, 新增成功!!");
+                }
             }
+
+            return Content("新增成功!!");
+
+        }
+
+        public IActionResult Byte2Path()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Byte2Path(testByte2PathViewModel vm)
+        {
+            var img = from i in _context.ShopProductImageTable
+                      where i.ProductId == vm.txtPId
+                      select i;
+
+
+            int count = 0;
+            foreach (var item in img)
+            {
+                count++;
+                if (count == vm.txtNum)
+                {
+                    item.ProductPhoto = $"prod-{vm.txtPId}.jpg";
+                }
+                else
+                    return Content("無改動!");
+
+            }
+            _context.SaveChanges();
+            return Content("已更改!");
+
+        }
+        public IActionResult ShopItemPerPage(int itemPerPage)
+        {
             var items = _productService.GetProductItems().DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項
             return Json(items);
         }
@@ -52,11 +106,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
                 if (cart.FirstOrDefault(item => item.cId == pId)!=null)
                 {
+                    cart = new List<CCartItem>();
                     CCartItem cartItem = new CCartItem();
                     cartItem.c數量++;
-                    // 商品已在購物車中只加數量
+                    // 商品已在購物車中
                     return RedirectToAction("Shop");
                 }
+               
+
             }
             else
             {
@@ -80,9 +137,5 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 
             return RedirectToAction("Shop");
         }
-        //public IActionResult ShopSelectCategory(int categoryId)
-        //{
-        //    return Json(items);
-        //}
     }
 }
