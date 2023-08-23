@@ -46,15 +46,22 @@ async function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, isTen
 
             const responseData = await response.json();
             console.log(`第 ${id} 次轉蛋數據已成功發送:`, responseData);
+            return responseData; // 返回成功的數據
         } catch (error) {
             console.error('發送數據時發生錯誤:', error);
+            throw error; // 重新拋出錯誤
         }
     }
 
-    for (const id of 道具ID陣列) {
-        await processItem(id);
+    // 使用Promise.all等待所有POST請求完成
+    try {
+        const responses = await Promise.all(道具ID陣列.map(id => processItem(id)));
+        console.log('所有數據已成功發送:', responses);
+    } catch (error) {
+        console.error('發送數據時發生錯誤:', error);
     }
 }
+
 
 
 CatPointTenDrows.addEventListener('click', async function () {

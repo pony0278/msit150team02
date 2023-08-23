@@ -92,7 +92,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     {
                         MemberId = rgm.MemberId,
                         ProductId = rgm.ProductId,
-                        QuantityOfInGameItems = 1,
                     //ItemName=rgm.ItemName
                     // 設定其他屬性
                 };
