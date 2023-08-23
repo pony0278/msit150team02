@@ -43,5 +43,13 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 return View();
             }
         }
+
+        //====================登出功能
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove(CAdminLogin.SK_LOGINED_USER);
+            return RedirectToAction("Login", "CMSHome");
+        }
     }
 }

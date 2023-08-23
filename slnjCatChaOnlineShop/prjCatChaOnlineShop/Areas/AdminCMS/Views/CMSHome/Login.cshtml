@@ -51,14 +51,14 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login"  onsubmit="return validateForm()">
+                                    <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login" onsubmit="return validateForm()">
                                         <div class="user">
                                             <div class="form-group mb-4">
-                                                <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
+                                                <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" value="catcha" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
                                             </div>
                                             <div class="form-group mb-4">
                                                 <div class="password-container">
-                                                    <input type="password" name="AdminPassword" class="form-control form-control-user" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
+                                                    <input type="password" name="AdminPassword" class="form-control form-control-user" value="catcha123" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
                                                     <span id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></span>
                                                 </div>
                                             </div>
@@ -71,7 +71,7 @@
                                     <p id="errorMsg" style="color:red;"></p>
                                     @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
                                     {
-                                        <p style="color:red;">@ViewBag.ErrorMessage</p>
+                                        <p id="ViewBag_ErrorMessage" style="color:red;">@ViewBag.ErrorMessage</p>
                                     }
                                 </div>
                             </div>
@@ -87,13 +87,13 @@
 
 <script>
     //==============密碼眼睛
-        $('#togglePassword').click(function () {
-            if ($('#InputPassword').attr('type') === 'password') {
-                $('#InputPassword').attr('type', 'text');
-            } else {
-                $('#InputPassword').attr('type', 'password');
-            }
-        });
+    $('#togglePassword').click(function () {
+        if ($('#InputPassword').attr('type') === 'password') {
+            $('#InputPassword').attr('type', 'text');
+        } else {
+            $('#InputPassword').attr('type', 'password');
+        }
+    });
 
     function validateForm() {
         var adminAccount = $("#InputEmail").val();
@@ -101,6 +101,7 @@
 
         if (adminAccount === "" || adminPassword === "") {
             $('#errorMsg').text("帳號和密碼不得留空");
+            $('#ViewBag_ErrorMessage').text(""); //不讓畫面上有兩條錯誤訊息
             return false;
         }
         return true;

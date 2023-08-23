@@ -150,13 +150,12 @@
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link" onclick="SignOut()" style="cursor: pointer;">
+            <form id="logoutForm" asp-area="AdminCMS" asp-action="Logout" asp-controller="CMSHome" method="post">
+                <button type="button" class="nav-link" style="cursor: pointer; border: none; background: none;" onclick="confirmLogout()">
                     <i class="fas fa-sign-out-alt"></i>
                     <span class="big-title">登出</span>
-                </a>
-            </li>
-
+                </button>
+            </form>
         </ul>
 
         <div id="bg-hide"></div>
@@ -199,23 +198,18 @@
     <!--登出事件-->
     <!--用src引入會造成中文變成亂碼-->
     <script>
-        function SignOut() {
+        function confirmLogout() {
             Swal.fire({
-                title: '確定要登出嗎?',
-                icon: 'warning',
+                title: '確定要登出嗎？',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, sign out!'
+                confirmButtonText: '確定',
+                cancelButtonText: '取消'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire(
-                        'sign out!',
-                        'You has been sign out.',
-                        'success'
-                    )
+                    // 確定要登出後執行
+                    document.getElementById('logoutForm').submit();
                 }
-            })
+            });
         }
     </script>
 
