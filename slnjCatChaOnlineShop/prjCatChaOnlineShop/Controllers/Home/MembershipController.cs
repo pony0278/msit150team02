@@ -8,7 +8,6 @@ using prjCatChaOnlineShop.Services.Function;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
-
     //[Route("api/[controller]")]
     //[ApiController]
 
@@ -21,7 +20,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             _context = context;
         }
-        
+
         public IActionResult Membership()
         {
             return View();
@@ -85,7 +84,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-        //更新帳戶基本資料到資料庫
+        //更新帳戶基本資料到資料庫:需做防呆機制
         public IActionResult UpdateMemberInfo(ShopMemberInfo member)
         {
             try
@@ -101,7 +100,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 */
                 _context.SaveChanges();
 
-                    return Content("修改成功");
+                return Content("修改成功");
 
             }
             catch (Exception ex)
@@ -179,6 +178,128 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得商品種類用訂單編號
+        public IActionResult GetProductByOrderId(int orderid)
+        {
+
+            try
+            {
+                var query = from order in _context.ShopOrderDetailTable
+                            where order.OrderId == orderid
+                            select new
+                            {
+                                order.Product.ProductId,
+                                order.Product.ProductName,
+                                order.Product.ProductPrice,
+                                order.ProductQuantity,
+                                order.Product.Size
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //取得申訴類型放到客服中心的頁面
+        public IActionResult GetReturnReasonCategory()
+        {
+            try
+            {
+                var datas = _context.ShopReturnReasonDataTable.ToList();
+
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //儲存退換貨到資料庫
+        public IActionResult SaveReturn(ShopReturnDataTable returnn)
+        {
+            try
+            {
+                returnn.ReturnDate = DateTime.Now;
+                returnn.ProcessingStatusId = 1;
+
+                if (int.TryParse(HttpContext.Request.Form["orderId"], out int orderId))
+                {
+                    returnn.OrderId = orderId;
+                }
+                if (int.TryParse(HttpContext.Request.Form["reasonId"], out int reasonId))
+                {
+                    returnn.ReturnReasonId = reasonId;
+                }
+
+                _context.ShopReturnDataTable.Add(returnn);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //儲存評論內容到資料庫
+        public IActionResult SaveComment(ShopProductReviewTable comment)
+        {
+            try
+            {
+                var productIdValue = HttpContext.Request.Form["productId"];
+                if (int.TryParse(productIdValue, out int productId))
+                {
+                    comment.MemberId = 4;
+                    comment.ProductId = productId;
+                    comment.ReviewContent = HttpContext.Request.Form["commentText"];
+                    comment.ReviewTime = DateTime.Now;
+                    comment.HideReview = false;
+
+                    double startRatingValue;
+                    if (double.TryParse(HttpContext.Request.Form["startRating"], out startRatingValue))
+                    {
+                        int rating = (int)Math.Floor(startRatingValue);
+                        comment.ProductRating = rating;
+                    }
+
+
+                    _context.ShopProductReviewTable.Add(comment);
+                    _context.SaveChanges();
+
+                    return Content("新增成功");
+                }
+                else
+                {
+                    return Content("產品編號轉型有誤");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
 
         /*3.退貨紀錄*/
 
@@ -211,12 +332,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
             catch (Exception ex)
             {
                 return Content(ex.Message);
-            } 
+            }
 
         }
 
 
-        /*5.收藏紀錄*/
+        /*4.收藏紀錄*/
 
         //取得退貨紀錄
         public IActionResult GetFavoriteData()
@@ -254,6 +375,50 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
 
         }
+
+        /*5.客訴紀錄*/
+
+        //取得退貨紀錄
+
+        public IActionResult GetComplaintCase()
+        {
+
+            try
+            {
+
+                var datas = from p in _context.ShopMemberComplaintCase
+                            join q in _context.ShopReplyData on p.ComplaintCaseId equals q.ComplaintCaseId
+                            where p.MemberId == 1
+                            select new
+                            {
+                                p.ComplaintCaseId,
+                                p.ComplaintContent,
+                                p.ComplaintTitle,
+                                p.CreationTime,
+                                p.ComplaintStatus.ComplaintStatusName,
+                                p.ComplaintCategory.CategoryName,
+
+                                q.MessageRecipientContent,
+                                q.SentTime
+                            };
+
+
+                if (datas.Any())
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+
+        }
+
 
         /*6.客服中心*/
 
@@ -310,4 +475,5 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
     }
+
 }
