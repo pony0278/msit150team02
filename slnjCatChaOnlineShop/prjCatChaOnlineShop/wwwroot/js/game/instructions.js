@@ -23,7 +23,7 @@ function showInstructions() {
 //內容開關
 function showPage(page) {
     var instructions = document.querySelectorAll('.xx');
- 
+
 
     for (var i = 0; i < instructions.length; i++) {
         instructions[i].style.display = 'none';
@@ -44,7 +44,3 @@ function hideInstructions() {
     pagination.style.display = 'none';
 }
 
-function closeConfirmWin() {
-    confirmWin.style.display = 'none';
-    initialize();
-}

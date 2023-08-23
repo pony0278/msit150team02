@@ -107,7 +107,7 @@ canvas.addEventListener('click', (event) => {
         return;
     }
 
-    
+
     if (isInBtnRange(gotoRunGame, x, y)) { //小遊戲
         popup.style.display = "block"
         showInstructions();
@@ -127,7 +127,7 @@ canvas.addEventListener('click', (event) => {
         return;
     }
 
-    
+
 
 
     // 功能
@@ -150,7 +150,7 @@ canvas.addEventListener('click', (event) => {
     if (isInBtnRange(itm5, x, y)) {//在背包點選OG貓貓
         if (userBagData.catOG === true)
             catOG = clickBagAndShowCat(catOG, 'OG')
-    }  
+    }
     if (isInBtnRange(itmMilk, x, y)) {//在背包選取牛奶，一次只能選一個食物
         if (milkCount == 0)
             return;
