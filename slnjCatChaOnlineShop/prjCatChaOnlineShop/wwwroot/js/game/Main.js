@@ -30,7 +30,7 @@ const kittenGY = new Image();
 const kittenBB = new Image();
 const floorImg = new Image();
 const lobbyBK = new Image();//TODO把圖片改成動態
-
+const heart = new Image();
 // 背包
 const bagbk = new Image();
 const bagItem1 = new Image();
@@ -43,7 +43,13 @@ const bagItem7 = new Image();
 const bagItem8 = new Image();
 const itemSelected = new Image();
 
-
+//定義初始變數
+let UserName = "未登入"
+let Ccoin = "N/A";
+let Ruby = "N/A";
+let milkCount = 0;
+let canCount = 0;
+let hightestScore = 0;
 //類別
 class UserInfo {
 
@@ -84,14 +90,11 @@ class Cat {
         if (this.selected == false) //沒有被選擇時候，不會產生愛心
             return;
         else {
-            this.heart.src = '../../images/game/thought_bubble.png'
-            c.drawImage(this.heart, 32 * this.heartframe, 0, 32, 32, this.x + 30, this.y, 60, 60)
-
+            c.drawImage(heart, 32 * this.heartframe, 0, 32, 32, this.x + 30, this.y, 60, 60)
             if (this.lobbyframecount > 11)//愛心動畫影格
             {
                 this.heartframe++;
                 if (this.heartframe > 2) this.heartframe = 0
-
             }
 
             //餵食後，取消背包食物選取
@@ -105,7 +108,7 @@ class Cat {
             }
         }
     }
-//動態替換貓貓動畫圖片
+    //動態替換貓貓動畫圖片
     draw() {
 
         this.drawHeart()
@@ -224,7 +227,7 @@ class Cat {
             }
         }
     }
-//貓貓隨機移動方法
+    //貓貓隨機移動方法
     action() {
         if (!this.isMoving) {
 
@@ -276,7 +279,6 @@ class Cat {
         this.lobbyframecount = 0;
         this.catcolor = color;
         this.heartframe = 0;
-        this.heart = new Image();
         this.selected = false;
     }
 
@@ -416,10 +418,10 @@ function showCat(cat) {
     }
 }
 //左側按鈕
-const helpBTN =  new mainpageButton(20, 70, 30, 40, helpBTNimg);
-const gotoRunGame =  new mainpageButton(12, 140, 50, 50, gotoRunGameimg);
-const rankBTN =  new mainpageButton(15, 210, 40, 40, rankBTNimg);
-const gotoGacha =  new mainpageButton(15, 280, 40, 40, gotoGachaimg);
+const helpBTN = new mainpageButton(20, 70, 30, 40, helpBTNimg);
+const gotoRunGame = new mainpageButton(12, 140, 50, 50, gotoRunGameimg);
+const rankBTN = new mainpageButton(15, 210, 40, 40, rankBTNimg);
+const gotoGacha = new mainpageButton(15, 280, 40, 40, gotoGachaimg);
 
 
 
@@ -459,6 +461,6 @@ function animate() {
     rankBTN.load();
     gotoGacha.load();
 
-    
+
 }
 animate();

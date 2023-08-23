@@ -1,123 +1,227 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Index";
 }
 
 <!-- 遊戲相關 CSS -->
- @section Styles{
-<link href="~/css/game/Mainstyle.css" rel="stylesheet" />
-<link href="~/css/game/gameinstructions.css" rel="stylesheet" />
-<link href="~/css/game/gachabutton.css" rel="stylesheet" />
-<link href="~/css/game/confirmWin.css" rel="stylesheet" />
+@section Styles{
+    <link href="~/css/game/Mainstyle.css" rel="stylesheet" />
+    <link href="~/css/game/gameinstructions.css" rel="stylesheet" />
+    <link href="~/css/game/gachabutton.css" rel="stylesheet" />
+    <link href="~/css/game/confirmWin.css" rel="stylesheet" />
 }
 
-    <!-- Start 遊戲畫面 -->
-    <div class="canvas-container">
-        <div class="gamelayer">
-            <canvas id="Canvaslobby"></canvas>
-            <!-- Start j轉蛋 -->
-            <div id="CatchaGatCha">
-                <div class="animation-container">
-                    <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none;">
-                    <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none;">
-                    <img class="catcha A" src="../images/game/gacha/gacha_Animate_A.gif" style="display: none;">
-                </div>
-               @* 使用者貓幣紅利顯示*@
-                <div id="gachaShowCoin">
-                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin" >N/A</p>
+<!-- Start 遊戲畫面 -->
+<div class="canvas-container">
+    <div class="gamelayer">
+        <canvas id="Canvaslobby"></canvas>
+        <!-- Start j轉蛋 -->
+        <div id="CatchaGatCha">
+            <div class="animation-container">
+                <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none;">
+                <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none;">
+                <img class="catcha A" src="../images/game/gacha/gacha_Animate_A.gif" style="display: none;">
+            </div>
+            @* 使用者貓幣紅利顯示*@
+            <div id="gachaShowCoin">
+                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
                 <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
+            </div>
+            <div id="summon-buttons">
+                @*轉蛋按鈕*@
+                <button id="commonbackBTN"></button>
+                <div class="buttonRow">
+                    <button id="CatPointSingleDrow"></button>
+                    <button id="CatPointTenDrows"></button>
+                </div><br />
+                <div class="buttonRow">
+                    <button id="RubySingleDrow"></button>
+                    <button id="RubyTenDrows"></button>
                 </div>
-                <div id="summon-buttons">
-                    @*轉蛋按鈕*@
-                    <button id="commonbackBTN"></button>
-                    <div class="buttonRow">
-                        <button id="CatPointSingleDrow"></button>
-                        <button id="CatPointTenDrows"></button>
-                    </div><br />
-                    <div class="buttonRow">
-                        <button id="RubySingleDrow"></button>
-                        <button id="RubyTenDrows"></button>
+            </div>
+            <div id="result" class="result-container"></div>
+        </div>
+        <!-- End 轉蛋 -->
+        <!-- Start 小遊戲說明提示 -->
+        <div id="popup">
+            <div class="instructions-container" style=" display:none;">
+                <!-- 返回鍵 -->
+                <button id="closeinstruction" class=" btn-secondary" onclick="hideInstructions()">x</button>
+                <div class="text">
+                    <div id="a" class="xx">
+                        遊戲說明
+                        <img src="~/images/game/runGame/rungameIntro1.png">
+                    </div>
+                    <div id="b" class="xx">
+                        遊戲說明
+                        <img src="~/images/game/runGame/rungameIntro2.png">
+                    </div>
+                    <div id="c" class="xx">
+                        遊戲說明
+                        <img src="~/images/game/runGame/rungameIntro3.png">
+                        <button id="startRunGameBTN" class="btn">Start</button>
                     </div>
                 </div>
-                <div id="result" class="result-container">結果:</div>
+                <!-- 設定開關鈕 -->
             </div>
-            <!-- End 轉蛋 -->
-           
-            <!-- Start 小遊戲說明提示 -->
-            <div id="popup">
-                <div class="instructions-container" style=" display:none;">
-                    <!-- 返回鍵 -->
-                    <button id="closeinstruction" class=" btn-secondary" onclick="hideInstructions()">x</button>
-                    <div class="text">
-                        <div id="a" class="xx">
-                            遊戲說明
-                            <img src="~/images/game/runGame/rungameIntro1.png">
-                        </div>
-                        <div id="b" class="xx">
-                            遊戲說明
-                            <img src="~/images/game/runGame/rungameIntro2.png">
-                        </div>
-                        <div id="c" class="xx">
-                            遊戲說明
-                            <img src="~/images/game/runGame/rungameIntro3.png">
-                            <button id="startRunGameBTN" class="btn">Start</button>
-                        </div>
-                    </div>
-                    <!-- 設定開關鈕 -->
+            <nav class="pagination-container" aria-label="Page navigation example">
+                <ul class="pagination" style="display:none;">
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a')">1</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b')">2</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c')">3</a></li>
+                </ul>
+            </nav>
+        </div>
+        <!-- End 小遊戲說明提示 -->
+        <!-- Start 獲得物品確認視窗 -->
+        <div id="confirmWin">
+            <div id="confirmWin-container">
+                <div id="confirmWin-title">
+                    N/A
                 </div>
-                <nav class="pagination-container" aria-label="Page navigation example">
-                    <ul class="pagination" style="display:none;">
-                        <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a')">1</a></li>
-                        <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b')">2</a></li>
-                        <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c')">3</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <!-- End 小遊戲說明提示 -->
-            <!-- Start 獲得物品確認視窗 -->
-            <div id="confirmWin">
-            <div class="confirmWin-container" >
-                獲得物品
                 <div id="confirmWin-text">
-                        獲得貓幣 200
+                    N/A
                 </div>
-             </div>
-            <button id="confirmWinBTN"  onclick="closeConfirmWin()">確認</button>
             </div>
-            <!-- End 獲得物品確認視窗 -->
-            <!-- Start Canvas遊戲畫布 -->
-            <canvas id="CanvasCheckIn"></canvas>
-            <div id="CanvasRank">
-                    <button id="commonbackBTN"></button>
-                <!-- End 小遊戲排行榜 -->
-            </div>
-            <canvas id="Canvasrungame"></canvas>
-            <canvas id="CanvasGatcha"></canvas>
-            <canvas id="CanvasStore"></canvas>
-            <canvas id="CanvasSummonResult"></canvas>
-            <canvas id="CanvasDoubleCheck"></canvas>
-            <!-- End Canvas遊戲畫布 -->
+            <button id="confirmWinBTN" onclick="closeConfirmWin()">確認</button>
         </div>
     </div>
-    <button type="submit" id="testlogin">測試登入</button>
-    <!-- End 遊戲畫面 -->
+    <!-- End 獲得物品確認視窗 -->
+    <!-- Start Canvas遊戲畫布 -->
+    <!-- Start 排行榜 -->
+    <div id="CanvasRank">
+        <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
+        <div id="rank-container">
+            <div id="rankpage-title">小遊戲排行榜</div>
+            <table id="emTable" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th style="width: 60px;">排名</th>
+                        <th>玩家名稱</th>
+                        <th>分數</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                    <tr>
+                        <td>1</td>
+                        <td>艾主席</td>
+                        <td>20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
+    </div>
+    <!-- End 排行榜 -->
+    <canvas id="CanvasCheckIn"></canvas>
+    <canvas id="Canvasrungame"></canvas>
+    <canvas id="CanvasGatcha"></canvas>
+    <canvas id="CanvasStore"></canvas>
+    <canvas id="CanvasSummonResult"></canvas>
+    <canvas id="CanvasDoubleCheck"></canvas>
 
+    <!-- End Canvas遊戲畫布 -->
+</div>
+
+<button type="submit" id="testlogin">測試登入</button>
+<button type="submit" id="testDBlogin">測試資料庫登入</button>
+<!-- End 遊戲畫面 -->
 <!-- 遊戲相關js -->
-        @section Scripts{
-            <script src="~/js/game/Main.js"></script> 
-            <script src="~/js/game/function.js"></script>
-            <script src="~/js/game/button.js"></script>
-            <script src="~/js/game/RunGame.js"></script>
-            <script src="~/js/game/Checkin.js"></script>
-            <script src="~/js/game/Rank.js"></script>
-            <script src="~/js/game/doubleCheckWindow.js"></script>
-            <script src="~/js/game/Summon.js"></script>
-            <script src="~/js/game/SummonResult.js"></script>
-            <script src="~/js/game/CanvasButton.js"></script>
-            <script src="~/js/game/loadImages.js"></script>
-            <script src="~/js/game/instructions.js"></script>
-            <script src="~/js/game/catFeed.js"></script>
+@section Scripts{
+    @* <script src="~/js/game/DBIformation.js"></script>*@
+    <script src="~/js/game/Main.js"></script>
+    <script src="~/js/game/function.js"></script>
+    <script src="~/js/game/button.js"></script>
+    <script src="~/js/game/RunGame.js"></script>
+    <script src="~/js/game/Checkin.js"></script>
+    <script src="~/js/game/Rank.js"></script>
+    <script src="~/js/game/doubleCheckWindow.js"></script>
+    <script src="~/js/game/Summon.js"></script>
+    <script src="~/js/game/SummonResult.js"></script>
+    <script src="~/js/game/CanvasButton.js"></script>
+    <script src="~/js/game/loadImages.js"></script>
+    <script src="~/js/game/instructions.js"></script>
+    <script src="~/js/game/catFeed.js"></script>
+        <<<<<<< HEAD
+
+
+    <!--排行榜測試資料-->
+    <script>
+        const rank = {
+            "排名": [
+                { "name": "艾主席", "排名": 1, "分數": 50 },
+                { "name": "貓仔", "排名": 2, "分數": 30 },
+                { "name": "遊戲之鬼", "排名": 3, "分數": 20 }
+            ]
+        };
+
+        const datas = rank.排名.map(r => `
+                                            <tr>
+                                                         <td>${r.排名}</td>
+                                                 <td>${r.name}</td>
+                                                 <td>${r.分數}</td>
+                                            </tr>
+                                            ` );
+        document.querySelector('#emTable > tbody').innerHTML = datas.join("")
+
+
+
+    </script>
+
         }
 
 
