@@ -53,12 +53,8 @@ testlogin.addEventListener("click", () => {
                 UserName = data[0].characterName; //登入時載入使用者名稱
                 Ccoin = gachaTextCCoin.innerHTML = data[0].catCoinQuantity; //貓幣數量
                 Ruby = gachaTextRuby.innerHTML = data[0].loyaltyPoints; //紅利數量
-
-                if (data[0].gameItemInfo.find(item => item.productId === 7))
-                    milkCount = data[0].gameItemInfo.find(item => item.productId === 7).quantityOfInGameItems; //牛奶數量id7
-                if (data[0].gameItemInfo.find(item => item.productId === 8))
-                    canCount = data[0].gameItemInfo.find(item => item.productId === 8).quantityOfInGameItems;//罐罐數量id8
-
+                milkCount = data[0]["gameItemInfo"][6]["quantityOfInGameItems"]; //牛奶數量id7
+                canCount = data[0]["gameItemInfo"][7]["quantityOfInGameItems"];//罐罐數量id8
                 hightestScore = data[0].runGameHighestScore
                 //載入使用者貓貓資訊
                 //id 1=>gy，id 2=>OG，id3=>BK，id14=>BB
@@ -82,7 +78,6 @@ testlogin.addEventListener("click", () => {
                 if (data[0].gameItemInfo.find(item => item.productId === 3) &&
                     data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
                     userBagData.catBK = true;
-                loadUserBagCatInfo()
             }
         },
         error: function () {

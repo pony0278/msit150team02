@@ -33,16 +33,16 @@ function initialize() {
 
 //使用者背包貓咪資訊
 function loadUserBagCatInfo() {
-    if (userBagData.catBB == true) {
+    if (userBagData.catBB != true) {
         bagItem2.src = '../../images/game/staticCats/kittenBB_stopR.png'
     }
-    if (userBagData.catBK == true) {
+    if (userBagData.catBK != true) {
         bagItem3.src = '../../images/game/staticCats/kittenBK_stopR.png'
     }
-    if (userBagData.catGY == true) {
+    if (userBagData.catGY != true) {
         bagItem4.src = '../../images/game/staticCats/kittenGY_stopR.png'
     }
-    if (userBagData.catOG == true) {
+    if (userBagData.catOG != true) {
         bagItem5.src = '../../images/game/staticCats/kittenOG_stopR.png'
     }
 }
