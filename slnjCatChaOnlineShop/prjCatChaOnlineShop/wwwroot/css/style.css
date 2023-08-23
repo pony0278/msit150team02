@@ -26,7 +26,7 @@
 @import url(bootsnav.css);
 @import url(owl.carousel.min.css);
 @import url(jquery-ui.css);
-@import url(nice-select.css);
+/*@import url(nice-select.css); 目前不會用到暫時註解*/
 @import url(baguetteBox.min.css);
 
 /*------------------------------------------------------------------

@@ -46,16 +46,38 @@ testlogin.addEventListener("click", () => {
 
     // 使用 AJAX 請求呼叫 API
     $.ajax({
-        url: '/Api/Api/玩家資訊數據',
+        url: '/Api/Api/TestDBLogin',
         type: 'GET',
         success: function (data) {
             if (data.length > 0) {
                 UserName = data[0].characterName; //登入時載入使用者名稱
                 Ccoin = gachaTextCCoin.innerHTML = data[0].catCoinQuantity; //貓幣數量
                 Ruby = gachaTextRuby.innerHTML = data[0].loyaltyPoints; //紅利數量
-                milkCount = data[0]["gameItemInfo"][3]["quantityOfInGameItems"]; //牛奶數量
-                canCount = data[0]["gameItemInfo"][4]["quantityOfInGameItems"];//罐罐數量
+                milkCount = data[0]["gameItemInfo"][6]["quantityOfInGameItems"]; //牛奶數量id7
+                canCount = data[0]["gameItemInfo"][7]["quantityOfInGameItems"];//罐罐數量id8
                 hightestScore = data[0].runGameHighestScore
+                //載入使用者貓貓資訊
+                //id 1=>gy，id 2=>OG，id3=>BK，id14=>BB
+                //function catExist(id,color) 
+                //{
+                //    if (data[0].gameItemInfo.find(item => item.productId === id))
+                //        return userBagData.catGY = true;
+                //}
+                if (data[0].gameItemInfo.find(item => item.productId === 1)&&
+                    data[0]["gameItemInfo"][0]["quantityOfInGameItems"] > 0)
+                    userBagData.catGY = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 2) &&
+                    data[0]["gameItemInfo"][1]["quantityOfInGameItems"] > 0)
+                    userBagData.catOG = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                    data[0]["gameItemInfo"][2]["quantityOfInGameItems"] > 0)
+                    userBagData.catBB = true;
+
+                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
+                    data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
+                    userBagData.catBK = true;
             }
         },
         error: function () {
