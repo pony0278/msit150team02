@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
@@ -29,8 +30,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-        public IActionResult ShopItemPerPage(int itemPerPage)
+        public IActionResult ShopItemPerPage(int itemPerPage, int? categoryId)
         {
+            if (categoryId != null) 
+            {
+                var itemsCat = _productService.GetProductByCategoryId(categoryId).DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項;
+                return Json(itemsCat);
+            }
             var items = _productService.GetProductItems().DistinctBy(item => item.product.ProductName).Take(itemPerPage);//只出現商品名稱不同的品項
             return Json(items);
         }
@@ -74,10 +80,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 
             return RedirectToAction("Shop");
         }
-        //public IActionResult ShopSelectCategory(int itemPerPage)
+        //public IActionResult ShopSelectCategory(int categoryId)
         //{
-            
-        //    return Json();
+        //    return Json(items);
         //}
     }
 }
