@@ -25,7 +25,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //編輯資料、上傳圖片
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> editorUploadImage([FromForm] CShopProductTotalWrap cShopproduct)
+        public async Task<IActionResult> editorUploadImage([FromForm] CShopProductWrap cShopproduct)
         {
             var image = cShopproduct.Image;
 
@@ -178,7 +178,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //編輯
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> EditShopProducts([FromForm] CShopProductTotalWrap cShopproduct)
+        public async Task<IActionResult> EditShopProducts([FromForm] CShopProductWrap cShopproduct)
         {
             var image = cShopproduct.Image;
             var editProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == cShopproduct.ProductId);
@@ -223,7 +223,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             try
             {
-                if (newProduct != null) // 檢查 newMember 是否為空
+                if (newProduct != null) 
                 {
                     _cachaContext.ShopProductTotal.Add(newProduct);
                     _cachaContext.SaveChanges();
