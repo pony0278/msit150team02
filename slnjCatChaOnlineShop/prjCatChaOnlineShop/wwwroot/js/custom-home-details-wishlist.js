@@ -275,6 +275,9 @@
   $(".brand-box").niceScroll({
     cursorcolor: "#9b9b9c",
   });
+
+
+
 })(jQuery);
 
 //----------------------------------自訂Ajax----------------------------------
@@ -297,7 +300,7 @@ $(document).ready(async function () {
             dataType: 'json',
             success: function (data) {
                 productList.empty();
-                /*console.log(data)*/
+                console.log(data)
                 data.forEach(function (item) {
                     var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
                     var productDiv = $('<div class="products-single fix"></div>');
@@ -305,28 +308,29 @@ $(document).ready(async function () {
                     var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');
 
                     var productLink = $('<a href="/Index/ShopDetail"></a>');
-                    var productImg = $(`<img src=${item.pImgPath} data-product-id=${item.product.productId} class="img-fluid" alt="Image" />`);
+                    var productImg = $(`<img src=${item.pImgPath} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
 
                     productLink.append(productImg);
                     boxImgHover.append(typeLb);
                     boxImgHover.append(productLink);
 
                     var whyText = $('<div class="why-text"></div>');
-                    var productName = $(`<h4>${item.product.productName}</h4>`);
+                    var productName = $(`<h4>${item.pName}</h4>`);
                     var productPrice = $('<h5></h5>');
 
-                    var addToCartLink = $(`<a href="#" data-product-id=${item.product.productId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
+                    var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
                     var addToWishlistLink = $('<a href="/Membership/Membership" class="add-to-wishlist-coustom"><i class="far fa-heart"></i></a>');
 
                     whyText.append(productName);
 
                     whyText.append(productPrice);
-                    if (item.product.discount != null) {
+                    if (item.pDiscount != null) {
                         productPrice.text('$' + item.pSalePrice);
-                        var originalPrice = $(`<del>$${item.product.productPrice}</del>`);
+                        var originalPrice = $(`<del>$ ${item.pPrice}</del>`);
                         whyText.append(originalPrice);
-                    } else {
-                        productPrice.text('$' + item.product.productPrice);
+                    }
+                    else {
+                        productPrice.text('$' + item.pPrice);
                     }
                     whyText.append(addToCartLink);
                     whyText.append(addToWishlistLink);
@@ -366,7 +370,7 @@ $(document).ready(async function () {
             url: '/ProductApi/AddToCart',
             type: 'POST',
             data: { pId: productId },
-            dataType: 'json',
+            dataType: 'Json',
             success: function (response) {
                 // 處理成功回應，例如更新購物車數量或顯示訊息
                 console.log('Added to Cart:', response.message);
@@ -377,8 +381,8 @@ $(document).ready(async function () {
         });
     });
 
-    // 初始載入商品
-    await fetchMoreProducts();
+
+   
 
     // 點擊商品時獲取識別ID
     productList.on('click', '.img-fluid', function () {
@@ -400,108 +404,3 @@ $(document).ready(async function () {
 
 });
 
-$('.kv-ltr-theme-fas-star').rating({
-    hoverOnClear: false,
-    theme: 'krajee-fas',
-    containerClass: 'is-star',
-    disabled: true
-});
-$(function () {
-    var INDEX = 0;
-    $("#chat-submit").click(function (e) {
-        e.preventDefault();
-        var msg = $("#chat-input").val();
-        if (msg.trim() == '') {
-            return false;
-        }
-        generate_message(msg, 'self');
-        var buttons = [
-            {
-                name: 'Existing User',
-                value: 'existing'
-            },
-            {
-                name: 'New User',
-                value: 'new'
-            }
-        ];
-        setTimeout(function () {
-            generate_message(msg, 'user');
-        }, 1000)
-
-    })
-
-    function generate_message(msg, type) {
-        INDEX++;
-        var str = "";
-        str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
-        str += "          <span class=\"msg-avatar\">";
-        str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
-        str += "          <\/span>";
-        str += "          <div class=\"cm-msg-text\">";
-        str += msg;
-        str += "          <\/div>";
-        str += "        <\/div>";
-        $(".chat-logs").append(str);
-        $("#cm-msg-" + INDEX).hide().fadeIn(300);
-        if (type == 'self') {
-            $("#chat-input").val('');
-        }
-        $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
-    }
-
-    function generate_button_message(msg, buttons) {
-        /* Buttons should be object array
-          [
-            {
-              name: 'Existing User',
-              value: 'existing'
-            },
-            {
-              name: 'New User',
-              value: 'new'
-            }
-          ]
-        */
-        INDEX++;
-        var btn_obj = buttons.map(function (button) {
-            return "              <li class=\"button\"><a href=\"javascript:;\" class=\"btn btn-primary chat-btn\" chat-value=\"" + button.value + "\">" + button.name + "<\/a><\/li>";
-        }).join('');
-        var str = "";
-        str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg user\">";
-        str += "          <span class=\"msg-avatar\">";
-        str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
-        str += "          <\/span>";
-        str += "          <div class=\"cm-msg-text\">";
-        str += msg;
-        str += "          <\/div>";
-        str += "          <div class=\"cm-msg-button\">";
-        str += "            <ul>";
-        str += btn_obj;
-        str += "            <\/ul>";
-        str += "          <\/div>";
-        str += "        <\/div>";
-        $(".chat-logs").append(str);
-        $("#cm-msg-" + INDEX).hide().fadeIn(300);
-        $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
-        $("#chat-input").attr("disabled", true);
-    }
-
-    $(document).delegate(".chat-btn", "click", function () {
-        var value = $(this).attr("chat-value");
-        var name = $(this).html();
-        $("#chat-input").attr("disabled", false);
-        generate_message(name, 'self');
-    })
-
-    $("#chat-circle").click(function () {
-        $("#chat-circle").toggle('scale');
-        $(".chat-box").toggle('scale');
-    })
-
-    $(".chat-box-toggle").click(function () {
-        $("#chat-circle").toggle('scale');
-        $(".chat-box").toggle('scale');
-    })
-
-})

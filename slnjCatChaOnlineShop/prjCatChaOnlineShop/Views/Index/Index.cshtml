@@ -126,12 +126,12 @@
         </div>
         <div class="row special-list">
             @{
-                foreach (var item in Model.ToList().OrderByDescending(p => p.product.ReleaseDate).Take(4))
+                foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
                     <!-- start prod  -->
                     <div class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
-                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.product.ProductName">
+                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
                                 <div class="box-img-hover">
                                     <div class="type-lb">
                                         <p class="sale">Sale</p>
@@ -140,20 +140,20 @@
                                 </div>
                             </a>
                             <div class="why-text">
-                                <h4>@item.product.ProductName</h4>
-                                @if (item.product.Discount != null)
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
                                     <h5>$@item.pSalePrice</h5>
-                                    <del>$@item.product.ProductPrice</del>
+                                    <del>$@item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$@item.product.ProductPrice</h5>
+                                    <h5>$@item.pPrice</h5>
                                 }
-                                <a asp-controller="ProductApi" asp-action="AddToCart" type="button" class="add-to-cart-coustom">
+                                <a asp-controller="ProductApi" asp-action="AddToCart" class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
                                     <i class="far fa-heart"></i>
                                 </a>
                             </div>
@@ -208,11 +208,11 @@
 
             @{
 
-                foreach (var item in Model.OrderBy(p => p.product.RemainingQuantity).Take(4))
+                foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
                     <div class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
-                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.product.ProductName">
+                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
                                 <div class="box-img-hover">
                                     <div class="type-lb">
                                         <p class="sale">Sale</p>
@@ -221,20 +221,20 @@
                                 </div>
                             </a>
                             <div class="why-text">
-                                <h4>@item.product.ProductName</h4>
-                                @if (item.product.Discount != null)
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                    <h5>$@item.pSalePrice</h5>
-                                    <del>$@item.product.ProductPrice</del>
+                                    <h5>$ @item.pSalePrice</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$@item.product.ProductPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
-                                <a asp-controller="ProductApi" asp-action="AddToCart" type="button" class="add-to-cart-coustom">
+                                <a asp-controller="ProductApi" asp-action="AddToCart" class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
                                     <i class="far fa-heart"></i>
                                 </a>
                             </div>
@@ -503,15 +503,10 @@
 
     <!-- ALL JS FILES -->
     <!-- 首頁跑版 -->
-    <script src="~/js/custom-home-details-wishlist.js"></script>
-
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- 原首頁下拉選單消失問題少了下面這個: -->
-    <script src="~/js/jquery-3.2.1.min.js"></script>
+    <!--<script src="~/js/jquery-3.2.1.min.js"></script>-->
     <script src="~/js/popper.min.js"></script>
-    @*     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
- *@
+    
     <script src="~/js/review.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js"></script>
@@ -532,5 +527,113 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom-home-details-wishlist.js"></script>
+    <script>
+        $('.kv-ltr-theme-fas-star').rating({
+            hoverOnClear: false,
+            theme: 'krajee-fas',
+            containerClass: 'is-star',
+            disabled: true
+        });
+        $(function () {
+            var INDEX = 0;
+            $("#chat-submit").click(function (e) {
+                e.preventDefault();
+                var msg = $("#chat-input").val();
+                if (msg.trim() == '') {
+                    return false;
+                }
+                generate_message(msg, 'self');
+                var buttons = [
+                    {
+                        name: 'Existing User',
+                        value: 'existing'
+                    },
+                    {
+                        name: 'New User',
+                        value: 'new'
+                    }
+                ];
+                setTimeout(function () {
+                    generate_message(msg, 'user');
+                }, 1000)
+
+            })
+
+            function generate_message(msg, type) {
+                INDEX++;
+                var str = "";
+                str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
+                str += "          <span class=\"msg-avatar\">";
+                str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
+                str += "          <\/span>";
+                str += "          <div class=\"cm-msg-text\">";
+                str += msg;
+                str += "          <\/div>";
+                str += "        <\/div>";
+                $(".chat-logs").append(str);
+                $("#cm-msg-" + INDEX).hide().fadeIn(300);
+                if (type == 'self') {
+                    $("#chat-input").val('');
+                }
+                $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+            }
+
+            function generate_button_message(msg, buttons) {
+                /* Buttons should be object array
+                  [
+                    {
+                      name: 'Existing User',
+                      value: 'existing'
+                    },
+                    {
+                      name: 'New User',
+                      value: 'new'
+                    }
+                  ]
+                */
+                INDEX++;
+                var btn_obj = buttons.map(function (button) {
+                    return "              <li class=\"button\"><a href=\"javascript:;\" class=\"btn btn-primary chat-btn\" chat-value=\"" + button.value + "\">" + button.name + "<\/a><\/li>";
+                }).join('');
+                var str = "";
+                str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg user\">";
+                str += "          <span class=\"msg-avatar\">";
+                str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
+                str += "          <\/span>";
+                str += "          <div class=\"cm-msg-text\">";
+                str += msg;
+                str += "          <\/div>";
+                str += "          <div class=\"cm-msg-button\">";
+                str += "            <ul>";
+                str += btn_obj;
+                str += "            <\/ul>";
+                str += "          <\/div>";
+                str += "        <\/div>";
+                $(".chat-logs").append(str);
+                $("#cm-msg-" + INDEX).hide().fadeIn(300);
+                $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+                $("#chat-input").attr("disabled", true);
+            }
+
+            $(document).delegate(".chat-btn", "click", function () {
+                var value = $(this).attr("chat-value");
+                var name = $(this).html();
+                $("#chat-input").attr("disabled", false);
+                generate_message(name, 'self');
+            })
+
+            $("#chat-circle").click(function () {
+                $("#chat-circle").toggle('scale');
+                $(".chat-box").toggle('scale');
+            })
+
+            $(".chat-box-toggle").click(function () {
+                $("#chat-circle").toggle('scale');
+                $(".chat-box").toggle('scale');
+            })
+
+        })
+
+</script>
 }

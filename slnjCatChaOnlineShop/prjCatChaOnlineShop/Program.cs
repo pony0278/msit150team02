@@ -20,7 +20,7 @@ builder.Services.AddScoped<CheckoutService>();
 builder.Services.AddHttpContextAccessor();
 
 //註冊session要加這個
-builder.Services.AddSession();
+//builder.Services.AddSession();
 
 //讓網頁可以解析DB資料庫
 

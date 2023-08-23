@@ -135,7 +135,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02.database.windows.net;Initial Catalog=msit150team02resouce;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
