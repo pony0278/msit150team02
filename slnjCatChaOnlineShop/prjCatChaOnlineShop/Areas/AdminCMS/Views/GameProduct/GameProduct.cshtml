@@ -323,49 +323,63 @@
                     console.log(error);
                 }
             });
-
-        ////篩選類別
-        //$(document).ready(function () {
-        //    var table = $('#GProduct-table').DataTable({
-        //        responsive: true,
-        //        // 在這裡指定需要過濾的列，商品類別為第三列->索引2
-        //        columnDefs: [
-        //            { targets: 2, searchable: true }
-        //        ]
-        //    });
-
-        //    // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-        //    $('#payList').on('change', function () {
-        //        var filterOption1 = $(this).val();
-
-        //        // 使用DataTable的column().search()方法進行過濾
-        //        table.column(2).search(filterOption1).draw();
-        //    });
         });
 
+        gameItemPurchaseRecord: []
+        lotteryProbability: 0.02
+        productCategory: null
+        productCategoryId: 1
+        productDescription: "這是一隻可愛的小灰貓"
+        productId: 1
+        productImage: "../../images/game/gacha/kittenGY_stopR.png"
+        productName: "活力灰貓"
+        productPrice: 120000
+        purchasedQuantity: null
+        remainingQuantity: null
 
 
-        ////圖片縮放設定  當頁面載入完成後執行
-        //document.addEventListener("DOMContentLoaded", function () {
-        //    // 獲取所有包含縮略圖片和視窗的元素
-        //    const thumbnailImages = document.querySelectorAll(".thumbnail-image");
-        //    const imagePopups = document.querySelectorAll(".image-popup");
 
-        //    // 對每個圖片進行事件處理
-        //    thumbnailImages.forEach((thumbnailImage, index) => {
-        //        // 當滑鼠懸停在圖片上時
-        //        thumbnailImage.addEventListener("mouseover", function () {
-        //            // 顯示對應的原始圖片的視窗
-        //            imagePopups[index].style.display = "block";
-        //        });
+        //篩選類別
+        $(document).ready(function () {
+            var table = $('#GProduct-table').DataTable({
+                responsive: true,
+                // 在這裡指定需要過濾的列，商品類別為第三列->索引2
+                columnDefs: [
+                    { targets: 2, searchable: true }
+                ]
+            });
 
-        //        // 當滑鼠移開圖片時
-        //        thumbnailImage.addEventListener("mouseout", function () {
-        //            // 隱藏對應的原始圖片的視窗
-        //            imagePopups[index].style.display = "none";
-        //        });
-        //    });
-        //});
+            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+            $('#payList').on('change', function () {
+                var filterOption1 = $(this).val();
+
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(2).search(filterOption1).draw();
+            });
+
+
+
+        //圖片縮放設定  當頁面載入完成後執行
+        document.addEventListener("DOMContentLoaded", function () {
+            // 獲取所有包含縮略圖片和視窗的元素
+            const thumbnailImages = document.querySelectorAll(".thumbnail-image");
+            const imagePopups = document.querySelectorAll(".image-popup");
+
+            // 對每個圖片進行事件處理
+            thumbnailImages.forEach((thumbnailImage, index) => {
+                // 當滑鼠懸停在圖片上時
+                thumbnailImage.addEventListener("mouseover", function () {
+                    // 顯示對應的原始圖片的視窗
+                    imagePopups[index].style.display = "block";
+                });
+
+                // 當滑鼠移開圖片時
+                thumbnailImage.addEventListener("mouseout", function () {
+                    // 隱藏對應的原始圖片的視窗
+                    imagePopups[index].style.display = "none";
+                });
+            });
+        });
 
 
         function userDelete() {
@@ -386,5 +400,7 @@
                 }
             })
         }
+        })
+        
     </script>
 }

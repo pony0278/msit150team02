@@ -51,14 +51,14 @@
                                     <div class="text-center">
                                         <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
                                     </div>
-                                    <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login">
+                                    <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login" onsubmit="return validateForm()">
                                         <div class="user">
                                             <div class="form-group mb-4">
-                                                <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
+                                                <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" value="catcha" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
                                             </div>
                                             <div class="form-group mb-4">
                                                 <div class="password-container">
-                                                    <input type="password" name="AdminPassword" class="form-control form-control-user" id="InputPassword" value="catcha123" placeholder="密碼" style="border-radius: 30px;">
+                                                    <input type="password" name="AdminPassword" class="form-control form-control-user" value="catcha123" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
                                                     <span id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></span>
                                                 </div>
                                             </div>
@@ -66,9 +66,13 @@
                                                     style="width: 100%;border-radius: 30px;">
                                                 登入
                                             </button>
-                                            <span id="duplicateMessage" style="display:none;color:red;"> </span>
                                         </div>
                                     </form>
+                                    <p id="errorMsg" style="color:red;"></p>
+                                    @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                                    {
+                                        <p id="ViewBag_ErrorMessage" style="color:red;">@ViewBag.ErrorMessage</p>
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -82,122 +86,24 @@
 <script src="~/js/jquery-3.2.1.min.js"></script>
 
 <script>
-    $(document).ready(function () {
-
-        //==============密碼眼睛
-        $('#togglePassword').click(function () {
-            if ($('#InputPassword').attr('type') === 'password') {
-                $('#InputPassword').attr('type', 'text');
-            } else {
-                $('#InputPassword').attr('type', 'password');
-            }
-        });
-
-        document.getElementById("loginForm").addEventListener("submit", function (event) {
-            var username = document.getElementById("InputEmail").value;
-            var password = document.getElementById("InputPassword").value;
-
-            if (username.trim() === "" || password.trim() === "") {
-                event.preventDefault(); // Prevent the form from submitting
-                alert("Username and password cannot be empty!");
-            }
-        });
-
-
-        $("#loginForm").submit(function (event) {
-            event.preventDefault(); // 阻止表单默认提交行为
-
-            var account = $('InputEmail').val();
-            var password = $('InputPassword').val();
-
-            $.ajax({
-                type: "POST",
-                url: "/AdminCMS/CMSHome/CheckAdminLogin", // 你的后端验证方法的URL
-                data: { account: account, password: password },
-                success: function (response) {
-                    console.log(response.isDuplicate)
-
-                    if (response.isDuplicate) { //如果等於true
-                        $("#loginForm")[0].submit(); // 手动触发表单提交
-                    } else {
-                        // 执行登录操作或其他操作
-
-                        $('#duplicateMessage').text("帳號或密碼錯誤");
-                        $('#duplicateMessage').css("display", "block"); //顯示錯誤訊息
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
+    //==============密碼眼睛
+    $('#togglePassword').click(function () {
+        if ($('#InputPassword').attr('type') === 'password') {
+            $('#InputPassword').attr('type', 'text');
+        } else {
+            $('#InputPassword').attr('type', 'password');
+        }
     });
 
+    function validateForm() {
+        var adminAccount = $("#InputEmail").val();
+        var adminPassword = $("#InputPassword").val();
 
-
-            //$('loginButton').click(function() {
-            //    var account = $('InputEmail').val();
-            //    var password = $('InputPassword').val();
-            //    //====================打API驗證是否有此會員帳號
-            //    $.ajax({
-            //        url: '/AdminCMS/CMSHome/CheckAdminLogin',
-            //        type: 'GET',
-            //        data:
-            //        {
-            //            account: account,
-            //            password: password
-            //        },
-            //        success: function (result) {
-            //            console.log(result)
-            //            CheckAccResult = result.isDuplicate;
-
-            //            if (result.isDuplicate) { //如果等於true
-            //                CheckAccResult = result.isDuplicate;
-            //                $('#duplicateMessage').text("此帳號已存在");
-            //                $('#duplicateMessage').css("display", "block"); //顯示錯誤訊息
-
-            //            } else {
-            //                CheckAccResult = result.isDuplicate;
-            //                $('#duplicateMessage').text("");
-            //                $('#duplicateMessage').css("display", "none"); //顯示錯誤訊息
-            //            }
-            //        },
-            //        error: function (error) {
-            //            console.error(error);
-            //        }
-            //    });
-            //})
-
-
-                    //$(document).ready(function () {
-                    //    $("#loginButton").click(function () {
-                    //        var adminAccount = $("#InputEmail").val();
-                    //        var adminPassword = $("#InputPassword").val();
-
-                    //        if (adminAccount === '' || adminPassword === '') {
-                    //            $("#errorMessage").text("帳號和密碼不得為空");
-                    //            return;
-                    //        }
-
-                    //        $.ajax({
-                    //            url: "@Url.Action("Login", "CMSHome")",
-                    //            type: "POST",
-                    //            data: {
-                    //                AdminAccount: adminAccount,
-                    //                AdminPassword: adminPassword
-                    //            },
-                    //            success: function (result) {
-                    //            if (!result.Success) {
-                    //                $("#errorMessage").text("帐号或密码错误");
-                    //            }
-                    //            @*else {*@
-                    //                @*$("#errorMessage").text("帐号或密码错误");*@
-                    //            @*}*@
-                    //        },
-                    //        error: function () {
-                    //            $("#errorMessage").text("发生错误，请重试");
-                    //        }
-                    //        });
-                    //    });
-                    //});
+        if (adminAccount === "" || adminPassword === "") {
+            $('#errorMsg').text("帳號和密碼不得留空");
+            $('#ViewBag_ErrorMessage').text(""); //不讓畫面上有兩條錯誤訊息
+            return false;
+        }
+        return true;
+    }
 </script>

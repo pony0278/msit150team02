@@ -25,15 +25,8 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             }
             return View();
         }
-        //=============檢查是否有此帳號跟密碼
-        public IActionResult CheckAdminLogin(string account, string password)
-        {
-            bool result = _context.ShopGameAdminData != null && _context.ShopGameAdminData.Any(c => c.AdminAccount == account && c.AdminPassword == password);
-
-            return Json(new { IsDuplicate = result });
-        }
         [HttpPost]
-        public ActionResult Login(CAdminLoginVM vm)
+        public IActionResult Login(CAdminLoginVM vm)
         {
             ShopGameAdminData user = (new cachaContext()).ShopGameAdminData.FirstOrDefault(
                 t => t.AdminAccount.Equals(vm.AdminAccount) && t.AdminPassword.Equals(vm.AdminPassword));
@@ -43,8 +36,20 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 HttpContext.Session.SetString(CAdminLogin.SK_LOGINED_USER, Json);
                 return RedirectToAction("Member", "Member");
             }
-            //登錄失敗返回登入頁
-            return View();
+            else
+            {
+                ViewBag.ErrorMessage = "帳號或密碼錯誤。請重新輸入。";
+                //登錄失敗返回登入頁
+                return View();
+            }
+        }
+
+        //====================登出功能
+        [HttpPost]
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Remove(CAdminLogin.SK_LOGINED_USER);
+            return RedirectToAction("Login", "CMSHome");
         }
     }
 }

@@ -13,8 +13,8 @@ let userBagData = {
     catBK: false,//ProductID 14
     catGY: false,//ProductID 1
     catOG: false,//ProductID 2
-    milk: 0,
-    can: 0
+    milk: 1,
+    can: 1
 }
 
 let gachaTextCCoin = document.getElementById('gachaTextCCoin')
@@ -33,20 +33,17 @@ function initialize() {
 
 //使用者背包貓咪資訊
 function loadUserBagCatInfo() {
-    if (userBagData.catDefault != true) {
-        bagItem1.src = '../../images/game/staticCats/kitten_lock.png'
+    if (userBagData.catBB == true) {
+        bagItem2.src = '../../images/game/staticCats/kittenBB_stopR.png'
     }
-    if (userBagData.catBB != true) {
-        bagItem2.src = '../../images/game/staticCats/kitten_lock.png'
+    if (userBagData.catBK == true) {
+        bagItem3.src = '../../images/game/staticCats/kittenBK_stopR.png'
     }
-    if (userBagData.catBK != true) {
-        bagItem3.src = '../../images/game/staticCats/kitten_lock.png'
+    if (userBagData.catGY == true) {
+        bagItem4.src = '../../images/game/staticCats/kittenGY_stopR.png'
     }
-    if (userBagData.catGY != true) {
-        bagItem4.src = '../../images/game/staticCats/kitten_lock.png'
-    }
-    if (userBagData.catOG != true) {
-        bagItem5.src = '../../images/game/staticCats/kitten_lock.png'
+    if (userBagData.catOG == true) {
+        bagItem5.src = '../../images/game/staticCats/kittenOG_stopR.png'
     }
 }
 
