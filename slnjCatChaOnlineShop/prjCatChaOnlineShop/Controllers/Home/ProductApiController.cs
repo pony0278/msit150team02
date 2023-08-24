@@ -29,71 +29,29 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-        
-        
-        public IActionResult ShopItemPerPage(int itemPerPage)
+        public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
         {
-            var items = _productService.GetProductItems().Take(itemPerPage);//只出現商品名稱不同的品項
-            return Json(items);
+            
+            if(catName!=null)//有選category才會傳入catName
+            {
+                List<CCategoryItem> categoryItems = new List<CCategoryItem>();
+                var items = _productService.GetProductByCategoryName(catName).Take(itemPerPage);
+                var name = items.FirstOrDefault()?.pCategoryName;
+                CCategoryItem c = new CCategoryItem();
+                c.pItem = items.ToList();
+                c.categoryName = name;
+                categoryItems.Add(c);
+                return Json(categoryItems);
+            }
+            else
+            {
+                var allItems = _productService.GetProductItems().Take(itemPerPage);//只出現商品名稱不同的品項
+                return Json(allItems);
+            }
+
         }
+        
 
-
-        //public IActionResult AddToCart(int pId)
-        //{
-        //    var prodItem=_productService.GetProductById(pId);
-        //    string json = "";
-        //    List<CCartItem> cart =null;
-
-        //    if (HttpContext.Session.Keys.Contains(CDictionary.SK_PURCHASED_PRODUCTS_LIST))
-        //    {
-        //        json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-        //        cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-        //        if (cart.FirstOrDefault(item => item.cId == pId)!=null)
-        //        {
-        //            //cartItem.c數量++;
-        //            // 該商品已在購物車中
-        //            return RedirectToAction("Shop");
-        //        }
-        //        else 
-        //        {
-        //            cartItem.cId = pId;
-        //            cartItem.cName = prodItem.pName;
-        //            if (prodItem.pSalePrice != null) //特價時的金額
-        //                cartItem.cPrice = prodItem.pSalePrice;
-        //            cartItem.cPrice = prodItem.pPrice; //無特價時金額
-        //            cartItem.cImgPath = prodItem.pImgPath;
-        //            cartItem.c子選項 = prodItem.p子項目;
-        //            cartItem.c數量 = 1;//預設點第一次加入一個
-        //            cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
-        //            cart.Add(cartItem);
-        //            json = JsonSerializer.Serialize(cart);
-        //            HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
-        //        }
-
-
-        //    }
-        //    else
-        //    {
-        //        cart = new List<CCartItem>();
-        //        CCartItem cartItem = new CCartItem();
-        //        cartItem.cId = pId;
-        //        cartItem.cName = prodItem.pName;
-
-        //        if (prodItem.pSalePrice!=null) //特價時的金額
-        //            cartItem.cPrice = prodItem.pSalePrice;
-
-        //        cartItem.cPrice= prodItem.pPrice; //無特價時金額
-        //        cartItem.cImgPath= prodItem.pImgPath;
-        //        cartItem.c子選項 = prodItem.p子項目;
-        //        cartItem.c數量 = 1;//預設點第一次加入一個
-        //        cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
-        //        cart.Add(cartItem);
-        //        json = JsonSerializer.Serialize(cart);
-        //        HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
-        //    }
-
-        //    return RedirectToAction("Shop");
-        //}
         [HttpPost]
         public IActionResult AddToCart(int pId)
         {

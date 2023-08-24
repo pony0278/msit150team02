@@ -13,6 +13,10 @@ namespace prjCatChaOnlineShop.Services.Function
         {
             _context = context;
         }
+
+
+
+
         public List<CProductItem> GetProductItems()
         {
             var data = from p in _context.ShopProductTotal
@@ -24,7 +28,9 @@ namespace prjCatChaOnlineShop.Services.Function
                            pName = p.ProductName,
                            pPrice = p.ProductPrice,
                            pDiscount = p.Discount,
-                           pCategory = p.ProductCategory.CategoryName,
+                           pCategoryId = p.ProductCategoryId,
+                           pCategoryName = p.ProductCategory.CategoryName,
+                           pCategoryImg=p.ProductCategory.CategoryDescription,
                            p上架時間 = p.ReleaseDate,
                            p剩餘庫存 = p.RemainingQuantity,
                            p子項目 = p.Attributes,
@@ -45,7 +51,9 @@ namespace prjCatChaOnlineShop.Services.Function
                            pName = p.ProductName,
                            pPrice = p.ProductPrice,
                            pDiscount = p.Discount,
-                           pCategory = p.ProductCategory.CategoryName,
+                           pCategoryId = p.ProductCategoryId,
+                           pCategoryName = p.ProductCategory.CategoryName,
+                           pCategoryImg = p.ProductCategory.CategoryDescription,
                            p上架時間 = p.ReleaseDate,
                            p剩餘庫存 = p.RemainingQuantity,
                            p子項目 = p.Attributes,
@@ -56,20 +64,21 @@ namespace prjCatChaOnlineShop.Services.Function
         }
         
 
-        public List<CProductItem> GetProductByCategoryId(int? categoryId)
+        public List<CProductItem> GetProductByCategoryName(string? categoryName)
         {
             var data = from p in _context.ShopProductTotal
-                       where p.ProductCategoryId ==categoryId 
+                       where p.ProductCategory.CategoryName == categoryName
                        from i in _context.ShopProductImageTable
                        where i.ProductId == p.ProductId
                        select new CProductItem
                        {
-
                            pId = p.ProductId,
                            pName = p.ProductName,
                            pPrice = p.ProductPrice,
                            pDiscount = p.Discount,
-                           pCategory = p.ProductCategory.CategoryName,
+                           pCategoryId = p.ProductCategoryId,
+                           pCategoryName=p.ProductCategory.CategoryName,
+                           pCategoryImg = p.ProductCategory.CategoryDescription,
                            p上架時間 = p.ReleaseDate,
                            p剩餘庫存 = p.RemainingQuantity,
                            p子項目 = p.Attributes,

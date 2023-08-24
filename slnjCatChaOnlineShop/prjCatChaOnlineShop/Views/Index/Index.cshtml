@@ -124,12 +124,12 @@
                 </div>
             </div>
         </div>
-        <div class="row special-list">
+        <div id="productList" class="row special-list">
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
                     <!-- start prod  -->
-                    <div id="productList" class="col-lg-3 col-md-6 special-grid best-seller">
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
                             <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
                                 <div class="box-img-hover">

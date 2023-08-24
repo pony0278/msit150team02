@@ -21,7 +21,10 @@
 
         public decimal? pPrice { get; set; }
 
-        public string? pCategory { get; set; }
+        public int? pCategoryId { get; set; }
+        public string? pCategoryName { get; set; }
+        public string? pCategoryImg { get; set; }
+
         public DateTime? p上架時間 { get; set; }
 
         public int? p剩餘庫存;
