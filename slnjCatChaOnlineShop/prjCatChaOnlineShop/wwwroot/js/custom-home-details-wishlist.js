@@ -383,7 +383,7 @@ $(document).ready(async function () {
         // 在這裡進行你的後續操作，例如導向到商品詳細頁面等
     });
 
-    // 點擊加入購物車按鈕
+    // 點擊加入購物車按鈕(用類別去找addtocartaustom抓不到)
     productList.on('click', '.add-to-cart-coustom', function (e) {
         e.preventDefault(); // 阻止<a>標籤的點擊預設行為
         console.log(productList);

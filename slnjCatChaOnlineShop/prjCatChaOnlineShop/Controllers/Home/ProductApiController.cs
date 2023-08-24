@@ -23,8 +23,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _productService = productService;  
                 
         }
-        
-        
         public IActionResult Index()
         {
             return View();
