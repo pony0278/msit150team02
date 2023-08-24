@@ -20,7 +20,7 @@ let userBagData = {
 let gachaTextCCoin = document.getElementById('gachaTextCCoin')
 let gachaTextRuby = document.getElementById('gachaTextRuby')
 
-//載入資料庫資訊
+//載入(更新)資料庫資訊
 function initialize() {
     $.ajax({
         url: '/Api/Api/TestDBLogin',
@@ -67,6 +67,29 @@ function initialize() {
         }
     });
 }
+
+function updateMilkAmount() {
+
+}
+
+function updateCanAmount() {
+
+}
+
+function updateCCoint() {
+
+}
+
+
+function updateRuby() {
+
+}
+
+
+function updateHighestScore() {
+
+}
+
 
 //使用者背包貓咪資訊
 function loadUserBagCatInfo() {
