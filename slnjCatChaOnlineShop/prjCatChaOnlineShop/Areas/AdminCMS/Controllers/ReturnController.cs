@@ -1,14 +1,138 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
+using prjCatChaOnlineShop.Models;
+using System.Drawing;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
     [Area("AdminCMS")]
     public class ReturnController : Controller
     {
-        
+        private readonly cachaContext _context;
+        public ReturnController(cachaContext context)
+        {
+            _context = context;
+        }
         public IActionResult Return()
         {
             return View();
+        }
+        public IActionResult ShowReturnTotal()
+        {
+            var data = (
+    from orderReturn in _context.ShopReturnDataTable
+    join ReturnReasonID in _context.ShopReturnReasonDataTable on orderReturn.ReturnReasonId equals ReturnReasonID.ReturnReasonId
+    join ProcessingStatusID in _context.ShopReturnStatusDataTable on orderReturn.ProcessingStatusId equals ProcessingStatusID.ProcessingStatusId
+    join orderTotal in _context.ShopOrderTotalTable on orderReturn.OrderId equals orderTotal.OrderId
+    join memberInfo in _context.ShopMemberInfo on orderTotal.MemberId equals memberInfo.MemberId
+    select new
+    {
+        orderReturn.OrderId,
+        orderTotal.MemberId,
+        memberInfo.Name,
+        orderReturn.ReturnDate,
+        ReturnReasonID.ReturnReason,
+        ProcessingStatusID.StatusName
+    }
+).ToList();
+
+            return Json(new { data });
+        }
+        public IActionResult GetOrderDetails(int memberId, int orderId)
+        {
+            var memberInfo = _context.ShopMemberInfo
+            .FirstOrDefault(m => m.MemberId == memberId);
+
+            var orderTotal = _context.ShopOrderTotalTable
+                .FirstOrDefault(o => o.OrderId == orderId);
+
+            var orderDetails = _context.ShopOrderDetailTable
+                .Where(od => od.OrderId == orderId)
+                .ToList();
+
+            var productIds = orderDetails.Select(od => od.ProductId).ToList();
+
+            var products = _context.ShopProductTotal
+                .Where(p => productIds.Contains(p.ProductId))
+                .ToList();
+
+            var paymentMethod = _context.ShopPaymentMethodData
+                .FirstOrDefault(pm => pm.PaymentMethodId == orderTotal.PaymentMethodId)?.PaymentMethodName;
+
+            var shippingMethod = _context.ShopShippingMethod
+                .FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.ShippingMethodName;
+
+            var shippment = _context.ShopShippingMethod
+    .FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.Shippment;
+
+            var couponContent = _context.ShopCouponTotal
+                .FirstOrDefault(ct => ct.CouponId == orderTotal.CouponId)?.CouponContent;
+
+            var orderStatus = _context.ShopOrderStatusData
+                .FirstOrDefault(os => os.OrderStatusId == orderTotal.OrderStatusId)?.StatusName;
+
+            var data = new
+            {
+                MemberInfo = memberInfo,
+                OrderTotal = orderTotal,
+                OrderDetails = orderDetails,
+                Products = products,
+                PaymentMethod = paymentMethod,
+                ShippingMethod = shippingMethod,
+                CouponContent = couponContent,
+                OrderStatus = orderStatus,
+                Shippment = shippment
+            };
+
+            return Json(new { data });
+        }
+        public IActionResult EditReturn(int id)
+        {
+            var orderReturn = _context.ShopReturnDataTable.FirstOrDefault(o => o.OrderId == id);
+
+            if (orderReturn != null)
+            {
+
+                return Json(new { data = orderReturn });
+            }
+            else
+            {
+                // 没有找到匹配的訂單
+                // do something..........
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        public IActionResult UpdateReturn(CReturn editReturn)
+        {
+            var returnData = _context.ShopReturnDataTable.FirstOrDefault(m => m.OrderId == editReturn.OrderId);
+            try
+            {
+                if (returnData != null) // 檢查 returnData 是否為空
+                {
+                    returnData.OrderId = editReturn.OrderId;
+                    returnData.ProcessingStatusId = editReturn.ProcessingStatusId;
+                    returnData.ReturnReasonId = editReturn.ReturnReasonId;
+
+                    // 存入DbContext
+                    _context.Entry(returnData).State = EntityState.Modified;
+                    _context.SaveChanges();
+
+                    //_context.SaveChanges();
+                    return Json(new { success = true, message = "編輯成功！" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "編輯的資訊為空。" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "編輯失敗：" + ex.Message });
+            }
         }
     }
 }
