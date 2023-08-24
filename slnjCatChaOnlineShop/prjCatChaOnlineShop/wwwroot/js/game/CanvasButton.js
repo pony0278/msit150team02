@@ -119,7 +119,7 @@ canvas.addEventListener('click', (event) => {
     //主功能按鈕
 
     if (isInBtnRange(helpBTN, x, y)) { //遊戲說明
-
+        alterConfirmWinBTN('轉蛋', func)
         confirmWin.style.display = 'block';
         confirmWin_title.innerHTML = '進行轉蛋'
         confirmWin_text.innerHTML = '即將消耗 9000 貓幣進行十連抽'
