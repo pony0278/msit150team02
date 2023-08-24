@@ -247,37 +247,56 @@
                 }
             })
         });
-        $('#submitButton-edior').click(function () {
-            const hideReview = $('#hideReview').is(':checked');
+        //$('#submitButton-edior').click(function () {
+        //    const hideReview = $('#hideReview').is(':checked');
+        //    const editorID = parseInt($('#productReviewId').text(), 10);
+        //    const reviewTime = $('#reviewTime').text();
+        //    const rating = parseInt($('#productRating').text(), 10);
+        //    const content = $('#reviewContent').text();
+        //    console.log(editorID)
+
+        //    const dataToSend = {
+        //        ProductReviewId: editorID,
+        //        HideReview: hideReview,
+        //        ReviewTime: reviewTime,
+        //        ProductRating: rating,
+        //        ReviewContent: content
+        //    };
+
+        //    $.ajax({
+        //        url: 
+        //        type: "POST",
+        //        data: JSON.stringify(dataToSend),
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (response) {
+        //            if (response.success) {
+        //                alert("Content saved successfully!");
+        //            } else {
+        //                alert("Error: " + response.message);
+        //            }
+        //        }
+        //    });
+        //});
+        $(document).on('click', '#submitButton-edior', function () {
             const editorID = parseInt($('#productReviewId').text(), 10);
-            const reviewTime = $('#reviewTime').text();
-            const rating = parseInt($('#productRating').text(), 10);
-            const content = $('#reviewContent').text();
-            console.log(editorID)
-
-            const dataToSend = {
-                ProductReviewId: editorID,
-                HideReview: hideReview,
-                ReviewTime: reviewTime,
-                ProductRating: rating,
-                ReviewContent: content
-            };
-
+            const dataToSend = JSON.stringify({
+                ProductReviewId: editorID
+            });
             $.ajax({
-                url: "@Url.Action("EditorReviews","ProductReview" , new { area="AdminCMS" })",
+                url: "@Url.Action("editor", "ProductReview", new { area = "AdminCMS" })",  
                 type: "POST",
-                data: JSON.stringify(dataToSend),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
+                data: dataToSend,
                 success: function (response) {
                     if (response.success) {
                         alert("Content saved successfully!");
-                    } else {
-                        alert("Error: " + response.message);
                     }
                 }
             });
         });
+
 
 
 

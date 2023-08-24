@@ -100,6 +100,12 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return RedirectToAction("news", "News", new { area = "AdminCMS" });
         }
+        [HttpPost]
+        public IActionResult editor([FromBody] int ProductReviewId)
+        {
+            ShopProductReviewTable ProductReviews = _context.ShopProductReviewTable.FirstOrDefault(x => x.ProductReviewId == ProductReviewId);
+            return Json(new { success = true, message = "Item updated successfully" });
+        }
 
 
 
