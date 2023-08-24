@@ -72,6 +72,8 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css" />
 
+    <!--用於密碼的眼睛圖案-->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
 }
 
 <div class="all-title-box all-title-box-picture">
@@ -136,10 +138,9 @@
                                     <div class="row gy-3 mb-4">
                                         <div class="container">
                                             <div class="card-body">
-                                                <form id="memberInfoForm">
+                                                <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            @* <input type="hidden" name="MemberId" value="@Model." /> *@
                                                             <label>帳號</label>
                                                             <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
                                                                    class="form-control" readonly />
@@ -148,6 +149,9 @@
                                                             <label>密碼</label>
                                                             <input type="password" placeholder="密碼" id="passwordInput" name="Password" pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
                                                                    class="form-control" required />
+                                                            <div class="text-right">
+                                                                <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
@@ -178,15 +182,12 @@
                                                         <div class="col-md-12">
                                                             <label>常用宅配地址</label>
                                                             <div class="d-flex align-items-center">
-                                                                <select class="form-select"
+                                                                <select class="form-select" id="commonAddressSelect"
                                                                         aria-label="Default select example">
-                                                                    <option selected>常用地址1號</option>
-                                                                    <option value="1">常用地址2號</option>
-                                                                    <option value="2">常用地址3號</option>
-                                                                    <option value="3">常用地址4號</option>
+                                                                    <option selected>常用地址</option>
                                                                 </select>
                                                             </div>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn add-address" id="lookCAButton"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#addressModal">
                                                                 查看已儲存地址
@@ -224,7 +225,6 @@
                                                             </button>
                                                         </div>
                                                     </div>
-
                                                     <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">
                                                         送出
                                                     </button>
@@ -238,7 +238,7 @@
                         <!--彈跳視窗: 查看已儲存地址-->
                         <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
                              aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
@@ -249,7 +249,8 @@
                                         <div class="col-md-9">
                                             <ol>
                                                 <li>
-                                                    <input type="text" value="地址一號"><span class="minus-address">
+                                                    <input type="text" value="地址一號">
+                                                    <span class="minus-address">
                                                         <i class="fa-solid fa-circle-minus"></i>
                                                     </span>
                                                 </li>
@@ -261,7 +262,9 @@
                                                 data-bs-dismiss="modal">
                                             關閉
                                         </button>
+                                        <!--
                                         <button type="button" class="btn btn-primary">儲存</button>
+                                        -->
                                     </div>
                                 </div>
                             </div>
@@ -269,8 +272,8 @@
                         <!--彈跳視窗: 新增地址-->
                         <div class="modal fade" id="NewAddressModal" tabindex="-1"
                              aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content ">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="addressModalLabel">新增地址</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -279,7 +282,9 @@
                                     <div class="modal-body">
                                         <div class="col-md-9">
                                             <ol>
-                                                <li><input type="text" value="" placeholder="填入地址"></li>
+                                                <li>
+                                                    <input type="text" value="" placeholder="填入地址" id="fillAddressInput" class="form-control">
+                                                </li>
                                             </ol>
                                         </div>
                                     </div>
@@ -288,7 +293,7 @@
                                                 data-bs-dismiss="modal">
                                             關閉
                                         </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
+                                        <button type="button" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
                                     </div>
                                 </div>
                             </div>
@@ -296,8 +301,8 @@
                         <!--彈跳視窗: 查看已儲存超商取貨地址-->
                         <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
                              aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
+                            <div class="modal-dialog modal-dialog-centered">
+                                <div class="modal-content ">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -327,7 +332,7 @@
                         <!--彈跳視窗: 新增超商取貨地址-->
                         <div class="modal fade" id="NewMarketAddressModal" tabindex="-1"
                              aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
+                            <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="addressModalLabel">新增超商取貨地址</h5>
@@ -768,7 +773,7 @@
                     <div class="row">
                         <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
                             <div class="row gy-3 mb-4">
-                                <div style="height: 350px; overflow: scroll;" class="table-responsive">
+                                <div style="height: 400px; overflow: scroll;" class="table-responsive">
                                     <table class="table table-bordered table-hover" id="favoriteRecordTable">
                                         <thead class="table-warning text-center">
                                             <tr>
@@ -776,6 +781,7 @@
                                                 <th scope="col">產品名稱</th>
                                                 <th scope="col">剩餘數量</th>
                                                 <th scope="col">售價</th>
+                                                <th scope="col"></th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -981,8 +987,9 @@
                     $('#nameInput').val(data.name);
                     $('#emailInput').val(data.email);
                     $('#phoneNumberInput').val(data.phoneNumber);
-                    $('#imagePreview').attr('src', data.memberImage);
+                    $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
+
                     $('#summonName').text(`會員：${data.name}`);
                     $('#coinPointShow').text(`您目前持有點數:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
 
@@ -998,40 +1005,60 @@
         });
 
         $(document).ready(function () {
+
+            //拿取常用地址數據
+            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.addressId;
+                    option.textContent = item.recipientAddress;
+                    commonAddressSelectElement.appendChild(option);
+                });
+            });
+
             //送出修改後的基本資料
             $('#memberInfoButton').click(function (event) {
                 event.preventDefault();
 
-                const formData = new FormData(document.querySelector('#memberInfoForm'));
+                // 取得表單元素
+                const form = document.querySelector('#memberInfoForm');
 
-                fetch('@Url.Content("/Membership/UpdateMemberInfo")', {
-                    body: formData,
-                    method: 'POST'
+                // 檢查表單的驗證狀態
+                if (form.checkValidity()) {
+                    const formData = new FormData(form);
 
-                })
-                    .then(response => {
-                        if (response.ok) {
-                            //這裡要放入新資料
-                            //像是 $('#summonName').text(data.name);
-                            return response.text();
-                        } else {
-                            throw new Error('連線有誤，請向客服人員聯繫');
-                        }
+                    fetch('@Url.Content("/Membership/UpdateMemberInfo")', {
+                        body: formData,
+                        method: 'POST'
                     })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '修改成功',
-                            // text: '感謝您來信'
+                        .then(response => {
+                            if (response.ok) {
+                                // 這裡要放入新資料
+                                // 像是 $('#summonName').text(data.name);
+                                return response.text();
+                            } else {
+                                throw new Error('連線有誤，請向客服人員聯繫');
+                            }
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '修改成功',
+                                // text: '感謝您來信'
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: error.message
+                            });
                         });
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '錯誤',
-                            text: error.message
-                        });
-                    });
+                } else {
+                    // 若表單驗證不通過，顯示相關提示
+                    form.reportValidity();
+                }
             });
 
             //拿取優惠券數據
@@ -1057,9 +1084,125 @@
                     });
                 });
             });
+
+            //查看常用地址
+            $('#lookCAButton').click(function (event) {
+                $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                    var olElement = document.querySelector('#addressModal ol');
+
+                    // 清空 <ol> 元素的內容
+                    olElement.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立 <li> 元素
+                    data.forEach(function (item) {
+
+                        var liElement = document.createElement('li');
+                        liElement.className = 'row align-items-center';
+
+                        var inputDiv = document.createElement('div');
+                        inputDiv.className = 'col-md-9 mb-3';
+
+                        var inputElement = document.createElement('input');
+                        inputElement.type = 'text';
+                        inputElement.value = item.recipientAddress;
+                        inputElement.className = 'form-control';
+
+                        var spanDiv = document.createElement('div');
+                        spanDiv.className = 'col-md-3';
+
+                        var spanElement = document.createElement('span');
+                        spanElement.className = 'minus-address';
+                        spanElement.innerHTML = '<i class="fa-solid fa-circle-minus"></i>';
+                        spanElement.setAttribute('data-address-id', item.addressId);
+
+                        spanElement.addEventListener('click', function () {
+                            var clickedAddressId = spanElement.getAttribute('data-address-id');
+
+                            Swal.fire({
+                                title: '確認刪除',
+                                showCancelButton: true,
+                                confirmButtonText: '是的',
+                                cancelButtonText: '取消',
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+
+                                    fetch('@Url.Content("~/membership/DeleteCommonAddress?addressid=")' + clickedAddressId)
+                                        .then(response => 
+                                            {
+                                                Swal.fire({
+                                                icon: 'success',
+                                                title: '移除成功',
+                                                confirmButtonText: '關閉',
+                                                }).then(() => {
+                                                $('#addressModal').modal('hide');
+                                                $('#lookCAButton').click();
+                                                });
+                                        })
+                                        .catch(error => {
+                                            console.error('Error:', error);
+                                        });
+                                }
+                            });
+                            
+                        });
+
+                        inputDiv.appendChild(inputElement);
+                        spanDiv.appendChild(spanElement);
+
+                        liElement.appendChild(inputDiv);
+                        liElement.appendChild(spanDiv);
+
+                        olElement.appendChild(liElement);
+                    });
+
+                    // $('#addressModal').modal('show');
+                });
+            });
+
+
+            //儲存常用地址
+            $('#commonAddressSaveButton').click(function (event) {
+
+                var inputVal = $('#fillAddressInput').val();
+                // cosole.log("1");
+                if (inputVal === null || inputVal.trim() === "" ) {
+                    Swal.fire({
+                        title: '請填寫有效的地址',
+                        showCancelButton: false,
+                        confirmButtonText: '關閉',
+                    });
+                }else{
+                    fetch('@Url.Content("~/membership/CreateCommonAddress?commonAddress=")' + inputVal)
+                        .then(response => 
+                        {
+                            setTimeout(() => {
+                                $('#fillAddressInput').val('');
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    confirmButtonText: '關閉',
+
+                                });
+                            }, 1000);
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                }
+            });
         });
 
-
+        //密碼轉換明示暗示
+        function myFunction() {
+            var x = document.getElementById("passwordInput");
+            if (x.type === "password") {
+                x.type = "text";
+                document.getElementById("#changePassword").textContent = "顯示密碼";
+            } else {
+                x.type = "password";
+                document.getElementById("#changePassword").textContent = "隱藏密碼";
+            }
+        }
     </script>
 
     <!--上傳大頭照-->
@@ -1388,6 +1531,8 @@
     <script>
 
         $(document).ready(function () {
+
+            /*
             $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
                 var tbody = document.querySelector('#favoriteRecordTable tbody');
 
@@ -1417,15 +1562,16 @@
                     row.insertCell().textContent = item.remainingQuantity;
                     row.insertCell().textContent = "$" + item.productPrice + " / 份";
 
-                    // 創建一個新的div元素
-                    var divElement = document.createElement('div');
-                    divElement.className = 'col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2';
+                    var cartCell = row.insertCell();
+                    var deleteCell = row.insertCell();
 
-                    // 創建內部的float-md-end div元素
-                    var floatEndDiv = document.createElement('div');
-                    floatEndDiv.className = 'float-md-end';
+                    // 設定格子內容水平置中的樣式
+                    cartCell.classList.add('text-center');
+                    deleteCell.classList.add('text-center');
 
-                    // 創建包含<i>元素的<a>元素
+                    var cartDiv = document.createElement('div');
+                    cartDiv.className = 'd-inline-block';
+
                     var cartLink = document.createElement('a');
                     cartLink.className = 'btn hvr-hover';
                     cartLink.href = '#';
@@ -1433,29 +1579,33 @@
                     cartIcon.className = 'fa-solid fa-cart-plus';
                     cartLink.appendChild(cartIcon);
 
-                    // 將<a>元素添加到span元素中
-                    var cartSpan = document.createElement('span');
-                    cartSpan.className = 'add-pr';
-                    cartSpan.appendChild(cartLink);
 
-                    // 創建<a>元素
+                    cartLink.addEventListener('click', function () {
+                        console.log('Cart link clicked');
+                    });
+
+                    cartDiv.appendChild(cartLink);
+
+                    cartCell.appendChild(cartDiv);
+
+                    var deleteDiv = document.createElement('div');
+                    deleteDiv.className = 'd-inline-block';
+
                     var deleteLink = document.createElement('a');
-                    deleteLink.className = 'btn btn-light border  icon-hover-danger';
+                    deleteLink.className = 'btn btn-light border icon-hover-danger';
                     deleteLink.href = '#';
                     var deleteIcon = document.createElement('i');
                     deleteIcon.className = 'fa-solid fa-xmark';
                     deleteLink.appendChild(deleteIcon);
 
-                    // 將以上元素添加到float-md-end div元素中
-                    floatEndDiv.appendChild(cartSpan);
-                    floatEndDiv.appendChild(deleteLink);
+                    deleteLink.addEventListener('click', function () {
+                        $.getJSON('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId, function (data) {
 
-                    // 將float-md-end div元素添加到外層div元素中
-                    divElement.appendChild(floatEndDiv);
+                        });
+                    });
 
-                    // 插入div元素到目標的單元格中
-                    var cell = row.insertCell();
-                    cell.appendChild(divElement);
+                    deleteDiv.appendChild(deleteLink);
+                    deleteCell.appendChild(deleteDiv);
 
                 });
 
@@ -1470,6 +1620,189 @@
 
 
             });
+            */
+            
+           /*
+           function loadFavoriteData() {
+                $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
+                    var tbody = document.querySelector('#favoriteRecordTable tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+
+
+                        // 創建一個新的<img>元素
+                        var imgElement = document.createElement('img');
+                        // 設定圖片的src屬性為item.productPhoto（假設item.productPhoto是圖片的URL）
+                        // imgElement.src = item.productPhoto;
+                        imgElement.src = '@Url.Content("~/images/")' + item.productPhoto;
+                        // 設定其他屬性，如寬度、高度等
+                        imgElement.width = 100;  // 設定寬度，根據您的需求調整
+                        imgElement.height = 100; // 設定高度，根據您的需求調整
+                        // 在表格中插入圖片的單元格
+                        var imgCell = row.insertCell();
+                        imgCell.appendChild(imgElement);
+
+
+
+                        row.insertCell().textContent = item.productName;
+                        row.insertCell().textContent = item.remainingQuantity;
+                        row.insertCell().textContent = "$" + item.productPrice + " / 份";
+
+                        var cartCell = row.insertCell();
+                        var deleteCell = row.insertCell();
+
+                        // 設定格子內容水平置中的樣式
+                        cartCell.classList.add('text-center');
+                        deleteCell.classList.add('text-center');
+
+                        var cartDiv = document.createElement('div');
+                        cartDiv.className = 'd-inline-block';
+
+                        var cartLink = document.createElement('a');
+                        cartLink.className = 'btn hvr-hover';
+                        cartLink.href = '#';
+                        var cartIcon = document.createElement('i');
+                        cartIcon.className = 'fa-solid fa-cart-plus';
+                        cartLink.appendChild(cartIcon);
+
+
+                        cartLink.addEventListener('click', function () {
+                            console.log('Cart link clicked');
+                        });
+
+                        cartDiv.appendChild(cartLink);
+
+                        cartCell.appendChild(cartDiv);
+
+                        var deleteDiv = document.createElement('div');
+                        deleteDiv.className = 'd-inline-block';
+
+                        var deleteLink = document.createElement('a');
+                        deleteLink.className = 'btn btn-light border icon-hover-danger';
+                        deleteLink.href = '#';
+                        var deleteIcon = document.createElement('i');
+                        deleteIcon.className = 'fa-solid fa-xmark';
+                        deleteLink.appendChild(deleteIcon);
+
+                        deleteLink.addEventListener('click', function () {
+                            $.getJSON('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId, function (data) {
+                                    loadFavoriteData();
+                            });
+                        });
+
+                        deleteDiv.appendChild(deleteLink);
+                        deleteCell.appendChild(deleteDiv);
+                    });
+
+
+                    new DataTable('#favoriteRecordTable', {
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                        },
+                        pageLength: 5,
+                        lengthMenu: [5, 10, 15],
+                        searching: true // 啟用搜尋功能
+                    });
+                });
+            }
+
+            // 初始載入表格數據
+            loadFavoriteData();
+        */
+
+            function loadFavoriteData() {
+                fetch('@Url.Content("~/membership/GetFavoriteData")')
+                    .then(response => response.json())
+                    .then(data => {
+                        var tbody = document.querySelector('#favoriteRecordTable tbody');
+                        tbody.innerHTML = '';
+
+                        data.forEach(function (item) {
+                            var row = tbody.insertRow();
+
+
+                            // 創建一個新的<img>元素
+                            var imgElement = document.createElement('img');
+                            // 設定圖片的src屬性為item.productPhoto（假設item.productPhoto是圖片的URL）
+                            // imgElement.src = item.productPhoto;
+                            imgElement.src = '@Url.Content("~/images/")' + item.productPhoto;
+                            // 設定其他屬性，如寬度、高度等
+                            imgElement.width = 100;  // 設定寬度，根據您的需求調整
+                            imgElement.height = 100; // 設定高度，根據您的需求調整
+                            // 在表格中插入圖片的單元格
+                            var imgCell = row.insertCell();
+                            imgCell.appendChild(imgElement);
+
+
+
+                            row.insertCell().textContent = item.productName;
+                            row.insertCell().textContent = item.remainingQuantity;
+                            row.insertCell().textContent = "$" + item.productPrice + " / 份";
+
+                            var cartCell = row.insertCell();
+                            var deleteCell = row.insertCell();
+
+                            // 設定格子內容水平置中的樣式
+                            cartCell.classList.add('text-center');
+                            deleteCell.classList.add('text-center');
+
+                            var cartDiv = document.createElement('div');
+                            cartDiv.className = 'd-inline-block';
+
+                            var cartLink = document.createElement('a');
+                            cartLink.className = 'btn hvr-hover';
+                            var cartIcon = document.createElement('i');
+                            cartIcon.className = 'fa-solid fa-cart-plus';
+                            cartLink.appendChild(cartIcon);
+
+
+                            cartLink.addEventListener('click', function () {
+                                console.log('Cart link clicked');
+                            });
+
+                            cartDiv.appendChild(cartLink);
+
+                            cartCell.appendChild(cartDiv);
+
+                            var deleteDiv = document.createElement('div');
+                            deleteDiv.className = 'd-inline-block';
+
+                            var deleteLink = document.createElement('a');
+                            deleteLink.className = 'btn btn-light border icon-hover-danger';
+                            var deleteIcon = document.createElement('i');
+                            deleteIcon.className = 'fa-solid fa-xmark';
+                            deleteLink.appendChild(deleteIcon);
+
+                            deleteLink.addEventListener('click', function () {
+                                fetch('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId)
+                                    .then(response => response.json())
+                                    .then(result => {
+                                          loadFavoriteData();
+                                    });
+                            });
+
+
+                            deleteDiv.appendChild(deleteLink);
+                            deleteCell.appendChild(deleteDiv);
+                        });
+
+                        // 初始化 DataTable
+                        new DataTable('#favoriteRecordTable', {
+                            language: {
+                                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                            },
+                            pageLength: 5,
+                            lengthMenu: [5, 10, 15],
+                            searching: true // 啟用搜尋功能
+                        });
+                    });
+            }
+
+
+            loadFavoriteData();
+
         });
 
     </script>

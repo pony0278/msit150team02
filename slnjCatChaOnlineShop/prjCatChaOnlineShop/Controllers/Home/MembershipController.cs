@@ -51,6 +51,83 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得常用地址資料
+        public IActionResult GetCommonAddress()
+        {
+            try
+            {
+                var query = from address in _context.ShopCommonAddressData
+                            where address.MemberId == 1
+                            orderby address.AddressId descending
+                            select new
+                            {
+                                address.AddressId,
+                                address.RecipientAddress
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //新增常用地址資料
+        public IActionResult CreateCommonAddress(string commonAddress)
+        {
+            try
+            {
+                ShopCommonAddressData address = new ShopCommonAddressData();
+
+                address.MemberId = 1;
+                address.RecipientAddress = commonAddress;
+
+
+                _context.ShopCommonAddressData.Add(address);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //刪除常用地址資料
+        public IActionResult DeleteCommonAddress(int addressid)
+        {
+            try
+            {
+                var addressData = _context.ShopCommonAddressData.FirstOrDefault(f => f.AddressId == addressid);
+                if (addressData != null)
+                {
+                    _context.ShopCommonAddressData.Remove(addressData);
+                    _context.SaveChanges();
+
+                    return Content("移除成功");
+                }
+                else
+                {
+                    return Content("找不到要刪除的收藏產品");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
         //取得帳戶優惠券資料
         public IActionResult GetMemberCouponData()
         {
@@ -89,7 +166,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             try
             {
-                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 1);
+                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 4);
 
                 memberToUpdate.Name = member.Name;
                 /*
@@ -339,7 +416,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         /*4.收藏紀錄*/
 
-        //取得退貨紀錄
+        //取得收藏商品
         public IActionResult GetFavoriteData()
         {
 
@@ -356,6 +433,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 p.Product.RemainingQuantity,
                                 p.Product.ProductDescription,
                                 p.Product.ProductId,
+                                p.FavoriteId,
                                 q.ProductPhoto
                             };
 
@@ -376,13 +454,36 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         }
 
+        //移除收藏商品
+        public IActionResult DeleteFavoriteProduct(int favoriteId)
+        {
+            try
+            {
+                var favoriteProduct = _context.ShopFavoriteDataTable.FirstOrDefault(f => f.FavoriteId == favoriteId);
+                if (favoriteProduct != null)
+                {
+                    _context.ShopFavoriteDataTable.Remove(favoriteProduct);
+                    _context.SaveChanges();
+                    return Content("移除成功");
+                }
+                else
+                {
+                    return Content("找不到要刪除的收藏產品");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
         /*5.客訴紀錄*/
 
         //取得退貨紀錄
 
         public IActionResult GetComplaintCase()
         {
-
+            
             try
             {
 
@@ -419,6 +520,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         }
 
+        public IActionResult get()
+        {
+            return Content("hi");
+        }
 
         /*6.客服中心*/
 

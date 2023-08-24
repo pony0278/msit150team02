@@ -248,7 +248,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "msit150team02resoucegroup.msit150team02resoucegroup.dbo",
+   "UiHint": "msit150team02.msit150team02resouce.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,
