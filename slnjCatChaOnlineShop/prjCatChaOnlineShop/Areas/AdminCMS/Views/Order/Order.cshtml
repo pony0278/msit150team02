@@ -57,8 +57,10 @@
                     <thead>
                         <tr>
                             <th>訂單編號</th>
-                            <th>訂購人</th>
+                            <th>會員ID</th>
+                            <th>訂購會員</th>
                             <th>收件人</th>
+                            <th>收件人電話</th>
                             <th>付款方式</th>
                             <th>運輸方式</th>
                             <th>成立日期</th>
@@ -68,89 +70,6 @@
                             <th>編輯</th>
                         </tr>
                     </thead>
-                    @*                     <tbody>
-                    <tr>
-                    <td>1</td>
-                    <td>A小姐</td>
-                    <td>B先生</td>
-                    <td>取貨付款</td>
-                    <td>全家取貨</td>
-                    <td>2023/08/03</td>
-                    <td>2023/08/04</td>
-                    <td>配送中</td>
-                    <td>
-                    <a href="#">
-                    <button class="detail_input" data-bs-toggle="modal"
-                    href="#orderDetailModalToggle" role="button">
-                    訂單明細
-                    </button>
-                    </a>
-                    </td>
-                    <td>
-                    <a href="#">
-                    <button class="btn" data-bs-toggle="modal"
-                    href="#exampleModalToggle" role="button">
-                    <i class="fas fa-edit"></i>
-                    </button>
-                    </a>
-                    </td>
-                    </tr>
-
-                    <tr>
-                    <td>2</td>
-                    <td>A小姐</td>
-                    <td>B先生</td>
-                    <td>信用卡</td>
-                    <td>7-11取貨</td>
-                    <td>2023/08/03</td>
-                    <td>2023/08/04</td>
-                    <td>配送中</td>
-                    <td>
-                    <a href="#">
-                    <button class="detail_input" data-bs-toggle="modal"
-                    href="#orderDetailModalToggle" role="button">
-                    訂單明細
-                    </button>
-                    </a>
-                    </td>
-                    <td>
-                    <a href="#">
-                    <button class="btn" data-bs-toggle="modal"
-                    href="#exampleModalToggle" role="button">
-                    <i class="fas fa-edit"></i>
-                    </button>
-                    </a>
-                    </td>
-                    </tr>
-
-                    <tr>
-                    <!-- <td>1</td> -->
-                    <td>2</td>
-                    <td>A小姐</td>
-                    <td>B先生</td>
-                    <td>取貨付款</td>
-                    <td>全家 信義店</td>
-                    <td>2023/08/03</td>
-                    <td>2023/08/04</td>
-                    <td>配送中</td>
-                    <td>
-                    <a href="#">
-                    <button class="detail_input" data-bs-toggle="modal"
-                    href="#orderDetailModalToggle" role="button">
-                    訂單明細
-                    </button>
-                    </a>
-                    </td>
-                    <td>
-                    <a href="#">
-                    <button class="btn" data-bs-toggle="modal"
-                    href="#exampleModalToggle" role="button">
-                    <i class="fas fa-edit"></i>
-                    </button>
-                    </a>
-                    </td>
-                    </tr>
-                    </tbody> *@
                 </table>
                 <!--表格-->
                 <!--編輯彈出視窗-->
@@ -357,12 +276,22 @@
                     "columns": [
                         { data: 'orderId' },
                         { data: 'memberId' },
+                        { data: 'name' },
                         { data: 'recipientName' },
-                        { data: 'paymentMethodId' },
-                        { data: 'shippingMethodId' },
+                        { data: 'recipientPhone' },
+                        { data: 'paymentMethodName' },
+                        {
+                            data: 'shippingMethodName',
+                            render: function (data, type, row, meta) {
+                                if (data === null) {
+                                    return "無";
+                                }
+                                return data; // 如果不是 null，則返回原始值
+                            }
+                        },
                         { data: 'orderCreationDate' },
                         { data: 'lastUpdateTime' },
-                        { data: 'orderStatus' },
+                        { data: 'statusName' },
                         {
                             data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
                             render: function (data, type, row, meta) {

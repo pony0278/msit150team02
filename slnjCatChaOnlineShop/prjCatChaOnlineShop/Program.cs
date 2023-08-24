@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,6 +20,14 @@ builder.Services.AddScoped<CheckoutService>();
 //訪問當前 HTTP 要求的相關資訊，例如 HTTP 上下文、Session、Cookies
 builder.Services.AddHttpContextAccessor();
 
+//==============解決 json too big 問題（Mandy需要的請勿刪~桑Q）
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.WriteIndented = true;
+});
+//==============解決 json too big 問題（Mandy需要的請勿刪~桑Q）
+
 //註冊session要加這個
 //builder.Services.AddSession();
 
@@ -27,6 +36,8 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddDbContext<cachaContext>(
  options => options.UseSqlServer(builder.Configuration.GetConnectionString("CachaConnection")));
 var app = builder.Build();
+
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
