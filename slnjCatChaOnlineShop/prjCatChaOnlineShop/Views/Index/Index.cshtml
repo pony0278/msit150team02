@@ -26,6 +26,27 @@
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
     <link rel="stylesheet" href="~/css/chatbox.css" />
 }
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 在這裡添加您想要顯示的內容 -->
+                商品已成功加入購物車！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
 <!-- Start Slider -->
 <div id="slides-shop" class="cover-slides">
     <ul class="slides-container">
@@ -124,7 +145,7 @@
                 </div>
             </div>
         </div>
-        <div id="productList" class="row special-list">
+        <div id="productIndexNew" class="row special-list">
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
@@ -150,7 +171,7 @@
                                 {
                                     <h5>$@item.pPrice</h5>
                                 }
-                                <a href="" data-product-id=@item.pId class="add-to-cart-coustom">
+                                <a data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
                                 <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
@@ -204,10 +225,8 @@
                 </div>
             </div>
         </div>
-        <div id="productList" class="row special-list">
-
+        <div id="productIndexSale" class="row special-list">
             @{
-
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
                     <div class="col-lg-3 col-md-6 special-grid best-seller">
@@ -231,7 +250,7 @@
                                 {
                                     <h5>$ @item.pPrice</h5>
                                 }
-                                <a href="" data-product-id=@item.pId class="add-to-cart-coustom">
+                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
                                 <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
@@ -529,6 +548,52 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom-home-details-wishlist.js"></script>
     <script>
+        var productIndexNew = $('#productIndexNew');
+        var productIndexSale = $('#productIndexSale');
+
+        productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
+            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
+            console.log(productIndexNew);
+            var productId = $(this).data('product-id');
+            console.log('Clicked Add to Cart, Product ID:', productId);
+            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            $.ajax({
+                url: '/ProductApi/AddToCart',
+                type: 'POST',
+                data: { pId: productId },
+                dataType: 'json',
+                success: function (response) {
+                    console.log('Added to Cart:', response.message);
+                    $('#myModal').modal('show'); // 顯示 Modal
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
+        });
+        productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
+            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
+            console.log(productIndexSale);
+            var productId = $(this).data('product-id');
+            console.log('Clicked Add to Cart, Product ID:', productId);
+            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            $.ajax({
+                url: '/ProductApi/AddToCart',
+                type: 'POST',
+                data: { pId: productId },
+                dataType: 'json',
+                success: function (response) {
+                    console.log('Added to Cart:', response.message);
+                    $('#myModal').modal('show'); // 顯示 Modal
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
+        });
+
+
+
         $('.kv-ltr-theme-fas-star').rating({
             hoverOnClear: false,
             theme: 'krajee-fas',

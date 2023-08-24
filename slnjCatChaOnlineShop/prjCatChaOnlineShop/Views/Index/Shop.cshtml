@@ -18,6 +18,27 @@
     <link rel="stylesheet" href="~/css/shop.css">
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 }
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- 在這裡添加您想要顯示的內容 -->
+                商品已成功加入購物車！
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <!-- Start All Title Box -->
 <div class="categories-shop">
@@ -39,8 +60,6 @@
                         </div>
                     </div>
                 }
-            
-            
         </div>
     </div>
 </div>
@@ -102,7 +121,7 @@
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
                                 @* start 商品 *@
-                                <div id="productList" class="row">
+                                <div id=productList class="row ">
                                 </div>
                                 @* end 商品 *@
                             </div>

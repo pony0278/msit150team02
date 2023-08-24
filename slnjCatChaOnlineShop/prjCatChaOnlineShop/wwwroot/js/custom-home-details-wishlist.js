@@ -376,7 +376,7 @@ $(document).ready(async function () {
     });
 
     
-// 點擊商品時獲取識別ID
+    // 點擊商品時獲取識別ID
     productList.on('click', '.img-fluid', function () {
         var productId = $(this).data('product-id');
         console.log('Clicked product ID:', productId);
@@ -384,7 +384,9 @@ $(document).ready(async function () {
     });
 
     // 點擊加入購物車按鈕
-    productList.on('click', '.add-to-cart-coustom', function () {
+    productList.on('click', '.add-to-cart-coustom', function (e) {
+        e.preventDefault(); // 阻止<a>標籤的點擊預設行為
+        console.log(productList);
         var productId = $(this).data('product-id');
         console.log('Clicked Add to Cart, Product ID:', productId);
         // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
@@ -394,13 +396,15 @@ $(document).ready(async function () {
             data: { pId: productId },
             dataType: 'json',
             success: function (response) {
-                alert('商品已成功加入購物車！');
                 console.log('Added to Cart:', response.message);
+                $('#myModal').modal('show'); // 顯示 Modal
             },
             error: function (error) {
                 console.error('Ajax Error:', error);
             }
         });
     });
+
+    
 });
 
