@@ -60,11 +60,11 @@
                 </select>
                 <select class="form-select" id="deliveryList">
                     <option value="" selected>查星級評分</option>
-                    <option value="1">5顆星</option>
-                    <option value="2">4顆星</option>
+                    <option value="5">5顆星</option>
+                    <option value="4">4顆星</option>
                     <option value="3">3顆星</option>
-                    <option value="4">2顆星</option>
-                    <option value="5">1顆星</option>
+                    <option value="2">2顆星</option>
+                    <option value="1">1顆星</option>
                 </select>
                 <select class="form-select" id="statusList">
                     <option value="" selected>查隱藏評論</option>
@@ -91,7 +91,7 @@
                             <th>產品名稱</th>
                             <th>評分</th>
                             <th>評論內容</th>
-                            <th>評論狀態</th>
+                            <th>評論是否隱藏</th>
                             <th>評論時間</th>
                             <th>編輯/刪除</th>
                         </tr>
@@ -222,7 +222,7 @@
             let selectedDeliveryList = $('#deliveryList').val();
             let selectedStatusList = $('#statusList').val();
 
-            let newUrl = '@Url.Action("tableData", "ProductReview", new { area = "AdminCMS"})';
+            let newUrl = '@Url.Action("queryReviews", "ProductReview", new { area = "AdminCMS"})';
             newUrl += `?productType=${selectedPayList}&rating=${selectedDeliveryList}&hide=${selectedStatusList}`;
 
             table.ajax.url(newUrl).load();

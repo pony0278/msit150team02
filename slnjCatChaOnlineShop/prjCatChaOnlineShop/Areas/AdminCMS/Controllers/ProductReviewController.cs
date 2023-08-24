@@ -133,12 +133,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 MemberName = x.Member == null ? null : x.Member.Name,
                 ProductId = x.ProductId,
                 ProductName = x.Product == null ? null : x.Product.ProductName,
-                ProductCategory = x.Product == null ? null : x.Product.ProductCategory.CategoryName,
+                productcatgory = x.Product == null ? null : x.Product.ProductCategory.CategoryName,
                 ReviewContent = x.ReviewContent,
                 ProductRating = x.ProductRating,
                 ProductReviewId = x.ProductReviewId,
                 ReviewTime = x.ReviewTime?.ToString() ?? "未設定",
-                HideReview = x.HideReview?.ToString() ?? "未設定"
+                HideReview = x.HideReview == null ? "未設定" :
+                                 x.HideReview == true ? "是" : "否",
             }).ToList();
 
             return Json(new { data });
