@@ -49,7 +49,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             Console.WriteLine($"Received id: {id}");
             var product = _cachaContext.GameProductTotal
-                      .Include(p => p.ProductCategory.CategoryName)
+                      .Include(p => p.ProductCategory)
                       .FirstOrDefault(p => p.ProductId == id);
 
             
