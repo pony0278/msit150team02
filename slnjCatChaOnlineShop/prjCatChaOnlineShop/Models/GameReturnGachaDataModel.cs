@@ -13,6 +13,8 @@ namespace prjCatChaOnlineShop.Models
         {
             public string productName { get; set; }
             public int productId { get; set; }
+            public int? productCategoryId { get; set; }
+            public int? couponId { get; set; }
         }
     //public partial class GameReturnGachaDataModel
     //{

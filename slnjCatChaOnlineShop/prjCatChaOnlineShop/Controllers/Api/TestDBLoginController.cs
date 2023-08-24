@@ -99,14 +99,14 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     }
                     //連動折價券
                     var existingCoupon = _context.ShopMemberCouponData
-                        .FirstOrDefault(record => gachaResult.productId==15);
+                        .FirstOrDefault(record => gachaResult.productCategoryId == 5);
                     if (existingCoupon != null)
                     {
                         var dbCouponModel = new ShopMemberCouponData
                         {
                             MemberId = rgm.MemberId,
-                            CouponId = 4,
-                            CouponStatusId=false,
+                            CouponId = gachaResult.couponId,
+                            CouponStatusId = false,
                         };
                         _context.ShopMemberCouponData.Add(dbCouponModel);
                     }

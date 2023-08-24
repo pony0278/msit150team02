@@ -9,13 +9,13 @@ public partial class ShopReplyData
 {
     public int ReplyId { get; set; }
 
-    public int? ComplaintCaseId { get; set; }
+    public int ComplaintCaseId { get; set; }
 
-    public int? ReceiverIdOfficial { get; set; }
+    public int ReceiverIdOfficial { get; set; }
 
     public string MessageRecipientContent { get; set; }
 
-    public DateTime? SentTime { get; set; }
+    public DateTime SentTime { get; set; }
 
     public virtual ShopMemberComplaintCase ComplaintCase { get; set; }
 

@@ -19,7 +19,7 @@ async function fetchData() {
 
         // 對每個項目進行處理
         data.forEach(item => {
-            const { productName, productId, productImage, lotteryProbability } = item;
+            const { productName, productId, productImage, lotteryProbability, productCategoryId, couponId} = item;
 
             // 將原始機率乘以縮放因子，得到縮放後的機率
             const scaledProbability = lotteryProbability * scalingFactor;
@@ -29,7 +29,9 @@ async function fetchData() {
                 productName,
                 productId,
                 productImage,
-                scaledProbability
+                scaledProbability,
+                productCategoryId,
+                couponId,
             });
         });
         return processedData; // 返回處理後的資料

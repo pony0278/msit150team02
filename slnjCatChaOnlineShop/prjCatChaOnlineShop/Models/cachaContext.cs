@@ -444,8 +444,9 @@ public partial class cachaContext : DbContext
             entity.ToTable("Game.Product Total");
 
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
+            entity.Property(e => e.CouponId).HasColumnName("Coupon ID");
             entity.Property(e => e.LotteryProbability)
-                .HasColumnType("decimal(18, 2)")
+                .HasColumnType("decimal(18, 3)")
                 .HasColumnName("Lottery Probability");
             entity.Property(e => e.ProductCategoryId).HasColumnName("Product Category ID");
             entity.Property(e => e.ProductDescription)
@@ -1116,7 +1117,9 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.ReplyId).HasColumnName("Reply ID");
             entity.Property(e => e.ComplaintCaseId).HasColumnName("Complaint Case ID");
-            entity.Property(e => e.MessageRecipientContent).HasColumnName("Message (Recipient) Content");
+            entity.Property(e => e.MessageRecipientContent)
+                .IsRequired()
+                .HasColumnName("Message (Recipient) Content");
             entity.Property(e => e.ReceiverIdOfficial).HasColumnName("Receiver ID (Official)");
             entity.Property(e => e.SentTime)
                 .HasColumnType("datetime")
@@ -1124,10 +1127,12 @@ public partial class cachaContext : DbContext
 
             entity.HasOne(d => d.ComplaintCase).WithMany(p => p.ShopReplyData)
                 .HasForeignKey(d => d.ComplaintCaseId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Shop.回覆資料表_Shop.會員客訴案件表");
 
             entity.HasOne(d => d.ReceiverIdOfficialNavigation).WithMany(p => p.ShopReplyData)
                 .HasForeignKey(d => d.ReceiverIdOfficial)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Shop.回覆資料表_Shop.Game 後臺管理員資料");
         });
 
