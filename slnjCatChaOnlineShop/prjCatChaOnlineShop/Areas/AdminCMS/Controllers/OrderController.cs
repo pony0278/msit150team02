@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 using prjCatChaOnlineShop.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -19,14 +21,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
         public IActionResult ShowOrderTotal()
         {
-            //var data = _context.ShopOrderTotalTable;
-
-            //return Json(new { data });
             var data = (
                  from order in _context.ShopOrderTotalTable
                  join paymentMethod in _context.ShopPaymentMethodData on order.PaymentMethodId equals paymentMethod.PaymentMethodId
                  join orderStatus in _context.ShopOrderStatusData on order.OrderStatusId equals orderStatus.OrderStatusId
-                 //join shippingMethod in _context.ShopShippingMethod on order.ShippingMethodId equals shippingMethod.ShippingMethodId
                  join shippingMethod in _context.ShopShippingMethod on order.ShippingMethodId equals shippingMethod.ShippingMethodId into shippingMethods
                  from shippingMethod in shippingMethods.DefaultIfEmpty()
                  join memberInfo in _context.ShopMemberInfo on order.MemberId equals memberInfo.MemberId
@@ -99,27 +97,53 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             };
 
             return Json(new { data });
-            //var order = _context.ShopMemberInfo
-            //          .Include(m => m.ShopOrderTotalTable)
-            //          .Include(m => m.ShopMemberCouponData)
-            //          .FirstOrDefault(m => m.MemberId == id);
+        }
+        public IActionResult EditOrder(int id)
+        {
+            var order = _context.ShopOrderTotalTable.FirstOrDefault(o => o.OrderId == id);
 
-            //if (member != null)
-            //{
-            //    foreach (var couponData in member.ShopMemberCouponData)
-            //    {
-            //        // 根據 couponData.CouponId 查詢其他相關數據並附加到 couponData
-            //        var CouponTotal = _context.ShopCouponTotal.FirstOrDefault(o => o.CouponId == couponData.CouponId);
-            //    }
+            if (order != null)
+            {
+                //string statusName = _context.ShopOrderStatusData.FirstOrDefault(s => s.OrderStatusId == order.OrderStatusId)?.StatusName; //得到訂單狀態
 
-            //    return Json(new { data = member });
-            //}
-            //else
-            //{
-            //    // 沒有找到匹配的成員
-            //    //  do something..........
-            //    return NotFound();
-            //}
+                return Json(new { data = order });
+            }
+            else
+            {
+                // 没有找到匹配的訂單
+                // do something..........
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        public IActionResult UpdateOrder(COrder editOrder)
+        {
+            var orderData = _context.ShopOrderTotalTable.FirstOrDefault(m => m.OrderId == editOrder.OrderId);
+            try
+            {
+                if (orderData != null) // 檢查 orderData 是否為空
+                {
+                    orderData.OrderId = editOrder.OrderId;
+                    orderData.MemberId = editOrder.MemberId;
+                    orderData.RecipientName = editOrder.RecipientName;
+                    orderData.RecipientAddress = editOrder.RecipientAddress;
+                    orderData.OrderStatusId = editOrder.OrderStatusId;
+                    orderData.LastUpdateTime = DateTime.Now;
+
+                    // 存入DbContext
+                    _context.SaveChanges();
+
+                    return Json(new { success = true, message = "編輯訂單成功！" });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "編輯訂單的資訊為空。" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "編輯會員失敗：" + ex.Message });
+            }
         }
     }
 }
