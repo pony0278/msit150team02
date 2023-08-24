@@ -39,7 +39,7 @@ closeinstruction.addEventListener("click", () => {
     pagesControl(Canvaslobby); //畫面返回大廳
 });
 //TODO 這邊沒有作用，怪怪的
-const confirmWin_close = document.getElementById('confirmWin-close');
+const confirmWin_close = document.getElementById('confirmWin_close');
 //確認視窗關閉
 confirmWin_close.addEventListener("click", () => {
     closeConfirmWin();
@@ -48,4 +48,39 @@ confirmWin_close.addEventListener("click", () => {
 //測試連動資料庫登入
 testlogin.addEventListener("click", () => {
     initialize()
+});
+
+const testGameDB = document.getElementById('testGameDB');
+testGameDB.addEventListener("click", () => {
+    console.log('開始測試')
+
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateGameData", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: 1033, fCCoin: 10 }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function ( error) {
+            console.log("資料更新失敗",error);
+        }
+    });
+
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateLobbyBackpack", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: 1033, fMilkCount: 10 }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
+
+
 });
