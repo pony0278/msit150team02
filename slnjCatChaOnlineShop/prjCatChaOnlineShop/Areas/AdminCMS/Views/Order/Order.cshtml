@@ -4,7 +4,11 @@
 }
 
 @section Styles{
-
+    <style>
+        .time-colored-text {
+            color: #de9e4f
+        }
+    </style>
 }
 
 <div class="middle-content">
@@ -289,8 +293,40 @@
                                 return data; // 如果不是 null，則返回原始值
                             }
                         },
-                        { data: 'orderCreationDate' },
-                        { data: 'lastUpdateTime' },
+                        {
+                            data: 'orderCreationDate',
+                            render: function (data, type, row, meta) {
+                                if (type === 'display' || type === 'filter') {
+                                    var date = new Date(data);
+                                    var year = date.getFullYear().toString(); // 年份
+                                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
+                                    var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
+                                    var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
+                                    var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
+                                    var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
+
+                                    return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
+                                }
+                                return data;
+                            }
+                        },
+                        {
+                            data: 'lastUpdateTime',
+                            render: function (data, type, row, meta) {
+                                if (type === 'display' || type === 'filter') {
+                                    var date = new Date(data);
+                                    var year = date.getFullYear().toString(); // 年份
+                                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
+                                    var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
+                                    var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
+                                    var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
+                                    var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
+
+                                    return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
+                                }
+                                return data;
+                            }
+                        },
                         { data: 'statusName' },
                         {
                             data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
