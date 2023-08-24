@@ -281,31 +281,46 @@
 })(jQuery);
 
 //----------------------------------自訂Ajax----------------------------------
-//下拉選單顯示筆數
+
+
 $(document).ready(async function () {
 
     var itemPerPageSelect = $('#itemPerPageSelect');
     var productList = $('#productList');
-    var showMoreButton = $('#showMore')
+    var showMoreButton = $('#showMore');
+    var categoryTitle = $('#categoryTitle')
+    var catName = null;
+    $('.for-ajax').click(function (e) {
+        e.preventDefault();
+        catName = $(this).data("category-name");
+        categoryTitle.text(catName)
+        fetchMoreProducts();
+    })
+    itemPerPageSelect.change(async function () {
+        displayedItemCount = 0; // 重置已顯示的資料筆數
+        productList.empty();
+        initialItemsToShow = parseInt(itemPerPageSelect.val());
+        await fetchMoreProducts();
+    });
     //var addto = $('#addto')
     var displayedItemCount = 0; // 已顯示的資料筆數
     var initialItemsToShow = parseInt(itemPerPageSelect.val());
-
-    function fetchMoreProducts(selectedValue) {
+    function fetchMoreProducts() {
         var additionalItemsToShow = displayedItemCount + initialItemsToShow;
         $.ajax({
             url: '/ProductApi/ShopItemPerPage',
             type: 'GET',
-            data: { itemPerPage: additionalItemsToShow }, // 傳遞顯示的總筆數
+            data: { catName: catName, itemPerPage: additionalItemsToShow }, // 傳遞顯示的總筆數
             dataType: 'json',
             success: function (data) {
                 productList.empty();
+                var products = catName !== null ? data[0].pItem : data;
                 console.log(data)
-                data.forEach(function (item) {
+                products.forEach(function (item) {
                     var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
                     var productDiv = $('<div class="products-single fix"></div>');
                     var boxImgHover = $('<div class="box-img-hover shop-image"></div>');
-                   /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
+                    /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
 
                     var productLink = $('<a href="/Index/ShopDetail"></a>');
                     var productImg = $(`<img src=${item.pImgPath} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
@@ -344,6 +359,7 @@ $(document).ready(async function () {
 
                 displayedItemCount = additionalItemsToShow; // 更新已顯示的資料筆數
                 initialItemsToShow = displayedItemCount; // 更新下一次要顯示的筆數
+
             },
             error: function (error) {
                 console.error('Ajax Error:', error);
@@ -359,12 +375,7 @@ $(document).ready(async function () {
         await fetchMoreProducts();
     });
 
-    itemPerPageSelect.change(async function () {
-        displayedItemCount = 0; // 重置已顯示的資料筆數
-        productList.empty();
-        initialItemsToShow = parseInt(itemPerPageSelect.val());
-        await fetchMoreProducts();
-    });
+    
 // 點擊商品時獲取識別ID
     productList.on('click', '.img-fluid', function () {
         var productId = $(this).data('product-id');
@@ -391,31 +402,5 @@ $(document).ready(async function () {
             }
         });
     });
-
-//    addto.on('click', '.img-fluid', function () {
-//        var productId = $(this).data('product-id');
-//        console.log('Clicked product ID:', productId);
-//        // 在這裡進行你的後續操作，例如導向到商品詳細頁面等
-//    });
-
-//    // 點擊加入購物車按鈕
-//    addto.on('click', '.add-to-cart-coustom', function () {
-//        var productId = $(this).data('product-id');
-//        console.log('Clicked Add to Cart, Product ID:', productId);
-//        // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-//        $.ajax({
-//            url: '/ProductApi/AddToCart',
-//            type: 'POST',
-//            data: { pId: productId },
-//            dataType: 'json',
-//            success: function (response) {
-//                alert('商品已成功加入購物車！');
-//                console.log('Added to Cart:', response.message);
-//            },
-//            error: function (error) {
-//                console.error('Ajax Error:', error);
-//            }
-//        });
-//    });
 });
 

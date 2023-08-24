@@ -24,22 +24,21 @@
     <div class="container">
         <div class="title-all text-left">
             <!--增加:Start當前分類-->
-            <h id="categoryName">[當前分類]</h>
+            <h1 id="categoryTitle"></h1>
         </div>
         <!--增加:End當前分類-->
-        <div class="row">
-            
-            @* @foreach (var item in Model.DistinctBy(item => item.product.ProductCategory.CategoryName))
+        <div id="categoryList" class="row">
+                @foreach (var item in Model.DistinctBy(item => item.pCategoryId))
                 {
-                <div class="col-md-2 col-4">
-                    <div class="shop-cat-boxs">
-                        <a href="#">
-                            <img class="img-fluid" src=" ~/images/categories_img_01.jpg" />" alt="" />
-                            <span>@item.product.ProductCategory.CategoryName</span>
-                        </a>
+                    <div class="col-md-2 col-4">
+                        <div class="shop-cat-boxs">
+                        <a class="for-ajax" href="#" data-category-name="@item.pCategoryName">
+                                <img class="img-fluid" src="@item.pCategoryImg" alt="" />
+                                <span>@item.pCategoryName</span>
+                            </a>
+                        </div>
                     </div>
-                </div>
-                } *@
+                }
             
             
         </div>
