@@ -47,45 +47,33 @@
 }
 
 <div class="middle-content">
-
     <h2 class="mt-3">產品評論管理</h2>
-
-    @*    <div class="container-fluid mt-4 mb-3">
-    <div class="row align-items-center">
-    發佈日期區間：<input type="text" class="form-control w-25" name="dates" />
-    </div>
-    </div>*@
-
-    <div class=" mt-3 mb-3 d-flex justify-content-between">
-
-        <select class="form-select" id="payList">
-            <option value="" selected>全部訂單</option>
-            @foreach (var catcoray in Model.productCategories)
-            {
-                <option value="@catcoray.ProductCategoryId">@catcoray.CategoryName</option>
-            }
-        </select>
-
-
-        <select class="form-select" id="deliveryList">
-            <option value="" selected>全部訂單</option>
-            <option value="">5顆星</option>
-            <option value="">4顆星</option>
-            <option value="">3顆星</option>
-            <option value="">2顆星</option>
-            <option value="">1顆星</option>
-        </select>
-
-
-
-        <select class="form-select" id="statusList">
-            <option value="" selected>全部訂單</option>
-            <option value="">公開</option>
-            <option value="">隱藏</option>
-        </select>
-
-
-        <button type="button" class="keyword_input col-xl-1">查詢</button>
+    <div class="container-fluid mt-4">
+        <div class=" d-flex justify-content-between">
+            <div class="d-flex">
+                <select class="form-select" id="payList">
+                    <option value="" selected>查產品分類</option>
+                    @foreach (var catcoray in Model.productCategories)
+                    {
+                        <option value="@catcoray.ProductCategoryId">@catcoray.CategoryName</option>
+                    }
+                </select>
+                <select class="form-select" id="deliveryList">
+                    <option value="" selected>查星級評分</option>
+                    <option value="1">5顆星</option>
+                    <option value="2">4顆星</option>
+                    <option value="3">3顆星</option>
+                    <option value="4">2顆星</option>
+                    <option value="5">1顆星</option>
+                </select>
+                <select class="form-select" id="statusList">
+                    <option value="" selected>查隱藏評論</option>
+                    <option value="true">公開</option>
+                    <option value="false">隱藏</option>
+                </select>
+            </div>
+            <button type="button" class="keyword_input col-xl-1" id="queryReviewBtn">查詢</button>
+        </div>
     </div>
 
 
@@ -103,7 +91,7 @@
                             <th>產品名稱</th>
                             <th>評分</th>
                             <th>評論內容</th>
-                            <th>狀態</th>
+                            <th>評論狀態</th>
                             <th>評論時間</th>
                             <th>編輯/刪除</th>
                         </tr>
@@ -135,39 +123,39 @@
                 <div class="d-flex align-items-center">
                     <label class="col-form-label">編號：</label>
                     <div class="d-inline-flex ">
-                        <span id="productReviewId" name="ProductReviewId" ></span>
+                        <span id="productReviewId" name="ProductReviewId"></span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <label class="col-form-label" for="memberName">會員名字：</label>
                     <div class="d-inline-flex">
-                        <span id="memberName"  name="MemberName" ></span>
+                        <span id="memberName" name="MemberName"></span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
-                        <label class="col-form-label">產品名稱：</label>
+                    <label class="col-form-label">產品名稱：</label>
                     <div class="d-inline-flex">
-                        <span id="productName"  name="ProductName" ></span>
+                        <span id="productName" name="ProductName"></span>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <label class="col-form-label">顧客評分：</label>
                     <div class="d-inline-flex">
-                        <span type="text" id="productRating"  name="ProductRating" ></span>
+                        <span type="text" id="productRating" name="ProductRating"></span>
                     </div>
                 </div>
                 <div class="col mt-2">
                     <label for="reviewContent">評論內容：</label>
                     <div class="d-inline-flex">
                         <p id="reviewContent" name="ReviewContent">
-                    </p>
+                        </p>
                     </div>
                 </div>
                 <div class="d-flex align-items-center">
                     <label class="col-form-label" 　for="reviewTime">
                         留言時間：
                     </label>
-                    <span  id="reviewTime" name="ReviewTime" ></span>
+                    <span id="reviewTime" name="ReviewTime"></span>
                 </div>
                 <div class="d-flex mt-2 ">
                     <label for="form-check-input">是否隱藏：</label>
@@ -192,7 +180,7 @@
 
     <script>
 
-        $('#PReview-table').DataTable({
+        let table = $('#PReview-table').DataTable({
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
             },
@@ -224,18 +212,28 @@
                         var deleteUrl = '@Url.Action("Delete", "ProductReview", new { area = "AdminCMS", id = "productReviewId" })';
                         deleteUrl = deleteUrl.replace('productReviewId', row.productReviewId);
                         return `<button class="edit-button" data-id="${row.productReviewId}" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fas fa-edit"></i></button> |
-                                                        <a href="${deleteUrl}" onclick="return confirm('確定要刪除嗎?')"><i class="fas fa-trash-alt"></i></a>`;
+                                                                        <a href="${deleteUrl}" onclick="return confirm('確定要刪除嗎?')"><i class="fas fa-trash-alt"></i></a>`;
                     }
                 }
             ]
         })
+        $('#queryReviewBtn').on('click', function () {
+            let selectedPayList = $('#payList').val();
+            let selectedDeliveryList = $('#deliveryList').val();
+            let selectedStatusList = $('#statusList').val();
+
+            let newUrl = '@Url.Action("tableData", "ProductReview", new { area = "AdminCMS"})';
+            newUrl += `?productType=${selectedPayList}&rating=${selectedDeliveryList}&hide=${selectedStatusList}`;
+
+            table.ajax.url(newUrl).load();
+        });
         $(document).on('click', '.edit-button', function () {
             let id = $(this).data('id');
             $.ajax({
                 url: '/AdminCMS/ProductReview/EditorReview?id=' + id,
                 type: 'GET',
-                success:function(response){
-                    if(response.success){
+                success: function (response) {
+                    if (response.success) {
                         $('#productReviewId').text(response.data.ProductReviewId)
                         $('#memberName').text(response.data.Member.Name)
                         $('#productName').text(response.data.Product.ProductName)
@@ -250,21 +248,14 @@
         $('#submitButton-edior').click(function () {
             const hideReview = $('#hideReview').is(':checked');
             const editorID = parseInt($('#productReviewId').text(), 10);
-            const reviewTime = $('#reviewTime').text();
-            const rating = parseInt($('#productRating').text(), 10);
-            const content = $('#reviewContent').text();
-            console.log(editorID)
 
             const dataToSend = {
                 ProductReviewId: editorID,
-                HideReview: hideReview,
-                ReviewTime: reviewTime,
-                ProductRating: rating,
-                ReviewContent: content
+                HideReview: hideReview
             };
 
             $.ajax({
-                url: "@Url.Action("EditorReviews","ProductReview" , new { area="AdminCMS" })",
+                url: "@Url.Action("editor","ProductReview" , new { area="AdminCMS" })",
                 type: "POST",
                 data: JSON.stringify(dataToSend),
                 contentType: "application/json; charset=utf-8",
@@ -272,12 +263,14 @@
                 success: function (response) {
                     if (response.success) {
                         alert("Content saved successfully!");
+                        window.location.assign(window.location.href);
                     } else {
                         alert("Error: " + response.message);
                     }
                 }
             });
         });
+
 
 
 

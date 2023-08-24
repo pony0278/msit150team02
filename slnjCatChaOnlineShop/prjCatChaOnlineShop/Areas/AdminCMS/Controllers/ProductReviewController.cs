@@ -6,6 +6,7 @@ using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -88,18 +89,61 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Content(json, "application/json");
         }
         [HttpPost]
-        public IActionResult EditorReviews([FromBody] CProductReviewsWrap cProductReviews) // 使用 [FromBody]
+        public IActionResult editor([FromBody] CProductReviewsWrap reviewData)
         {
-            ShopProductReviewTable shopProductReview = _context.ShopProductReviewTable.FirstOrDefault(x => x.ProductReviewId == 6);
+            ShopProductReviewTable shopProductReview = _context.ShopProductReviewTable.FirstOrDefault(x => x.ProductReviewId == reviewData.ProductReviewId);
             if (shopProductReview != null)
             {
-                shopProductReview.ProductRating = cProductReviews.ProductRating;
+                shopProductReview.HideReview = reviewData.HideReview;
                 _context.Update(shopProductReview);
                 _context.SaveChanges();
-                return RedirectToAction("news", "News", new { area = "AdminCMS" });
+                return Json(new { success = true, message = "Item updated successfully" });
             }
-            return RedirectToAction("news", "News", new { area = "AdminCMS" });
+            return Json(new { success = false, message = "Item not found" });
         }
+        [HttpGet]
+        public IActionResult queryReviews(int? productType , int? rating , bool? hide)
+        {
+            var query = _context.ShopProductReviewTable.AsQueryable();
+
+            if (productType.HasValue)
+            {
+                query = query.Where(x => x.Product.ProductCategory.ProductCategoryId == productType.Value);
+            }
+
+            if (rating.HasValue)
+            {
+                query = query.Where(x => x.ProductRating == rating.Value);
+            }
+
+            if (hide.HasValue)
+            {
+                query = query.Where(x => x.HideReview == hide.Value);
+            }
+
+            var queryResult = query
+                  .Include(x => x.Member)
+                  .Include(x => x.Product)
+                      .ThenInclude(x => x.ProductCategory)
+                  .ToList();
+
+            var data = queryResult.Select(x => new
+            {
+                MemberId = x.MemberId,
+                MemberName = x.Member == null ? null : x.Member.Name,
+                ProductId = x.ProductId,
+                ProductName = x.Product == null ? null : x.Product.ProductName,
+                ProductCategory = x.Product == null ? null : x.Product.ProductCategory.CategoryName,
+                ReviewContent = x.ReviewContent,
+                ProductRating = x.ProductRating,
+                ProductReviewId = x.ProductReviewId,
+                ReviewTime = x.ReviewTime?.ToString() ?? "未設定",
+                HideReview = x.HideReview?.ToString() ?? "未設定"
+            }).ToList();
+
+            return Json(new { data });
+        }
+   
 
 
 
