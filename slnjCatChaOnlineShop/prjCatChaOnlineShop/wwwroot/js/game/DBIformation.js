@@ -81,6 +81,7 @@ testDBlogin.addEventListener('click', async function () {
     try {
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
+        const userData = await initialize();
         information.forEach(IFM => {
             console.log(
                 'ProductId:', IFM.ProductId,

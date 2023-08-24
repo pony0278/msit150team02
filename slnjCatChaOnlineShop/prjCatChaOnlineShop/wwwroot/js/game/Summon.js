@@ -19,29 +19,15 @@ let 道具ID = [];
 const playerDataArray = [];
 
 // 當使用者進行抽獎時，將抽獎數據添加到 playerDataArray
-function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, allproductid, allItemName, drawResults) {
+function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults) {
     const apiUrl = '/api/Api/TestDBLogin';
-
-    // 遍歷道具ID陣列，每次處理一個ProductId
-
-    //const userData = {
-    //    MemberId: 使用者ID,
-    //    ProductIds: allproductid,
-    //    CatCoinQuantity: 貓幣數量,
-    //    LoyaltyPoints: 紅利數量,
-    //    ItemsName: allItemName,
-    //}
     const userData = {
         MemberId: 使用者ID,
         CatCoinQuantity: 貓幣數量,
         LoyaltyPoints: 紅利數量,
-        ProductIds: allproductid,
-        ItemsName: allItemName,
-
 
         GachaResult: drawResults
     }
-
         // 發送 POST 請求
         fetch(apiUrl, {
             method: 'POST',
@@ -54,6 +40,7 @@ function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, allproductid, allItem
                 if (!response.ok) {
                     throw new Error('發送數據時發生錯誤GGGGGG');
                 }
+                initialize();
                 return response.json();
             })
             .then(responseData => {
@@ -74,9 +61,8 @@ CatPointTenDrows.addEventListener('click', async function () {
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
-            const allproductid = [];
             貓幣數量 -= 9000;
-            console.log(貓幣數量);
+/*            console.log(貓幣數量);*/
 
 
             for (let i = 0; i < numDraws; i++) {
@@ -101,9 +87,7 @@ CatPointTenDrows.addEventListener('click', async function () {
                     drawResults.push(drawnItem);
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
-                    allproductid.push(drawnItem.productId);
-
-                    console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
+                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
                 }
@@ -118,11 +102,12 @@ CatPointTenDrows.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, allItemName, drawResults)
-            // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
+            //將資料傳到Data傳進伺服器
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
-                console.log(maxResult.productName, 使用者ID, 角色名稱, 貓幣數量, 紅利數量);
+                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
             }
         } catch (error) {
             console.error('轉蛋時發生錯誤:', error);
@@ -141,7 +126,6 @@ RubyTenDrows.addEventListener('click', async function () {
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
-            const allproductid = [];
             紅利數量 -= 1800;
             console.log(紅利數量);
 
@@ -167,9 +151,7 @@ RubyTenDrows.addEventListener('click', async function () {
                     drawResults.push(drawnItem);
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
-                    allproductid.push(drawnItem.productId);
-                    道具ID = allproductid;
-                    console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
+                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
                 }
@@ -184,11 +166,12 @@ RubyTenDrows.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID,true);
-            // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
+            //將資料傳到Data傳進伺服器
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName,);
-                console.log(maxResult.productName);
+                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
+                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
+                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量,'\r\n本輪大獎:', maxResult.productName);
             }
         } catch (error) {
             console.error('轉蛋時發生錯誤:', error);
@@ -207,8 +190,6 @@ CatPointSingleDrow.addEventListener('click', async function () {
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
-            const allproductid = [];
-            let TenOrSingle = 1;
             貓幣數量 -= 1000;
             console.log(貓幣數量);
 
@@ -234,9 +215,7 @@ CatPointSingleDrow.addEventListener('click', async function () {
                     drawResults.push(drawnItem);
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
-                    allproductid.push(drawnItem.productId);
-                    道具ID = allproductid;
-                    console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
+                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
                 }
@@ -251,11 +230,12 @@ CatPointSingleDrow.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID);
-            // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
+            //將資料傳到Data傳進伺服器
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName, TenOrSingle);
-                console.log(maxResult.productName);
+                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
+                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
+                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
             }
         } catch (error) {
             console.error('轉蛋時發生錯誤:', error);
@@ -274,8 +254,6 @@ RubySingleDrow.addEventListener('click', async function () {
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
-            const allproductid = [];
-            let TenOrSingle = 1;
             紅利數量 -= 200;
             console.log(紅利數量);
 
@@ -301,9 +279,7 @@ RubySingleDrow.addEventListener('click', async function () {
                     drawResults.push(drawnItem);
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
-                    allproductid.push(drawnItem.productId);
-                    道具ID = allproductid;
-                    console.log(`第 ${i + 1} 次轉蛋：你獲得了${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage},${drawnItem.productId}`);
+                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
                 }
@@ -318,11 +294,12 @@ RubySingleDrow.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID);
-            // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
+            //將資料傳到Data傳進伺服器
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName, TenOrSingle, 道具ID);
-                console.log(maxResult.productName);
+                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
+                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
+                                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量,'\r\n本輪大獎:', maxResult.productName);
             }
         } catch (error) {
             console.error('轉蛋時發生錯誤:', error);
@@ -333,7 +310,7 @@ RubySingleDrow.addEventListener('click', async function () {
     }
 });
 
-function showGachaResult(scaledProbability, allImages, allItemName, TenOrSingle) {
+function showGachaResult(scaledProbability, allImages, allItemName,) {
     result.innerHTML = '';
     // 創建 ItemNameContainer 變數並初始化
     const ItemNameContainer = document.createElement('div');
