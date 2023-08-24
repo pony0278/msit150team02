@@ -60,18 +60,30 @@ function consumeFood() { //扣除食物數量邏輯，數量為0就不能被扣
         if (milkCount === 0) {
             return;
         }
-        userBagData.milk--;//TODO 改成 先寫回資料庫，再重新讀取回來
+        updateMilkAmount(-1)
+        initialize();
+        
     }
     if (itmCan.isSelected) {
         if (canCount === 0) {
             return;
         }
-        userBagData.can--;//TODO 改成 先寫回資料庫，再重新讀取回來
+        updateCanAmount(-1)
+        initialize();
+        
     }
 }
 
 const confirmWin_title = document.getElementById('confirmWin-title'); //視窗標題
 const confirmWin_text = document.getElementById('confirmWin-text');//視窗內文
+
+function giveRewardAfterCatHeart() {
+
+
+}
+
+
+
 
 function feedAndGetReward() {//隨機獲得貓幣方法
     //只要有餵食就一定會獲得200貓幣
@@ -86,19 +98,18 @@ function feedAndGetReward() {//隨機獲得貓幣方法
             break;
         case num <= 10 && num > 2:
             confirmWin_text.innerHTML = '紅利 50'
-            userInfo.Ruby += 50;//TODO 改成 先寫回資料庫，再重新讀取回來
-
+            updateRuby(50)
             break;
         default:
 
             confirmWin_text.innerHTML = '貓幣 200'
-            userInfo.CCoin += 200;//TODO 改成 先寫回資料庫，再重新讀取回來
-
+            updateCCoint(200)
             break;
     }
     confirmWin_title.innerHTML = '恭喜獲得'
     setTimeout(() => { // 計時器  
         confirmWin.style.display = 'block';
+        initialize();
     }, 3000);
 }
 

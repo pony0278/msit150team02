@@ -53,13 +53,3 @@
     font-family: ·L³n¥¿¶ÂÅé;
 }
 
-#confirmWin_close {
-    width: 30px;
-    height: 30px;
-    font-family: initial;
-    right: 22px;
-    top: 10px;
-    position: absolute;
-    color: black;
-    cursor: pointer;
-}

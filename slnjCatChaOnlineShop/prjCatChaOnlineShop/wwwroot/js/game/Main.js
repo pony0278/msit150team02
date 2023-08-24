@@ -44,6 +44,7 @@ const bagItem8 = new Image();
 const itemSelected = new Image();
 
 //定義初始變數
+let UserID = 1033;
 let UserName = "未登入"
 let Ccoin = "N/A";
 let Ruby = "N/A";

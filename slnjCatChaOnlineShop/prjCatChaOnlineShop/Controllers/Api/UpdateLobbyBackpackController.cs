@@ -22,14 +22,14 @@ namespace prjCatChaOnlineShop.Controllers.Api
             var dbMilkConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == nID.fId && p.ProductId == 7);
             if (dbMilkConut != null)
             {
-                dbMilkConut.QuantityOfInGameItems -= nID.fMilkCount;
+                dbMilkConut.QuantityOfInGameItems += nID.fMilkCount;
                 _context.SaveChanges();
             }
 
             var dbCanConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == nID.fId && p.ProductId == 8);
             if (dbCanConut != null)
             {
-                dbCanConut.QuantityOfInGameItems -= nID.fCanCount;
+                dbCanConut.QuantityOfInGameItems += nID.fCanCount;
                 _context.SaveChanges();
             }
             return Ok(new { message = "數據已成功保存" });

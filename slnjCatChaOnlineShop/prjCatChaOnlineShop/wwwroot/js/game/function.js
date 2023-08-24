@@ -1,12 +1,13 @@
 
 
-//模擬資料庫資料
-let userInfo = {
-    name: "小貓貓貓貓",
-    CCoin: 11000,
-    Ruby: 5000,
-    runGameHighestScore: 61
-}
+////模擬資料庫資料
+//let userInfo = {
+//    ID = 1033,
+//    name: "小貓貓貓貓",
+//    CCoin: 11000,
+//    Ruby: 5000,
+//    runGameHighestScore: 61
+//}
 let userBagData = {
     catDefault: true,
     catBB: false,//ProductID 3
@@ -20,7 +21,7 @@ let userBagData = {
 let gachaTextCCoin = document.getElementById('gachaTextCCoin')
 let gachaTextRuby = document.getElementById('gachaTextRuby')
 
-//載入(更新)資料庫資訊
+//載入(更新)資料庫資訊方法
 function initialize() {
     $.ajax({
         url: '/Api/Api/TestDBLogin',
@@ -68,28 +69,90 @@ function initialize() {
     });
 }
 
-function updateMilkAmount() {
 
+
+//從資料庫消耗牛奶方法，num可以帶正數為增加，負數為消耗
+function updateMilkAmount(num) {
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateLobbyBackpack", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fMilkCount: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
+}
+//從資料庫消耗罐罐方法，num可以帶正數為增加，負數為消耗
+function updateCanAmount(num) {
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateLobbyBackpack", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fCanCount: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
+}
+//從資料庫增減貓幣方法，num可以帶正數為增加，負數為消耗
+function updateCCoint(num) {
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateGameData", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fCCoin: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
 }
 
-function updateCanAmount() {
-
+//從資料庫消耗紅利方法，num可以帶正數為增加，負數為消耗
+function updateRuby(num) {
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateGameData", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fRuby: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
 }
 
-function updateCCoint() {
-
+//從資料庫更新小遊戲最高分數方法，，num為最高分數觸發
+function updateHighestScore(num) {
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/UpdateGameData", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fScore: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
 }
-
-
-function updateRuby() {
-
-}
-
-
-function updateHighestScore() {
-
-}
-
 
 //使用者背包貓咪資訊
 function loadUserBagCatInfo() {
