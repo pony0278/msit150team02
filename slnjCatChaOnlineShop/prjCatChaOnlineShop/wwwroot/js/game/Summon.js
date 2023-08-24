@@ -19,16 +19,27 @@ let 道具ID = [];
 const playerDataArray = [];
 
 // 當使用者進行抽獎時，將抽獎數據添加到 playerDataArray
-function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID,) {
+function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, allproductid, allItemName, drawResults) {
     const apiUrl = '/api/Api/TestDBLogin';
 
     // 遍歷道具ID陣列，每次處理一個ProductId
 
+    //const userData = {
+    //    MemberId: 使用者ID,
+    //    ProductIds: allproductid,
+    //    CatCoinQuantity: 貓幣數量,
+    //    LoyaltyPoints: 紅利數量,
+    //    ItemsName: allItemName,
+    //}
     const userData = {
         MemberId: 使用者ID,
-        ProductIds: 道具ID,
         CatCoinQuantity: 貓幣數量,
         LoyaltyPoints: 紅利數量,
+        ProductIds: allproductid,
+        ItemsName: allItemName,
+
+
+        GachaResult: drawResults
     }
 
         // 發送 POST 請求
@@ -91,7 +102,7 @@ CatPointTenDrows.addEventListener('click', async function () {
                     allImages.push(drawnItem.productImage);
                     allItemName.push(drawnItem.productName);
                     allproductid.push(drawnItem.productId);
-                    道具ID = allproductid;
+
                     console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
                 } else {
                     i--; // 減少i以重新執行本次抽獎
@@ -107,7 +118,7 @@ CatPointTenDrows.addEventListener('click', async function () {
                     maxResult = result;
                 }
             }
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, true)
+            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, 道具ID, allItemName, drawResults)
             // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片
             if (maxResult) {
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
