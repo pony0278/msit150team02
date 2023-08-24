@@ -76,6 +76,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             var shippingMethod = _context.ShopShippingMethod
                 .FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.ShippingMethodName;
 
+            var shippment = _context.ShopShippingMethod
+    .FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.Shippment;
+
             var couponContent = _context.ShopCouponTotal
                 .FirstOrDefault(ct => ct.CouponId == orderTotal.CouponId)?.CouponContent;
 
@@ -91,10 +94,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 PaymentMethod = paymentMethod,
                 ShippingMethod = shippingMethod,
                 CouponContent = couponContent,
-                OrderStatus = orderStatus
+                OrderStatus = orderStatus,
+                Shippment = shippment
             };
 
-            return Json( new { data });
+            return Json(new { data });
             //var order = _context.ShopMemberInfo
             //          .Include(m => m.ShopOrderTotalTable)
             //          .Include(m => m.ShopMemberCouponData)

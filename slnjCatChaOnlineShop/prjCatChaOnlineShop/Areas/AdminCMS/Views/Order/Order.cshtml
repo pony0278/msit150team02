@@ -8,6 +8,72 @@
         .time-colored-text {
             color: #de9e4f
         }
+
+        /*產品明細表格RWD*/
+        .rwd-table {
+		 	 background: #fff;
+		 	 overflow: hidden;
+			}
+
+			.rwd-table tr:nth-of-type(2n){
+			  background: #eee;
+			}
+			.rwd-table th, 
+			.rwd-table td {
+			  margin: 0.5em 1em;
+			}
+			.rwd-table {
+			  min-width: 100%;
+			}
+
+			.rwd-table th {
+			  display: none;
+			}
+
+			.rwd-table td {
+			  display: block;
+			}
+
+			.rwd-table td:before {
+			  content: attr(data-th) " : ";
+			  font-weight: bold;
+			  width: 6.5em;
+			  display: inline-block;
+			}
+
+			.rwd-table th, .rwd-table td {
+			  text-align: left;
+			}
+
+			.rwd-table th, .rwd-table td:before {
+                    color: #b95756;
+			  font-weight: bold;
+			}
+
+			@@media (min-width: 480px) {
+			  .rwd-table td:before {
+			    display: none;
+			  }
+			 .rwd-table th, .rwd-table td {
+			    display: table-cell;
+			    padding: 0.25em 0.5em;
+			  }
+			  .rwd-table th:first-child, 
+			  .rwd-table td:first-child {
+			    padding-left: 0;
+			  }
+			  .rwd-table th:last-child, 
+			  .rwd-table td:last-child {
+			    padding-right: 0;
+			  }
+			   .rwd-table th, 
+			   .rwd-table td {
+			    padding: 1em !important;
+			  }
+            .rwd-table tr:nth-of-type(2n) {
+                background: #FFF !important;
+            }
+			}
     </style>
 }
 
@@ -162,7 +228,7 @@
                                         <button class="nav-link active" id="nav-home-tab"
                                                 data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                                                 role="tab">
-                                            訂購人(會員) / 收件人資料
+                                            訂購人 / 收件人資料
                                         </button>
                                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                                 data-bs-target="#nav-profile" type="button"
@@ -175,7 +241,7 @@
                                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                          aria-labelledby="nav-home-tab">
                                         <div class="row">
-                                            <div class="col-12 col-sm-6" style="border-right: 1px solid #000;">
+                                            <div class="col-12 col-lg-6" style="border-right: 1px solid #000;">
                                                 <h5><strong>訂購人(會員)</strong></h5>
                                                 <p id="memberId"></p>
                                                 <p id="name"></p>
@@ -189,7 +255,7 @@
                                                 <p id="lastLoginTime"></p>
                                                 <p id="memberStatus"></p>
                                             </div>
-                                            <div class="col-12 col-sm-6">
+                                            <div class="col-12 col-lg-6">
                                                 <h5><strong>收件人</strong></h5>
                                                 <p id="recipientName"></p>
                                                 <p id="recipientPhone"></p>
@@ -202,33 +268,24 @@
                                             <div class="col-12 col-lg-6">
                                                 <p id="orderId"></p>
                                                 <p id="paymentMethod"></p>
-                                                <p id="couponContent"></p>
+                                                <p id="shippment"></p>
+                                                <p id="totalPrice"></p>
                                                 <p id="lastUpdateTime"></p>
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <p id="orderCreationDate"></p>
                                                 <p id="shippingMethod"></p>
-                                                <p id="totalPrice"></p>
+                                                <p id="couponContent"></p>
                                                 <p id="orderStatus"></p>
                                             </div>
                                             <div class="col-12">
                                                 <!--下拉卷軸-->
-                                                <button class="btn btn-primary" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                                     訂購產品明細
                                                 </button>
-                                                <div class="collapse" id="collapseExample">
+                                                <div class="collapse show" id="collapseExample">
                                                     <div class="card card-body">
-                                                        <p>產品名稱：貓砂</p>
-                                                        <p>產品規格：300g</p>
-                                                        <p>訂購數量：２(包)</p>
-                                                        <p>單價：300</p>
-                                                        <p>小計：600 元</p>
-                                                        <hr />
-                                                        <p>產品名稱：貓抓板</p>
-                                                        <p>產品規格：20cm*50cm</p>
-                                                        <p>訂購數量：1(個)</p>
-                                                        <p>單價：200</p>
-                                                        <p>小計：200 元</p>
+                                                        <div id="ProductTotalContainer"></div>
                                                     </div>
                                                 </div>
                                                 <!--下拉卷軸-->
@@ -380,9 +437,15 @@
                             $('#recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
                             $('#recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
 
-                            //===========訂單明細
+                            //============訂單明細
                             $('#orderId').text("訂單編號：" + data.data.orderTotal.orderId);
                             $('#paymentMethod').text("付款方式：" + data.data.paymentMethod);
+
+                            if (data.data.shippment == null) {
+                                $('#shippment').text("運費：無");
+                            } else {
+                                $('#shippment').text("運費：" + data.data.shippment);
+                            }
 
                             if (data.data.couponContent == null) {
                                 $('#couponContent').text("優惠券內容：無");
@@ -398,60 +461,61 @@
                             
                             $('#lastUpdateTime').text("最後更新：" + data.data.orderTotal.lastUpdateTime);
                             $('#orderCreationDate').text("訂單成立日期：" + data.data.orderTotal.orderCreationDate);
-                            $('#totalPrice').text("總金額：待補");
+                            // $('#totalPrice').text("總金額：待補");
                             $('#orderStatus').text("訂單狀態：" + data.data.orderStatus);
 
+                            //===========訂購產品明細
+                            var PTContainer = $("#ProductTotalContainer");
+                            var totalPrice = 0; // 用於累加小計，秀出總金額
+                            PTContainer.html(""); // 使用html()方法來重置容器內容
 
-                            // var CAContainer = $("#commonaddressContainer");
-                            // CAContainer.text(""); // 每次抓都要reset掉，讓之前append的地址才不會存在
+                            if (data.data.orderDetails.length != 0) {
+                                var tableHTML = `
+                    <table class="rwd-table">
+                        <thead style='border-bottom: 1px solid #ddd;'>
+                            <tr>
+                                <th>項次</th>
+                                <th>商品ID</th>
+                                <th>名稱</th>
+                                <th>數量</th>
+                                <th>單價</th>
+                                <th>小計</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
 
-                            // if (data.data.shopCommonAddressData.length != 0) {
-                            //     for (var i = 0; i < data.data.shopCommonAddressData.length; i++) {
+                                for (var i = 0; i < data.data.orderDetails.length; i++) {
+                                    var item = data.data.orderDetails[i];
+                                    var orderNumber = i + 1;
 
-                            //         var item = data.data.shopCommonAddressData[i];
+                                    var subTotal = item.product.productPrice * item.productQuantity; // 計算小計
+                                    totalPrice += subTotal; // 將小計累加到總金額中
 
-                            //         var itemDiv = document.createElement("div");
-                            //         var addressNumber = i + 1; //計算幾筆資料的數字
+                                    tableHTML += `
+                        <tr>
+                                                    <td data-th="項次">${orderNumber}</td>
+                                                    <td data-th="商品ID">${item.product.productId}</td>
+                                                    <td data-th="名稱">${item.product.productName}</td>
+                                                    <td data-th="數量">${item.productQuantity}</td>
+                                                    <td data-th="單價">${item.product.productPrice}</td>
+                                                                            <td data-th="小計">${subTotal}</td>
+                        </tr>
+                    `;
+                                }
 
-                            //         itemDiv.innerHTML = `
-                            //                                                                                                                                 <h5><b>常用地址－${addressNumber}</b></h5>
-                            //                                                                                                                                 <p>收件人姓名: ${item.recipientName}</p>
-                            //                                                                                                                                 <p>連絡電話: ${item.recipientPhone}</p>
-                            //                                                                                                                                 <p>收件地址: ${item.recipientAddress}</p>
-                            //                                                                                                                         <hr>
-                            //                                                                                                                     `;
-                            //         CAContainer.append(itemDiv);
-                            //     }
-                            // } else {
-                            //     CAContainer.text("此會員尚未新增任何常用地址");
-                            // }
+                                tableHTML += `
+                        </tbody>
+                    </table>
+                `;
 
+                                PTContainer.html(tableHTML);
 
-                            // //===========優惠券專區
-                            // var couponContainer = $("#couponContainer");
-                            // couponContainer.text("");
-
-                            // if (data.data.shopCommonAddressData.length != 0) {
-                            //     for (var i = 0; i < data.data.shopMemberCouponData.length; i++) {
-
-                            //         var item = data.data.shopMemberCouponData[i];
-
-                            //         var itemDiv = document.createElement("div");
-                            //         var couponNumber = i + 1; //計算幾筆資料的數字
-
-                            //         itemDiv.innerHTML = `
-                            //                                                                                                                                         <h5><b>優惠券－${couponNumber}</b></h5>
-                            //                                                                                                                                                 <p>優惠券ID: ${item.couponId}</p>
-                            //                                                                                                                                                         <p>優惠券內容: ${item.coupon.couponContent}</p>
-                            //                                                                                                                                                                 <p>有效日期: ${item.coupon.expiryDate}</p>
-                            //                                                                                                                                                 <p>優惠券狀態: ${item.couponStatusId}</p>
-                            //                                                                                                                         <hr>
-                            //                                                                                                                     `;
-                            //         couponContainer.append(itemDiv);
-                            //     }
-                            // } else {
-                            //     couponContainer.text("此會員未持有優惠券");
-                            // }
+                                // 將總金額填入指定的元素中
+                                $("#totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                            } else {
+                                PTContainer.text("沒有可顯示的產品明細");
+                            }
                         },
                         error: function (error, a, b) {
                             console.log(error);
