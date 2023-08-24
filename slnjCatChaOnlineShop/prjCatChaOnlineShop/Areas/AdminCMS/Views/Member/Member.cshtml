@@ -560,9 +560,7 @@
                     data: null,
                     render: function (data, type, row, meta) {
                         var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#EditModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
-                        // var deleteButton = '<button class="btn" onclick="userDelete(' + row.memberId + ')"><a href="#" id="b5"><i class="fas fa-trash-alt"></i></a></button>';
                         return editButton;
-                        // return editButton + ' | ' + deleteButton;
                     }
                 },
             ],

@@ -162,7 +162,7 @@
                                         <button class="nav-link active" id="nav-home-tab"
                                                 data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                                                 role="tab">
-                                            訂購人 / 收件人資料
+                                            訂購人(會員) / 收件人資料
                                         </button>
                                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                                 data-bs-target="#nav-profile" type="button"
@@ -176,45 +176,40 @@
                                          aria-labelledby="nav-home-tab">
                                         <div class="row">
                                             <div class="col-12 col-sm-6" style="border-right: 1px solid #000;">
-                                                <h5><strong>訂購人</strong></h5>
-                                                <p>ID</p>
-                                                <p>姓名：</p>
-                                                <p>帳號：</p>
-                                                <p>性別：</p>
-                                                <p>生日：</p>
-                                                <p>E-mail：</p>
-                                                <p>電話：</p>
-                                                <p>地址：</p>
-                                                <p>註冊日期：</p>
-                                                <p>最後登入：</p>
-                                                <p>會員狀態：</p>
+                                                <h5><strong>訂購人(會員)</strong></h5>
+                                                <p id="memberId"></p>
+                                                <p id="name"></p>
+                                                <p id="memberAccount"></p>
+                                                <p id="gender"></p>
+                                                <p id="birthday"></p>
+                                                <p id="email"></p>
+                                                <p id="phoneNumber"></p>
+                                                <p id="address"></p>
+                                                <p id="registrationTime"></p>
+                                                <p id="lastLoginTime"></p>
+                                                <p id="memberStatus"></p>
                                             </div>
                                             <div class="col-12 col-sm-6">
                                                 <h5><strong>收件人</strong></h5>
-                                                <p>收件人：XXX</p>
-                                                <p>收件地址：</p>
-                                                <p>收件電話：</p>
-                                                <p>收件地址：</p>
+                                                <p id="recipientName"></p>
+                                                <p id="recipientPhone"></p>
+                                                <p id="recipientAddress"></p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel">
                                         <div class="row">
-                                            <div class="col-12 col-sm-6">
-                                                <p>訂單編號：：20230816001</p>
-                                                <p>付款方式：超商 7-ELEVEN 取貨付款</p>
-                                                <p>折抵紅利：10 (元)</p>
-                                                <p>優惠券：1 (張)</p>
-                                                <p>運費：70</p>
-                                                <p>總金額：860元</p>
+                                            <div class="col-12 col-lg-6">
+                                                <p id="orderId"></p>
+                                                <p id="paymentMethod"></p>
+                                                <p id="couponContent"></p>
+                                                <p id="lastUpdateTime"></p>
                                             </div>
-                                            <div class="col-12 col-sm-6">
-                                                <p>訂單成立日期：2023/08/16 13:02</p>
-                                                <p>付款時間：2023/08/16 14:32</p>
-                                                <p>全館優惠：無</p>
-                                                <p>優惠券內容：滿300折10元</p>
-                                                <p>完成時間：未完成</p>
-                                                <p>配送狀態：配送中</p>
+                                            <div class="col-12 col-lg-6">
+                                                <p id="orderCreationDate"></p>
+                                                <p id="shippingMethod"></p>
+                                                <p id="totalPrice"></p>
+                                                <p id="orderStatus"></p>
                                             </div>
                                             <div class="col-12">
                                                 <!--下拉卷軸-->
@@ -331,7 +326,8 @@
                         {
                             data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
                             render: function (data, type, row, meta) {
-                                return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
+                                // return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
+                                return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '" data-orderid="' + row.orderId + '">詳細資料</button>';
                             }
                         },
                         {
@@ -345,6 +341,125 @@
                     "paging": true, //分頁功能
                     responsive: true, //RWD
                     "searching": false, //隱藏搜尋框
+                });
+
+                //==================按下「詳細資料」按鈕的點擊事件處理
+                $('#order-table').on('click', '.detail_input', function () {
+                    var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                    var orderId = $(this).data('orderid');
+                    // console.log('Clicked on "詳細資料" button for memberId:', memberId);
+
+                    //----------------AJAX
+                    $.ajax({
+                        url: '@Url.Action("GetOrderDetails", "Order")',
+                        type: 'GET',
+                        data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                        success: function (data) {
+                            console.log(data.data);
+
+                            //============訂購人(會員)基本資料
+                            $('#memberId').text("ID：" + data.data.memberInfo.memberId);
+                            $('#name').text("姓名：" + data.data.memberInfo.name);
+                            $('#memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
+                            $('#gender').text("性別：" + data.data.memberInfo.gender);
+                            $('#birthday').text("生日：" + data.data.memberInfo.birthday);
+                            $('#email').text("E-mail：" + data.data.memberInfo.email);
+                            $('#phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
+                            $('#address').text("地址：" + data.data.memberInfo.address);
+                            $('#registrationTime').text("註冊日期：" + data.data.memberInfo.registrationTime);
+                            $('#lastLoginTime').text("最後登入：" + data.data.memberInfo.lastLoginTime);
+
+                            if (data.data.memberInfo.memberStatus == true) {
+                                $('#memberStatus').text("會員狀態：開放");
+                            } else {
+                                $('#memberStatus').text("會員狀態：凍結");
+                            }
+
+                            //============收件人資料
+                            $('#recipientName').text("收件人：" + data.data.orderTotal.recipientName);
+                            $('#recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
+                            $('#recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
+
+                            //===========訂單明細
+                            $('#orderId').text("訂單編號：" + data.data.orderTotal.orderId);
+                            $('#paymentMethod').text("付款方式：" + data.data.paymentMethod);
+
+                            if (data.data.couponContent == null) {
+                                $('#couponContent').text("優惠券內容：無");
+                            } else {
+                                $('#couponContent').text("優惠券內容：" + data.data.couponContent);
+                            }
+
+                            if (data.data.couponContent == null) {
+                                $('#shippingMethod').text("配送方式：無");
+                            } else {
+                                $('#shippingMethod').text("配送方式：" + data.data.shippingMethod);
+                            }
+                            
+                            $('#lastUpdateTime').text("最後更新：" + data.data.orderTotal.lastUpdateTime);
+                            $('#orderCreationDate').text("訂單成立日期：" + data.data.orderTotal.orderCreationDate);
+                            $('#totalPrice').text("總金額：待補");
+                            $('#orderStatus').text("訂單狀態：" + data.data.orderStatus);
+
+
+                            // var CAContainer = $("#commonaddressContainer");
+                            // CAContainer.text(""); // 每次抓都要reset掉，讓之前append的地址才不會存在
+
+                            // if (data.data.shopCommonAddressData.length != 0) {
+                            //     for (var i = 0; i < data.data.shopCommonAddressData.length; i++) {
+
+                            //         var item = data.data.shopCommonAddressData[i];
+
+                            //         var itemDiv = document.createElement("div");
+                            //         var addressNumber = i + 1; //計算幾筆資料的數字
+
+                            //         itemDiv.innerHTML = `
+                            //                                                                                                                                 <h5><b>常用地址－${addressNumber}</b></h5>
+                            //                                                                                                                                 <p>收件人姓名: ${item.recipientName}</p>
+                            //                                                                                                                                 <p>連絡電話: ${item.recipientPhone}</p>
+                            //                                                                                                                                 <p>收件地址: ${item.recipientAddress}</p>
+                            //                                                                                                                         <hr>
+                            //                                                                                                                     `;
+                            //         CAContainer.append(itemDiv);
+                            //     }
+                            // } else {
+                            //     CAContainer.text("此會員尚未新增任何常用地址");
+                            // }
+
+
+                            // //===========優惠券專區
+                            // var couponContainer = $("#couponContainer");
+                            // couponContainer.text("");
+
+                            // if (data.data.shopCommonAddressData.length != 0) {
+                            //     for (var i = 0; i < data.data.shopMemberCouponData.length; i++) {
+
+                            //         var item = data.data.shopMemberCouponData[i];
+
+                            //         var itemDiv = document.createElement("div");
+                            //         var couponNumber = i + 1; //計算幾筆資料的數字
+
+                            //         itemDiv.innerHTML = `
+                            //                                                                                                                                         <h5><b>優惠券－${couponNumber}</b></h5>
+                            //                                                                                                                                                 <p>優惠券ID: ${item.couponId}</p>
+                            //                                                                                                                                                         <p>優惠券內容: ${item.coupon.couponContent}</p>
+                            //                                                                                                                                                                 <p>有效日期: ${item.coupon.expiryDate}</p>
+                            //                                                                                                                                                 <p>優惠券狀態: ${item.couponStatusId}</p>
+                            //                                                                                                                         <hr>
+                            //                                                                                                                     `;
+                            //         couponContainer.append(itemDiv);
+                            //     }
+                            // } else {
+                            //     couponContainer.text("此會員未持有優惠券");
+                            // }
+                        },
+                        error: function (error, a, b) {
+                            console.log(error);
+                            console.log(a);
+                            console.log(b);
+                            console.log("Error retrieving order details.");
+                        }
+                    });
                 });
             });
         </script>
