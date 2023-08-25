@@ -1092,6 +1092,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ProductPrice)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("Product Price");
+            entity.Property(e => e.PushToShop).HasColumnName("pushToShop");
             entity.Property(e => e.ReleaseDate)
                 .HasColumnType("date")
                 .HasColumnName("Release Date");

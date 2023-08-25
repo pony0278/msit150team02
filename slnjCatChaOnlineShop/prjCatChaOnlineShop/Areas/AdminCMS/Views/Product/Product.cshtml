@@ -1,4 +1,5 @@
-﻿@model prjCatChaOnlineShop.Models.ShopProductTotal
+﻿@model prjCatChaOnlineShop.Models.ViewModels.CproductsTotal
+
 @{
     ViewData["Title"] = "Product";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
@@ -239,15 +240,19 @@
                                                 <label>商品類別</label>
                                                 <select class="form-control" id="editor-category" name="ProductCategory">
                                                     <option selected>請選擇</option>
-                                                    @*                                                    @foreach (var product in Model)
+                                                    @foreach (var category in Model.ProductCategories)
                                                     {
-                                                    <option value="@product.ProductCategoryId">@product.ProductCategory</option>
-                                                    }*@
+                                                        <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                                    }
                                                 </select>
                                             </div>
                                             <div class="col-md-6">
                                                 <label>上架日期</label>
-                                                <input type="text" id="editor-releasedate" class="form-control" name="ReleaseDate">
+                                                <input type="datetime-local" id="editor-releasedate" class="form-control" name="ReleaseDate">
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>下架日期</label>
+                                                <input type="datetime-local" id="editor-offdate" class="form-control" name="offDate">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>尺寸</label>
@@ -258,19 +263,33 @@
                                                 <input type="text" id="editor-weight" class="form-control" name="Weight">
                                             </div>
                                             <div class="col-md-6">
+                                                <label>折扣</label>
+                                                <input type="text" id="editor-discount" class="form-control">
+                                            </div>
+                                            <div class="col-md-6">
                                                 <label>供應商</label>
                                                 <input type="text" id="editor-supplier" class="form-control" name="Supplier">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>是否停售</label>
-                                                <select class="form-control" id="editor-discontinued" name="Discontinued">
-                                                </select>
+                                                <input class="form-check-input" type="checkbox" value="" id="editor-discontinued" name="Discontinued" />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>是否上首頁</label>
+                                                <input class="form-check-input" type="checkbox" value="" id="editor-pinToShop" name="pinToShop" />
                                             </div>
                                             <div class="col-md-12">
-                                                <label>圖片</label>
+                                                <label>圖片1</label>
                                                 <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable">
                                             </div>
-
+                                            <div class="col-md-12">
+                                                <label>圖片2</label>
+                                                <input type="file" class="form-control" id="editor-image2" name="ShopProductImageTable">
+                                            </div>
+                                            <div class="col-md-12">
+                                                <label>圖片3</label>
+                                                <input type="file" class="form-control" id="editor-image3" name="ShopProductImageTable">
+                                            </div>
                                             <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
                                                     style="width: 100%;">
                                                 儲存
@@ -434,13 +453,16 @@
                             $('#editor-description').val(response.data.productDescription);
                             $('#editor-price').val(response.data.productPrice);
                             $('#editor-remainingquantity').val(response.data.remainingQuantity);
-                            $('#editor-category').val(response.data.productCategory);
+                            $('#editor-category').val(response.data.productCategoryId);
                             $('#editor-releasedate').val(response.data.releaseDate);
                             $('#editor-size').val(response.data.size);
                             $('#editor-weight').val(response.data.weight);
-                            $('#editor-supplier').val(response.data.supplier);
-                            $('#editor-discontinued').val(response.data.discontinued);
+                            $("#editor-discount").val(response.data.discount);
+                            $('#editor-supplier').val(response.data.supplier.companyName);
+                            $('#editor-discontinued').prop(response.data.discontinued);
                             $('#editor-image').val(response.data.shopproductImagetable);
+                            $('#editor-pinToShop').prop("checked",response.data.pushToShop)
+                            $('#editor-offdate').val(response.offDay)
                             console.log(response.data)
                         } else {
                             alert(response.message);
@@ -448,34 +470,50 @@
                     }
                 });
             });
+            let TypeEditor;
+            $('#editor-category').on('change', function () {
+                TypeEditor = parseInt($(this).val(), 10);
+            })
             //儲存按鈕==============================
             $('#submitButton-edior').click(function () {
-                var id = $('#editor-id').val
-                var name = $('#editor-name').val
-                var description = $('#editor-description').val
+                var id = $('#editor-id').val();
+                var name = $('#editor-name').val()
+                var description = $('#editor-description').val()
                 var price = $('#editor-price').val
                 var remainingquantity = $('#editor-remainingquantity').val
-                var category = $('#editor-category').val
                 var releasedate = $('#editor-releasedate').val
                 var size = $('#editor-size').val
                 var weight = $('#editor-weight').val
+                var discount = $("#editor-discount").val
                 var supplier = $('#editor-supplier').val
-                var discontinued = $('#editor-discontinued').val
-                var image = $('#editor-image').val
+                var discontinued = $('#editor-discontinued').is(":checked")
+                var pinToShop = $('#editor-pinToShop').is(":checked")
+                var fileInput = $('#editor-image')[0];
+                var file = fileInput.files[0];
+                var fileInput2 = $('#editor-image')[0];
+                var file2 = fileInput2.files[0];
+                var fileInput3 = $('#editor-image')[0];
+                var file3 = fileInput3.files[0];
+                console.log(id)
+                console.log(name)
 
                 var formData = new FormData();
-                formData.append("productid", id);
-                formData.append("productname", name);
-                formData.append("productdescription", description);
-                formData.append("productprice", price);
-                formData.append("remainingquantity", remainingquantity);
-                formData.append("productcategory", category);
-                formData.append("releasedate", releasedate);
-                formData.append("size", size);
-                formData.append("weight", weight);
-                formData.append("supplier", supplier);
-                formData.append("discontinued", discontinued);
-                formData.append("shopproductimagetable", image);
+                formData.append("ProductId", id);
+                formData.append("Productname", name);
+                formData.append("Productdescription", description);
+                //formData.append("Productprice", price);
+                //formData.append("RemainingQuantity", remainingquantity);
+                //formData.append("ProductCategoryId", TypeEditor);
+                //formData.append("ReleaseDate", releasedate);
+                //formData.append("Size", size);
+                //formData.append("Weight", weight);
+                //formData.append("SupplierId", supplier);
+                //formData.append("Discontinued", discontinued);
+                //formData.append("Discount", discount)
+                formData.append("Image", file)
+                //formData.append("Image", file2)
+                //formData.append("Image", file3)
+                formData.append("PushToShop", pinToShop)
 
                 $.ajax({
                     url: "@Url.Action("EditShopProducts","Product" , new { area="AdminCMS" })",
