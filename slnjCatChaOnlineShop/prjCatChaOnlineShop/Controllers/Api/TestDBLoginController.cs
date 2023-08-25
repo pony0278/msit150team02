@@ -23,39 +23,41 @@ namespace prjCatChaOnlineShop.Controllers.Api
         public IActionResult 玩家資訊數據()
         {
 
-            int _MemberId=1033;
-            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _MemberId))
+            int _memberId = 1033;
+
+            // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
+            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _memberId))
             {
                 var gameProductTotalRecords = _context.GameProductTotal.ToList();
 
                 var defaultitems = _context.GameItemPurchaseRecord;
 
-             foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                foreach (var gameProductTotalRecord in gameProductTotalRecords)
                 {
                     var defaultItem = new GameItemPurchaseRecord
                     {
-                        MemberId = _MemberId,
+                        MemberId = _memberId,
                         ProductId = gameProductTotalRecord.ProductId,
-                        QuantityOfInGameItems = 0, 
+                        QuantityOfInGameItems = 0,
                         ItemName = gameProductTotalRecord.ProductName
                     };
                 }
                 var defaultI = new GameItemPurchaseRecord
                 {
-                    MemberId = _MemberId,
+                    MemberId = _memberId,
                     ProductId = 22,
                     QuantityOfInGameItems = 1,
                     ItemName = "初始褐貓"
                 };
                 _context.GameItemPurchaseRecord.Add(defaultI);
-                _context.SaveChanges(); 
+                _context.SaveChanges();
             }
             else
             {
                 var gameProductTotalRecords = _context.GameProductTotal.ToList();
                 var existingProductIds = new HashSet<int>();
 
-                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _MemberId))
+                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _memberId))
                 {
                     existingProductIds.Add((int)existingRecord.ProductId);
                 }
@@ -74,7 +76,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     var defaultItem = new GameItemPurchaseRecord
                     {
-                        MemberId = _MemberId,
+                        MemberId = _memberId,
                         ProductId = missingProductId,
                         QuantityOfInGameItems = 0,
                         ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
@@ -84,7 +86,23 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 _context.SaveChanges();
             }
 
-            //var memberId = 1033; // 預設的 MemberId，您可以根據需要進行更改
+            // 執行查詢
+            var datas = (from p in _context.ShopMemberInfo
+                         join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
+                         where p.MemberId == _memberId
+                         select new
+                         {
+                             p.MemberId,
+                             p.CharacterName,
+                             p.CatCoinQuantity,
+                             p.LoyaltyPoints,
+                             p.RunGameHighestScore,
+                             i.ProductId,
+                             i.QuantityOfInGameItems,
+                             i.ItemName
+                         })
+                         .Distinct()
+                         .ToList();
 
             // 在這裡繼續處理結果，將集合中的元素合併
             // ...
