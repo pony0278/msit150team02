@@ -167,35 +167,38 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="getCouponList" class="modal-body">
-                                        @if (Model.memberUsableCoupon != null)
+                                        @if (Model != null)
                                         {
-                                            @foreach (var coupon in Model.memberUsableCoupon)
+                                            @if (Model.memberUsableCoupon != null)
                                             {
+                                                @foreach (var coupon in Model.memberUsableCoupon)
+                                                {
 
-                                                <div class="coupon-content flex-container">
-                                                    <div class="coupon-left flex-container flex-1">
-                                                        <div class="coupon-intro  text-center">
-                                                            <!--刪除MyCss.css 123行，增加160行hover-->
-                                                            <div class="coupon-status align-middle text-center">
-                                                                <button type="button" class=" btn">使用</button>
-                                                            </div>
-                                                        </div>
-                                                        <div class="coupon-middle flex-container flex-1">
-                                                            <div class="middle-left flex-1">
-                                                                <span class="coupon-tag">
-                                                                    限用1次
-                                                                </span>&ensp;<span class="coupon-name"> @coupon.CouponName </span>
-                                                                <div class="coupon-description">
-                                                                    @coupon.CouponContent
+                                                    <div class="coupon-content flex-container">
+                                                        <div class="coupon-left flex-container flex-1">
+                                                            <div class="coupon-intro  text-center">
+                                                                <!--刪除MyCss.css 123行，增加160行hover-->
+                                                                <div class="coupon-status align-middle text-center">
+                                                                    <button type="button" class=" btn">使用</button>
                                                                 </div>
-                                                                <div class="coupon-time">
-                                                                    有效期限：@coupon.ExpiryDate
+                                                            </div>
+                                                            <div class="coupon-middle flex-container flex-1">
+                                                                <div class="middle-left flex-1">
+                                                                    <span class="coupon-tag">
+                                                                        限用1次
+                                                                    </span>&ensp;<span class="coupon-name"> @coupon.CouponName </span>
+                                                                    <div class="coupon-description">
+                                                                        @coupon.CouponContent
+                                                                    </div>
+                                                                    <div class="coupon-time">
+                                                                        有效期限：@coupon.ExpiryDate
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
 
+                                                }
                                             }
                                         }
                                     </div>
