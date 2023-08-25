@@ -574,7 +574,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             try
             {
-                var selectedValue = HttpContext.Request.Form["selectedValue"];
+                    var selectedValue = HttpContext.Request.Form["selectedValue"];
                 if (int.TryParse(selectedValue, out int categoryId))
                 {
                     complaint.MemberId = 1;

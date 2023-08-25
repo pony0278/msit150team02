@@ -399,9 +399,11 @@
                                         </button>
                                     </div>
                                     <h1 id="summonName">會員</h1>
-
                                     <div class="d-flex justify-content-center">
                                         <span id="coinPointShow">您目前持有點數：0點/0元</span>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <span id="catCoinShow">持有貓幣：0元</span>
                                     </div>
                                     <div class="text-center ">
                                         <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal" id="searchCoupon"
@@ -851,15 +853,15 @@
                         <div class="container">
                             <form action="">
                                 <div class="row my-1 ml-2">
-                                    <label>客訴內文 </label>
-                                    <div class="input-group">
-                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="4"></textarea>
+                                    <label class="font-weight-bold">客訴內文 </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
-                                    <label>客服回覆 </label>
-                                    <div class="input-group">
-                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="4"></textarea>
+                                    <label class="font-weight-bold">客服回覆 </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="3"></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
@@ -983,6 +985,7 @@
 
                     $('#summonName').text(`會員：${data.name}`);
                     $('#coinPointShow').text(`您目前持有點數:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
+                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}元`);
 
                     var dateParts = data.birthday.split('-');
                     var year = parseInt(dateParts[0], 10);
@@ -1470,14 +1473,16 @@
                 format: 'MMMM Do YYYY'
             });
 
+
             let table = new DataTable(tableSelector, {
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
                 },
                 pageLength: 5,
                 lengthMenu: [5, 10, 15],
-                destroy: true,
+                retrieve: true,
             });
+            
 
             document.querySelectorAll(`${minDateSelector}, ${maxDateSelector}`).forEach((el) => {
                 el.addEventListener('change', () => table.draw());
@@ -1522,7 +1527,7 @@
 
         $(document).ready(function () {
 
-            
+            /*
             $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
                 var tbody = document.querySelector('#favoriteRecordTable tbody');
 
@@ -1611,9 +1616,9 @@
 
 
             });
+            */
             
-            
-           /*
+           
            function loadFavoriteData() {
                 $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
                     var tbody = document.querySelector('#favoriteRecordTable tbody');
@@ -1701,7 +1706,7 @@
 
             // 初始載入表格數據
             loadFavoriteData();
-        */
+
 
 
        /*
@@ -1803,32 +1808,9 @@
     <!--5.載入時，導入客訴紀錄-->
     <script>
 
-        /*
-        $(document).ready(function () {
-            
-            $.getJSON('@Url.Content("~/membership/GetComplaintCase")', function (data) {
-                var tbody = document.querySelector('#complaintRecordTable tbody');
-
-                tbody.innerHTML = '';
-
-                data.forEach(function (item) {
-                    var row = tbody.insertRow();
-
-                    row.insertCell().textContent = item.complaintCaseId;
-                    row.insertCell().textContent = new Date(item.creationTime).toISOString().split('T')[0];
-                    row.insertCell().textContent = item.categoryName;
-                    row.insertCell().textContent = item.complaintTitle;
-                    row.insertCell().textContent = "";
-
-                });
-
-                initializeDataTableWithDateFilter('#complaintRecordTable', '#complaintMin', '#complaintMax', 1);
-
-            });
-        });
-        */
-
+        //載入客訴紀錄的表格
         function loadComplaintRecords() {
+
             $.ajaxSetup({ cache: false });
             
             $.getJSON('@Url.Content("~/membership/GetComplaintCase")')
@@ -1887,6 +1869,12 @@
                 });
         }
 
+        //
+        $(document).ready(function () {
+            loadComplaintRecords();
+        });
+
+
     </script>
 
     <!--6.載入: 導入客服中心。點擊: 送出填寫資料到控制台-->
@@ -1943,8 +1931,7 @@
                                 $('#ComplaintTitle').val('');
                                 $('#ComplaintContent').val('');
 
-                                loadComplaintRecords();
-
+                                // loadComplaintRecords();
 
                                 return response.text();
                             } else {
