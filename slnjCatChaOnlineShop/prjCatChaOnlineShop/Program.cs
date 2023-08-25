@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
+using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
 using System.Text.Json.Serialization;
 
@@ -19,6 +20,11 @@ builder.Services.AddScoped<CheckoutService>();
 
 //訪問當前 HTTP 要求的相關資訊，例如 HTTP 上下文、Session、Cookies
 builder.Services.AddHttpContextAccessor();
+
+// 生成一個新的隨機金鑰
+string randomKey = CKeyGenerator.GenerateRandomKey();
+// 將隨機金鑰設置到 IConfiguration 裡
+builder.Configuration["ForgetPassword:SecretKey"] = randomKey;
 
 //==============解決 json too big 問題（Mandy需要的請勿刪~桑Q）
 builder.Services.AddControllers().AddJsonOptions(options =>
