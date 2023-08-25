@@ -146,12 +146,14 @@
                                                                    class="form-control" readonly />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label>密碼</label>
+                                                            <div class="d-flex justify-content-between">
+                                                                <label>密碼</label>
+                                                                <div class="text-right">
+                                                                    <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
+                                                                </div>
+                                                            </div>
                                                             <input type="password" placeholder="密碼" id="passwordInput" name="Password" pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
                                                                    class="form-control" required />
-                                                            <div class="text-right">
-                                                                <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
-                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
