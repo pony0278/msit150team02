@@ -49,8 +49,34 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         public IActionResult GetCaseDetails(int memberId, int caseId)
         {
 
+            var memberInfo = _context.ShopMemberInfo
+            .FirstOrDefault(m => m.MemberId == memberId);
 
-            return Json(new {  });
+            var caseTotal = _context.ShopMemberComplaintCase
+                .FirstOrDefault(o => o.ComplaintCaseId == caseId);
+
+            var caseStatusName = _context.ShopComplaintStatusData
+                .FirstOrDefault(pm => pm.ComplaintStatusId == caseTotal.ComplaintStatusId)?.ComplaintStatusName;
+
+            var categoryData = _context.ShopAppealCategoryData
+                .FirstOrDefault(sm => sm.AppealCategoryId == caseTotal.ComplaintCategoryId)?.CategoryName;
+
+            var replyData = _context.ShopReplyData.FirstOrDefault(sm => sm.ComplaintCaseId == caseTotal.ComplaintCaseId);
+
+            var replyAdminName = _context.ShopGameAdminData.FirstOrDefault(sm => sm.AdminId == replyData.ReceiverIdOfficial)?.AdminUsername;
+
+
+            var data = new
+            {
+                MemberInfo = memberInfo,
+                CaseTotal = caseTotal,
+                CaseStatusName = caseStatusName,
+                CategoryData = categoryData,
+                ReplyData = replyData,
+                ReplyAdminName = replyAdminName
+            };
+
+            return Json(new { data });
         }
     }
 }

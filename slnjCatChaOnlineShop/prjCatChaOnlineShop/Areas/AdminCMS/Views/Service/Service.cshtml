@@ -169,7 +169,7 @@
                 <!--編輯彈出視窗-->
                 <!---詳細資料model-->
                 <div class="modal fade" id="detailModalToggle" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title bg-dark text-white" id="exampleModalToggleLabel">
@@ -196,36 +196,44 @@
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                          aria-labelledby="nav-home-tab">
-                                        <p>ID</p>
-                                        <p>姓名：</p>
-                                        <p>帳號：</p>
-                                        <p>性別：</p>
-                                        <p>生日：</p>
-                                        <p>E-mail：</p>
-                                        <p>電話：</p>
-                                        <p>地址：</p>
-                                        <p>註冊日期：</p>
-                                        <p>最後登入：</p>
-                                        <p>會員狀態：</p>
+                                        <p id="memberId"></p>
+                                        <p id="name"></p>
+                                        <p id="memberAccount"></p>
+                                        <p id="gender"></p>
+                                        <p id="birthday"></p>
+                                        <p id="email"></p>
+                                        <p id="phoneNumber"></p>
+                                        <p id="address"></p>
+                                        <p id="registrationTime"></p>
+                                        <p id="lastLoginTime"></p>
+                                        <p id="memberStatus"></p>
                                     </div>
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel">
-                                        <p>申訴標題	Complaint Title：請問線上付款的步驟說明?</p>
-                                        <p>申訴類別ID	Complaint Category ID：付款問題</p>
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+                                                <p id="complaintCaseId"></p>
+                                                <p id="categoryData"></p>
+                                                <p id="replyId"></p>
+                                                <p id="replyAdminName"></p>
+                                            </div>
+                                            <div class="col-12 col-lg-6">
+                                                <p id="creationTime"></p>
+                                                <p id="caseStatusName"></p>
+                                                <p id="receiverIdOfficial"></p>
+                                                <span id="sentTime"></span>
+                                            </div>
+                                        </div>
+                                        <hr />
+                                        <h5 id="complaintTitle" class="mb-2" style="font-weight: bold;"></h5>
                                         <p>
-                                            客訴內容：
-                                            <textarea class="form-control" id="w3review" name="w3review" rows="4" cols="50" readonly disabled>我無法使用線上付款，能協助我提供操作步驟嗎?</textarea>
+                                            內容：
+                                            <textarea class="form-control" rows="4" cols="50" id="complaintContent" readonly disabled></textarea>
                                         </p>
                                         <p>
-                                            訊息(接收者)內容　 Message (Recipient) Content：
-                                            <textarea class="form-control" id="w3review" name="w3review" rows="4" cols="50" readonly disabled>已將操作步驟發送至郵件，請查看收件匣</textarea>
+                                            回覆：
+                                            <textarea class="form-control" id="messageRecipientContent" rows="4" cols="50" readonly disabled></textarea>
                                         </p>
-                                        <p> 回覆ID　Reply ID：</p>
-                                        <p>客訴案件ID　Complaint Case ID</p>
-                                        <p>接收者ID(官方)	　Receiver ID (Official) - </p>
-                                        <p>發送時間	Sent Time</p>
-                                        <p>客訴狀態ID：35835303</p>
-                                        <p>客訴案件ID：_______(此欄待確認)</p>
-                                        <p>建立時間：2023/08/16 </p>
+
                                     </div>
                                 </div>
                             </div>
@@ -250,7 +258,7 @@
                         });
                         //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
 
- //客訴案件ID	 申訴類別	建立時間   標題	會員姓名	狀態	詳細資料	編輯 / 刪除
+                        //客訴案件ID	 申訴類別	建立時間   標題	會員姓名	狀態	詳細資料	編輯 / 刪除
 
                         //==================datatable
                         $('#service-table').DataTable({
@@ -297,6 +305,40 @@
                                 data: { memberId: memberId, caseId: caseId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
                                 success: function (data) {
                                     console.log(data);
+
+
+                                    //============基本資料
+                                    $('#memberId').text("ID：" + data.data.memberInfo.memberId);
+                                    $('#name').text("姓名：" + data.data.memberInfo.name);
+                                    $('#memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
+                                    $('#gender').text("性別：" + data.data.memberInfo.gender);
+                                    $('#birthday').text("生日：" + data.data.memberInfo.birthday);
+                                    $('#email').text("E-mail：" + data.data.memberInfo.email);
+                                    $('#phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
+                                    $('#address').text("地址：" + data.data.memberInfo.address);
+                                    $('#registrationTime').text("註冊日期：" + data.data.memberInfo.registrationTime);
+                                    $('#lastLoginTime').text("最後登入：" + data.data.memberInfo.lastLoginTime);
+
+                                    if (data.data.memberInfo.memberStatus == true) {
+                                        $('#memberStatus').text("會員狀態：開放");
+                                    } else {
+                                        $('#memberStatus').text("會員狀態：凍結");
+                                    }
+
+                                    //============詳細內容
+
+                                    $('#complaintTitle').text("申訴標題：" + data.data.caseTotal.complaintTitle);
+                                    $('#complaintCaseId').text("案件ID：" + data.data.caseTotal.complaintCaseId);
+                                    $('#categoryData').text("申訴類別：" + data.data.categoryData);
+                                    $('#replyId').text("回覆ID：" + data.data.replyData.replyId);
+                                    $('#replyAdminName').text("回覆人員：" + data.data.replyAdminName);
+                                    $('#sentTime').text("回覆時間：" + data.data.replyData.sentTime);
+                                    $('#creationTime').text("發問時間：" + data.data.caseTotal.creationTime);
+
+                                    $('#caseStatusName').text("案件狀態：" + data.data.caseStatusName);
+                                    $('#receiverIdOfficial').text("接收者ID：" + data.data.replyData.receiverIdOfficial);
+                                    $('#complaintContent').val(data.data.caseTotal.complaintContent);
+                                    $('#messageRecipientContent').val(data.data.replyData.messageRecipientContent);
                                 },
                                 error: function (error, a, b) {
                                     console.log(error);
