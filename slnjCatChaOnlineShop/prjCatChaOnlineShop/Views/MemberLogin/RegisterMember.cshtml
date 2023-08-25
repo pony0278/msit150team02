@@ -79,7 +79,7 @@
                                         <label for="Email">電子信箱：</label>
                                         <input type="email" class="form-control" name="Email" id="emailInput"
                                                placeholder="email" required>
-                                        <div id="emailError" class="invalid-feedback error-message">此信箱已被註冊過</div>
+                                        <div id="emailError" class="error-message-color" style="font-size:15px">此信箱已被註冊過</div>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="PhoneNumber">手機號碼：</label>
@@ -234,7 +234,7 @@
 
             // 表單驗證
             $("#registerForm").validate({
-                errorClass: "error-message",
+                errorClass: "error-message-color",
                 submitHandler: function (form) {
                     if (!emailAlreadyRegistered) { // 檢查是否已經註冊
                         event.preventDefault(); // 防止預設行為的發生
