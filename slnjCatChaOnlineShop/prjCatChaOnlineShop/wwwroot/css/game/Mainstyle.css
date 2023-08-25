@@ -14,7 +14,8 @@
         display: none;
         place-items: center;
         font-size: 14px;
-        color: #FFFF37;
+        color: white;
+        font-family: 微軟正黑體;
     }
 
         .result-container > div:nth-child(1) {

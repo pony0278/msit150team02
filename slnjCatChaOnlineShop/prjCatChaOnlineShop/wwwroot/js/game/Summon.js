@@ -53,261 +53,33 @@ function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults) {
 
 
 
-CatPointTenDrows.addEventListener('click', async function () {
-    if (貓幣數量 >= 9000) {
-        try {
-            const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 100;
-            const drawResults = [];
-            const allImages = [];
-            const allItemName = [];
-            貓幣數量 -= 9000;
-/*            console.log(貓幣數量);*/
-
-
-            for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
-
-                // 初始化索引和臨時總數
-                let randomIndex = -1;
-                let tempSum = 0;
-
-                // 遍歷資料以找到對應的索引
-                for (let j = 0; j < gachaData.length; j++) {
-                    tempSum += gachaData[j].scaledProbability; // 累積縮放後的機率
-
-                    if (randomValue <= tempSum) {
-                        randomIndex = j;
-                        break;
-                    }
-                }
-                const drawnItem = gachaData[randomIndex];
-                if (drawnItem && drawnItem.productName) {
-                    // 將抽獎結果儲存在陣列中
-                    drawResults.push(drawnItem);
-                    allImages.push(drawnItem.productImage);
-                    allItemName.push(drawnItem.productName);
-                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
-                } else {
-                    i--; // 減少i以重新執行本次抽獎
-                }
-            }
-
-            // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
-            let maxResult = null;
-            for (const result of drawResults) {
-                if (result.scaledProbability < maxScaledProbability) {
-                    maxScaledProbability = result.scaledProbability;
-                    maxResult = result;
-                }
-            }
-            //將資料傳到Data傳進伺服器
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
-            if (maxResult) {
-                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
-                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
-            }
-        } catch (error) {
-            console.error('轉蛋時發生錯誤:', error);
-        }
-    }
-    else {
-        console.log("貓幣不足");
-    }
+CatPointTenDrows.addEventListener('click', function () {
+    confirmWin.style.display = 'block';
+    confirmWin_title.innerHTML = '進行轉蛋'
+    confirmWin_text.innerHTML = '即將消耗 9000 貓幣進行十連抽'
+    confirmWinBTN.onclick = doCCoinTenDraw;
 });
 
-RubyTenDrows.addEventListener('click', async function () {
-    if (紅利數量 >= 1800) {
-        try {
-            const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 10;
-            const drawResults = [];
-            const allImages = [];
-            const allItemName = [];
-            紅利數量 -= 1800;
-            console.log(紅利數量);
-
-            for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
-
-                // 初始化索引和臨時總數
-                let randomIndex = -1;
-                let tempSum = 0;
-
-                // 遍歷資料以找到對應的索引
-                for (let j = 0; j < gachaData.length; j++) {
-                    tempSum += gachaData[j].scaledProbability; // 累積縮放後的機率
-
-                    if (randomValue <= tempSum) {
-                        randomIndex = j;
-                        break;
-                    }
-                }
-                const drawnItem = gachaData[randomIndex];
-                if (drawnItem && drawnItem.productName) {
-                    // 將抽獎結果儲存在陣列中
-                    drawResults.push(drawnItem);
-                    allImages.push(drawnItem.productImage);
-                    allItemName.push(drawnItem.productName);
-                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
-                } else {
-                    i--; // 減少i以重新執行本次抽獎
-                }
-            }
-
-            // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
-            let maxResult = null;
-            for (const result of drawResults) {
-                if (result.scaledProbability < maxScaledProbability) {
-                    maxScaledProbability = result.scaledProbability;
-                    maxResult = result;
-                }
-            }
-            //將資料傳到Data傳進伺服器
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
-            if (maxResult) {
-                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
-                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量,'\r\n本輪大獎:', maxResult.productName);
-            }
-        } catch (error) {
-            console.error('轉蛋時發生錯誤:', error);
-        }
-    }
-    else {
-        console.log("紅利不足");
-    }
+RubyTenDrows.addEventListener('click', function () {
+    confirmWin.style.display = 'block';
+    confirmWin_title.innerHTML = '進行轉蛋'
+    confirmWin_text.innerHTML = '即將消耗 1800 紅利進行十連抽'
+    confirmWinBTN.onclick = doRubyTenDraw;
+    
 });
 
-CatPointSingleDrow.addEventListener('click', async function () {
-    if (貓幣數量 >= 1000) {
-        try {
-            const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 1;
-            const drawResults = [];
-            const allImages = [];
-            const allItemName = [];
-            貓幣數量 -= 1000;
-            console.log(貓幣數量);
-
-            for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
-
-                // 初始化索引和臨時總數
-                let randomIndex = -1;
-                let tempSum = 0;
-
-                // 遍歷資料以找到對應的索引
-                for (let j = 0; j < gachaData.length; j++) {
-                    tempSum += gachaData[j].scaledProbability; // 累積縮放後的機率
-
-                    if (randomValue <= tempSum) {
-                        randomIndex = j;
-                        break;
-                    }
-                }
-                const drawnItem = gachaData[randomIndex];
-                if (drawnItem && drawnItem.productName) {
-                    // 將抽獎結果儲存在陣列中
-                    drawResults.push(drawnItem);
-                    allImages.push(drawnItem.productImage);
-                    allItemName.push(drawnItem.productName);
-                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
-                } else {
-                    i--; // 減少i以重新執行本次抽獎
-                }
-            }
-
-            // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
-            let maxResult = null;
-            for (const result of drawResults) {
-                if (result.scaledProbability < maxScaledProbability) {
-                    maxScaledProbability = result.scaledProbability;
-                    maxResult = result;
-                }
-            }
-            //將資料傳到Data傳進伺服器
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
-            if (maxResult) {
-                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
-                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
-            }
-        } catch (error) {
-            console.error('轉蛋時發生錯誤:', error);
-        }
-    }
-    else {
-        console.log("貓幣不足");
-    }
+CatPointSingleDrow.addEventListener('click', function () {
+    confirmWin.style.display = 'block';
+    confirmWin_title.innerHTML = '進行轉蛋'
+    confirmWin_text.innerHTML = '即將消耗 1000 貓幣進行單抽'
+    confirmWinBTN.onclick = doCcoinSingleDraw;
 });
 
-RubySingleDrow.addEventListener('click', async function () {
-    if (紅利數量 >= 200) {
-        try {
-            const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 1;
-            const drawResults = [];
-            const allImages = [];
-            const allItemName = [];
-            紅利數量 -= 200;
-            console.log(紅利數量);
-
-            for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
-
-                // 初始化索引和臨時總數
-                let randomIndex = -1;
-                let tempSum = 0;
-
-                // 遍歷資料以找到對應的索引
-                for (let j = 0; j < gachaData.length; j++) {
-                    tempSum += gachaData[j].scaledProbability; // 累積縮放後的機率
-
-                    if (randomValue <= tempSum) {
-                        randomIndex = j;
-                        break;
-                    }
-                }
-                const drawnItem = gachaData[randomIndex];
-                if (drawnItem && drawnItem.productName) {
-                    // 將抽獎結果儲存在陣列中
-                    drawResults.push(drawnItem);
-                    allImages.push(drawnItem.productImage);
-                    allItemName.push(drawnItem.productName);
-                    //console.log(`第 ${i + 1} 次轉蛋：你獲得了 ${drawnItem.productName},${drawnItem.scaledProbability},${drawnItem.productImage}`);
-                } else {
-                    i--; // 減少i以重新執行本次抽獎
-                }
-            }
-
-            // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
-            let maxResult = null;
-            for (const result of drawResults) {
-                if (result.scaledProbability < maxScaledProbability) {
-                    maxScaledProbability = result.scaledProbability;
-                    maxResult = result;
-                }
-            }
-            //將資料傳到Data傳進伺服器
-            SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
-            if (maxResult) {
-                // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
-                showGachaResult(maxResult.scaledProbability, allImages, allItemName);
-                                console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量,'\r\n本輪大獎:', maxResult.productName);
-            }
-        } catch (error) {
-            console.error('轉蛋時發生錯誤:', error);
-        }
-    }
-    else {
-        console.log("紅利不足");
-    }
+RubySingleDrow.addEventListener('click', function () {
+    confirmWin.style.display = 'block';
+    confirmWin_title.innerHTML = '進行轉蛋'
+    confirmWin_text.innerHTML = '即將消耗 200 紅利進行單抽'
+    confirmWinBTN.onclick = doRubySingleDraw;
 });
 
 function showGachaResult(scaledProbability, allImages, allItemName,) {
@@ -382,9 +154,9 @@ function showGachaResult(scaledProbability, allImages, allItemName,) {
         const confirmButton = document.createElement('button');
         confirmButton.id = 'Btn_itemOk';
         confirmButton.textContent = '確認';
-        confirmButton.style.fontSize = '20px';
-        confirmButton.style.width = '70px';
-        confirmButton.style.height = '50px';
+        //confirmButton.style.fontSize = '20px';
+        //confirmButton.style.width = '70px';
+        //confirmButton.style.height = '50px';
 
 
         confirmButton.addEventListener('click', () => {

@@ -183,7 +183,9 @@ function closeConfirmWin() {
     confirmWin.style.display = 'none';//關閉確認視窗
     initialize();//初始化使用者資料
 }
-
+function closeConfirmWinForGacha() {
+    confirmWin.style.display = 'none';//關閉確認視窗
+}
 
 
 // 初始化目前被選擇的貓咪
@@ -269,7 +271,7 @@ async function doCCoinTenDraw() {
     if (貓幣數量 >= 9000) {
         try {
             const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 100;
+            const numDraws = 10;
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
@@ -317,6 +319,7 @@ async function doCCoinTenDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+                closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
                 console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
@@ -381,6 +384,7 @@ async function doRubyTenDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+                closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
                 console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
@@ -444,6 +448,7 @@ async function doCcoinSingleDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+                closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
                 console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);
@@ -507,6 +512,7 @@ async function doRubySingleDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+                closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);
                 console.log('本輪獲得物品:', allItemName, '\r\nUID:', 使用者ID, '\r\n角色名稱:', 角色名稱, '\r\n持有貓幣數量:', 貓幣數量, '\r\n持有紅利數量:', 紅利數量, '\r\n本輪大獎:', maxResult.productName);

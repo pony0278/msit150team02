@@ -93,3 +93,13 @@
     background-position: center; /* 設定背景圖片居中對齊 */
     border: none; /* 移除按鈕邊框 */
 }
+
+#Btn_itemOk {
+    border-radius: 7px;
+    border: 2px black solid;
+    background: #f0cf75;
+    padding-right: 15px;
+    padding-left: 15px;
+    font-family: 微軟正黑體;
+    font-size: 20px;
+}

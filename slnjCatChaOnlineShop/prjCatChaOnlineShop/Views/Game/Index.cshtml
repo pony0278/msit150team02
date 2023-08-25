@@ -17,15 +17,11 @@
         <!-- Start j轉蛋 -->
         <div id="CatchaGatCha">
             <div class="animation-container">
-                <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none;">
-                <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none;">
-                <img class="catcha A" src="../images/game/gacha/gacha_Animate_A.gif" style="display: none;">
+                <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none; z-index:99;">
+                <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none; z-index:99;">
+                <img class="catcha A" src="../images/game/gacha/gacha_Animate_A.gif" style="display: none; z-index:99;">
             </div>
-            @* 使用者貓幣紅利顯示*@
-            <div id="gachaShowCoin">
-                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
-                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
-            </div>
+           
             <div id="summon-buttons">
                 @*轉蛋按鈕*@
                 <button id="commonbackBTN"></button>
@@ -39,6 +35,11 @@
                 </div>
             </div>
             <div id="result" class="result-container"></div>
+            @* 使用者貓幣紅利顯示*@
+            <div id="gachaShowCoin">
+                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
+                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
+            </div>
         </div>
         <!-- End 轉蛋 -->
         <!-- Start 小遊戲說明提示 -->
