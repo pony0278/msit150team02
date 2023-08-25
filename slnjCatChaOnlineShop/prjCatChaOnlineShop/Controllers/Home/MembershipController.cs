@@ -520,10 +520,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         }
 
-        public IActionResult get()
-        {
-            return Content("hi");
-        }
 
         /*6.客服中心*/
 
