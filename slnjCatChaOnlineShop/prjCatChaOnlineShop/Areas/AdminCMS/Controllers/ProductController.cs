@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
+using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
 using System.Drawing;
 
@@ -23,57 +24,57 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
 
         //編輯資料、上傳圖片
-        [HttpPost]
-        [Consumes("multipart/form-data")]
-        public async Task<IActionResult> editorUploadImage([FromForm] CShopProductWrap cShopproduct)
-        {
-            var image = cShopproduct.Image;
+        //[HttpPost]
+        //[Consumes("multipart/form-data")]
+        //public async Task<IActionResult> editorUploadImage([FromForm] CShopProductWrap cShopproduct)
+        //{
+        //    var image = cShopproduct.Image;
 
-            if (image == null)
-            {
-                return BadRequest("找不到圖片");
-            }
-            string imageURL;
-            try
-            {
-                imageURL = await _imageService.UploadImageAsync(image);
-            }
-            catch
-            {
-                return BadRequest("上傳圖片錯誤");
-            }
+        //    if (image == null)
+        //    {
+        //        return BadRequest("找不到圖片");
+        //    }
+        //    string imageURL;
+        //    try
+        //    {
+        //        imageURL = await _imageService.UploadImageAsync(image);
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest("上傳圖片錯誤");
+        //    }
 
-            var newShopProduct = new ShopProductTotal
-            {
-                ProductId = cShopproduct.ProductId,
-                ProductName = cShopproduct.ProductName,
-                ProductDescription = cShopproduct.ProductDescription,
-                ProductCategory = cShopproduct.ProductCategory,
-                ReleaseDate = cShopproduct.ReleaseDate,
-                Size = cShopproduct.Size,
-                Weight = cShopproduct.Weight,
-                Supplier = cShopproduct.Supplier,
-                Discontinued = cShopproduct.Discontinued
-            };
+        //    var newShopProduct = new ShopProductTotal
+        //    {
+        //        ProductId = cShopproduct.ProductId,
+        //        ProductName = cShopproduct.ProductName,
+        //        ProductDescription = cShopproduct.ProductDescription,
+        //        ProductCategory = cShopproduct.ProductCategory,
+        //        ReleaseDate = cShopproduct.ReleaseDate,
+        //        Size = cShopproduct.Size,
+        //        Weight = cShopproduct.Weight,
+        //        Supplier = cShopproduct.Supplier,
+        //        Discontinued = cShopproduct.Discontinued
+        //    };
 
-            var newImage = new ShopProductImageTable
-            {
-                ProductPhoto = imageURL
-            };
-            newShopProduct.ShopProductImageTable.Add(newImage);
+        //    var newImage = new ShopProductImageTable
+        //    {
+        //        ProductPhoto = imageURL
+        //    };
+        //    newShopProduct.ShopProductImageTable.Add(newImage);
 
-            try
-            {
-                _cachaContext.ShopProductTotal.Add(newShopProduct);
-                await _cachaContext.SaveChangesAsync();
-            }
-            catch
-            {
-                return BadRequest("商品資料儲存錯誤");
-            }
+        //    try
+        //    {
+        //        _cachaContext.ShopProductTotal.Add(newShopProduct);
+        //        await _cachaContext.SaveChangesAsync();
+        //    }
+        //    catch
+        //    {
+        //        return BadRequest("商品資料儲存錯誤");
+        //    }
 
-            return Json(new { success = true, message = "編輯內容儲存成功" });
-        }
+        //    return Json(new { success = true, message = "編輯內容儲存成功" });
+        //}
 
 
         //上傳圖片
@@ -147,15 +148,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpGet]
         public IActionResult EditShopProducts(int? id)
         {
-            Console.WriteLine($"Received id: {id}");
             if (id == null)
             {
                 return Json(new { success = false, message = "Invalid ID" });
             }
             ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal
-                                                                                     .Include(p =>p.Supplier.CompanyName)
-                                                                                     .Include(p => p.ProductCategory.CategoryName)
-                                                                                    .FirstOrDefault(p => p.ProductId == id);
+                                                .Include(x => x.Supplier)
+                                                .FirstOrDefault(p => p.ProductId == id);
             if (cShopProductTotal == null)
             {
                 return Json(new { success = false, message = "Item not found" });
@@ -169,7 +168,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         public async Task<IActionResult> EditShopProducts([FromForm] CShopProductWrap cShopproduct)
         {
             var image = cShopproduct.Image;
-            var editProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == cShopproduct.ProductId);
+            var editProduct = _cachaContext.ShopProductTotal
+                .FirstOrDefault(p => p.ProductId == cShopproduct.ProductId);
 
             if (image == null || image.Length == 0)
             {
@@ -187,21 +187,33 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             if (editProduct != null)
             {
-                editProduct.ProductId = cShopproduct.ProductId;
-                editProduct.ProductName = cShopproduct.ProductName;
-                editProduct.ProductDescription = cShopproduct.ProductDescription;
-                editProduct.ProductPrice = cShopproduct.ProductPrice;
-                editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
-                editProduct.ProductCategory.CategoryName = cShopproduct.ProductCategory.CategoryName;
-                editProduct.ShopProductImageTable.FirstOrDefault().ProductPhoto =cShopproduct.ShopProductImageTable.FirstOrDefault().ProductPhoto;
+                if(image != null)
+                    editProduct.ProductImage1 = imageURL;
+                if (cShopproduct.PushToShop != null)
+                    editProduct.PushToShop = cShopproduct.PushToShop;
+                if (cShopproduct.ProductName !=null)
+                    editProduct.ProductName = cShopproduct.ProductName;
+                if (cShopproduct.ProductDescription != null) 
+                    editProduct.ProductDescription = cShopproduct.ProductDescription;
+                if (cShopproduct.ProductPrice != null)
+                    editProduct.ProductPrice = cShopproduct.ProductPrice;
+                if (cShopproduct.ProductCategoryId != null)
+                    editProduct.ProductCategoryId = cShopproduct.ProductCategoryId;
+                if (cShopproduct.Discontinued != null)
+                    editProduct.Discontinued = cShopproduct.Discontinued;
+                if(cShopproduct.Discount != null)
+                    editProduct.Discount = cShopproduct.Discount;
                 editProduct.ReleaseDate = cShopproduct.ReleaseDate;
+                editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
                 editProduct.Size = cShopproduct.Size;
                 editProduct.Weight = cShopproduct.Weight;
-                editProduct.Supplier.CompanyName = cShopproduct.Supplier.CompanyName;
-                editProduct.Discontinued = cShopproduct.Discontinued;
+                editProduct.OffDay = cShopproduct.OffDay;
+                editProduct.SupplierId = cShopproduct.SupplierId;
+                _cachaContext.Update(editProduct);
                 _cachaContext.SaveChanges();
+                return Json(new { success = true, message = "Item updated successfully" });
             }
-            return RedirectToAction("Product", "Product", new { area = "AdminCMS" });
+            return Json(new { success = false, message = "Item not found" });
         }
 
 
@@ -232,7 +244,12 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult Product()
         {
-            return View();
+            var product = new CproductsTotal
+            {
+                ProductCategories = _cachaContext.ShopProductCategory.ToList(),
+                shopProductTotals = _cachaContext.ShopProductTotal.ToList(),
+            };
+            return View(product);
         }
     }
 }

@@ -35,6 +35,14 @@ public partial class ShopProductTotal
 
     public decimal? Discount { get; set; }
 
+    public bool? PushToShop { get; set; }
+
+    public string ProductImage1 { get; set; }
+
+    public string ProductImage2 { get; set; }
+
+    public string ProductImage3 { get; set; }
+
     public virtual ShopProductCategory ProductCategory { get; set; }
 
     public virtual ICollection<ShopFavoriteDataTable> ShopFavoriteDataTable { get; set; } = new List<ShopFavoriteDataTable>();

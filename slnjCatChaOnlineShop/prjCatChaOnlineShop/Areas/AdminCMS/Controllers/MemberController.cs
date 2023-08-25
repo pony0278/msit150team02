@@ -34,6 +34,12 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             //判斷是否有登入
             if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
                 return View();
             }
             return RedirectToAction("Login", "CMSHome");
