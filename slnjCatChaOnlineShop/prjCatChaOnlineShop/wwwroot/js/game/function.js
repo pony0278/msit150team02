@@ -143,9 +143,9 @@ function updateRuby(num) {
 function feedCatGetCoupon(num) {
     $.ajax({
         type: "POST",
-        url: "/api/Api/UpdateGameData", // API 的 URL
+        url: "/api/Api/FeedCatGetCoupon", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fRuby: num }),
+        data: JSON.stringify({ fId: UserID, fProductId: num }),
         success: function (data) {
             initialize();
             console.log("feedCatGetCoupon:資料更新成功", data.message);
