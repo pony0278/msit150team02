@@ -52,48 +52,19 @@
                 <table id="service-table" class="table table-striped nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <th>回覆ID</th>
-                            <th>客訴案件ID</th>
+                            <th>案件ID</th>
+                            <th>類別ID</th>
                             <th>申訴類別</th>
-                            <th>接收者ID(官方)</th>
-                            <th>發送時間</th>
                             <th>建立時間</th>
+                            <th>標題</th>
                             <th>會員ID</th>
+                            <th>會員姓名</th>
+                            <th>狀態ID</th>
                             <th>狀態</th>
                             <th>詳細資料</th>
                             <th>編輯/刪除</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <!-- <td>1</td> -->
-                            <td>1</td>
-                            <td>001</td>
-                            <td>付款問題</td>
-                            <td>管理員1</td>
-                            <td>2023/08/03 13:32:05</td>
-                            <td>2023/08/02 14:44:06</td>
-                            <td>82</td>
-                            <td>待處理</td>
-                            <td>
-                                <button class="detail_input" data-bs-toggle="modal"
-                                        href="#exampleModalToggle" role="button">
-                                    詳細資料
-                                </button>
-                            </td>
-                            <td>
-                                <button class="btn" data-bs-toggle="modal"
-                                        href="#editModalToggle" role="button">
-                                    <i class="fas fa-edit"></i>
-                                </button>｜
-                                <button class="btn" onclick="userDelete()">
-                                    <a href="#" id="b5">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
                 <!--表格-->
                 <!--編輯彈出視窗-->
@@ -102,7 +73,7 @@
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯 Edit</h5>
+                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯客訴案件</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
@@ -120,15 +91,15 @@
                                             <div class="form-group">
                                                 <label class="form-label">申訴類別：</label>
                                                 <select class="form-control">
-                                                    <option>運送問題</option>
-                                                    <option>產品問題</option>
-                                                    <option>付款問題</option>
-                                                    <option>會員權益</option>
-                                                    <option>購物諮詢</option>
-                                                    <option>遊戲檢舉</option>
-                                                    <option>隱私保護</option>
-                                                    <option>獎勵活動</option>
-                                                    <option>其它事項</option>
+                                                    <option value="1">運送問題</option>
+                                                    <option value="2">產品問題</option>
+                                                    <option value="3">付款問題</option>
+                                                    <option value="4">會員權益</option>
+                                                    <option value="5">購物諮詢</option>
+                                                    <option value="6">遊戲檢舉</option>
+                                                    <option value="7">隱私保護</option>
+                                                    <option value="8">獎勵活動</option>
+                                                    <option value="9">其它事項</option>
                                                 </select>
                                             </div>
 
@@ -171,8 +142,13 @@
                                                 <label for="exampleFormControlTextarea1"
                                                        class="form-label">狀態：</label>
                                                 <select class="form-control">
-                                                    <option>待處理</option>
-                                                    <option>已解決</option>
+                                                    <option value="1">待處理</option>
+                                                    <option value="2">審核中</option>
+                                                    <option value="3">處理中</option>
+                                                    <option value="4">待回覆</option>
+                                                    <option value="5">已回覆</option>
+                                                    <option value="6">已解決</option>
+                                                    <option value="7">關閉</option>
                                                 </select>
                                             </div>
 
@@ -192,8 +168,7 @@
                 </div>
                 <!--編輯彈出視窗-->
                 <!---詳細資料model-->
-                <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                <div class="modal fade" id="detailModalToggle" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -260,41 +235,76 @@
                 <!---詳細資料model-->
                 @section Scripts{
                     <script>
-                        new DataTable('#service-table', {
-                            responsive: true,
-                            "searching": false, //隱藏搜尋框
-
-                            //========隱藏某一欄
-                            // columnDefs: [
-                            // {
-                            //     target: 10,
-                            //     visible: false,
-                            //     searchable: false
-                            // },
-                            // {
-                            //     target: 11,
-                            //     visible: false
-                            // }
-                            // ]
-                        });
-
-                        function userDelete() {
-                            Swal.fire({
-                                title: '確定要刪除嗎?',
-                                icon: 'warning',
-                                showCancelButton: true,
-                                confirmButtonColor: '#3085d6',
-                                cancelButtonColor: '#d33',
-                                confirmButtonText: 'Yes, delete it!'
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-                                    Swal.fire(
-                                        'Deleted!',
-                                        'Your file has been deleted.',
-                                        'success'
-                                    )
+                        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+                        $(document).ready(function () {
+                            $.ajax({
+                                url: '@Url.Action("ShowComplaintCase", "Service")',
+                                type: 'GET',
+                                success: function (data) {
+                                    console.log(data);
+                                },
+                                error: function (error) {
+                                    console.log(error);
                                 }
                             })
-                        }
+                        });
+                        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+
+ //客訴案件ID	 申訴類別	建立時間   標題	會員姓名	狀態	詳細資料	編輯 / 刪除
+
+                        //==================datatable
+                        $('#service-table').DataTable({
+                            "ajax": '@Url.Action("ShowComplaintCase", "Service")',
+                            "columns": [
+                                { data: 'complaintCaseId' },
+                                { data: 'appealCategoryId' },
+                                { data: 'categoryName' },
+                                { data: 'creationTime' },
+                                { data: 'complaintTitle' },
+                                { data: 'memberId' },
+                                { data: 'name' },
+                                { data: 'complaintStatusId' },
+                                { data: 'complaintStatusName' },
+                                {
+                                    data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                                    render: function (data, type, row, meta) {
+                                        return '<button class="detail_input" data-bs-toggle="modal" href="#detailModalToggle" role="button" data-memberid="' + row.memberId + '" data-caseid="' + row.complaintCaseId + '">詳細資料</button>';
+                                    }
+                                },
+                                {
+                                    data: null,
+                                    render: function (data, type, row, meta) {
+                                        var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#editModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
+                                        return editButton;
+                                    }
+                                },
+                            ],
+                            "paging": true, //分頁功能
+                            responsive: true, //RWD
+                            "searching": false, //隱藏搜尋框
+                        });
+
+
+                        //==================按下「詳細資料」按鈕的點擊事件處理
+                        $('#service-table').on('click', '.detail_input', function () {
+                            var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                            var caseId = $(this).data('caseid'); //這邊要注意大小寫....不然可能會抓不到值
+
+                            //----------------AJAX
+                            $.ajax({
+                                url: '@Url.Action("GetCaseDetails", "Service")',
+                                type: 'GET',
+                                data: { memberId: memberId, caseId: caseId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                                success: function (data) {
+                                    console.log(data);
+                                },
+                                error: function (error, a, b) {
+                                    console.log(error);
+                                    console.log(a);
+                                    console.log(b);
+                                    console.log("Error retrieving member details.");
+                                }
+                            });
+                        });
                     </script>
                 }

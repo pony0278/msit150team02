@@ -25,6 +25,7 @@ let gachaTextRuby = document.getElementById('gachaTextRuby')
 function initialize() {
     $.ajax({
         url: '/Api/Api/TestDBLogin',
+        contentType: 'application/json',
         type: 'GET',
         success: function (data) {
             if (data.length > 0) {
@@ -137,6 +138,24 @@ function updateRuby(num) {
         }
     });
 }
+
+//餵食貓貓得到折價券的方法 //九折券 GameProductID = 15，couponID = 7
+function feedCatGetCoupon(num) {
+    $.ajax({
+        type: "POST",
+        url: "/Api/Api/FeedCatGetCoupon", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fProductId: num }),
+        success: function (data) {
+            initialize();
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
+}
+
 
 //從資料庫更新小遊戲最高分數方法，，num為最高分數觸發
 function updateHighestScore(num) {

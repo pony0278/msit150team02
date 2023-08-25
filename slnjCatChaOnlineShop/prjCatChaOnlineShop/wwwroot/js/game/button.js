@@ -24,7 +24,8 @@ function pagesControl(blockpage)//參數blockpage填入當前需要顯示的畫�
 
 //回首頁功能
 commonbackBTN.addEventListener("click", () => { 
-  pagesControl(Canvaslobby);
+    pagesControl(Canvaslobby);
+    alterConfirmWinBTN('確認', closeConfirmWin)
   });
 
 //小遊戲說明

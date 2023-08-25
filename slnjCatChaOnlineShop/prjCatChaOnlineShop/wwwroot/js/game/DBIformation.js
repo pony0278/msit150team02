@@ -84,6 +84,9 @@ testDBlogin.addEventListener('click', async function () {
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
         const userData = await initialize();
+        gachaData.forEach(testlProbability => {
+            console.log(testlProbability.scaledProbability)
+        })
         information.forEach(IFM => {
             console.log(
                 'ProductId:', IFM.ProductId,

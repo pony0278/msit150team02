@@ -34,6 +34,10 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             {
                 string Json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CAdminLogin.SK_LOGINED_USER, Json);
+
+                // 將管理員姓名用session存起來
+                HttpContext.Session.SetString("AdminName", user.AdminUsername);
+
                 return RedirectToAction("Member", "Member");
             }
             else

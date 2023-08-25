@@ -169,7 +169,20 @@
                         </button>
                     </div>
                     <div class="col-md-12 col-8 text-end">
-                        <span>管理員姓名</span>
+                        @{
+                            //string adminName = HttpContext.Session.GetString("AdminName");
+
+                            var adminName = ViewBag.AdminName as string;
+
+                            if (!string.IsNullOrEmpty(adminName))
+                            {
+                                <span>Welcome, @adminName</span>
+                            }
+                            else
+                            {
+                                <span>Welcome, Guest</span>
+                            }
+                        }
                         <img class="img-profile rounded-circle" src="~/images/undraw_profile.svg" />
                     </div>
                 </div>
