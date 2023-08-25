@@ -152,30 +152,18 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
                 return Json(new { success = false, message = "Invalid ID" });
             }
-            ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == id);
+            ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal
+                                                                                     .Include(p =>p.Supplier.CompanyName)
+                                                                                     .Include(p => p.ProductCategory.CategoryName)
+                                                                                    .FirstOrDefault(p => p.ProductId == id);
             if (cShopProductTotal == null)
             {
                 return Json(new { success = false, message = "Item not found" });
             }
             return Json(new { success = true, data = cShopProductTotal });
-
-            //var prod = _cachaContext.ShopProductTotal
-            //          .Include(p => p.ProductCategory)
-            //          .Include(p => p.ShopProductImageTable)
-            //           .Include(p => p.Supplier)
-            //          .FirstOrDefault(p => p.ProductId == id);
-
-            //if (prod != null)
-            //{
-            //    return Json(new { data = prod });
-            //}
-            //else
-            //{
-            //    return NotFound();
-            //}
         }
 
-        //編輯
+        //儲存編輯
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> EditShopProducts([FromForm] CShopProductWrap cShopproduct)
@@ -217,7 +205,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
 
 
-        //儲存
+        //新增
         [HttpPost]
         public IActionResult CreateProduct(ShopProductTotal newProduct)
         {
