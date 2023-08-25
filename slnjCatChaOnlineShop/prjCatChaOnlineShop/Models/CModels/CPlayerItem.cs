@@ -6,5 +6,9 @@
         public int fMilkCount { get; set; }
         public int fCanCount { get; set; }
 
+        public int fProductId { get; set; }
+
+
+
     }
 }
