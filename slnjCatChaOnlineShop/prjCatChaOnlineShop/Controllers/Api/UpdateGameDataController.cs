@@ -40,6 +40,16 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 db.RunGameHighestScore = nID.fScore;
                 _context.SaveChanges();
             }
+            ////TODO 如果該玩家是第一次進入遊戲，把這個方法初始化到新註冊會員裡面
+            //if (db.CharacterName == null) 
+            //{
+            //    db.CatCoinQuantity = 1000;
+            //    db.LoyaltyPoints = 0;
+            //    db.RunGameHighestScore = 0;
+            //    _context.SaveChanges();
+            //}
+
+
 
             return Ok(new { message = "數據已成功保存" });
         }

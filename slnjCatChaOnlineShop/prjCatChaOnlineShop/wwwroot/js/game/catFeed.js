@@ -92,19 +92,19 @@ function feedAndGetReward() {//隨機獲得貓幣方法
     const num = Math.floor(Math.random() * 100) + 1
     console.log(num);
     switch (true) {
-        case num <= 2:
+        case num <= 99:
             confirmWin_text.innerHTML = '貓抓抓商城 50元折價券*1'//TODO 改成 先寫回資料庫，再重新讀取回來
+            feedCatGetCoupon(19)
+            break;
+        //case num <= 10 && num > 2:
+        //    confirmWin_text.innerHTML = '紅利 50'
+        //    updateRuby(50)
+        //    break;
+        //default:
 
-            break;
-        case num <= 10 && num > 2:
-            confirmWin_text.innerHTML = '紅利 50'
-            updateRuby(50)
-            break;
-        default:
-
-            confirmWin_text.innerHTML = '貓幣 200'
-            updateCCoint(200)
-            break;
+        //    confirmWin_text.innerHTML = '貓幣 200'
+        //    updateCCoint(200)
+        //    break;
     }
     confirmWin_title.innerHTML = '恭喜獲得'
     setTimeout(() => { // 計時器  

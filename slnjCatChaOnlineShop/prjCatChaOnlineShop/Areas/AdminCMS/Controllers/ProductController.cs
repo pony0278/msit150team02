@@ -162,7 +162,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { success = true, data = cShopProductTotal });
         }
 
-        //編輯
+        //儲存編輯
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> EditShopProducts([FromForm] CShopProductWrap cShopproduct)
@@ -212,7 +212,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
 
 
-        //儲存
+        //新增
         [HttpPost]
         public IActionResult CreateProduct(ShopProductTotal newProduct)
         {
