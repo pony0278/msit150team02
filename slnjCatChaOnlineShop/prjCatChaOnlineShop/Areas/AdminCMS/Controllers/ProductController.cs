@@ -187,23 +187,28 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             if (editProduct != null)
             {
-                editProduct.ProductImage1 = imageURL;
-                //editProduct.ProductImage2 = imageURL;
-                //editProduct.ProductImage3 = imageURL;
-                //editProduct.Attributes = cShopproduct.Attributes;
-                editProduct.PushToShop = cShopproduct.PushToShop;
-                editProduct.ProductName = cShopproduct.ProductName;
-                editProduct.ProductDescription = cShopproduct.ProductDescription;
-                //editProduct.ProductPrice = cShopproduct.ProductPrice;
-                //editProduct.ProductCategoryId = cShopproduct.ProductCategoryId;
-                //editProduct.Discontinued = cShopproduct.Discontinued;
-                //editProduct.Discount = cShopproduct.Discount;
-                //editProduct.ReleaseDate = cShopproduct.ReleaseDate;
-                //editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
-                //editProduct.Size = cShopproduct.Size;
-                //editProduct.Weight = cShopproduct.Weight;
-                //editProduct.OffDay = cShopproduct.OffDay;
-                //editProduct.SupplierId = cShopproduct.SupplierId;
+                if(image != null)
+                    editProduct.ProductImage1 = imageURL;
+                if (cShopproduct.PushToShop != null)
+                    editProduct.PushToShop = cShopproduct.PushToShop;
+                if (cShopproduct.ProductName !=null)
+                    editProduct.ProductName = cShopproduct.ProductName;
+                if (cShopproduct.ProductDescription != null) 
+                    editProduct.ProductDescription = cShopproduct.ProductDescription;
+                if (cShopproduct.ProductPrice != null)
+                    editProduct.ProductPrice = cShopproduct.ProductPrice;
+                if (cShopproduct.ProductCategoryId != null)
+                    editProduct.ProductCategoryId = cShopproduct.ProductCategoryId;
+                if (cShopproduct.Discontinued != null)
+                    editProduct.Discontinued = cShopproduct.Discontinued;
+                if(cShopproduct.Discount != null)
+                    editProduct.Discount = cShopproduct.Discount;
+                editProduct.ReleaseDate = cShopproduct.ReleaseDate;
+                editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
+                editProduct.Size = cShopproduct.Size;
+                editProduct.Weight = cShopproduct.Weight;
+                editProduct.OffDay = cShopproduct.OffDay;
+                editProduct.SupplierId = cShopproduct.SupplierId;
                 _cachaContext.Update(editProduct);
                 _cachaContext.SaveChanges();
                 return Json(new { success = true, message = "Item updated successfully" });

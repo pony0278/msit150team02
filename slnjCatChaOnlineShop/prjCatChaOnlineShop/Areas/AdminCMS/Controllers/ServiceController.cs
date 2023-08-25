@@ -48,54 +48,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
         public IActionResult GetCaseDetails(int memberId, int caseId)
         {
-            var memberInfo = _context.ShopMemberInfo
-            .FirstOrDefault(m => m.MemberId == memberId);
 
-            var complaintCase = _context.ShopComplaintStatusData
-                .FirstOrDefault(o => o.ComplaintCaseId == caseId);
 
-            var complaintCaseName = _context.ShopAppealCategoryData
-        .FirstOrDefault(c => c.AppealCategoryId == caseId)?.CategoryName;
-            //        var orderDetails = _context.ShopOrderDetailTable
-            //            .Where(od => od.OrderId == orderId)
-            //            .ToList();
-
-            //        var productIds = orderDetails.Select(od => od.ProductId).ToList();
-
-            //        var products = _context.ShopProductTotal
-            //            .Where(p => productIds.Contains(p.ProductId))
-            //            .ToList();
-
-            //        var paymentMethod = _context.ShopPaymentMethodData
-            //            .FirstOrDefault(pm => pm.PaymentMethodId == orderTotal.PaymentMethodId)?.PaymentMethodName;
-
-            //        var shippingMethod = _context.ShopShippingMethod
-            //            .FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.ShippingMethodName;
-
-            //        var shippment = _context.ShopShippingMethod
-            //.FirstOrDefault(sm => sm.ShippingMethodId == orderTotal.ShippingMethodId)?.Shippment;
-
-            //        var couponContent = _context.ShopCouponTotal
-            //            .FirstOrDefault(ct => ct.CouponId == orderTotal.CouponId)?.CouponContent;
-
-            //        var orderStatus = _context.ShopOrderStatusData
-            //            .FirstOrDefault(os => os.OrderStatusId == orderTotal.OrderStatusId)?.StatusName;
-
-            var data = new
-            {
-                MemberInfo = memberInfo,
-                complaintCase = complaintCase,
-                complaintCaseName = complaintCaseName,
-                //OrderDetails = orderDetails,
-                //Products = products,
-                //PaymentMethod = paymentMethod,
-                //ShippingMethod = shippingMethod,
-                //CouponContent = couponContent,
-                //OrderStatus = orderStatus,
-                //Shippment = shippment
-            };
-
-            return Json(new { data });
+            return Json(new {  });
         }
     }
 }

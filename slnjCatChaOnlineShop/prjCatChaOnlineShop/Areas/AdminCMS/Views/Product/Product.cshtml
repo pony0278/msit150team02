@@ -479,13 +479,14 @@
                 var id = $('#editor-id').val();
                 var name = $('#editor-name').val()
                 var description = $('#editor-description').val()
-                var price = $('#editor-price').val
-                var remainingquantity = $('#editor-remainingquantity').val
-                var releasedate = $('#editor-releasedate').val
-                var size = $('#editor-size').val
-                var weight = $('#editor-weight').val
-                var discount = $("#editor-discount").val
-                var supplier = $('#editor-supplier').val
+                var price = $('#editor-price').val()
+                var remainingquantity = $('#editor-remainingquantity').val()
+                var releasedate = $('#editor-releasedate').val()
+                var size = $('#editor-size').val()
+                var offday = $("#editor-offdate").val()
+                var weight = $('#editor-weight').val()
+                var discount = $("#editor-discount").val()
+                var supplier = $('#editor-supplier').val()
                 var discontinued = $('#editor-discontinued').is(":checked")
                 var pinToShop = $('#editor-pinToShop').is(":checked")
                 var fileInput = $('#editor-image')[0];
@@ -501,18 +502,17 @@
                 formData.append("ProductId", id);
                 formData.append("Productname", name);
                 formData.append("Productdescription", description);
-                //formData.append("Productprice", price);
-                //formData.append("RemainingQuantity", remainingquantity);
-                //formData.append("ProductCategoryId", TypeEditor);
-                //formData.append("ReleaseDate", releasedate);
-                //formData.append("Size", size);
-                //formData.append("Weight", weight);
-                //formData.append("SupplierId", supplier);
-                //formData.append("Discontinued", discontinued);
-                //formData.append("Discount", discount)
+                formData.append("ProductPrice", price);
+                formData.append("RemainingQuantity", remainingquantity);
+                formData.append("ProductCategoryId", TypeEditor);
+                formData.append("ReleaseDate", releasedate);
+                formData.append("Size", size);
+                formData.append("Weight", weight);
+                formData.append("SupplierId", supplier);
+                formData.append("Discontinued", discontinued);
+                formData.append("OffDay", offday)
+                formData.append("Discount", discount)
                 formData.append("Image", file)
-                //formData.append("Image", file2)
-                //formData.append("Image", file3)
                 formData.append("PushToShop", pinToShop)
 
                 $.ajax({

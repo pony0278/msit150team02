@@ -20,11 +20,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
         [HttpGet]
         public IActionResult 玩家資訊數據()
         {
-<<<<<<< HEAD
+
             var memberId = 1034; // 預設的 MemberId，您可以根據需要進行更改
-=======
-            var memberId = 1033; // 預設的 MemberId，您可以根據需要進行更改
->>>>>>> a5b04441ebab2828acdb72490866629e8d3e0456
+
+            //var memberId = 1033; // 預設的 MemberId，您可以根據需要進行更改
+
 
             // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
             if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == memberId))
