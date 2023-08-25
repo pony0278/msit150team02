@@ -205,7 +205,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 editProduct.ProductPrice = cShopproduct.ProductPrice;
                 editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
                 editProduct.ProductCategory.CategoryName = cShopproduct.ProductCategory.CategoryName;
-                editProduct.ShopProductImageTable.FirstOrDefault().ProductPhoto = cShopproduct.ShopProductImageTable.FirstOrDefault().ProductPhoto;
+                editProduct.ShopProductImageTable.FirstOrDefault().ProductPhoto =cShopproduct.ShopProductImageTable.FirstOrDefault().ProductPhoto;
                 editProduct.ReleaseDate = cShopproduct.ReleaseDate;
                 editProduct.Size = cShopproduct.Size;
                 editProduct.Weight = cShopproduct.Weight;

@@ -700,6 +700,13 @@
             })
 
         })
+        //修復遊戲側邊按鈕
+        document.getElementById("go-to-game").addEventListener("click", function (event) {
+            event.preventDefault();
+
+            // 手動進行轉跳
+            window.location.href = '/Game/Index';
+        });
 
 </script>
 }
