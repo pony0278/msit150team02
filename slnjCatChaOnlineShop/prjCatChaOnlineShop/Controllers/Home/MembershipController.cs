@@ -169,12 +169,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 4);
 
                 memberToUpdate.Name = member.Name;
-                /*
                 memberToUpdate.Password = member.Password;
                 memberToUpdate.Email = member.Email;
                 memberToUpdate.PhoneNumber = member.PhoneNumber;
                 memberToUpdate.Birthday = member.Birthday;
-                */
+
                 _context.SaveChanges();
 
                 return Content("修改成功");
@@ -479,30 +478,20 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         /*5.客訴紀錄*/
 
-        //取得退貨紀錄
-
-        public IActionResult GetComplaintCase()
+        //取得客訴紀錄
+        
+        public IActionResult GetComplaintCaseDetail(int complaintcaseid)
         {
             
             try
             {
-
-                var datas = from p in _context.ShopMemberComplaintCase
-                            join q in _context.ShopReplyData on p.ComplaintCaseId equals q.ComplaintCaseId
-                            where p.MemberId == 1
+                var datas = from p in _context.ShopReplyData
+                            where p.ComplaintCaseId == complaintcaseid
                             select new
                             {
-                                p.ComplaintCaseId,
-                                p.ComplaintContent,
-                                p.ComplaintTitle,
-                                p.CreationTime,
-                                p.ComplaintStatus.ComplaintStatusName,
-                                p.ComplaintCategory.CategoryName,
-
-                                q.MessageRecipientContent,
-                                q.SentTime
+                                p.MessageRecipientContent,
+                                p.SentTime
                             };
-
 
                 if (datas.Any())
                 {
@@ -519,7 +508,40 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
 
         }
+        
+        public async Task<IActionResult> GetComplaintCase()
+        {
+            try
+            {
+                var datas = await _context.ShopMemberComplaintCase
+                    .AsNoTracking()
+                    .OrderByDescending(p => p.CreationTime)
+                    .Where(p => p.MemberId == 1)
+                    .Select(p => new
+                    {
+                        p.ComplaintCaseId,
+                        p.ComplaintContent,
+                        p.ComplaintTitle,
+                        p.CreationTime,
+                        p.ComplaintStatus.ComplaintStatusName,
+                        p.ComplaintCategory.CategoryName,
+                    })
+                    .ToListAsync();
 
+                if (datas.Any())
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
 
         /*6.客服中心*/
 
