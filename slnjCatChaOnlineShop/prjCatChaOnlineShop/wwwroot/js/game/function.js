@@ -114,7 +114,7 @@ function updateCCoint(num) {
         data: JSON.stringify({ fId: UserID, fCCoin: num }),
         success: function (data) {
             initialize();
-            console.log("資料更新成功", data.message);
+            console.log("updateCCoint:資料更新成功", data.message);
         },
         error: function (error) {
             console.log("資料更新失敗", error);
@@ -131,7 +131,7 @@ function updateRuby(num) {
         data: JSON.stringify({ fId: UserID, fRuby: num }),
         success: function (data) {
             initialize();
-            console.log("資料更新成功", data.message);
+            console.log("updateRuby:資料更新成功", data.message);
         },
         error: function (error) {
             console.log("資料更新失敗", error);
@@ -143,12 +143,12 @@ function updateRuby(num) {
 function feedCatGetCoupon(num) {
     $.ajax({
         type: "POST",
-        url: "/Api/Api/FeedCatGetCoupon", // API 的 URL
+        url: "/api/Api/FeedCatGetCoupon", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
         data: JSON.stringify({ fId: UserID, fProductId: num }),
         success: function (data) {
             initialize();
-            console.log("資料更新成功", data.message);
+            console.log("feedCatGetCoupon:資料更新成功", data.message);
         },
         error: function (error) {
             console.log("資料更新失敗", error);

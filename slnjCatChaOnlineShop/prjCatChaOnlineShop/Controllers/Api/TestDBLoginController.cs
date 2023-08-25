@@ -84,23 +84,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 _context.SaveChanges();
             }
 
-            // 執行查詢
-            var datas = (from p in _context.ShopMemberInfo
-                         join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
-                         where p.MemberId == _MemberId
-                         select new
-                         {
-                             p.MemberId,
-                             p.CharacterName,
-                             p.CatCoinQuantity,
-                             p.LoyaltyPoints,
-                             p.RunGameHighestScore,
-                             i.ProductId,
-                             i.QuantityOfInGameItems,
-                             i.ItemName
-                         })
-                         .Distinct()
-                         .ToList();
+            //var memberId = 1033; // 預設的 MemberId，您可以根據需要進行更改
 
             // 在這裡繼續處理結果，將集合中的元素合併
             // ...

@@ -8,10 +8,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
 {
     [Route("api/Api/[controller]")]
     [ApiController]
-    public class FeedCatGetCouponControllerController : ControllerBase
+    public class FeedCatGetCouponController: ControllerBase
     {
         private readonly cachaContext _context;
-        public FeedCatGetCouponControllerController(cachaContext context)
+        public FeedCatGetCouponController(cachaContext context)
         {
             _context = context;
         }
