@@ -41,12 +41,12 @@ async function fetchData() {
 }
 async function fetchDBData() {
     try {
-        const response = await fetch('/api/Api/TestDBLogin');
+        const response = await fetch('/Api/Api/TestDBLogin/玩家資訊數據');
         if (!response.ok) {
             console.error('網路錯誤'); // 在拋出錯誤之前印出錯誤訊息
             throw new Error('網路錯誤');
         }
-
+        
         const data = await response.json(); // 解析 JSON 格式的回應內容
 
         // 創建一個空陣列來儲存處理後的資料

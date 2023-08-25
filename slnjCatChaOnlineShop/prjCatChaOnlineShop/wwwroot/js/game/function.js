@@ -24,7 +24,7 @@ let gachaTextRuby = document.getElementById('gachaTextRuby')
 //載入(更新)資料庫資訊方法
 function initialize() {
     $.ajax({
-        url: '/Api/Api/TestDBLogin',
+        url: '/Api/Api/TestDBLogin/玩家資訊數據',
         contentType: 'application/json',
         type: 'GET',
         success: function (data) {

@@ -11,23 +11,20 @@ namespace prjCatChaOnlineShop.Controllers.Api
     public class TestDBLoginController : ControllerBase
     {
         private readonly cachaContext _context;
-        public TestDBLoginController(cachaContext context)
+        private int _memberId;
+       public TestDBLoginController(cachaContext context)
         {
             _context = context;
-        }
-        //http://localhost:5090/Api/Api/TestDBLogin
 
-        [HttpGet]
+        }
+        //http://localhost:5090/Api/Api/TestDBLogin/玩家資訊數據
+
+        [HttpGet("玩家資訊數據")]
         public IActionResult 玩家資訊數據()
         {
 
-            var memberId = 1034; // 預設的 MemberId，您可以根據需要進行更改
-
-            //var memberId = 1033; // 預設的 MemberId，您可以根據需要進行更改
-
-
-            // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
-            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == memberId))
+            int _MemberId=1033;
+            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _MemberId))
             {
                 var gameProductTotalRecords = _context.GameProductTotal.ToList();
 
@@ -37,7 +34,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     var defaultItem = new GameItemPurchaseRecord
                     {
-                        MemberId = memberId,
+                        MemberId = _MemberId,
                         ProductId = gameProductTotalRecord.ProductId,
                         QuantityOfInGameItems = 0, 
                         ItemName = gameProductTotalRecord.ProductName
@@ -45,7 +42,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 }
                 var defaultI = new GameItemPurchaseRecord
                 {
-                    MemberId = memberId,
+                    MemberId = _MemberId,
                     ProductId = 22,
                     QuantityOfInGameItems = 1,
                     ItemName = "初始褐貓"
@@ -58,7 +55,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 var gameProductTotalRecords = _context.GameProductTotal.ToList();
                 var existingProductIds = new HashSet<int>();
 
-                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == memberId))
+                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _MemberId))
                 {
                     existingProductIds.Add((int)existingRecord.ProductId);
                 }
@@ -77,7 +74,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     var defaultItem = new GameItemPurchaseRecord
                     {
-                        MemberId = memberId,
+                        MemberId = _MemberId,
                         ProductId = missingProductId,
                         QuantityOfInGameItems = 0,
                         ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
@@ -90,7 +87,116 @@ namespace prjCatChaOnlineShop.Controllers.Api
             // 執行查詢
             var datas = (from p in _context.ShopMemberInfo
                          join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
-                         where p.MemberId == memberId
+                         where p.MemberId == _MemberId
+                         select new
+                         {
+                             p.MemberId,
+                             p.CharacterName,
+                             p.CatCoinQuantity,
+                             p.LoyaltyPoints,
+                             p.RunGameHighestScore,
+                             i.ProductId,
+                             i.QuantityOfInGameItems,
+                             i.ItemName
+                         })
+                         .Distinct()
+                         .ToList();
+
+            // 在這裡繼續處理結果，將集合中的元素合併
+            // ...
+
+            if (datas.Any())
+            {
+                // 在這裡繼續處理結果，將集合中的元素合併
+                var mergedData = datas
+                    .GroupBy(d => new { d.MemberId, d.CharacterName, d.CatCoinQuantity, d.LoyaltyPoints, d.RunGameHighestScore })
+                    .Select(group => new
+                    {
+                        group.Key.MemberId,
+                        group.Key.CharacterName,
+                        group.Key.CatCoinQuantity,
+                        group.Key.LoyaltyPoints,
+                        group.Key.RunGameHighestScore,
+                        GameItemInfo = group.Select(g => new { g.ProductId, g.QuantityOfInGameItems, g.ItemName })
+                    })
+                    .ToList();
+                return new JsonResult(mergedData);
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpPost("玩家登入數據")]
+        public IActionResult 玩家登入數據([FromBody] GameReturnGachaDataModel rgm)
+        {
+            _memberId = rgm.MemberId;
+  
+            // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
+            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _memberId))
+            {
+                var gameProductTotalRecords = _context.GameProductTotal.ToList();
+
+                var defaultitems = _context.GameItemPurchaseRecord;
+
+                foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                {
+                    var defaultItem = new GameItemPurchaseRecord
+                    {
+                        MemberId = _memberId,
+                        ProductId = gameProductTotalRecord.ProductId,
+                        QuantityOfInGameItems = 0,
+                        ItemName = gameProductTotalRecord.ProductName
+                    };
+                }
+                var defaultI = new GameItemPurchaseRecord
+                {
+                    MemberId = _memberId,
+                    ProductId = 22,
+                    QuantityOfInGameItems = 1,
+                    ItemName = "初始褐貓"
+                };
+                _context.GameItemPurchaseRecord.Add(defaultI);
+                _context.SaveChanges();
+            }
+            else
+            {
+                var gameProductTotalRecords = _context.GameProductTotal.ToList();
+                var existingProductIds = new HashSet<int>();
+
+                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _memberId))
+                {
+                    existingProductIds.Add((int)existingRecord.ProductId);
+                }
+
+                var missingProductIds = new List<int>();
+
+                foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                {
+                    if (!existingProductIds.Contains(gameProductTotalRecord.ProductId))
+                    {
+                        missingProductIds.Add(gameProductTotalRecord.ProductId);
+                    }
+                }
+
+                foreach (var missingProductId in missingProductIds)
+                {
+                    var defaultItem = new GameItemPurchaseRecord
+                    {
+                        MemberId = _memberId,
+                        ProductId = missingProductId,
+                        QuantityOfInGameItems = 0,
+                        ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
+                    };
+                    _context.GameItemPurchaseRecord.Add(defaultItem);
+                }
+                _context.SaveChanges();
+            }
+
+            // 執行查詢
+            var datas = (from p in _context.ShopMemberInfo
+                         join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
+                         where p.MemberId == _memberId
                          select new
                          {
                              p.MemberId,
@@ -131,9 +237,8 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-
-        [HttpPost]
-        public IActionResult 傳回玩家資訊數據([FromBody] GameReturnGachaDataModel rgm)
+        [HttpPost("傳回轉蛋數據")]
+        public IActionResult 傳回轉蛋數據([FromBody] GameReturnGachaDataModel rgm)
         {
             if (!ModelState.IsValid)
             {

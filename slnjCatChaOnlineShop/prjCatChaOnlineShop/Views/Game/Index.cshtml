@@ -11,7 +11,8 @@
 }
 
 <!-- Start 遊戲畫面 -->
-<div class="canvas-container">
+
+<div class="canvas-container"style="display:none">
     <div class="gamelayer">
         <canvas id="Canvaslobby"></canvas>
         <!-- Start j轉蛋 -->
@@ -119,14 +120,26 @@
 
     <!-- End Canvas遊戲畫布 -->
 </div>
+<div id="userMemberidlogin">
+    <label for="memberId">請輸入memberId: </label>
+    <input type="text" id="memberId" name="memberId" pattern="[0-9]*"><br><br>
+    <input type="submit" id="memberIdLogin" value="Submit">
+</div>
+<div id="registerForm" style="display: none;">
 
-<button type="submit" id="testlogin">測試登入</button>
-<button type="submit" id="testDBlogin">測試資料庫登入</button>
-<button type="submit" id="testGameDB">測試寫入遊戲資料</button>
+    <label for="characterName">請輸入CharacterName: </label>
+    <input type="text" id="characterName" name="characterName"><br><br>
+
+    <button id="registerButton">註冊</button>
+</div>
+<button type="submit" id="testlogin" style="display: none;">測試登入</button>
+<button type="submit" id="testDBlogin" style="display: none;">測試資料庫登入</button>
+<button type="submit" id="testGameDB" style="display: none;">測試寫入遊戲資料</button>
 <!-- End 遊戲畫面 -->
 <!-- 遊戲相關js -->
 @section Scripts{
     <script src="~/js/game/DBIformation.js"></script>
+    <script src="~/js/game/GameLogin.js"></script>
     <script src="~/js/game/Main.js"></script>
     <script src="~/js/game/function.js"></script>
     <script src="~/js/game/button.js"></script>

@@ -20,7 +20,7 @@ const playerDataArray = [];
 
 // 當使用者進行抽獎時，將抽獎數據添加到 playerDataArray
 function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults) {
-    const apiUrl = '/api/Api/TestDBLogin';
+    const apiUrl = '/Api/Api/TestDBLogin/傳回轉蛋數據';
     const userData = {
         MemberId: 使用者ID,
         CatCoinQuantity: 貓幣數量,
