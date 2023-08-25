@@ -154,6 +154,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal
                                                 .Include(x => x.Supplier)
+                                                .Include(x=>x.ShopProductImageTable)
                                                 .FirstOrDefault(p => p.ProductId == id);
             if (cShopProductTotal == null)
             {
@@ -171,23 +172,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             var editProduct = _cachaContext.ShopProductTotal
                 .FirstOrDefault(p => p.ProductId == cShopproduct.ProductId);
 
-            if (image == null || image.Length == 0)
+            string imageURL = null;
+            if (image != null && image.Length > 0)
             {
-                return BadRequest("未選擇圖片");
+                try
+                {
+                    imageURL = await _imageService.UploadImageAsync(image);
+                }
+                catch
+                {
+                    return BadRequest("圖片上傳錯誤.");
+                }
             }
-            string imageURL;
-            try
+            if (imageURL != null)
             {
-                imageURL = await _imageService.UploadImageAsync(image);
+                var insertImg = _cachaContext.ShopProductImageTable.Where(x => x.ProductId == cShopproduct.ProductId).ToList();
+                foreach (var img in insertImg)
+                {
+                    img.ProductPhoto = imageURL;
+                }
             }
-            catch
-            {
 
-                return BadRequest("圖片上傳錯誤.");
-            }
             if (editProduct != null)
             {
-                if(image != null)
+                if(imageURL != null)
                     editProduct.ProductImage1 = imageURL;
                 if (cShopproduct.PushToShop != null)
                     editProduct.PushToShop = cShopproduct.PushToShop;
@@ -203,12 +211,18 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     editProduct.Discontinued = cShopproduct.Discontinued;
                 if(cShopproduct.Discount != null)
                     editProduct.Discount = cShopproduct.Discount;
-                editProduct.ReleaseDate = cShopproduct.ReleaseDate;
-                editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
-                editProduct.Size = cShopproduct.Size;
-                editProduct.Weight = cShopproduct.Weight;
-                editProduct.OffDay = cShopproduct.OffDay;
-                editProduct.SupplierId = cShopproduct.SupplierId;
+                if(cShopproduct.ReleaseDate != null)
+                    editProduct.ReleaseDate = cShopproduct.ReleaseDate;
+                if(cShopproduct.RemainingQuantity != null)
+                    editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
+                if(cShopproduct.Size != null)
+                    editProduct.Size = cShopproduct.Size;
+                if(cShopproduct.Weight != null)
+                    editProduct.Weight = cShopproduct.Weight;
+                if(cShopproduct.OffDay != null)
+                    editProduct.OffDay = cShopproduct.OffDay;
+                if(cShopproduct.SupplierId != null)
+                    editProduct.SupplierId = cShopproduct.SupplierId;
                 _cachaContext.Update(editProduct);
                 _cachaContext.SaveChanges();
                 return Json(new { success = true, message = "Item updated successfully" });

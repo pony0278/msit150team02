@@ -290,6 +290,9 @@
                                                 <label>圖片3</label>
                                                 <input type="file" class="form-control" id="editor-image3" name="ShopProductImageTable">
                                             </div>
+                                            <div class="col-md-12">
+                                                <img id="editor-img" class="thumbnail-image"/>
+                                            </div>
                                             <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
                                                     style="width: 100%;">
                                                 儲存
@@ -462,8 +465,11 @@
                             $('#editor-discontinued').prop(response.data.discontinued);
                             $('#editor-image').val(response.data.shopproductImagetable);
                             $('#editor-pinToShop').prop("checked",response.data.pushToShop)
-                            $('#editor-offdate').val(response.offDay)
-                            console.log(response.data)
+                            $('#editor-offdate').val(response.data.offDay)
+                            $("#editor-img").attr("src", $.each(response.data.shopProductImageTable, function (index, value) { 
+                                value.productPhoto;
+                            }));
+                            console.log(response.data.shopProductImageTable[0].productPhoto)
                         } else {
                             alert(response.message);
                         }
@@ -512,7 +518,9 @@
                 formData.append("Discontinued", discontinued);
                 formData.append("OffDay", offday)
                 formData.append("Discount", discount)
-                formData.append("Image", file)
+                if (file) {
+                    formData.append("Image", file)
+                }
                 formData.append("PushToShop", pinToShop)
 
                 $.ajax({
