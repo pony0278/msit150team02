@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
+using System.Linq;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -16,13 +17,76 @@ namespace prjCatChaOnlineShop.Controllers.Api
         }
         //http://localhost:5090/Api/Api/TestDBLogin
 
-
         [HttpGet]
         public IActionResult 玩家資訊數據()
         {
+            var memberId = 1030; // 預設的 MemberId，您可以根據需要進行更改
+
+            // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
+            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == memberId))
+            {
+                var gameProductTotalRecords = _context.GameProductTotal.ToList();
+
+                var defaultitems = _context.GameItemPurchaseRecord;
+
+             foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                {
+                    var defaultItem = new GameItemPurchaseRecord
+                    {
+                        MemberId = memberId,
+                        ProductId = gameProductTotalRecord.ProductId,
+                        QuantityOfInGameItems = 0, 
+                        ItemName = gameProductTotalRecord.ProductName
+                    };
+                }
+                var defaultI = new GameItemPurchaseRecord
+                {
+                    MemberId = memberId,
+                    ProductId = 22,
+                    QuantityOfInGameItems = 1,
+                    ItemName = "初始褐貓"
+                };
+                _context.GameItemPurchaseRecord.Add(defaultI);
+                _context.SaveChanges(); 
+            }
+            else
+            {
+                var gameProductTotalRecords = _context.GameProductTotal.ToList();
+                var existingProductIds = new HashSet<int>();
+
+                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == memberId))
+                {
+                    existingProductIds.Add((int)existingRecord.ProductId);
+                }
+
+                var missingProductIds = new List<int>();
+
+                foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                {
+                    if (!existingProductIds.Contains(gameProductTotalRecord.ProductId))
+                    {
+                        missingProductIds.Add(gameProductTotalRecord.ProductId);
+                    }
+                }
+
+                foreach (var missingProductId in missingProductIds)
+                {
+                    var defaultItem = new GameItemPurchaseRecord
+                    {
+                        MemberId = memberId,
+                        ProductId = missingProductId,
+                        QuantityOfInGameItems = 0,
+                        ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
+                    };
+                    _context.GameItemPurchaseRecord.Add(defaultItem);
+                }
+                _context.SaveChanges();
+            }
+
+            // 執行查詢
             var datas = (from p in _context.ShopMemberInfo
                          join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
-                         where p.MemberId == 1033
+                         where p.MemberId == memberId
                          select new
                          {
                              p.MemberId,
@@ -35,13 +99,14 @@ namespace prjCatChaOnlineShop.Controllers.Api
                              i.ItemName
                          })
                          .Distinct()
-                         .ToList(); // 轉換為 List
+                         .ToList();
 
-            // 在這裡處理結果，將集合中的元素合併
+            // 在這裡繼續處理結果，將集合中的元素合併
+            // ...
 
             if (datas.Any())
             {
-                // 在這裡處理結果，將集合中的元素合併
+                // 在這裡繼續處理結果，將集合中的元素合併
                 var mergedData = datas
                     .GroupBy(d => new { d.MemberId, d.CharacterName, d.CatCoinQuantity, d.LoyaltyPoints, d.RunGameHighestScore })
                     .Select(group => new
@@ -62,6 +127,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
+
         [HttpPost]
         public IActionResult 傳回玩家資訊數據([FromBody] GameReturnGachaDataModel rgm)
         {
@@ -73,45 +139,45 @@ namespace prjCatChaOnlineShop.Controllers.Api
             {
                 foreach (var gachaResult in rgm.GachaResult)
                 {
-                    // 檢查資料庫中是否已存在具有相同 MemberId 和 ProductId 的記錄
+                    int productId = gachaResult.productId;
+
                     var existingRecord = _context.GameItemPurchaseRecord
-                        .FirstOrDefault(record => record.MemberId == rgm.MemberId &&
-                        record.ProductId == gachaResult.productId
-                        );
+                        .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.ProductId == productId);
+
                     if (existingRecord != null)
                     {
-                        // 如果存在相同記錄，則執行更新操作
-                        existingRecord.ItemName = gachaResult.productName;
-                        existingRecord.QuantityOfInGameItems += 1; // 更新其他屬性
+                        existingRecord.QuantityOfInGameItems += 1;
                     }
                     else
                     {
-                        // 如果不存在相同記錄，則執行新增操作
                         var dbItemModel = new GameItemPurchaseRecord
                         {
-                            ItemName =gachaResult.productName,
+                            ItemName = gachaResult.productName,
                             MemberId = rgm.MemberId,
-                            ProductId = gachaResult.productId,
+                            ProductId = productId,
                             QuantityOfInGameItems = 1
-                        // 設定其他屬性
-                    };
+                        };
                         _context.GameItemPurchaseRecord.Add(dbItemModel);
                     }
-                    //連動折價券
-                    var existingCoupon = _context.ShopMemberCouponData
-                        .FirstOrDefault(record => gachaResult.productCategoryId == 5);
-                    if (existingCoupon != null)
+
+                    if (gachaResult.productCategoryId == 5)
                     {
-                        var dbCouponModel = new ShopMemberCouponData
+                        var existingCoupon = _context.ShopMemberCouponData
+                            .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.CouponId == gachaResult.couponId);
+
+                        if (existingCoupon == null)
                         {
-                            MemberId = rgm.MemberId,
-                            CouponId = gachaResult.couponId,
-                            CouponStatusId = false,
-                        };
-                        _context.ShopMemberCouponData.Add(dbCouponModel);
+                            var dbCouponModel = new ShopMemberCouponData
+                            {
+                                MemberId = rgm.MemberId,
+                                CouponId = gachaResult.couponId,
+                                CouponStatusId = false,
+                            };
+                            _context.ShopMemberCouponData.Add(dbCouponModel);
+                        }
                     }
                 }
-                // 更新其他記錄（例如 _context.ShopMemberInfo）
+
                 var existingMemberInfo = _context.ShopMemberInfo
                     .FirstOrDefault(record => record.MemberId == rgm.MemberId);
                 if (existingMemberInfo != null)
@@ -120,7 +186,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     existingMemberInfo.LoyaltyPoints = rgm.LoyaltyPoints;
                 }
 
-                _context.SaveChanges(); // 儲存所有更改
+                _context.SaveChanges();
 
                 return Ok(new { message = "數據已成功保存" });
             }

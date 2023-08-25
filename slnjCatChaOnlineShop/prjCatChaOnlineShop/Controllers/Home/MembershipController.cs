@@ -387,7 +387,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var datas = from p in _context.ShopReturnDataTable
                             join q in _context.ShopOrderTotalTable on p.OrderId equals q.OrderId
-                            where q.MemberId == 1
+                            where q.MemberId == 4
                             select new
                             {
                                 p.OrderId,
