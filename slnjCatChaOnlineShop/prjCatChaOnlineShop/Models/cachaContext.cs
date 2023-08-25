@@ -1138,10 +1138,9 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<ShopReturnDataTable>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Shop.Return Data Table");
+            entity.ToTable("Shop.Return Data Table");
 
+            entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OrderId).HasColumnName("Order ID");
             entity.Property(e => e.ProcessingStatusId).HasColumnName("Processing Status ID");
             entity.Property(e => e.ReturnDate)
@@ -1149,18 +1148,18 @@ public partial class cachaContext : DbContext
                 .HasColumnName("Return Date");
             entity.Property(e => e.ReturnReasonId).HasColumnName("Return Reason ID");
 
-            entity.HasOne(d => d.ProcessingStatus).WithMany()
+            entity.HasOne(d => d.ProcessingStatus).WithMany(p => p.ShopReturnDataTable)
                 .HasForeignKey(d => d.ProcessingStatusId)
-                .HasConstraintName("FK_Shop.退換貨資料表_Shop.退換貨處理狀態資料表");
+                .HasConstraintName("FK_Shop.Return Data Table_Shop.Return Status Data Table");
 
-            entity.HasOne(d => d.ReturnReason).WithMany()
+            entity.HasOne(d => d.ReturnReason).WithMany(p => p.ShopReturnDataTable)
                 .HasForeignKey(d => d.ReturnReasonId)
-                .HasConstraintName("FK_Shop.退換貨資料表_Shop.退換貨原因資料表");
+                .HasConstraintName("FK_Shop.Return Data Table_Shop.Return Reason Data Table");
         });
 
         modelBuilder.Entity<ShopReturnReasonDataTable>(entity =>
         {
-            entity.HasKey(e => e.ReturnReasonId).HasName("PK_Shop.退換貨原因資料表");
+            entity.HasKey(e => e.ReturnReasonId);
 
             entity.ToTable("Shop.Return Reason Data Table");
 
@@ -1170,7 +1169,7 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<ShopReturnStatusDataTable>(entity =>
         {
-            entity.HasKey(e => e.ProcessingStatusId).HasName("PK_Shop.退換貨處理狀態資料表");
+            entity.HasKey(e => e.ProcessingStatusId);
 
             entity.ToTable("Shop.Return Status Data Table");
 
