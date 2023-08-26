@@ -10,24 +10,61 @@ function loadRankData() {
     $.ajax({
         url: '/Api/Rank',
         type: 'GET',
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: { id: UserID },
+       
         success: function (data) {
-            if (data.length > 0) {
-                const rank = {
-                    "排名": data.map((item, index) => ({
+            const topTenData = data.slice(0, 10);//取出前十名
+            const thisPlayerData = data.filter((item) => item.memberId === UserID);//取出目前玩家
+
+            if (topTenData.length > 0) {
+
+                const top10Rank = {
+                    "排名": topTenData.map((item) => ({
+                        "id":item.memberId,
                         "name": item.characterName,
-                        "排名": index + 1,
+                        "排名": item.rank,
                         "分數": item.runGameHighestScore
                     }))
                 };
-                const rankDatas = rank.排名.map(r => `
+
+                const thisPlayerRank = {
+                    "排名": thisPlayerData.map((item) => ({
+                        "name": item.characterName,
+                        "排名": item.rank,
+                        "分數": item.runGameHighestScore
+                    }))
+                };
+               
+                const rankDatas = top10Rank.排名.map(r => `
                                             <tr>
-                                                 <td>${r.排名}</td>
-                                                 <td>${r.name}</td>
-                                                 <td>${r.分數}</td>
+                                                 <td class="_${r.id}">${r.排名}</td>
+                                                 <td class="_${r.id}">${r.name}</td>
+                                                 <td class="_${r.id}">${r.分數}</td>
                                             </tr>
                                             ` );
-                document.querySelector('#emTable > tbody').innerHTML = rankDatas.join("")
-
+                const user = thisPlayerRank.排名.map(r => `
+                                            <tr>
+                                            <td></td><td>...</td><td></td>
+                                            </tr>
+                                            <tr>
+                                                 <td style="color:red;">${r.排名}</td>
+                                                 <td style="color:red;">${r.name}</td>
+                                                 <td style="color:red;">${r.分數}</td>
+                                            </tr>
+                                            ` );
+                let combinedRankDatas = rankDatas;
+                if (!topTenData.some(item => item.memberId === UserID)) {
+                   combinedRankDatas = rankDatas.concat(user);
+                } 
+                document.querySelector('#emTable > tbody').innerHTML = combinedRankDatas.join("")
+                //設定目前腳色排行榜中的文字顏色
+                const targetClass = `_${UserID}`;
+                const targetElements = document.querySelectorAll(`.${targetClass}`); 
+                targetElements.forEach(element => {
+                    element.style.color = 'red';
+                });
+                
             }
         },
         error: function () {

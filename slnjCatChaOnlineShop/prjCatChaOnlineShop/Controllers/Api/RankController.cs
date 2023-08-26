@@ -16,40 +16,43 @@ namespace prjCatChaOnlineShop.Controllers.Api
             _context = context;
         }
 
-        [HttpGet]
-        public IActionResult Rank(/*CMemberGameInfo c*/)
+       
+        public IActionResult Rank(int id)
         {
+            //先全部抓出來，目的是取得目前使用者的名次
             var datas = (from p in _context.ShopMemberInfo
                          where p.RunGameHighestScore.HasValue
-                         select new
+                         orderby p.RunGameHighestScore descending
+                         select new 
                          {
+                             p.MemberId,
                              p.CharacterName,
                              p.RunGameHighestScore,
                          })
-                         .OrderByDescending(p => p.RunGameHighestScore)
-                         .Take(10)
                          .ToList();
-            //TODO 這邊之後加入新功能: 如果使用者在前10名，則標示出來，沒有在前10名，則把使用者放在第11行，並標示排名
-            //var currentUserData = (from p in _context.ShopMemberInfo
-            //                       where p.MemberId == c.fId // 假設您有當前使用者的 ID
-            //                       select new
-            //                       {
-            //                           p.CharacterName,
-            //                           p.RunGameHighestScore,
-            //                       })
-            //           .FirstOrDefault();
-           
-            //如果抓出來的前十名有包含當前使用者，則他的字要是紅色
-            //如果抓出來的前十名不包含當前使用者，則要再多加一個在最下面
 
-            if (datas.Any())
+
+            var rankedDatas = datas.Select((data, index) => new
             {
-                return new JsonResult(datas);
+                Rank = index + 1, // 排名是索引 + 1
+                data.MemberId,
+                data.CharacterName,
+                data.RunGameHighestScore
+            }).ToList();
+
+
+            if (rankedDatas.Any())
+            {
+                
+                return new JsonResult(rankedDatas);
             }
             else
             {
                 return NotFound();
             }
         }
+
+
+      
     }
 }

@@ -1,13 +1,3 @@
-
-
-////模擬資料庫資料
-//let userInfo = {
-//    ID = 1033,
-//    name: "小貓貓貓貓",
-//    CCoin: 11000,
-//    Ruby: 5000,
-//    runGameHighestScore: 61
-//}
 let userBagData = {
     catDefault: true,
     catBB: false,//ProductID 3
@@ -17,9 +7,8 @@ let userBagData = {
     milk: 1,
     can: 1
 }
-
-let gachaTextCCoin = document.getElementById('gachaTextCCoin')
-let gachaTextRuby = document.getElementById('gachaTextRuby')
+const gachaTextCCoin = document.getElementById('gachaTextCCoin')
+const gachaTextRuby = document.getElementById('gachaTextRuby')
 
 //載入(更新)資料庫資訊方法
 function initialize() {
@@ -71,8 +60,6 @@ function initialize() {
     });
 }
 
-
-
 //從資料庫消耗牛奶方法，num可以帶正數為增加，負數為消耗
 function updateMilkAmount(num) {
     $.ajax({
@@ -105,6 +92,7 @@ function updateCanAmount(num) {
         }
     });
 }
+
 //從資料庫增減貓幣方法，num可以帶正數為增加，負數為消耗
 function updateCCoint(num) {
     $.ajax({
@@ -139,7 +127,8 @@ function updateRuby(num) {
     });
 }
 
-//餵食貓貓得到折價券的方法 //九折券 GameProductID = 15，couponID = 7
+
+//餵食貓貓得到折價券的方法 //10折價券 GameProductID = 19，couponID = 7
 function feedCatGetCoupon(num) {
     $.ajax({
         type: "POST",
@@ -207,9 +196,9 @@ function closeConfirmWinForGacha() {
 }
 
 
-// 初始化目前被選擇的貓咪
+// 小遊戲: 初始化目前被選擇的貓咪
 let selectedCatName = null;
-//選擇完貓貓之後開始遊戲的方法
+//小遊戲開始的方法
 function startGame() {
     if (selectedCatName === null) { //如果使用者沒有選擇貓貓
         confirmWin_title.innerHTML = '尚未選擇貓貓'
@@ -223,13 +212,15 @@ function startGame() {
     showPage('a'); //說明視窗下次開啟時從第一頁開始
     alterConfirmWinBTN('確認', closeConfirmWin)//變更確認視窗按鈕內容
 }
-function chooseCatBeforeGame() {
 
+//小遊戲選擇貓貓的方法
+function chooseCatBeforeGame() {
     alterConfirmWinBTN('開始', startGame);//變更確認視窗按鈕內容
     //先根據使用者擁有的貓貓載入圖片
     let userCats = `<div id="catSelectWin"  style="display:flex;  justify-content: center;">`;
     let allCat = ['catDefault', 'catBB', 'catBK', 'catGY', 'catOG']; //先列出全部的貓貓種類
-    let catNames = [];//把使用者有的貓貓加來這邊
+    let catNames = [];//目前使用者擁有的貓貓
+    //判斷要顯示哪些貓貓
     allCat.forEach(catName => {
         if (userBagData[catName] === true) {
             catNames.push(catName);
@@ -244,23 +235,19 @@ function chooseCatBeforeGame() {
           </div>`;
         }
     });
-
-    userCats += `</div>`;
+    userCats += `</div>`;//貓貓圖片的HTML尾巴
     confirmWin_title.innerHTML = '選擇進行遊戲的貓貓'
     confirmWin_text.innerHTML = userCats;
     confirmWin.style.display = 'block';
 
 
-
-
-    // 小遊戲選擇貓貓的點擊事件
+    // 選擇貓貓的點擊事件
     catNames.forEach(catName => {
         const cat = document.getElementById(`${catName}_select`);
         const catArrow = document.getElementById(`${catName}_arrow`);
-
         cat.addEventListener('click', () => {
-
-            //三種狀況: 一、沒有選過貓貓
+            //三種狀況:
+            //一、沒有選過貓貓
             //二、選了一隻貓而且下一次還選同一隻
             //三、選了一隻貓下一次選另外一隻
             if (selectedCatName === catName) {//狀況二
@@ -268,7 +255,8 @@ function chooseCatBeforeGame() {
                 selectedCatName = null;
             }
             else {
-                if (selectedCatName !== null) {//狀況三
+                if (selectedCatName !== null) {//已經有選擇貓貓的狀況下
+                    //狀況三
                     const selectedCatArrow = document.getElementById(`${selectedCatName}_arrow`);
                     selectedCatArrow.style.display = 'none';
                 }
@@ -277,7 +265,6 @@ function chooseCatBeforeGame() {
             }
             rcat.catcolor = selectedCatName
             console.log(selectedCatName);
-            console.log(rcat);
         });
     });
 
