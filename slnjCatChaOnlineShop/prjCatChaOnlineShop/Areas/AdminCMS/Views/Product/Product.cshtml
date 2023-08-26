@@ -165,20 +165,6 @@
             </div>
         </div>
 
-        @*        <div class="row align-items-center">
-        停售狀態篩選：
-        <div class="col d-flex justify-content-between">
-        <select class="form-select" id="DpayList">
-        <option value="" selected disabled>請選擇狀態</option>
-        <option value="">全部訂單</option>
-        <option value="是">是</option>
-        <option value="否">否</option>
-        </select>
-        </div>
-        </div>
-        </div>*@
-        <!---篩選類別-->
-
         <div class="container-fluid mt-4">
             <div class="row">
                 <div class="col-12">
@@ -224,10 +210,6 @@
                                                 <input type="text" id="editor-name" class="form-control" name="ProductName">
                                             </div>
                                             <div class="col-md-6">
-                                                <label>描述</label>
-                                                <textarea id="editor-description" class="form-control" name="ProductDescription"></textarea>
-                                            </div>
-                                            <div class="col-md-6">
                                                 <label>價格</label>
                                                 <input type="text" id="editor-price" class="form-control" name="ProductPrice">
                                             </div>
@@ -270,6 +252,16 @@
                                                 <input type="text" id="editor-supplier" class="form-control" name="Supplier">
                                             </div>
                                             <div class="col-md-6">
+                                                <label>圖片</label>
+                                                <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable" accept="image/*" multiple />
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label>選擇要修改的圖片編號</label>
+                                                <select id="editor-imgID" class="form-control">
+                                                    <option selected>請選擇</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <label>是否停售</label>
                                                 <input class="form-check-input" type="checkbox" value="" id="editor-discontinued" name="Discontinued" />
                                             </div>
@@ -278,14 +270,8 @@
                                                 <input class="form-check-input" type="checkbox" value="" id="editor-pinToShop" name="pinToShop" />
                                             </div>
                                             <div class="col-md-12">
-                                                <label>圖片</label>
-                                                <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable" accept="image/*" multiple />
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label>選擇要修改的圖片編號</label>
-                                                <select id="editor-imgID" class="form-control">
-                                                    <option selected>請選擇</option>
-                                                </select>
+                                                <label>商品描述</label>
+                                                <textarea id="editor-description" class="form-control" name="ProductDescription"></textarea>
                                             </div>
                                             <div class="col-md-12" id="editor-img">
                                             </div>
@@ -464,9 +450,10 @@
                             $.each(response.data.shopProductImageTable, function(index, value) {
                                 var img = $('<img class="img-thumbnail">').attr('src', value.productPhoto);
                                 var spanImgID = $('<h6>').text(`圖片編號：${value.productImageId}`);
+                                var frontCover = $(`<input type="checkbox" class="frontCoverCheckbox" data-product-image-id="${value.productImageId}">`).prop("checked", value.frontCover);
                                 var selectID = $('<option>').val(value.productImageId).text(value.productImageId);
                                 var container = $('<div class="image-container mt-2">').css('display', 'flex');
-                                container.append(spanImgID, img);
+                                container.append(spanImgID, frontCover, img);
                                 $('#editor-img').append(container);
                                 $("#editor-imgID").append(selectID)
                             });
@@ -489,6 +476,13 @@
             $('#editor-category').on('change', function () {
                 TypeEditor = parseInt($(this).val(), 10);
             })
+            let productImageId, isChecked;
+            $(document).on('change', '.frontCoverCheckbox', function () {
+                productImageId = $(this).data('product-image-id');
+                isChecked = $(this).is(':checked');
+                console.log(productImageId);
+            });
+
             //儲存按鈕==============================
             $('#submitButton-edior').click(function () {
                 var id = $('#editor-id').val();
@@ -524,6 +518,8 @@
                 formData.append("OffDay", offday)
                 formData.append("Discount", discount)
                 formData.append("ProductImageID", imgID)
+                formData.append("ProductImageIDforFrontCover", productImageId);
+                formData.append("FrontCover", isChecked);
                 if (file) {
                     for (var i = 0; i < file.length; i++) {
                         formData.append("ProductPhotos", file[i])

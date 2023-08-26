@@ -1,12 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
 using System.Drawing;
+using System.Text;
+using OpenAI_API;
+using OpenAI_API.Completions;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
+
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -15,12 +21,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
     {
         private readonly ImageService _imageService;
         private readonly cachaContext _cachaContext;
+        private readonly IConfiguration _configuration;
 
-
-        public ProductController(ImageService imageService, cachaContext cachaContext)
+        public ProductController(ImageService imageService, cachaContext cachaContext, IConfiguration configuration)
         {
             _imageService = imageService;
             _cachaContext = cachaContext;
+            _configuration = configuration;
         }
 
         //編輯資料、上傳圖片
@@ -154,7 +161,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal
                                                 .Include(x => x.Supplier)
-                                                .Include(x=>x.ShopProductImageTable)
+                                                .Include(x => x.ShopProductImageTable)
                                                 .FirstOrDefault(p => p.ProductId == id);
             if (cShopProductTotal == null)
             {
@@ -184,14 +191,19 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     return BadRequest("圖片上傳錯誤.");
                 }
             }
-
+            var insertImgList = _cachaContext.ShopProductImageTable
+                                .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.ProductImageID.Contains(x.ProductImageId))
+                                .ToList();
+            if (insertImgList.Any() && cShopproduct.FrontCover != null)
+            {
+                var targetImg = insertImgList.FirstOrDefault(x=>x.ProductImageId==cShopproduct.ProductImageIDforFrontCover);  
+                targetImg.FrontCover = cShopproduct.FrontCover;
+                _cachaContext.Update(targetImg);
+                _cachaContext.SaveChanges();
+            }
             List<string> imageUrls = new List<string>();
             if (cShopproduct.ProductPhotos != null && cShopproduct.ProductPhotos.Count > 0)
             {
-                var insertImgList = _cachaContext.ShopProductImageTable
-                    .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.ProductImageID.Contains(x.ProductImageId))
-                    .ToList();
-
                 for (int i = 0; i < cShopproduct.ProductPhotos.Count; i++)
                 {
                     try
@@ -224,13 +236,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
             if (editProduct != null)
             {
-                if(imageURL != null)
+                if (imageURL != null)
                     editProduct.ProductImage1 = imageURL;
                 if (cShopproduct.PushToShop != null)
                     editProduct.PushToShop = cShopproduct.PushToShop;
-                if (cShopproduct.ProductName !=null)
+                if (cShopproduct.ProductName != null)
                     editProduct.ProductName = cShopproduct.ProductName;
-                if (cShopproduct.ProductDescription != null) 
+                if (cShopproduct.ProductDescription != null)
                     editProduct.ProductDescription = cShopproduct.ProductDescription;
                 if (cShopproduct.ProductPrice != null)
                     editProduct.ProductPrice = cShopproduct.ProductPrice;
@@ -238,19 +250,19 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     editProduct.ProductCategoryId = cShopproduct.ProductCategoryId;
                 if (cShopproduct.Discontinued != null)
                     editProduct.Discontinued = cShopproduct.Discontinued;
-                if(cShopproduct.Discount != null)
+                if (cShopproduct.Discount != null)
                     editProduct.Discount = cShopproduct.Discount;
-                if(cShopproduct.ReleaseDate != null)
+                if (cShopproduct.ReleaseDate != null)
                     editProduct.ReleaseDate = cShopproduct.ReleaseDate;
-                if(cShopproduct.RemainingQuantity != null)
+                if (cShopproduct.RemainingQuantity != null)
                     editProduct.RemainingQuantity = cShopproduct.RemainingQuantity;
-                if(cShopproduct.Size != null)
+                if (cShopproduct.Size != null)
                     editProduct.Size = cShopproduct.Size;
-                if(cShopproduct.Weight != null)
+                if (cShopproduct.Weight != null)
                     editProduct.Weight = cShopproduct.Weight;
-                if(cShopproduct.OffDay != null)
+                if (cShopproduct.OffDay != null)
                     editProduct.OffDay = cShopproduct.OffDay;
-                if(cShopproduct.SupplierId != null)
+                if (cShopproduct.SupplierId != null)
                     editProduct.SupplierId = cShopproduct.SupplierId;
                 _cachaContext.Update(editProduct);
                 _cachaContext.SaveChanges();
@@ -266,7 +278,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             try
             {
-                if (newProduct != null) 
+                if (newProduct != null)
                 {
                     _cachaContext.ShopProductTotal.Add(newProduct);
                     _cachaContext.SaveChanges();
@@ -294,5 +306,47 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             };
             return View(product);
         }
+        public IActionResult AI()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<ActionResult> GenerateArticle([FromForm] Dictionary<string, string> keywords)
+        {
+            try
+            {
+                string keyword1 = keywords.GetValueOrDefault("keyword1", "Keyword1");
+                string keyword2 = keywords.GetValueOrDefault("keyword2", "Keyword2");
+                string keyword3 = keywords.GetValueOrDefault("keyword3", "Keyword3");
+
+                var prompt = $"Write a 150-word article that includes the terms {keyword1}, {keyword2}, and {keyword3}.";
+
+                var apiKey = _configuration["OpenAI_API_Key"];
+
+                var openai = new OpenAIAPI(apiKey);
+                var completionRequest = new CompletionRequest
+                {
+                    Prompt = prompt,
+                    Model = OpenAI_API.Models.Model.DavinciText,
+                    MaxTokens = 150
+                };
+
+                var completions = await openai.Completions.CreateCompletionAsync(completionRequest);
+
+                string outputResult = "";  // 初始化 outputResult
+                foreach (var completion in completions.Completions)
+                {
+                    outputResult += completion.Text;
+                }
+
+                return Ok(new { article = outputResult });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"An error occurred: {ex.Message}");
+            }
+        }
+
+
     }
 }

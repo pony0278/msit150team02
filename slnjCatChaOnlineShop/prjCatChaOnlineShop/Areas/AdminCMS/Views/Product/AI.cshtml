@@ -1,0 +1,37 @@
+﻿
+@{
+    ViewData["Title"] = "AI";
+}
+
+<h1>AI</h1>
+
+<input type="text" id="keyword1" placeholder="Keyword 1">
+<input type="text" id="keyword2" placeholder="Keyword 2">
+<input type="text" id="keyword3" placeholder="Keyword 3">
+<button onclick="generateArticle()">幫我生成文章</button>
+
+<textarea id="result" rows="10" cols="50"></textarea>
+
+@section Scripts{
+    <script>
+        function generateArticle() {
+            const keyword1 = $("#keyword1").val();
+            const keyword2 = $("#keyword2").val();
+            const keyword3 = $("#keyword3").val();
+
+            $.ajax({
+                url: "/AdminCMS/Product/GenerateArticle",
+                method: "POST",
+                data: { keyword1, keyword2, keyword3 },
+                contentType: "application/x-www-form-urlencoded",
+                dataType: "json",
+                success: function (data) {
+                    $("#result").val(data.article);
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                }
+            });
+        }
+    </script>
+}

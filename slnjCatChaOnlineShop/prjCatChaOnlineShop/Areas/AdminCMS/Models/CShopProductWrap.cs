@@ -27,5 +27,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
         public DateTime? OffDay { get; set; }
         public List<IFormFile>? ProductPhotos { get; set; }
         public List<int>? ProductImageID {  get; set; }
+        public bool? FrontCover { get; set; }
+        public int? ProductImageIDforFrontCover { get;set; }
     }
 }
