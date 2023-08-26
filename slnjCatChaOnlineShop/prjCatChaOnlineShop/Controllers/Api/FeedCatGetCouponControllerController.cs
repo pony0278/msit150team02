@@ -22,7 +22,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
             var data = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == c.fId && p.ProductId == c.fProductId);
             //var dataInCouponTable = _context.ShopMemberCouponData.FirstOrDefault(p => p.MemberId == c.fId && p.CouponId == cp.fCouponId);
             if (data != null)//如果使用者之前有這個優惠券了
-            {
+            {//TODO 這邊要加入同步寫入shop coupon member data
                 data.MemberId = c.fId;
                 data.ProductId = c.fProductId;
                 data.QuantityOfInGameItems ++;

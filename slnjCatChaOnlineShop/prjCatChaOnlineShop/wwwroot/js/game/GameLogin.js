@@ -1,5 +1,5 @@
 ﻿//定義初始變數
-let UserID = 1033;
+let UserID = 1033; //TODO改成動態，正式版本改成用account判斷?
 let UserName = "未登入"
 let Ccoin = "N/A";
 let Ruby = "N/A";
@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const userMemberidlogin = document.getElementById("userMemberidlogin");
     const registerForm = document.getElementById('registerForm');
     const registerButton = document.getElementById('registerButton');
-    const testlogin = document.getElementById('testlogin');
+
     const testDBlogin = document.getElementById('testDBlogin');
     const testGameDB = document.getElementById('testGameDB');
 

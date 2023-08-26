@@ -12,7 +12,7 @@
 
 <!-- Start 遊戲畫面 -->
 
-<div class="canvas-container">
+<div class="canvas-container" style="display:none;">
     <div class="gamelayer">
         <canvas id="Canvaslobby"></canvas>
         <!-- Start j轉蛋 -->
@@ -87,10 +87,9 @@
             </div>
             <button id="confirmWinBTN" onclick="closeConfirmWin()">確認</button>
         </div>
-    </div>
+   
     <!-- End 獲得物品確認視窗 -->
     <!-- Start Canvas遊戲畫布 -->
-    <!-- Start 排行榜 -->
     <div id="CanvasRank">
         <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
         <div id="rank-container">
@@ -110,14 +109,13 @@
             </table>
         </div>
     </div>
-    <!-- End 排行榜 -->
     <canvas id="CanvasCheckIn"></canvas>
     <canvas id="Canvasrungame"></canvas>
     <canvas id="CanvasGatcha"></canvas>
     <canvas id="CanvasStore"></canvas>
     <canvas id="CanvasSummonResult"></canvas>
     <canvas id="CanvasDoubleCheck"></canvas>
-
+    </div>
     <!-- End Canvas遊戲畫布 -->
 </div>
 <div id="userMemberidlogin">

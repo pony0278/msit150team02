@@ -56,17 +56,17 @@
 
     /*轉蛋畫面*/
     #CatchaGatCha {
-        width: 406px;
-        height: 600px;
-        border: solid;
-        background-color: aquamarine;
-        z-index: 3;
-        display: none;
         background-image: url('/images/game/summonback.png'); /* 設定背景圖片路徑 */
         background-size: cover; /* 設定背景圖片覆蓋整個按鈕 */
         background-position: center; /* 設定背景圖片居中對齊 */
         border: 4px solid black; /* 移除按鈕邊框 */
+        position: relative;
+        text-align: center;
         justify-content: center;
+        width: 406px; /* 維持canvas的寬度為406px */
+        height: 600px; /* 維持canvas的高度為600px */
+        display: none;
+        z-index: 99;
     }
 
     .Gatchagif {
