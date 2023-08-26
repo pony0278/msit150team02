@@ -30,60 +30,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             _configuration = configuration;
         }
 
-        //編輯資料、上傳圖片
-        //[HttpPost]
-        //[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> editorUploadImage([FromForm] CShopProductWrap cShopproduct)
-        //{
-        //    var image = cShopproduct.Image;
-
-        //    if (image == null)
-        //    {
-        //        return BadRequest("找不到圖片");
-        //    }
-        //    string imageURL;
-        //    try
-        //    {
-        //        imageURL = await _imageService.UploadImageAsync(image);
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest("上傳圖片錯誤");
-        //    }
-
-        //    var newShopProduct = new ShopProductTotal
-        //    {
-        //        ProductId = cShopproduct.ProductId,
-        //        ProductName = cShopproduct.ProductName,
-        //        ProductDescription = cShopproduct.ProductDescription,
-        //        ProductCategory = cShopproduct.ProductCategory,
-        //        ReleaseDate = cShopproduct.ReleaseDate,
-        //        Size = cShopproduct.Size,
-        //        Weight = cShopproduct.Weight,
-        //        Supplier = cShopproduct.Supplier,
-        //        Discontinued = cShopproduct.Discontinued
-        //    };
-
-        //    var newImage = new ShopProductImageTable
-        //    {
-        //        ProductPhoto = imageURL
-        //    };
-        //    newShopProduct.ShopProductImageTable.Add(newImage);
-
-        //    try
-        //    {
-        //        _cachaContext.ShopProductTotal.Add(newShopProduct);
-        //        await _cachaContext.SaveChangesAsync();
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest("商品資料儲存錯誤");
-        //    }
-
-        //    return Json(new { success = true, message = "編輯內容儲存成功" });
-        //}
-
-
         //上傳圖片
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
@@ -274,27 +220,52 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         //新增
         [HttpPost]
-        public IActionResult CreateProduct(ShopProductTotal newProduct)
+        public async Task<IActionResult> CreateProduct([FromForm] CShopProductWrap cShopProduct)
         {
-            try
+            var NewProduct = new ShopProductTotal
             {
-                if (newProduct != null)
-                {
-                    _cachaContext.ShopProductTotal.Add(newProduct);
-                    _cachaContext.SaveChanges();
+                ProductName = cShopProduct.ProductName,
+                ProductDescription = cShopProduct.ProductDescription,
+                ProductPrice = cShopProduct.ProductPrice,
+                ProductCategoryId = cShopProduct.ProductCategoryId,
+                PushToShop = cShopProduct.PushToShop,
+                Discount = cShopProduct.Discount,
+                ReleaseDate = cShopProduct.ReleaseDate,
+                OffDay = cShopProduct.OffDay,
+                SupplierId = cShopProduct.SupplierId,
+                Size = cShopProduct.Size,
+                Weight = cShopProduct.Weight,
+                RemainingQuantity = cShopProduct.RemainingQuantity,
+                
+            };
+            _cachaContext.ShopProductTotal.Add(NewProduct);
+            await _cachaContext.SaveChangesAsync();
 
-                    return Json(new { success = true, message = "會員商品成功！" });
-                }
-                else
-                {
-                    return Json(new { success = false, message = "新增的商品資訊為空。" });
-                }
-            }
-            catch (Exception ex)
+            List<string> imageUrls = new List<string>();
+            if (cShopProduct.ProductPhotos != null && cShopProduct.ProductPhotos.Count > 0)
             {
-                return Json(new { success = false, message = "商品新增失敗：" + ex.Message });
+                for (var i = 0; i < cShopProduct.ProductPhotos.Count; i++)
+                {
+                    try
+                    {
+                        var uploadedImageUrl = await _imageService.UploadImageAsync(cShopProduct.ProductPhotos[i]);
+                        var newImageItem = new ShopProductImageTable
+                        {
+                            ProductId = NewProduct.ProductId,
+                            ProductPhoto = uploadedImageUrl
+                        };
+                        _cachaContext.ShopProductImageTable.Add(newImageItem);
+                    }
+                    catch
+                    {
+                        return BadRequest("圖片上傳錯誤.");
+                    }
+                }
+                await _cachaContext.SaveChangesAsync();
             }
+            return Json(new { success = true, message = "Content saved!" });
         }
+
 
 
         public IActionResult Product()
@@ -319,7 +290,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 string keyword2 = keywords.GetValueOrDefault("keyword2", "Keyword2");
                 string keyword3 = keywords.GetValueOrDefault("keyword3", "Keyword3");
 
-                var prompt = $"Write a 150-word article that includes the terms {keyword1}, {keyword2}, and {keyword3}.";
+                var prompt = $"這是3個商品的關鍵字{keyword1}，{keyword2}，{keyword3}。請幫我產生70字左右的商品介紹,可以使用條列式";
 
                 var apiKey = _configuration["OpenAI_API_Key"];
 
@@ -328,16 +299,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     Prompt = prompt,
                     Model = OpenAI_API.Models.Model.DavinciText,
-                    MaxTokens = 150
+                    MaxTokens = 500
                 };
 
                 var completions = await openai.Completions.CreateCompletionAsync(completionRequest);
 
-                string outputResult = "";  // 初始化 outputResult
+                StringBuilder sb = new StringBuilder();
                 foreach (var completion in completions.Completions)
                 {
-                    outputResult += completion.Text;
+                    sb.Append(completion.Text);
                 }
+                string outputResult = sb.ToString();
 
                 return Ok(new { article = outputResult });
             }
