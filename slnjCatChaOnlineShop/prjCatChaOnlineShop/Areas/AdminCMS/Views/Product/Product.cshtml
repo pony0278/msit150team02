@@ -192,7 +192,6 @@
                                 <th>價格</th>
                                 <th>剩餘數量</th>
                                 <th>類別</th>
-                                <th>圖片</th>
                                 <th>上架日期</th>
                                 <th>尺寸</th>
                                 <th>重量</th>
@@ -279,19 +278,16 @@
                                                 <input class="form-check-input" type="checkbox" value="" id="editor-pinToShop" name="pinToShop" />
                                             </div>
                                             <div class="col-md-12">
-                                                <label>圖片1</label>
-                                                <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable">
+                                                <label>圖片</label>
+                                                <input type="file" class="form-control" id="editor-image" name="ShopProductImageTable" accept="image/*" multiple />
                                             </div>
                                             <div class="col-md-12">
-                                                <label>圖片2</label>
-                                                <input type="file" class="form-control" id="editor-image2" name="ShopProductImageTable">
+                                                <label>選擇要修改的圖片編號</label>
+                                                <select id="editor-imgID" class="form-control">
+                                                    <option selected>請選擇</option>
+                                                </select>
                                             </div>
-                                            <div class="col-md-12">
-                                                <label>圖片3</label>
-                                                <input type="file" class="form-control" id="editor-image3" name="ShopProductImageTable">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <img id="editor-img" class="thumbnail-image"/>
+                                            <div class="col-md-12" id="editor-img">
                                             </div>
                                             <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
                                                     style="width: 100%;">
@@ -350,7 +346,6 @@
                         { "data": "productPrice" },
                         { "data": "remainingQuantity" },
                         { "data": "productCategory" },
-                        { "data": "shopProductImageTable" },
                         { "data": "releaseDate" },
                         { "data": "size" },
                         { "data": "weight" },
@@ -466,15 +461,29 @@
                             $('#editor-image').val(response.data.shopproductImagetable);
                             $('#editor-pinToShop').prop("checked",response.data.pushToShop)
                             $('#editor-offdate').val(response.data.offDay)
-                            $("#editor-img").attr("src", $.each(response.data.shopProductImageTable, function (index, value) { 
-                                value.productPhoto;
-                            }));
-                            console.log(response.data.shopProductImageTable[0].productPhoto)
+                            $.each(response.data.shopProductImageTable, function(index, value) {
+                                var img = $('<img class="img-thumbnail">').attr('src', value.productPhoto);
+                                var spanImgID = $('<h6>').text(`圖片編號：${value.productImageId}`);
+                                var selectID = $('<option>').val(value.productImageId).text(value.productImageId);
+                                var container = $('<div class="image-container mt-2">').css('display', 'flex');
+                                container.append(spanImgID, img);
+                                $('#editor-img').append(container);
+                                $("#editor-imgID").append(selectID)
+                            });
+                            console.log(response.data)
                         } else {
                             alert(response.message);
                         }
                     }
                 });
+            });
+            $("#editor-image").on("change", function () {
+                var files = this.files;
+
+                if (files.length > 3) {
+                    alert("您只能上傳最多3張圖片");
+                    this.value = ""; 
+                }
             });
             let TypeEditor;
             $('#editor-category').on('change', function () {
@@ -489,6 +498,7 @@
                 var remainingquantity = $('#editor-remainingquantity').val()
                 var releasedate = $('#editor-releasedate').val()
                 var size = $('#editor-size').val()
+                var imgID = $("#editor-imgID").val()
                 var offday = $("#editor-offdate").val()
                 var weight = $('#editor-weight').val()
                 var discount = $("#editor-discount").val()
@@ -496,13 +506,8 @@
                 var discontinued = $('#editor-discontinued').is(":checked")
                 var pinToShop = $('#editor-pinToShop').is(":checked")
                 var fileInput = $('#editor-image')[0];
-                var file = fileInput.files[0];
-                var fileInput2 = $('#editor-image')[0];
-                var file2 = fileInput2.files[0];
-                var fileInput3 = $('#editor-image')[0];
-                var file3 = fileInput3.files[0];
-                console.log(id)
-                console.log(name)
+                var file = fileInput.files;
+
 
                 var formData = new FormData();
                 formData.append("ProductId", id);
@@ -518,8 +523,11 @@
                 formData.append("Discontinued", discontinued);
                 formData.append("OffDay", offday)
                 formData.append("Discount", discount)
+                formData.append("ProductImageID", imgID)
                 if (file) {
-                    formData.append("Image", file)
+                    for (var i = 0; i < file.length; i++) {
+                        formData.append("ProductPhotos", file[i])
+                    }
                 }
                 formData.append("PushToShop", pinToShop)
 

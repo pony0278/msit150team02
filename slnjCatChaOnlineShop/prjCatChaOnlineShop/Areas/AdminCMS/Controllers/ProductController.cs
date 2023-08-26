@@ -184,14 +184,43 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     return BadRequest("圖片上傳錯誤.");
                 }
             }
-            if (imageURL != null)
+
+            List<string> imageUrls = new List<string>();
+            if (cShopproduct.ProductPhotos != null && cShopproduct.ProductPhotos.Count > 0)
             {
-                var insertImg = _cachaContext.ShopProductImageTable.Where(x => x.ProductId == cShopproduct.ProductId).ToList();
-                foreach (var img in insertImg)
+                var insertImgList = _cachaContext.ShopProductImageTable
+                    .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.ProductImageID.Contains(x.ProductImageId))
+                    .ToList();
+
+                for (int i = 0; i < cShopproduct.ProductPhotos.Count; i++)
                 {
-                    img.ProductPhoto = imageURL;
+                    try
+                    {
+                        var uploadedImageUrl = await _imageService.UploadImageAsync(cShopproduct.ProductPhotos[i]);
+                        imageUrls.Add(uploadedImageUrl);
+
+                        if (i < insertImgList.Count)
+                        {
+                            insertImgList[i].ProductPhoto = uploadedImageUrl;
+                        }
+                        else
+                        {
+                            var newImageItem = new ShopProductImageTable
+                            {
+                                ProductId = cShopproduct.ProductId,
+                                ProductPhoto = uploadedImageUrl
+                            };
+                            _cachaContext.ShopProductImageTable.Add(newImageItem);
+                            _cachaContext.SaveChanges();
+                        }
+                    }
+                    catch
+                    {
+                        return BadRequest("圖片上傳錯誤.");
+                    }
                 }
             }
+
 
             if (editProduct != null)
             {

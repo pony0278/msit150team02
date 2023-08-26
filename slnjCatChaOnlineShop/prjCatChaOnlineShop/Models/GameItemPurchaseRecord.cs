@@ -11,11 +11,11 @@ public partial class GameItemPurchaseRecord
 
     public int? ProductId { get; set; }
 
-    public string? CharacterName { get; set; }
+    public string CharacterName { get; set; }
 
     public string PurchaseTime { get; set; }
 
-    public string? ItemName { get; set; }
+    public string ItemName { get; set; }
 
     public int GameItemPurchaseRecordId { get; set; }
 

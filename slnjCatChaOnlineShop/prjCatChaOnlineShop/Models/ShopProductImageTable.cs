@@ -13,5 +13,7 @@ public partial class ShopProductImageTable
 
     public int ProductImageId { get; set; }
 
+    public bool? FrontCover { get; set; }
+
     public virtual ShopProductTotal Product { get; set; }
 }

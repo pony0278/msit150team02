@@ -25,5 +25,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
         public bool? Discontinued { get; set; }
         public decimal? Discount { get; set; }
         public DateTime? OffDay { get; set; }
+        public List<IFormFile>? ProductPhotos { get; set; }
+        public List<int>? ProductImageID {  get; set; }
     }
 }

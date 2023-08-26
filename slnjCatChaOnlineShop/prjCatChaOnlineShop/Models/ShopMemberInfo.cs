@@ -11,7 +11,7 @@ public partial class ShopMemberInfo
 
     public string MemberAccount { get; set; }
 
-    public string? CharacterName { get; set; }
+    public string CharacterName { get; set; }
 
     public int? LevelId { get; set; }
 
