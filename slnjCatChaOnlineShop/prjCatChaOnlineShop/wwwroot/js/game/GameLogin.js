@@ -1,4 +1,14 @@
-﻿// 確保 DOM 加載完成後執行代碼
+﻿//定義初始變數
+let UserID = 1033;
+let UserName = "未登入"
+let Ccoin = "N/A";
+let Ruby = "N/A";
+let milkCount = 0;
+let canCount = 0;
+let hightestScore = 0;
+
+
+// 確保 DOM 加載完成後執行代碼
 document.addEventListener("DOMContentLoaded", function () {
     // 獲取所有需要的元素
     const submitButton = document.getElementById("memberIdLogin");
@@ -79,7 +89,6 @@ document.addEventListener("DOMContentLoaded", function () {
             alert('登入成功！');
             testGameDB.style.display = 'block';
             testDBlogin.style.display = 'block';
-            testlogin.style.display = 'block';
             GameMain.style.display = 'block';
             userMemberidlogin.style.display = 'none';
             callApiWithMemberId(_memberId);

@@ -217,7 +217,7 @@ function checkPoint() {//檢查是否符合得分條件
 
         rcat.currentScore++;
         userScore = rcat.currentScore;
-        if (hightestScore <= userScore)//如果當前分數>最高分數，則兩個分數同步 
+        if (hightestScore <= userScore && userScore!==0 )//如果當前分數>最高分數，則兩個分數同步 
         {
             updateHighestScore(userScore)
             /*initialize();*/

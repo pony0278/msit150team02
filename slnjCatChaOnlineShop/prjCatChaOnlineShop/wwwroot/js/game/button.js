@@ -41,14 +41,8 @@ closeinstruction.addEventListener("click", () => {
 });
 
 
-//測試連動資料庫登入
-testlogin.addEventListener("click", () => {
-    initialize()
-});
-
 const testGameDB = document.getElementById('testGameDB');
 testGameDB.addEventListener("click", () => {
     console.log('開始測試')
-
 
 });
