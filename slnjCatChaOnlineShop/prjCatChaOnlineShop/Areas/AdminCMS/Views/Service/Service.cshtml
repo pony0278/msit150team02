@@ -49,7 +49,7 @@
         <div class="row">
             <div class="col-12">
                 <!--表格-->
-                <table id="service-table" class="table table-striped nowrap" style="width:100%">
+                <table id="case-table" class="table table-striped nowrap" style="width:100%">
                     <thead>
                         <tr>
                             <th>案件ID</th>
@@ -62,7 +62,8 @@
                             <th>狀態ID</th>
                             <th>狀態</th>
                             <th>詳細資料</th>
-                            <th>編輯/刪除</th>
+                            <th>回覆</th>
+                            @* <th>編輯</th> *@
                         </tr>
                     </thead>
                 </table>
@@ -70,10 +71,10 @@
                 <!--編輯彈出視窗-->
                 <div class="modal fade" id="editModalToggle" aria-hidden="true"
                      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯客訴案件</h5>
+                                <h5 class="modal-title" id="exampleModalToggleLabel">回覆客訴案件</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
@@ -81,82 +82,72 @@
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active"
                                          id="member-edit-nav-home">
-                                        <form>
 
-                                            <div class="form-group">
-                                                <label class="form-label">申訴標題	Complaint Title：</label>
-                                                <input class="form-control" type="text" value="請問線上付款的步驟說明?" readonly disabled />
+                                        
+
+                                        <div class="row">
+                                            <div class="col-12 col-lg-6">
+
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label">案件ID：</label>
+                                                    <input class="form-control" id="edit_complaintCaseId" type="text" readonly disabled />
+                                                </div>
+
+                                                
+
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label">申訴類別：</label>
+                                                    <select id="complaintCategorySelect" class="form-control">
+                                                    </select>
+                                                </div>
+
+
                                             </div>
+                                            <div class="col-12 col-lg-6">
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label">發問時間：</label>
+                                                    <input class="form-control" type="text" id="edit_creationTime" readonly disabled />
+                                                </div>
+@*                                                 <div class="form-group mb-3">
+                                                    <label for="exampleFormControlTextarea1"
+                                                           class="form-label">狀態：</label>
+                                                    <select id="complaintStatusSelect" class="form-control">
+                                                    </select>
+                                                </div> *@
 
-                                            <div class="form-group">
-                                                <label class="form-label">申訴類別：</label>
-                                                <select class="form-control">
-                                                    <option value="1">運送問題</option>
-                                                    <option value="2">產品問題</option>
-                                                    <option value="3">付款問題</option>
-                                                    <option value="4">會員權益</option>
-                                                    <option value="5">購物諮詢</option>
-                                                    <option value="6">遊戲檢舉</option>
-                                                    <option value="7">隱私保護</option>
-                                                    <option value="8">獎勵活動</option>
-                                                    <option value="9">其它事項</option>
-                                                </select>
+                                                <div class="form-group mb-3">
+                                                    <label class="form-label">接收者(官方)：</label>
+                                                    <select class="form-control" id="edit_ReceiverIdOfficial">
+                                                    </select>
+                                                </div>
                                             </div>
+                                        </div>
 
-                                            <div class="form-group">
-                                                <label class="form-label">回覆ID　Reply ID：</label>
-                                                <input class="form-control" type="text" readonly disabled />
-                                            </div>
 
-                                            <div class="form-group">
-                                                <label class="form-label">客訴案件ID　Complaint Case ID</label>
-                                                <input class="form-control" type="text" readonly disabled />
-                                            </div>
 
-                                            <div class="form-group">
-                                                <label class="form-label">接收者ID(官方)	　Receiver ID (Official)：</label>
-                                                <select class="form-control">
-                                                    <option>管理員1</option>
-                                                    <option>管理員2</option>
-                                                    <option>管理員3</option>
-                                                </select>
-                                            </div>
+                                        <div class="form-group mb-3">
+                                            <label class="form-label">申訴標題	Complaint Title：</label>
+                                            <input class="form-control" type="text" id="edit_complaintTitle" readonly disabled />
+                                        </div>
 
-                                            <div class="form-group">
-                                                <label for="w3review">問題內容：</label>
-                                                <textarea class="form-control" id="w3review"
-                                                          name="w3review" rows="4" cols="50" readonly
-                                                          disabled>我無法使用線上付款，能協助我提供操作步驟嗎?
-                                                                    </textarea>
-                                            </div>
 
-                                            <div class="form-group">
-                                                <label for="exampleFormControlTextarea1"
-                                                       class="form-label">回覆：</label>
-                                                <textarea class="form-control"
-                                                          id="exampleFormControlTextarea1"
-                                                          rows="3"></textarea>
-                                            </div>
 
-                                            <div class="form-group">
-                                                <label for="exampleFormControlTextarea1"
-                                                       class="form-label">狀態：</label>
-                                                <select class="form-control">
-                                                    <option value="1">待處理</option>
-                                                    <option value="2">審核中</option>
-                                                    <option value="3">處理中</option>
-                                                    <option value="4">待回覆</option>
-                                                    <option value="5">已回覆</option>
-                                                    <option value="6">已解決</option>
-                                                    <option value="7">關閉</option>
-                                                </select>
-                                            </div>
+                                        <div class="form-group mb-3">
+                                            <label for="w3review">內容：</label>
+                                            <textarea class="form-control" id="edit_complaintContent" rows="4" cols="50" readonly disabled></textarea>
+                                        </div>
 
-                                            <button class="btn btn-danger btn-block mt-4"
-                                                    style="width: 100%;">
-                                                儲存
-                                            </button>
-                                        </form>
+                                        <div class="form-group mb-3">
+                                            <label for="exampleFormControlTextarea1" class="form-label">回覆：</label>
+                                            <textarea class="form-control" id="edit_recipientContent" rows="3"></textarea>
+                                        </div>
+
+
+
+                                        <button type="button" class="btn btn-danger btn-block editCase_save"
+                                                style="width: 100%;">
+                                            儲存
+                                        </button>
                                     </div>
                                     <div class="tab-pane fade" id="member-edit-nav-paper">
                                         <p>顯示優惠券 | <button>刪除</button></p>
@@ -184,31 +175,19 @@
                                         <button class="nav-link active" id="nav-home-tab"
                                                 data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                                                 role="tab">
-                                            會員資料
+                                            詳細資料
+                                            
                                         </button>
                                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                                 data-bs-target="#nav-profile" type="button"
                                                 role="tab">
-                                            詳細資料
+                                            會員資料
                                         </button>
                                     </div>
                                 </nav>
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                          aria-labelledby="nav-home-tab">
-                                        <p id="memberId"></p>
-                                        <p id="name"></p>
-                                        <p id="memberAccount"></p>
-                                        <p id="gender"></p>
-                                        <p id="birthday"></p>
-                                        <p id="email"></p>
-                                        <p id="phoneNumber"></p>
-                                        <p id="address"></p>
-                                        <p id="registrationTime"></p>
-                                        <p id="lastLoginTime"></p>
-                                        <p id="memberStatus"></p>
-                                    </div>
-                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel">
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
                                                 <p id="complaintCaseId"></p>
@@ -225,15 +204,21 @@
                                         </div>
                                         <hr />
                                         <h5 id="complaintTitle" class="mb-2" style="font-weight: bold;"></h5>
-                                        <p>
-                                            內容：
-                                            <textarea class="form-control" rows="4" cols="50" id="complaintContent" readonly disabled></textarea>
-                                        </p>
-                                        <p>
-                                            回覆：
-                                            <textarea class="form-control" id="messageRecipientContent" rows="4" cols="50" readonly disabled></textarea>
-                                        </p>
-
+                                        <h5>內容：<span id="complaintContent"></span></h5>
+                                        <h5><span id="messageRecipientContent" style="color: green;"></span></h5>
+                                    </div>
+                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel">
+                                        <p id="memberId"></p>
+                                        <p id="name"></p>
+                                        <p id="memberAccount"></p>
+                                        <p id="gender"></p>
+                                        <p id="birthday"></p>
+                                        <p id="email"></p>
+                                        <p id="phoneNumber"></p>
+                                        <p id="address"></p>
+                                        <p id="registrationTime"></p>
+                                        <p id="lastLoginTime"></p>
+                                        <p id="memberStatus"></p>
                                     </div>
                                 </div>
                             </div>
@@ -258,10 +243,8 @@
                         });
                         //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
 
-                        //客訴案件ID	 申訴類別	建立時間   標題	會員姓名	狀態	詳細資料	編輯 / 刪除
-
                         //==================datatable
-                        $('#service-table').DataTable({
+                        $('#case-table').DataTable({
                             "ajax": '@Url.Action("ShowComplaintCase", "Service")',
                             "columns": [
                                 { data: 'complaintCaseId' },
@@ -279,13 +262,29 @@
                                         return '<button class="detail_input" data-bs-toggle="modal" href="#detailModalToggle" role="button" data-memberid="' + row.memberId + '" data-caseid="' + row.complaintCaseId + '">詳細資料</button>';
                                     }
                                 },
+                                // {
+                                //     data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                                //     render: function (data, type, row, meta) {
+                                        
+                                //     }
+                                // },
                                 {
-                                    data: null,
+                                    data: 'complaintStatusName',
                                     render: function (data, type, row, meta) {
-                                        var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#editModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
-                                        return editButton;
+                                        if (data == "待回覆") {
+                                            return '<button class="reply_casebtn btn" style="background-color: #b95756;color: #FFF; " data-bs-toggle="modal" href="#editModalToggle" role="button" data-caseid="' + row.complaintCaseId + '">回覆</button>';
+                                        } else {
+                                            return '';
+                                        }
                                     }
                                 },
+                                // {
+                                //     data: null,
+                                //     render: function (data, type, row, meta) {
+                                //         var editButton = '<button class="btn edit_casebtn" data-bs-toggle="modal" href="#editModalToggle" role="button" data-caseid="' + row.complaintCaseId + '"><i class="fas fa-edit"></i></button>';
+                                //         return editButton;
+                                //     }
+                                // },
                             ],
                             "paging": true, //分頁功能
                             responsive: true, //RWD
@@ -294,9 +293,12 @@
 
 
                         //==================按下「詳細資料」按鈕的點擊事件處理
-                        $('#service-table').on('click', '.detail_input', function () {
+                        $('#case-table').on('click', '.detail_input', function () {
                             var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
                             var caseId = $(this).data('caseid'); //這邊要注意大小寫....不然可能會抓不到值
+
+                            // 清空回覆元素的選項
+                            $("#messageRecipientContent").empty();
 
                             //----------------AJAX
                             $.ajax({
@@ -330,15 +332,18 @@
                                     $('#complaintTitle').text("申訴標題：" + data.data.caseTotal.complaintTitle);
                                     $('#complaintCaseId').text("案件ID：" + data.data.caseTotal.complaintCaseId);
                                     $('#categoryData').text("申訴類別：" + data.data.categoryData);
-                                    $('#replyId').text("回覆ID：" + data.data.replyData.replyId);
-                                    $('#replyAdminName').text("回覆人員：" + data.data.replyAdminName);
-                                    $('#sentTime').text("回覆時間：" + data.data.replyData.sentTime);
                                     $('#creationTime').text("發問時間：" + data.data.caseTotal.creationTime);
-
                                     $('#caseStatusName').text("案件狀態：" + data.data.caseStatusName);
-                                    $('#receiverIdOfficial').text("接收者ID：" + data.data.replyData.receiverIdOfficial);
-                                    $('#complaintContent').val(data.data.caseTotal.complaintContent);
-                                    $('#messageRecipientContent').val(data.data.replyData.messageRecipientContent);
+                                    $('#complaintContent').text(data.data.caseTotal.complaintContent);
+
+                                    //===========有可能還沒回覆
+                                    if (data.data.replyData != null) {
+                                        $('#replyId').text("回覆ID：" + data.data.replyData.replyId);
+                                        $('#replyAdminName').text("回覆人員：" + data.data.replyAdminName);
+                                        $('#sentTime').text("回覆時間：" + data.data.replyData.sentTime);
+                                        $('#receiverIdOfficial').text("接收者ID：" + data.data.replyData.receiverIdOfficial);
+                                        $('#messageRecipientContent').text("回覆：" + data.data.replyData.messageRecipientContent);
+                                    }
                                 },
                                 error: function (error, a, b) {
                                     console.log(error);
@@ -348,5 +353,139 @@
                                 }
                             });
                         });
+
+
+                        //==================按下「回覆」按鈕的點擊事件處理
+                        $('#case-table').on('click', '.reply_casebtn', function () {
+                            var caseId = $(this).data('caseid'); //這邊要注意大小寫....不然可能會抓不到值
+
+                            // 清空所有<select>元素的選項
+                            $("#complaintCategorySelect, #complaintStatusSelect, #edit_ReceiverIdOfficial").empty();
+
+                            //----------------AJAX
+                            $.ajax({
+                                url: '@Url.Action("ReplyCase", "Service")',
+                                type: 'GET',
+                                data: { id: caseId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                                success: function (data) {
+                                    console.log(data);
+
+                                    // 抓到資料庫的所有分類名稱並放入option中
+                                    var CCselectElement = $("#complaintCategorySelect");
+
+                                    $.each(data.data.complaintCategorySelect, function (index, value) {
+                                        var option = $("<option>", {
+                                            value: index + 1,
+                                            text: value
+                                        });
+
+                                        if (value === data.data.complaintStatusNames) {
+                                            option.prop("selected", true); // Set the option as selected
+                                        }
+                                        CCselectElement.append(option);
+                                    });
+
+                                    // 抓到資料庫的所有狀態名稱並放入option中
+                                    // var CSselectElement = $("#complaintStatusSelect");
+
+                                    // $.each(data.data.complaintStatusSelect, function (index, value) {
+                                    //     var option = $("<option>", {
+                                    //         value: index + 1,
+                                    //         text: value
+                                    //     });
+
+                                    //     if (value === data.data.complaintCategoryName) {
+                                    //         option.prop("selected", true); // Set the option as selected
+                                    //     }
+                                    //     CSselectElement.append(option);
+                                    // });
+
+                                    // 抓到資料庫的所有管理員名稱並放入option中
+                                    var selectElement = $("#edit_ReceiverIdOfficial");
+
+                                    $.each(data.data.adminUsername, function (index, value) {
+                                        var option = $("<option>", {
+                                            value: index + 1,
+                                            text: value
+                                        });
+
+                                        if (value === data.data.receiver) {
+                                            option.prop("selected", true); // Set the option as selected
+                                        }
+                                        selectElement.append(option);
+                                    });
+
+                                    //==================案件資料
+                                    $('#edit_complaintCaseId').val(data.data.serviceCase.complaintCaseId);
+                                    $('#edit_creationTime').val(data.data.serviceCase.creationTime);
+                                    $('#edit_complaintTitle').val(data.data.serviceCase.complaintTitle);
+                                    $('#edit_complaintContent').val(data.data.serviceCase.complaintContent);
+                                    $('#edit_recipientContent').val(data.data.recipientContent);
+
+                                },
+                                error: function (error) {
+                                    console.error(error);
+                                }
+                            });
+                        });
+
+
+                        //==================回覆的「儲存」按鈕的點擊事件處理
+                        $('.editCase_save').click(function () {
+
+
+                            //==================案件資料
+                            var complaintCaseId = $('#edit_complaintCaseId').val();
+                            var complaintCategoryId = $('#complaintCategorySelect').val();
+                            var ReceiverIdOfficial = $('#edit_ReceiverIdOfficial').val();
+                            var complaintStatusId = "5";
+                            var messageRecipientContent = $('#edit_recipientContent').val();
+
+
+                            var editCase = {
+                                complaintCaseId: complaintCaseId,
+                                complaintCategoryId: complaintCategoryId,
+                                ReceiverIdOfficial: ReceiverIdOfficial,
+                                complaintStatusId: complaintStatusId,
+                                messageRecipientContent: messageRecipientContent,
+                            };
+
+                            console.log(editCase);
+
+                            $.ajax({
+                                url: '/AdminCMS/Service/InsertReply',
+                                type: 'POST',
+                                data: { editCase: editCase },
+                                success: function (response) {
+                                    if (response.success) {
+                                        // 更新成功的處理
+                                        // 顯示成功訊息
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '編輯成功',
+                                            text: response.message
+                                        });
+
+                                        // 關閉modal
+                                        $('#editModalToggle').modal('hide');
+
+                                        // 重新整理dataTable
+                                        $('#case-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                                    } else {
+                                        // 更新失敗
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: '失敗',
+                                            text: response.message
+                                        });
+                                    }
+                                },
+                                error: function (error) {
+                                    // 錯誤處理
+                                    // 會員編輯失敗，顯示錯誤訊息
+                                    console.log(error);
+                                }
+                            });
+                        })
                     </script>
                 }

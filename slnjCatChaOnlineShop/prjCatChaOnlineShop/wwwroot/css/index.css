@@ -248,6 +248,7 @@ td .fas {
     background-color: #FFF;
     border-top-right-radius: 12px;
     border-top-left-radius: 12px;
+    max-width: 100%;
 }
 
 .dashboard-title {
@@ -258,4 +259,5 @@ td .fas {
     padding-bottom: 5px;
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
+    max-width: 200px;
 }
