@@ -12,7 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddSession(options => {
     // 設定 Session 的過期時間（以分為單位）
-    options.IdleTimeout = TimeSpan.FromMinutes(3); // 測試:這裡設定為 3 分鐘
+    options.IdleTimeout = TimeSpan.FromDays(3); // 測試:這裡設定為 3 天
 });
 builder.Services.AddScoped<ProductService>();
 // 註冊 CheckoutService 服務

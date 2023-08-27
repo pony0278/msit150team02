@@ -22,10 +22,8 @@
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="~/css/responsive.css" />
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="~/css/custom.css" />
-    <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
     <link rel="stylesheet" href="~/css/chatbox.css" />
-    <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css"/>
+    <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 }
 
 <!-- Modal -->
@@ -153,24 +151,24 @@
                     <!-- start prod  -->
                     <div class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
-                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
                                 <div class="box-img-hover">
                                     <div class="type-lb">
                                         <p class="sale">Sale</p>
                                     </div>
-                                    <img src=@item.pImgPath class="img-fluid shop-image" alt="Image" />
+                                    <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
                                 </div>
                             </a>
                             <div class="why-text">
                                 <h4>@item.pName</h4>
                                 @if (item.pDiscount != null)
                                 {
-                                    <h5>$@item.pSalePrice</h5>
-                                    <del>$@item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$@item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
                                 <a data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
@@ -232,19 +230,19 @@
                 {
                     <div class="col-lg-3 col-md-6 special-grid best-seller">
                         <div class="products-single-custom fix">
-                            <a asp-controller="Index" asp-action="ShopDetail" title="@item.pName">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
                                 <div class="box-img-hover">
                                     <div class="type-lb">
                                         <p class="sale">Sale</p>
                                     </div>
-                                    <img src=@item.pImgPath class="img-fluid shop-image" alt="Image" />
+                                    <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
                                 </div>
                             </a>
                             <div class="why-text">
                                 <h4>@item.pName</h4>
                                 @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.pSalePrice</h5>
+                                    <h5>$ @item.p優惠價格</h5>
                                     <del>$ @item.pPrice</del>
                                 }
                                 else
@@ -486,9 +484,6 @@
 <div class="body-font-style" id="go-to-game" title="進入遊戲">
     <a asp-controller="Game" asp-action="Index">貓貓大進擊<i class="fa-solid fa-gamepad"></i></a>
 </div>
-
-
-
 <div id="body">
     <div id="chat-circle" class="btn btn-raised">
         <div id="chat-overlay"></div>
@@ -545,6 +540,7 @@
     <!-- ALL JS FILES -->
     <!-- 首頁跑版 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
     <!--<script src="~/js/jquery-3.2.1.min.js"></script>-->
     <script src="~/js/popper.min.js"></script>
     
@@ -568,12 +564,51 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom-home-details-wishlist.js"></script>
+    <script src="~/js/custom.js"></script>
+    
     <script>
         //所有頁面上不可有相同id
         var productIndexNew = $('#productIndexNew');
         var productIndexSale = $('#productIndexSale');
 
+        // 點擊商品時獲取識別ID
+        productIndexNew.on('click', '.shop-prod-click', function () {
+            
+            console.log(productIndexNew);
+            var productId = $(this).data('product-id');
+            console.log('Clicked product ID:', productId);
+            $.ajax({
+                url: '/ProductApi/GetDetail',
+                type: 'GET',
+                data: { pId: productId },
+                dataType: 'html',
+                success: function (response) {
+                    console.log('GoToDetail:', response.message);
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
+        });
+        productIndexSale.on('click', '.shop-prod-click', function () {
+            console.log(productIndexSale);
+            var productId = $(this).data('product-id');
+            console.log('Clicked product ID:', productId);
+            $.ajax({
+                url: '/ProductApi/GetDetail',
+                type: 'GET',
+                data: { pId: productId },
+                dataType: 'html',
+                success: function (response) {
+                    console.log('Added to Cart:', response.message);
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
+        });
+
+        //點加入購物車獲取id
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             console.log(productIndexNew);
@@ -594,6 +629,7 @@
                 }
             });
         });
+
         productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             console.log(productIndexSale);
@@ -750,46 +786,5 @@
             }
             // 手動進行轉跳
         });
-
-        const fullScreenContainer = document.getElementById('fullScreenContainer');
-
-
-        function getRandomInt(min, max) {
-            return Math.floor(Math.random() * (max - min)) + min;
-        }
-
-
-        function createLine() {
-            const line = document.createElement('div');
-            line.classList.add('line');
-            line.style.width = `${getRandomInt(20, 100)}px`
-            line.style.right = `${getRandomInt(window.innerWidth, 100)}px`;
-            line.style.top = `${getRandomInt(0, window.innerHeight)}px`;
-            fullScreenContainer.appendChild(line);
-            return line;
-        }
-
-
-        function updateLine(line) {
-            const newX = parseInt(line.style.right) + 10;
-            if (newX > window.innerWidth) {
-                line.style.right = `${getRandomInt(0, -100)}px`;
-            } else {
-                line.style.right = `${newX}px`;
-            }
-        }
-
-        function main() {
-            const lines = [];
-
-            for (let i = 0; i < 100; i++) {
-                lines.push(createLine());
-            }
-
-            setInterval(() => {
-                lines.forEach(updateLine);
-            }, 50);
-        }
-
 </script>
 }
