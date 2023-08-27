@@ -32,7 +32,7 @@
 .NyanCat {
     width: 290px;
     height: 138px;
-    background: url(https://i.imgur.com/zDtMuDX.png);
+    background: url(https://i.imgur.com/Uyl5frO.png);
     animation: NyanCatAnimation .5s steps(5) infinite;
 }
 
@@ -61,6 +61,21 @@
     height: 2px;
     width: 2px;
     background-color: black;
-    opacity: 0.5;
+    opacity: 0.05;
     transition: all 0.1s linear;
 }
+.popup {
+    position: fixed;
+    left: 50%;
+    top: 100%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    opacity: 1;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+    .popup.show {
+        opacity: 1;
+        visibility: visible;
+    }
