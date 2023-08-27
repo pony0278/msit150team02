@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
@@ -22,11 +23,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             var details = _productService.GetDetailsById(pId);
             return View(details);
         }
-        //[HttpPost]
-        //public IActionResult ShopDetail()
-        //{
-        //    return View();
-        //}
 
         public IActionResult Shop()
         {
@@ -35,6 +31,21 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult Index()
         {
             return View(_productService.GetProductItems());
+        }
+        [HttpGet]
+        public IActionResult CountDownProduct()
+        {
+            var data = _context.ShopProductTotal
+                .Where(x => x.PushToShop == true && x.Discontinued == false)
+                .Select(x => new
+                {
+                    ProductId = x.ProductId,
+                    ProductName = x.ProductName,
+                    Discount = x.Discount,
+                    OffDay = x.OffDay,
+                    PushToShop = x.PushToShop,
+                }).ToList();
+            return Json(new { data });
         }
     }
 }
