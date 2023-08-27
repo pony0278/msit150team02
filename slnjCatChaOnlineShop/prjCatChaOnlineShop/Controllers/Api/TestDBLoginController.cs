@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CDictionary;
 using System.Linq;
+using System.Text.Json;
+
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -10,12 +13,20 @@ namespace prjCatChaOnlineShop.Controllers.Api
     [ApiController]
     public class TestDBLoginController : ControllerBase
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly cachaContext _context;
         private int _memberId;
-       public TestDBLoginController(cachaContext context)
-        {
-            _context = context;
 
+       //public TestDBLoginController(cachaContext context)
+       // {
+       //     _context = context;
+
+       // }
+
+        public TestDBLoginController(IHttpContextAccessor httpContextAccessor, cachaContext context)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _context = context;
         }
         //http://localhost:5090/Api/Api/TestDBLogin/玩家資訊數據
 
@@ -23,8 +34,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
         public IActionResult 玩家資訊數據()
         {
 
-            int _memberId = 1033;
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            int _memberId= memberInfo.MemberId;
 
+     
             // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
             if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _memberId))
             {

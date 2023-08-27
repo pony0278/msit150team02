@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 
-namespace prjCatChaOnlineShop.Controllers
+namespace prjCatChaOnlineShop.Controllers.Api
 {
     [Route("api/[controller]")]
     [ApiController]

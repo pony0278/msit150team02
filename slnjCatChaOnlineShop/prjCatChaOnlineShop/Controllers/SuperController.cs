@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 
-namespace prjCatChaOnlineShop.Controllers.Api
+namespace prjCatChaOnlineShop.Controllers
 {
     public class SuperController : Controller
     {
