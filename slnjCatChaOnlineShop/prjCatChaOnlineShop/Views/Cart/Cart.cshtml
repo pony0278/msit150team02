@@ -44,7 +44,7 @@
             <!-- cart -->
             <div class="col-lg-9 order-1 order-sm-1 order-md-1 order-xs-1">
                 <div class="card border shadow-0">
-                    <div class="m-4">
+                    <div id="goToDetail" class="m-4">
                         @{
                             if(Model!=null)
                             foreach (var item in Model)
@@ -56,21 +56,23 @@
                                             <div class="d-flex">
                                                 <img src="@item.cImgPath" class="border rounded me-3" style="width: 96px; height: 96px;" />
                                                 <div class="ml-5 mt-2">
-                                                    <a href="#" class="nav-link">@item.cName</a>
+                                                        <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })" class="shop-prod-click nav-link">@item.cName</a>
                                                     <div class="">
                                                         <select class="form-select for-detail-select me-4">
-                                                                
-                                                                @if (item.c子選項!=null)
+
+                                                                @if (item.c子項目 != null && item.c其他子項目!=null)
                                                                 {
-                                                                    // foreach(var attr in Model.GroupBy(item=>item.product.ProductName).Where().Select())
-                                                                   <option>@item.c子選項</option>
+                                                                    <option selected>@item.c子項目</option>
+
+                                                                    foreach (var attr in item.c其他子項目)
+                                                                    {
+                                                                        <option>@attr.其他子項目</option>
+                                                                    }
                                                                 }
                                                                 else
                                                                 {
                                                                     <option>商品</option>
                                                                 }
-
-                                                            
                                                         </select>
                                                     </div>
                                                 </div>
@@ -78,15 +80,13 @@
                                         </div>
                                     </div>
                                     <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-                                        <div class="mt-2">
-                                            <span>數量</span>
-                                            <select id="#SelectedQuantity" class="form-select me-4 for-count-select">
-
-                                                <option>@item.c數量</option>
 
 
-                                            </select>
-                                        </div>
+                                            <div class="mt-2">
+                                                <span>數量</span>
+                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
+                                            </div>
+
                                         <div class="mt-2 ml-5">
                                             <p class=" mb-0">價格</p>
                                             <span class="h6">$ @item.c小計</span><br />
@@ -101,8 +101,6 @@
                                     <hr class="for-hr">
                                 </div>
                             }
-
-
                         }
 
                         @* <div class="row gy-3 mb-4">
@@ -284,7 +282,55 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
+    <script>
+    //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
+        var inputQuantity = $('.input-quantity');
     
+    inputQuantity.on('change', function () {
+        var newValue = $(this).val();// 獲取輸入的新值
+        var productId = $(this).data('product-id')
+        console.log('New value:', newValue);
+        // 在這裡可以使用 Ajax 將新值傳回後端
+        $.ajax({
+            url: '/ProductApi/CartEditQuantity',
+            type: 'POST',
+            data: { newQuantity: newValue, pId:productId },
+            dataType: 'json',
+            success: function (response) {
+                console.log('Quantity updated:', response.message);
+            },
+            error: function (error) {
+                console.error('Ajax Error:', error);
+            }
+        });
+    });
+        // 點擊商品時獲取識別ID
+        var goToDetail = $('#goToDetail');
+
+        goToDetail.on('click', '.shop-prod-click', function () {
+
+            console.log(goToDetail);
+            var productId = $(this).data('product-id');
+            console.log('Clicked product ID:', productId);
+            $.ajax({
+                url: '/ProductApi/GetDetail',
+                type: 'GET',
+                data: { pId: productId },
+                dataType: 'html',
+                success: function (response) {
+                    console.log('GoToDetail:', response.message);
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
+        });
+
+
+
+
+
+    </script>
 }
 
 

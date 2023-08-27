@@ -32,13 +32,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult Cart()
         {
-            
             string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             if (json == null)
             {
                 return View();
             }
-            
             else
             {            
                 List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
