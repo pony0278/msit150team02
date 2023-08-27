@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="~/css/review.css" />
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
-            @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> *@
+        @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> *@
     <link rel="stylesheet" href="~/css/style.css" />
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="~/css/responsive.css" />
@@ -149,38 +149,38 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                    <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
-                                    </div>
-                                    <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                            <!-- start prod  -->
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                <p class="sale">Sale</p>
+                                            </div>
+                                            <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4>@item.pName</h4>
+                                        @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                            <h5>$ @item.p優惠價格</h5>
+                                            <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                            <h5>$ @item.pPrice</h5>
                                 }
-                                <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                        <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </a>
+                                        <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- end prod  -->
+                            <!-- end prod  -->
                 }
             }
         </div>
@@ -188,27 +188,8 @@
 </div>
 <!-- End 新進商品  -->
 <!-- Start Blog  -->
-<div class="latest-blog">
-    <div class="container sale-info-box">
-        <div class="card">
-            <img src="~/images/sale-info.jpg" class="card-img" alt="...">
-            <div class="card-img-overlay">
-                <p class="card-title">特別寵寶驚喜箱</p>
-                <p class="card-text">UP TO</p>
-                <p class="discount ">50%</p>
-                <p class="card-text">熱賣商品與新進商品都在這裡!</p>
-                <p class="card-text">用甜甜價把寶貝喜歡的帶回家~</p>
-                <div class="go-to-sale-info">
-                    <a asp-controller="Index" asp-action="ShopDetail">
-                        <span>快來看看我!</span>
-                    </a>
-                </div>
-            </div>
-        </div>
-        <div class="timer-section">
-            <span>倒數計時</span></br>
-            <span id="timer">12:00:00</span>
-        </div>
+<div class="container-fluid " id="sp-products">
+    <div class="row justify-content-center" id="container">
     </div>
 </div>
 <!-- End Blog  -->
@@ -229,37 +210,37 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
-                                    </div>
-                                    <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                <p class="sale">Sale</p>
+                                            </div>
+                                            <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4>@item.pName</h4>
+                                        @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                            <h5>$ @item.p優惠價格</h5>
+                                            <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                            <h5>$ @item.pPrice</h5>
                                 }
-                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                        <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </a>
+                                        <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
+                                            <i class="far fa-heart"></i>
+                                        </a>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    <!-- end prod1  -->
+                            <!-- end prod1  -->
                 }
             }
 
@@ -273,184 +254,9 @@
         <div class="col-lg-12">
             <div class="title-all text-center">
                 <h1>推薦</h1>
-                <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed sit amet lacus enim.</p>
+                <p>熱銷好評商品</p>
             </div>
             <div class="featured-products-box owl-carousel owl-theme">
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
-
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
-
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
                 <div class="item">
                     <div class="products-single fix">
                         <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
@@ -524,6 +330,9 @@
             </div>
         </div>
         <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="popup" id="my-popup">
+                <img src="https://i.imgur.com/Db9cwjE.png" alt="Popup Image" class="popup-image">
+            </div>
             <div class="animate animate02">
                 <div class="catAnimate "></div>
             </div>
@@ -541,10 +350,10 @@
     <!-- ALL JS FILES -->
     <!-- 首頁跑版 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    
+
     <!--<script src="~/js/jquery-3.2.1.min.js"></script>-->
     <script src="~/js/popper.min.js"></script>
-    
+
     <script src="~/js/review.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js"></script>
@@ -566,7 +375,7 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
-    
+
     <script>
         //所有頁面上不可有相同id
         var productIndexNew = $('#productIndexNew');
@@ -574,7 +383,7 @@
 
         // 點擊商品時獲取識別ID
         productIndexNew.on('click', '.shop-prod-click', function () {
-            
+
             console.log(productIndexNew);
             var productId = $(this).data('product-id');
             console.log('Clicked product ID:', productId);
@@ -759,6 +568,7 @@
             })
 
         })
+        //小動畫
         const fullScreenContainer = document.getElementById('fullScreenContainer');
         //修復遊戲側邊按鈕
         document.getElementById("go-to-game").addEventListener("click", function (event) {
@@ -768,9 +578,14 @@
             $(".animate01").addClass("NyanCat-container01");
             $(".animate02").addClass("NyanCat-container02");
 
-            $(".animate03").one('animationend', function () {
-                window.location.href = '/Game/Index';
-            }).addClass("NyanCat-container03");
+            $(".animate03").one("animationend", function () {
+                    $("#my-popup").addClass("show");
+                    setTimeout(function () {
+                        $("#my-popup").removeClass("show");
+                    window.location.href = '/Game/Index';
+                    }, 3000);
+                })
+                .addClass("NyanCat-container03");
 
             const nyanCats = document.querySelectorAll('.animate');
             if (nyanCats.length > 0) {
@@ -820,9 +635,10 @@
 
                 setInterval(() => {
                     lines.forEach(updateLine);
-                }, 50);
+                }, 40);
             }
         });
+<<<<<<< HEAD
 
         const targetloginTextClass = 'LoginText';
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
@@ -851,4 +667,73 @@
 
 
 </script>
+=======
+        //小動畫結束
+        //抓主打商品
+        $(document).ready(function () {
+            $.ajax({
+                url: "@Url.Action("CountDownProduct","Index")",
+                type: "GET",
+                dataType: "json",
+                success: function (response) {
+                    var container = $("#container");
+                    $.each(response.data, function (index, value) {
+                        // Create a div to hold each product
+                        var productDiv = $('<div class="col-md-6 d-flex position-relative"></div>');
+                        var productDiscount = $('<div class="position-absolute top-0 start-0"><h1 class="ms-3 fs-1 text-secondary"></h1></div>').find('h1').text(value.discount).end();
+                        var productCountTime = $('<div class="d-flex flex-column align-items-end"></div>').append('<h1 class="me-3 fs-1">倒數計時</h1>', `<h1 class="me-3 countTime fs-1">${value.offDay}</h1>`);
+                        var productDivCountDownTime = $('<div class="z-1 position-absolute top-0 end-0"></div>').append(productCountTime);
+                        var productInfo = $('<div class="d-flex flex-column align-items-center"></div>').append(`<h1 class="fs-1">限時特惠</h1>`, `<h1 class="fs-1">${value.productName}</h1>`, `<a class="fs-2 text-primary" href="/Index/ShopDetail?pid=${value.productId}" >點我看更多!</a> `);
+                        var productDivProductName = $('<div class="position-absolute top-50 start-50 translate-middle"></div>').append(productInfo);
+                        var img = $('<img class="z-0 w-100">').attr('src', "https://lh3.googleusercontent.com/pw/AIL4fc_EZtvazZta8E3dQDkDsLgRbKyZw6DYqDBCTjtypGTt2rEpp-8H7rTiNY3flHpe_TrzMXApKBWi6KDA67JGwfc6TYzhc_Ji3HXCDQtV1BErpFVrSmA=w1200");
+
+                        productDiv.append(img, productDiscount, productDivCountDownTime, productDivProductName);
+                        container.append(productDiv);
+                    });
+                    handleCountdown()
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                }
+            });
+            //抓評論
+            $.ajax({
+                url: "@Url.Action("GetReivews","Index")",
+                type:"GET",
+                dataType:"json",
+                success: function (response) {
+                    console.log(response.data)
+                },
+                error: function (error) {
+                    console.log("Error:", error)
+                }
+            })
+        });
+        //倒數計時
+        function handleCountdown() {
+            const times = $(".countTime").map(function () {
+                return new Date($(this).text()).getTime();
+            }).get();
+            const countTimes = setInterval(function () {
+                const now = new Date().getTime();
+                $(".countTime").each(function (index) {
+                    const distance = times[index] - now;
+                    const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                    const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                    const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                    const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                    if (distance < 0) {
+                        clearInterval(countTimes);
+                        $(this).html("截止");
+                    } else {
+                        $(this).html(days + "天" + hours + "時" + minutes + "分" + seconds + "秒");
+                    }
+                });
+            }, 1000);
+        }
+
+
+    </script>
+>>>>>>> cc9d7972a3d82f754fbbf4465b08237552c70736
 }

@@ -23,5 +23,9 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 
         [DisplayName("圖片")]
         public string Link { get { return _banr.Link; } set { _banr.Link = value; } }
+
+        public IFormFile? Image { get; set; }
+        public List<IFormFile>? BannerImage { get; set; }
+
     }
 }

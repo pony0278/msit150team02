@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Return";
+    ViewData["Title"] = "商城退換貨管理";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
 }
 
@@ -84,50 +84,44 @@
 
     <h2 class="mt-3">退換貨管理</h2>
 
-    <div class="search-row row mt-3 mb-3">
-        <div class="row align-items-center mb-3">
+    <div class="search-row row mt-3">
+@*         <div class="row align-items-center mb-3">
             退換貨日期：
             <input type="text" class="form-control w-25" name="dates" />
-        </div>
+        </div> *@
         <div class="row align-items-center mb-3">
             原因類別：
-            <select class="form-select w-25" id="statusList">
+            <select class="form-select w-25" id="reasonList">
                 <option value="" selected>全部訂單</option>
-                <option value="">商品品質問題</option>
-                <option value="">不符合期望</option>
-                <option value="">送錯商品</option>
-                <option value="">重複運送商品</option>
-                <option value="">訂單問題</option>
-                <option value="">售後服務問題</option>
-                <option value="">改變主意</option>
-                <option value="">其他原因</option>
+                <option value="商品品質問題">商品品質問題</option>
+                <option value="不符合期望">不符合期望</option>
+                <option value="送錯商品">送錯商品</option>
+                <option value="重複運送商品">重複運送商品</option>
+                <option value="訂單問題">訂單問題</option>
+                <option value="售後服務問題">售後服務問題</option>
+                <option value="改變主意">改變主意</option>
+                <option value="其他原因">其他原因</option>
             </select>
         </div>
         <div class="row align-items-center mb-3">
             退換貨狀態：
             <select class="form-select w-25" id="statusList">
                 <option value="" selected>全部訂單</option>
-                <option value="">待處理</option>
-                <option value="">審核中</option>
-                <option value="">已批准</option>
-                <option value="">待退貨</option>
-                <option value="">待換貨</option>
-                <option value="">退貨中</option>
-                <option value="">換貨中</option>
-                <option value="">已完成</option>
-                <option value="">取消</option>
+                <option value="待處理">待處理</option>
+                <option value="審核中">審核中</option>
+                <option value="已批准">已批准</option>
+                <option value="待退貨">待退貨</option>
+                <option value="待換貨">待換貨</option>
+                <option value="退貨中">退貨中</option>
+                <option value="換貨中">換貨中</option>
+                <option value="已完成">已完成</option>
+                <option value="取消">取消</option>
             </select>
         </div>
-        <div class="row align-items-center mb-3">
-            關鍵字搜尋：
-            <input type="text" class="form-control" style="width:25%;" />
-        </div>
-
-        <button type="button" class="keyword_input col-xl-1">查詢</button>
     </div>
 
 
-    <div class="container-fluid mt-4">
+    <div class="container-fluid">
         <div class="row">
             <div class="col-12">
                 <!--表格-->
@@ -309,7 +303,7 @@
                             });
 
                             //==================datatable
-                            $('#SReturn-table').DataTable({
+                            var table = $('#SReturn-table').DataTable({
                                 "ajax": '@Url.Action("ShowReturnTotal", "Return")',
 
                                 "columns": [
@@ -334,9 +328,32 @@
                                         }
                                     },
                                 ],
+                                columnDefs: [
+                                    { targets: 4, searchable: true },
+                                    { targets: 5, searchable: true }
+                                    // 其他列...
+                                ],
                                 "paging": true, //分頁功能
                                 responsive: true, //RWD
-                                "searching": false, //隱藏搜尋框
+                                // "searching": false, //隱藏搜尋框
+                            });
+
+                            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+                            $('#reasonList').on('change', function () {
+                                var filterOption1 = $(this).val();
+
+                                // 使用DataTable的column().search()方法進行過濾
+                                table.column(4).search(filterOption1).draw();
+                                // 其他列...
+                            });
+
+                            $('#statusList').on('change', function () {
+                                // var filterOption1 = $('#payList').val();
+                                var filterOption2 = $(this).val();
+
+                                // 使用DataTable的column().search()方法進行過濾
+                                table.column(5).search(filterOption2).draw();
+                                // 其他列...
                             });
 
                             //==================按下「詳細資料」按鈕的點擊事件處理

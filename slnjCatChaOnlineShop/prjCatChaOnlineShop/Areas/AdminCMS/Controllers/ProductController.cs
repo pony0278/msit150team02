@@ -270,12 +270,24 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult Product()
         {
-            var product = new CproductsTotal
+            //判斷是否有登入
+            if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
-                ProductCategories = _cachaContext.ShopProductCategory.ToList(),
-                shopProductTotals = _cachaContext.ShopProductTotal.ToList(),
-            };
-            return View(product);
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
+                var product = new CproductsTotal
+                {
+                    ProductCategories = _cachaContext.ShopProductCategory.ToList(),
+                    shopProductTotals = _cachaContext.ShopProductTotal.ToList(),
+                };
+                return View(product);
+            }
+            return RedirectToAction("Login", "CMSHome");
+
         }
         public IActionResult AI()
         {
