@@ -17,6 +17,10 @@
         <canvas id="Canvaslobby"></canvas>
         <!-- Start j轉蛋 -->
         <div id="CatchaGatCha">
+            <div id="gachaShowCoin">
+                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
+                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
+            </div>
             <div class="animation-container">
                 <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none; z-index:99;">
                 <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none; z-index:99;">
@@ -24,8 +28,9 @@
             </div>
            
             <div id="summon-buttons">
-                @*轉蛋按鈕*@
+                @*返回大廳按鈕*@
                 <button id="commonbackBTN"></button>
+                @*轉蛋按鈕*@
                 <div class="buttonRow">
                     <button id="CatPointSingleDrow"></button>
                     <button id="CatPointTenDrows"></button>
@@ -34,13 +39,11 @@
                     <button id="RubySingleDrow"></button>
                     <button id="RubyTenDrows"></button>
                 </div>
+                
             </div>
             <div id="result" class="result-container"></div>
             @* 使用者貓幣紅利顯示*@
-            <div id="gachaShowCoin">
-                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
-                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
-            </div>
+           
         </div>
         <!-- End 轉蛋 -->
         <!-- Start 小遊戲說明提示 -->
