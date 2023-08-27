@@ -111,7 +111,7 @@
         </li>
 
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="collect-tab" data-bs-toggle="tab" href="#collect" role="tab"
+            <a class="nav-link" id="collect-tab" data-bs-toggle="tab" href="#collect" role="tab" onclick="loadFavoriteData()"
                aria-selected="false">收藏紀錄</a>
         </li>
         <li class="nav-item" role="presentation">
@@ -660,8 +660,8 @@
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <label>評論: </label>
-                                    <div class="input-group">
-                                        <textarea class="form-control" aria-label="With textarea" id="commentTextarea"></textarea>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="commentTextarea" rows="2"></textarea>
                                     </div>
                                 </div>
                                 <div class="container">
@@ -778,7 +778,8 @@
                         <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
                             <div class="row gy-3 mb-4">
                                 <div style="height: 400px; overflow: scroll;" class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="favoriteRecordTable">
+                                    <table class="table table-bordered " id="favoriteRecordTable">
+                                        @* table-hover *@
                                         <thead class="table-warning text-center">
                                             <tr>
                                                 <th scope="col">圖片</th>
@@ -1226,8 +1227,10 @@
     <!--2.載入時，導入消費紀錄-->
     <script>
 
-        //載入消費紀錄資料
+        //進入頁面時，先呼叫方法載入資料
         $(document).ready(function () {
+
+            /*
             $.getJSON('@Url.Content("~/membership/GetOrders")', function (data) {
                 var tbody = document.querySelector('#orderTable tbody');
 
@@ -1354,7 +1357,144 @@
                 initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
 
             });
+            */
+        
+            loadOrderRecords()
         });
+
+        //載入消費紀錄資料
+        function loadOrderRecords() {
+            $.getJSON('@Url.Content("~/membership/GetOrders")')
+                .then(function (data) {
+                    var tbody = document.querySelector('#orderTable tbody');
+                    $('#shoppingsheet-tab').text(`消費紀錄 (${data.length})`);
+
+                    // 清空表格內容
+                    tbody.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立表格列
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+                        row.insertCell().textContent = item.orderId;
+
+                        //將日期格式化為 "yyyy-mm-dd"
+                        var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
+                        row.insertCell().textContent = formattedDate;
+
+                        row.insertCell().textContent = item.recipientName;
+                        row.insertCell().textContent = item.recipientAddress;
+                        row.insertCell().textContent = item.recipientPhone;
+                        row.insertCell().textContent = item.paymentMethodName;
+                        row.insertCell().textContent = item.statusName;
+
+                        var buttonContainer = document.createElement('div');
+                        buttonContainer.classList.add('d-flex', 'flex-column');
+
+                        //處理訂單明細的按鈕
+                        var detailButton = document.createElement('button');
+                        detailButton.textContent = '訂單明細';
+                        detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+                        detailButton.addEventListener('click', function () {
+                            $('#orderDetailModal').modal('show');
+
+                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                var orderDetailTbody = document.querySelector('#orderDetailTable tbody');
+
+                                // 清空表格內容
+                                orderDetailTbody.innerHTML = '';
+
+                                var totalAmount = 0;
+                                data.forEach(function (item) {
+                                    var row = orderDetailTbody.insertRow();
+                                    row.insertCell().textContent = item.productName;
+                                    row.insertCell().textContent = item.productQuantity;
+                                    if (item.size == null) {
+                                        row.insertCell().textContent = "標準型";
+                                    } else {
+                                        row.insertCell().textContent = item.size;
+                                    }
+                                    row.insertCell().textContent = 'NT$ ' + item.productPrice;
+
+                                    totalAmount += item.productQuantity * item.productPrice;
+                                });
+                                document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
+                            });
+
+                        });
+
+                        buttonContainer.appendChild(detailButton);
+
+                        //處理申請退換貨的按鈕
+                        var applyReturnButton = document.createElement('button');
+                        applyReturnButton.textContent = '申請退換貨';
+                        applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+
+                        applyReturnButton.addEventListener('click', function () {
+                            document.querySelector('#returnSpan').textContent = item.orderId;
+                            $('#returnModal').modal('show');
+
+                            var returnProductElement = document.getElementById('returnProductSelect');
+                            returnProductElement.innerHTML = '';
+                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+
+                                //拿取退貨理由數據
+                                var returnReasonElement = document.getElementById('returnReasonSelect');
+                                returnReasonElement.innerHTML = '';
+                                $.getJSON('@Url.Content("~/membership/GetReturnReasonCategory")', function (data) {
+                                    data.forEach(function (item) {
+                                        var option = document.createElement('option');
+                                        option.value = item.returnReasonId;
+                                        option.textContent = item.returnReason;
+                                        returnReasonElement.appendChild(option);
+                                    });
+                                });
+
+                                data.forEach(function (item) {
+                                    var option = document.createElement('option');
+                                    option.value = item.productId;
+                                    option.textContent = item.productName;
+                                    returnProductElement.appendChild(option);
+                                });
+                            });
+
+                        });
+
+                        buttonContainer.appendChild(applyReturnButton);
+
+                        //處理評論的按鈕
+                        var commentButton = document.createElement('button');
+                        commentButton.textContent = '評論';
+                        commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2');
+                        commentButton.addEventListener('click', function () {
+                            document.querySelector('#orderIdSpan').textContent = item.orderId;
+                            $('#commentModal').modal('show');
+
+                            var selectElement = document.getElementById('productSelect');
+                            selectElement.innerHTML = '';
+                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                data.forEach(function (item) {
+                                    var option = document.createElement('option');
+                                    option.value = item.productId;
+                                    option.textContent = item.productName;
+                                    selectElement.appendChild(option);
+                                });
+                            });
+                        });
+
+                        buttonContainer.appendChild(commentButton);
+
+                        var buttonCell = row.insertCell();
+                        buttonCell.appendChild(buttonContainer);
+                    });
+
+                    initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
+
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
 
         //送出退換貨
         document.getElementById('returnForm').addEventListener('submit', function (event) {
@@ -1376,7 +1516,7 @@
                     if (response.ok) {
                         $('#returnTextarea').val('');
                         $('#returnNumber').val('');
-
+                        loadReturnRecords();
 
                         return response.text();
                     } else {
@@ -1489,14 +1629,14 @@
             });
         }
 
-
-
     </script>
 
     <!--3.載入時，導入退貨紀錄-->
     <script>
 
+        //進入頁面時，先呼叫方法載入資料
         $(document).ready(function () {
+            /*
             $.getJSON('@Url.Content("~/membership/GetReturnRecord")', function (data) {
                 var tbody = document.querySelector('#returnRecordTable tbody');
 
@@ -1518,130 +1658,109 @@
                 initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
 
             });
+            */
+
+            loadReturnRecords();
         });
+        //載入退貨紀錄資料
+        function loadReturnRecords() {
+            $.getJSON('@Url.Content("~/membership/GetReturnRecord")')
+                .then(function (data) {
+                    var tbody = document.querySelector('#returnRecordTable tbody');
+                    $('#return-tab').text(`退貨紀錄 (${data.length})`);
+
+                    // 清空表格內容
+                    tbody.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立表格列
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+                        row.insertCell().textContent = item.orderId;
+
+                        // 將日期格式化為 "yyyy-mm-dd"
+                        var formattedDate = new Date(item.returnDate).toISOString().split('T')[0];
+                        row.insertCell().textContent = formattedDate;
+                        row.insertCell().textContent = item.returnReason;
+                        row.insertCell().textContent = item.statusName;
+                    });
+
+                    initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
+
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
 
     </script>
 
     <!--4.載入時，導入收藏紀錄-->
     <script>
 
+        //進入頁面時，先呼叫方法載入資料
         $(document).ready(function () {
+            loadFavoriteData();
+        });
 
-            /*
+        //載入收藏紀錄的表格
+        function loadFavoriteData() {
+
+
             $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
-                var tbody = document.querySelector('#favoriteRecordTable tbody');
 
-                // 清空表格內容
-                tbody.innerHTML = '';
-
-                // 遍歷 JSON 資料並建立表格列
-                data.forEach(function (item) {
-                    var row = tbody.insertRow();
-
-
-                    // 創建一個新的<img>元素
-                    var imgElement = document.createElement('img');
-                    // 設定圖片的src屬性為item.productPhoto（假設item.productPhoto是圖片的URL）
-                    // imgElement.src = item.productPhoto;
-                    imgElement.src = '@Url.Content("~/images/")' + item.productPhoto;
-                    // 設定其他屬性，如寬度、高度等
-                    imgElement.width = 100;  // 設定寬度，根據您的需求調整
-                    imgElement.height = 100; // 設定高度，根據您的需求調整
-                    // 在表格中插入圖片的單元格
-                    var imgCell = row.insertCell();
-                    imgCell.appendChild(imgElement);
-
-
-
-                    row.insertCell().textContent = item.productName;
-                    row.insertCell().textContent = item.remainingQuantity;
-                    row.insertCell().textContent = "$" + item.productPrice + " / 份";
-
-                    var cartCell = row.insertCell();
-                    var deleteCell = row.insertCell();
-
-                    // 設定格子內容水平置中的樣式
-                    cartCell.classList.add('text-center');
-                    deleteCell.classList.add('text-center');
-
-                    var cartDiv = document.createElement('div');
-                    cartDiv.className = 'd-inline-block';
-
-                    var cartLink = document.createElement('a');
-                    cartLink.className = 'btn hvr-hover';
-                    cartLink.href = '#';
-                    var cartIcon = document.createElement('i');
-                    cartIcon.className = 'fa-solid fa-cart-plus';
-                    cartLink.appendChild(cartIcon);
-
-
-                    cartLink.addEventListener('click', function () {
-                        console.log('Cart link clicked');
-                    });
-
-                    cartDiv.appendChild(cartLink);
-
-                    cartCell.appendChild(cartDiv);
-
-                    var deleteDiv = document.createElement('div');
-                    deleteDiv.className = 'd-inline-block';
-
-                    var deleteLink = document.createElement('a');
-                    deleteLink.className = 'btn btn-light border icon-hover-danger';
-                    deleteLink.href = '#';
-                    var deleteIcon = document.createElement('i');
-                    deleteIcon.className = 'fa-solid fa-xmark';
-                    deleteLink.appendChild(deleteIcon);
-
-                    deleteLink.addEventListener('click', function () {
-                        $.getJSON('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId, function (data) {
-                            $('#favoriteRecordTable').DataTable().ajax.reload();
-                        });
-                    });
-
-                    deleteDiv.appendChild(deleteLink);
-                    deleteCell.appendChild(deleteDiv);
-
-                });
-
-
-                new DataTable('#favoriteRecordTable', {
-                    language: {
-                        url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-                    },
-                    pageLength: 5,
-                    lengthMenu: [5, 10, 15],
-                    searching: true // 啟用搜尋功能
-                });
-
-
-            });
-            */
-            
-           
-           function loadFavoriteData() {
-                $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
+                if ( data == null) {
                     var tbody = document.querySelector('#favoriteRecordTable tbody');
+                    $('#collect-tab').text('收藏紀錄 (0)');
+                    tbody.innerHTML = '';
+                } else {
+                    var tbody = document.querySelector('#favoriteRecordTable tbody');
+                    $('#collect-tab').text(`收藏紀錄 (${data.length})`);
+
                     tbody.innerHTML = '';
 
                     data.forEach(function (item) {
                         var row = tbody.insertRow();
 
-
-                        // 創建一個新的<img>元素
-                        var imgElement = document.createElement('img');
-                        // 設定圖片的src屬性為item.productPhoto（假設item.productPhoto是圖片的URL）
-                        // imgElement.src = item.productPhoto;
-                        imgElement.src = '@Url.Content("~/images/")' + item.productPhoto;
-                        // 設定其他屬性，如寬度、高度等
-                        imgElement.width = 100;  // 設定寬度，根據您的需求調整
-                        imgElement.height = 100; // 設定高度，根據您的需求調整
-                        // 在表格中插入圖片的單元格
+                        // 在表格行中插入圖像元素
                         var imgCell = row.insertCell();
-                        imgCell.appendChild(imgElement);
+                        var imgContainer = document.createElement('div');
+                        imgContainer.className = 'image-container';
+
+                        var thumbnailImage = document.createElement('img');
+                        thumbnailImage.src = item.productImage1 ? item.productImage1 : '@Url.Content("~/images/prod-eg-5.png")';
+                        thumbnailImage.style.width = '100px';
+                        thumbnailImage.style.height = 'auto';
+                        thumbnailImage.classList.add('thumbnail-image', 'img-fluid');
+                        thumbnailImage.id = 'thumbnailImage';
+                        thumbnailImage.addEventListener('mousemove', function () {
+                            var imagePopup = document.getElementById('imagePopup');
+                            var originalImage = document.getElementById('originalImage');
+                            originalImage.src = thumbnailImage.src;
+                            imagePopup.style.display = 'block';
+                        });
+                        thumbnailImage.addEventListener('mouseout', function () {
+                            var imagePopup = document.getElementById('imagePopup');
+                            imagePopup.style.display = 'none';
+                        });
+
+                        var imagePopup = document.createElement('div');
+                        imagePopup.className = 'image-popup';
+                        imagePopup.id = 'imagePopup';
+                        imagePopup.style.display = 'none'; // 初始時隱藏
+
+                        var originalImage = document.createElement('img');
+                        originalImage.src = ''; // 初始時為空
+                        originalImage.alt = 'Original Image';
+                        originalImage.id = 'originalImage';
+
+                        imagePopup.appendChild(originalImage);
+                        imgContainer.appendChild(thumbnailImage);
+                        imgContainer.appendChild(imagePopup);
+                        imgCell.appendChild(imgContainer);
 
 
 
+                        
                         row.insertCell().textContent = item.productName;
                         row.insertCell().textContent = item.remainingQuantity;
                         row.insertCell().textContent = "$" + item.productPrice + " / 份";
@@ -1658,7 +1777,6 @@
 
                         var cartLink = document.createElement('a');
                         cartLink.className = 'btn hvr-hover';
-                        cartLink.href = '#';
                         var cartIcon = document.createElement('i');
                         cartIcon.className = 'fa-solid fa-cart-plus';
                         cartLink.appendChild(cartIcon);
@@ -1677,136 +1795,50 @@
 
                         var deleteLink = document.createElement('a');
                         deleteLink.className = 'btn btn-light border icon-hover-danger';
-                        deleteLink.href = '#';
                         var deleteIcon = document.createElement('i');
                         deleteIcon.className = 'fa-solid fa-xmark';
                         deleteLink.appendChild(deleteIcon);
 
                         deleteLink.addEventListener('click', function () {
-                            $.getJSON('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId, function (data) {
-                                    loadFavoriteData();
-                            });
+                            fetch('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId)
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                                .catch(error => {
+                                });
+                            loadFavoriteData();
                         });
 
                         deleteDiv.appendChild(deleteLink);
                         deleteCell.appendChild(deleteDiv);
                     });
 
-
+                    /*
                     new DataTable('#favoriteRecordTable', {
                         language: {
                             url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
                         },
                         pageLength: 5,
                         lengthMenu: [5, 10, 15],
+                        retrieve: true,
+                        "destroy": true,
                         searching: true // 啟用搜尋功能
                     });
-                });
-            }
-
-            // 初始載入表格數據
-            loadFavoriteData();
-
-
-
-       /*
-            function loadFavoriteData() {
-                fetch('@Url.Content("~/membership/GetFavoriteData")')
-                    .then(response => response.json())
-                    .then(data => {
-                        var tbody = document.querySelector('#favoriteRecordTable tbody');
-                        tbody.innerHTML = '';
-
-                        data.forEach(function (item) {
-                            var row = tbody.insertRow();
-
-
-                            // 創建一個新的<img>元素
-                            var imgElement = document.createElement('img');
-                            // 設定圖片的src屬性為item.productPhoto（假設item.productPhoto是圖片的URL）
-                            // imgElement.src = item.productPhoto;
-                            imgElement.src = '@Url.Content("~/images/")' + item.productPhoto;
-                            // 設定其他屬性，如寬度、高度等
-                            imgElement.width = 100;  // 設定寬度，根據您的需求調整
-                            imgElement.height = 100; // 設定高度，根據您的需求調整
-                            // 在表格中插入圖片的單元格
-                            var imgCell = row.insertCell();
-                            imgCell.appendChild(imgElement);
-
-
-
-                            row.insertCell().textContent = item.productName;
-                            row.insertCell().textContent = item.remainingQuantity;
-                            row.insertCell().textContent = "$" + item.productPrice + " / 份";
-
-                            var cartCell = row.insertCell();
-                            var deleteCell = row.insertCell();
-
-                            // 設定格子內容水平置中的樣式
-                            cartCell.classList.add('text-center');
-                            deleteCell.classList.add('text-center');
-
-                            var cartDiv = document.createElement('div');
-                            cartDiv.className = 'd-inline-block';
-
-                            var cartLink = document.createElement('a');
-                            cartLink.className = 'btn hvr-hover';
-                            var cartIcon = document.createElement('i');
-                            cartIcon.className = 'fa-solid fa-cart-plus';
-                            cartLink.appendChild(cartIcon);
-
-
-                            cartLink.addEventListener('click', function () {
-                                console.log('Cart link clicked');
-                            });
-
-                            cartDiv.appendChild(cartLink);
-
-                            cartCell.appendChild(cartDiv);
-
-                            var deleteDiv = document.createElement('div');
-                            deleteDiv.className = 'd-inline-block';
-
-                            var deleteLink = document.createElement('a');
-                            deleteLink.className = 'btn btn-light border icon-hover-danger';
-                            var deleteIcon = document.createElement('i');
-                            deleteIcon.className = 'fa-solid fa-xmark';
-                            deleteLink.appendChild(deleteIcon);
-
-                            deleteLink.addEventListener('click', function () {
-                                fetch('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId)
-                                    .then(response => response.json())
-                                    .then(result => {
-                                          loadFavoriteData();
-                                    });
-                            });
-
-
-                            deleteDiv.appendChild(deleteLink);
-                            deleteCell.appendChild(deleteDiv);
-                        });
-
-                        // 初始化 DataTable
-                        new DataTable('#favoriteRecordTable', {
-                            language: {
-                                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-                            },
-                            pageLength: 5,
-                            lengthMenu: [5, 10, 15],
-                            searching: true // 啟用搜尋功能
-                        });
-                    });
-            }
-
-
-            loadFavoriteData();
-            */
-        });
+                    */
+                }
+                
+            });
+        }
 
     </script>
 
     <!--5.載入時，導入客訴紀錄-->
     <script>
+
+        //進入頁面時，先呼叫方法載入資料
+        $(document).ready(function () {
+            loadComplaintRecords();
+        });
 
         //載入客訴紀錄的表格
         function loadComplaintRecords() {
@@ -1819,6 +1851,7 @@
                     tbody.innerHTML = '';
 
                     data.forEach(function (item) {
+                        $('#Complaint-tab').text(`客訴紀錄 (${data.length})`);
                         var row = tbody.insertRow();
 
                         row.insertCell().textContent = item.complaintCaseId;
@@ -1869,12 +1902,6 @@
                 });
         }
 
-        //
-        $(document).ready(function () {
-            loadComplaintRecords();
-        });
-
-
     </script>
 
     <!--6.載入: 導入客服中心。點擊: 送出填寫資料到控制台-->
@@ -1890,6 +1917,7 @@
                     selectElement.appendChild(option);
                 });
             });
+            
             //送出客訴內容
             $('#complaintSubmit').click(function (event) {
                 var selectedValue = $('#appealCategorySelect').val();

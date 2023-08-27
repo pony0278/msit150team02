@@ -225,7 +225,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from order in _context.ShopOrderTotalTable
-                            where order.MemberId == 4
+                            orderby order.OrderCreationDate descending
+                            where order.MemberId == 1035
                             select new
                             {
                                 order.OrderId,
@@ -387,7 +388,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var datas = from p in _context.ShopReturnDataTable
                             join q in _context.ShopOrderTotalTable on p.OrderId equals q.OrderId
-                            where q.MemberId == 4
+                            orderby p.ReturnDate descending
+                            where q.MemberId == 1035
                             select new
                             {
                                 p.OrderId,
@@ -424,7 +426,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 var datas = from p in _context.ShopFavoriteDataTable
                             join q in _context.ShopProductImageTable on p.ProductId equals q.ProductId
-                            where p.MemberId == 1
+                            orderby p.CreationDate descending
+                            where p.MemberId == 1033
                             select new
                             {
                                 p.Product.ProductName,
@@ -433,6 +436,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 p.Product.ProductDescription,
                                 p.Product.ProductId,
                                 p.FavoriteId,
+                                p.Product.ProductImage1,
                                 q.ProductPhoto
                             };
 
@@ -443,7 +447,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 }
                 else
                 {
-                    return NotFound();
+                    datas = null;
+                    return new JsonResult(datas);
                 }
             }
             catch (Exception ex)
