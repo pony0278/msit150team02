@@ -95,7 +95,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 //會員id需再調整，目前先假定會員編號4
-                var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 4);
+                var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 1035);
 
                 memberToUpdate.MemberImage = imageUrl;
                 await _cachaContext.SaveChangesAsync();
