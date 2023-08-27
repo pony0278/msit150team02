@@ -33,10 +33,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return RedirectToAction("Login", "CMSHome");
         }
-            return View();
-        }
-        //載入資料
-        public IActionResult LoadDataTable()
+    
+    //載入資料
+    public IActionResult LoadDataTable()
         {
             var data = _cachaContext.GameShopBanner.Select(x => new
             {
