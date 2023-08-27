@@ -25,6 +25,7 @@
     <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
     <link rel="stylesheet" href="~/css/chatbox.css" />
+    <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css"/>
 }
 
 <!-- Modal -->
@@ -518,6 +519,27 @@
 
 </div>
 <!-- end 側邊 -->
+<!-- 小動畫-->
+<div id="fullScreenContainer">
+    <div class="containers position-relative">
+        <div class="position-absolute top-0 start-0">
+            <div class="animate animate01">
+                <div class="catAnimate"></div>
+            </div>
+        </div>
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="animate animate02">
+                <div class="catAnimate "></div>
+            </div>
+        </div>
+        <div class="position-absolute bottom-0 end-0">
+            <div class="animate animate03">
+                <div class="catAnimate "></div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts{
 
     <!-- ALL JS FILES -->
@@ -700,13 +722,74 @@
             })
 
         })
+
         //修復遊戲側邊按鈕
         document.getElementById("go-to-game").addEventListener("click", function (event) {
             event.preventDefault();
+            main();
+            $("#fullScreenContainer").addClass("fullscreen")
+            $(".animate01").addClass("NyanCat-container01");
+            $(".animate02").addClass("NyanCat-container02");
 
+            $(".animate03").one('animationend', function () {
+                window.location.href = '/Game/Index';
+            }).addClass("NyanCat-container03");
+
+            const nyanCats = document.querySelectorAll('.animate');
+            if (nyanCats.length > 0) {
+                nyanCats.forEach((cat) => {
+                    cat.classList.add('NyanCat-container');
+                });
+            }
+
+            const catAnimate = document.querySelectorAll('.catAnimate');
+            if (catAnimate.length > 0) {
+                catAnimate.forEach((cat) => {
+                    cat.classList.add('NyanCat');
+                });
+            }
             // 手動進行轉跳
-            window.location.href = '/Game/Index';
         });
+
+        const fullScreenContainer = document.getElementById('fullScreenContainer');
+
+
+        function getRandomInt(min, max) {
+            return Math.floor(Math.random() * (max - min)) + min;
+        }
+
+
+        function createLine() {
+            const line = document.createElement('div');
+            line.classList.add('line');
+            line.style.width = `${getRandomInt(20, 100)}px`
+            line.style.right = `${getRandomInt(window.innerWidth, 100)}px`;
+            line.style.top = `${getRandomInt(0, window.innerHeight)}px`;
+            fullScreenContainer.appendChild(line);
+            return line;
+        }
+
+
+        function updateLine(line) {
+            const newX = parseInt(line.style.right) + 10;
+            if (newX > window.innerWidth) {
+                line.style.right = `${getRandomInt(0, -100)}px`;
+            } else {
+                line.style.right = `${newX}px`;
+            }
+        }
+
+        function main() {
+            const lines = [];
+
+            for (let i = 0; i < 100; i++) {
+                lines.push(createLine());
+            }
+
+            setInterval(() => {
+                lines.forEach(updateLine);
+            }, 50);
+        }
 
 </script>
 }
