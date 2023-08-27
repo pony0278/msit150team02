@@ -47,5 +47,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 }).ToList();
             return Json(new { data });
         }
+        [HttpGet]
+        public IActionResult GetReivews()
+        {
+            var data = _context.ShopProductReviewTable
+                .Where(x=>x.ProductRating == 5 && x.HideReview != true)
+                .Take(5).Select(x=> new {
+                    productRating = x.ProductRating,
+                    productID = x.ProductId,
+                    Member = x.Member.Name,
+                    productPhoto = x.Product.ShopProductImageTable.FirstOrDefault().ProductPhoto,
+                }).ToList();
+            return Json(new { data });
+        }
     }
 }
