@@ -171,5 +171,26 @@ namespace prjCatChaOnlineShop.Services.Function
                 cart.Add(cartItem);
             }
         }
+        public void DetailsAddCartItem(List<CCartItem> cart, CProductItem prodItem, string option, int count)
+        {
+            var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId);
+            if (existingCartItem != null)
+            {
+                if (existingCartItem.c剩餘庫存 >= 1)
+                    existingCartItem.c數量 = existingCartItem.c數量 + count;
+            }
+            else
+            {
+                CCartItem cartItem = new CCartItem();
+                cartItem.cId = prodItem.pId;
+                cartItem.cName = prodItem.pName;
+                cartItem.cPrice = price(prodItem.pPrice, prodItem.p優惠價格);
+                cartItem.cImgPath = prodItem.p圖片路徑;
+                cartItem.c子項目 = option;
+                cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
+                cartItem.c數量 = count;
+                cart.Add(cartItem);
+            }
+        }
     }
 }
