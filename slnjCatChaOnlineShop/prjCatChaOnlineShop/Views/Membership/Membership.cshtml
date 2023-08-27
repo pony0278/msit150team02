@@ -102,11 +102,11 @@
                aria-controls="home" aria-selected="true">基本資料</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="shoppingsheet-tab" data-bs-toggle="tab" href="#shoppingsheet" role="tab"
+            <a class="nav-link" id="shoppingsheet-tab" data-bs-toggle="tab" href="#shoppingsheet" role="tab" onclick="loadOrderRecords()"
                aria-selected="false">消費紀錄</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="return-tab" data-bs-toggle="tab" href="#return" role="tab"
+            <a class="nav-link" id="return-tab" data-bs-toggle="tab" href="#return" role="tab" onclick="loadReturnRecords()"
                aria-selected="false">退貨紀錄</a>
         </li>
 
@@ -189,7 +189,7 @@
                                                                     <option selected>常用地址</option>
                                                                 </select>
                                                             </div>
-                                                            <button type="button" class="btn add-address" id="lookCAButton"
+                                                            <button type="button" class="btn add-address" id="lookCAButton" 
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#addressModal">
                                                                 查看已儲存地址
@@ -225,6 +225,8 @@
                                                                     data-bs-target="#NewMarketAddressModal">
                                                                 新增超商取貨地址
                                                             </button>
+                                                            <a href="https://emap.pcsc.com.tw/" class="btn add-address" role="button">前往網站</a>
+                                                            <a href="https://emap.pcsc.com.tw/ecmap/default.aspx" class="btn add-address" role="button">前往網站</a>
                                                         </div>
                                                     </div>
                                                     <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">
@@ -243,12 +245,12 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
+                                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">常用地址一覽</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        <div class="col-md-9">
+                                        <div class="col-md-12">
                                             <ol>
                                                 <li>
                                                     <input type="text" value="地址一號">
@@ -277,7 +279,7 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content ">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">新增地址</h5>
+                                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增地址</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                 aria-label="Close"></button>
                                     </div>
@@ -347,7 +349,8 @@
                                                 <li>
                                                     <select class="form-select"
                                                             aria-label="Default select example">
-                                                        <option selected>7-11</option>
+                                                        <option selected></option>
+                                                        <option>7-11</option>
                                                         <option value="1">全家</option>
                                                         <option value="2">OK</option>
                                                         <option value="3">萊爾富</option>
@@ -403,7 +406,7 @@
                                         <span id="coinPointShow">您目前持有點數：0點/0元</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span id="catCoinShow">持有貓幣：0元</span>
+                                        <span id="catCoinShow">持有貓幣：0</span>
                                     </div>
                                     <div class="text-center ">
                                         <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal" id="searchCoupon"
@@ -428,7 +431,7 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h3>我的優惠券</h3>
+                                    <h3 class="font-weight-bold">我的優惠券</h3>
                                 </div>
                                 <div class="col d-flex justify-content-end">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
@@ -544,16 +547,16 @@
                             </button>
                         </div>
                         <div class="row my-1 ml-2">
-                            <label>消費總額: <span id="consumptionAmount"></span></label>
+                            <label class="font-weight-bold">消費總額: <span id="consumptionAmount"></span></label>
                         </div>
                         <div class="container">
                             <table class="table  table-bordered table-hover" id="orderDetailTable">
                                 <thead class="table-warning text-center">
                                     <tr>
-                                        <th scope="col" style="white-space: nowrap;">產品名稱: </th>
-                                        <th scope="col" style="white-space: nowrap;">訂購數量: </th>
-                                        <th scope="col" style="white-space: nowrap;">產品規格: </th>
-                                        <th scope="col" style="white-space: nowrap;">產品售價: </th>
+                                        <th scope="col" style="white-space: nowrap;">產品名稱</th>
+                                        <th scope="col" style="white-space: nowrap;">訂購數量</th>
+                                        <th scope="col" style="white-space: nowrap;">產品規格</th>
+                                        <th scope="col" style="white-space: nowrap;">產品售價</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-left">
@@ -780,14 +783,14 @@
                                 <div style="height: 400px; overflow: scroll;" class="table-responsive">
                                     <table class="table table-bordered " id="favoriteRecordTable">
                                         @* table-hover *@
-                                        <thead class="table-warning text-center">
+                                        <thead class="table-warning text-center ">
                                             <tr>
                                                 <th scope="col">圖片</th>
                                                 <th scope="col">產品名稱</th>
                                                 <th scope="col">剩餘數量</th>
                                                 <th scope="col">售價</th>
-                                                <th scope="col"></th>
-                                                <th scope="col"></th>
+                                                <th scope="col">加入購物車</th>
+                                                <th scope="col">移除商品</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-left">
@@ -986,7 +989,7 @@
 
                     $('#summonName').text(`會員：${data.name}`);
                     $('#coinPointShow').text(`您目前持有點數:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
-                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}元`);
+                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
 
                     var dateParts = data.birthday.split('-');
                     var year = parseInt(dateParts[0], 10);
@@ -1000,17 +1003,6 @@
         });
 
         $(document).ready(function () {
-
-            //拿取常用地址數據
-            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
-            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
-                data.forEach(function (item) {
-                    var option = document.createElement('option');
-                    option.value = item.addressId;
-                    option.textContent = item.recipientAddress;
-                    commonAddressSelectElement.appendChild(option);
-                });
-            });
 
             //送出修改後的基本資料
             $('#memberInfoButton').click(function (event) {
@@ -1078,80 +1070,11 @@
                 });
             });
 
-            //查看常用地址
-            $('#lookCAButton').click(function (event) {
-                $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
-                    var olElement = document.querySelector('#addressModal ol');
-
-                    // 清空 <ol> 元素的內容
-                    olElement.innerHTML = '';
-
-                    // 遍歷 JSON 資料並建立 <li> 元素
-                    data.forEach(function (item) {
-
-                        var liElement = document.createElement('li');
-                        liElement.className = 'row align-items-center';
-
-                        var inputDiv = document.createElement('div');
-                        inputDiv.className = 'col-md-9 mb-3';
-
-                        var inputElement = document.createElement('input');
-                        inputElement.type = 'text';
-                        inputElement.value = item.recipientAddress;
-                        inputElement.className = 'form-control';
-
-                        var spanDiv = document.createElement('div');
-                        spanDiv.className = 'col-md-3';
-
-                        var spanElement = document.createElement('span');
-                        spanElement.className = 'minus-address';
-                        spanElement.innerHTML = '<i class="fa-solid fa-circle-minus"></i>';
-                        spanElement.setAttribute('data-address-id', item.addressId);
-
-                        spanElement.addEventListener('click', function () {
-                            var clickedAddressId = spanElement.getAttribute('data-address-id');
-
-                            Swal.fire({
-                                title: '確認刪除',
-                                showCancelButton: true,
-                                confirmButtonText: '是的',
-                                cancelButtonText: '取消',
-                            }).then((result) => {
-                                if (result.isConfirmed) {
-
-                                    fetch('@Url.Content("~/membership/DeleteCommonAddress?addressid=")' + clickedAddressId)
-                                        .then(response => 
-                                            {
-                                                Swal.fire({
-                                                icon: 'success',
-                                                title: '移除成功',
-                                                confirmButtonText: '關閉',
-                                                }).then(() => {
-                                                $('#addressModal').modal('hide');
-                                                $('#lookCAButton').click();
-                                                });
-                                        })
-                                        .catch(error => {
-                                            console.error('Error:', error);
-                                        });
-                                }
-                            });
-                            
-                        });
-
-                        inputDiv.appendChild(inputElement);
-                        spanDiv.appendChild(spanElement);
-
-                        liElement.appendChild(inputDiv);
-                        liElement.appendChild(spanDiv);
-
-                        olElement.appendChild(liElement);
-                    });
-
-                    // $('#addressModal').modal('show');
-                });
-            });
-
+            //進入頁面時，先呼叫方法載入常用地址的資料
+            GetCommonAddress();
+            
+            //進入頁面時，先呼叫方法載入常用地址的資料
+            lookCAButton();
 
             //儲存常用地址
             $('#commonAddressSaveButton').click(function (event) {
@@ -1174,8 +1097,9 @@
                                     icon: 'success',
                                     title: '新增成功',
                                     confirmButtonText: '關閉',
-
                                 });
+                                GetCommonAddress();
+                                lookCAButton();
                             }, 500);
                         })
                         .catch(error => {
@@ -1195,6 +1119,104 @@
                 x.type = "password";
                 document.getElementById("#changePassword").textContent = "隱藏密碼";
             }
+        }
+
+        //查看常用地址
+        function lookCAButton(){
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                var olElement = document.querySelector('#addressModal ol');
+
+                // 清空 <ol> 元素的內容
+                olElement.innerHTML = '';
+
+                // 遍歷 JSON 資料並建立 <li> 元素
+                data.forEach(function (item) {
+
+                    var liElement = document.createElement('li');
+                    liElement.className = 'row align-items-center';
+
+                    var inputDiv = document.createElement('div');
+                    inputDiv.className = 'col-md-9 mb-3';
+
+                    var inputElement = document.createElement('input');
+                    inputElement.type = 'text';
+                    inputElement.value = item.recipientAddress;
+                    inputElement.className = 'form-control ';
+
+                    var spanDiv = document.createElement('div');
+                    spanDiv.className = 'col-md-3';
+
+                    var spanElement = document.createElement('span');
+                    spanElement.className = 'minus-address';
+                    spanElement.innerHTML = '<i class="fa-solid fa-circle-minus" style="color: orange;"></i>';
+                    spanElement.setAttribute('data-address-id', item.addressId);
+
+                    spanElement.addEventListener('click', function () {
+                        var clickedAddressId = spanElement.getAttribute('data-address-id');
+
+                        Swal.fire({
+                            title: '確認刪除',
+                            showCancelButton: true,
+                            confirmButtonText: '是的',
+                            cancelButtonText: '取消',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.getJSON('@Url.Content("~/membership/DeleteCommonAddress?addressid=")' + clickedAddressId, function (data) {
+                                    if (data == null) {
+                                        Swal.fire({
+                                            icon: 'fail',
+                                            title: '移除失敗',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '移除成功',
+                                            confirmButtonText: '關閉',
+                                        }).then(() => {
+                                            lookCAButton();
+                                            GetCommonAddress();
+                                        });
+                                    }
+                                })
+                                    .catch(error => {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: '移除失敗',
+                                            text: '此為已成立訂單的地址，恕無法刪除',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    });
+                            }
+                        });
+                    });
+
+                    inputDiv.appendChild(inputElement);
+                    spanDiv.appendChild(spanElement);
+
+                    liElement.appendChild(inputDiv);
+                    liElement.appendChild(spanDiv);
+
+                    olElement.appendChild(liElement);
+                });
+
+                // $('#addressModal').modal('show');
+            });
+        }
+
+        //拿取常用地址數據
+        function GetCommonAddress() {                    
+            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
+            commonAddressSelectElement.innerHTML = '';
+
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.addressId;
+                    option.textContent = item.recipientAddress;
+                    commonAddressSelectElement.appendChild(option);
+                });
+            });
         }
     </script>
 
@@ -1413,9 +1435,39 @@
                                     } else {
                                         row.insertCell().textContent = item.size;
                                     }
-                                    row.insertCell().textContent = 'NT$ ' + item.productPrice;
-
                                     totalAmount += item.productQuantity * item.productPrice;
+
+                                    var cell = row.insertCell();
+                                    cell.classList.add('text-center');
+
+                                    var contentDiv = document.createElement('div');
+                                    contentDiv.className = 'd-flex flex-column align-items-center';
+
+                                    var textDiv = document.createElement('div');
+                                    textDiv.textContent = 'NT$ ' + item.productPrice;
+
+                                    var spaceDiv = document.createElement('div');
+                                    spaceDiv.style.height = '10px'; // 調整空白距離的高度
+
+                                    var buttonDiv = document.createElement('div');
+
+                                    var cartLink = document.createElement('a');
+                                    cartLink.className = 'btn hvr-hover btn-sm';
+                                    var cartIcon = document.createElement('i');
+                                    cartIcon.className = 'fa-solid fa-cart-plus';
+                                    cartLink.appendChild(cartIcon);
+                                    cartLink.addEventListener('click', function () {
+                                        console.log(item.productId);
+                                    });
+
+                                    buttonDiv.appendChild(cartLink);
+
+                                    contentDiv.appendChild(textDiv);
+                                    contentDiv.appendChild(spaceDiv);
+                                    contentDiv.appendChild(buttonDiv);
+
+                                    cell.appendChild(contentDiv);
+
                                 });
                                 document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                             });
@@ -1636,30 +1688,6 @@
 
         //進入頁面時，先呼叫方法載入資料
         $(document).ready(function () {
-            /*
-            $.getJSON('@Url.Content("~/membership/GetReturnRecord")', function (data) {
-                var tbody = document.querySelector('#returnRecordTable tbody');
-
-                // 清空表格內容
-                tbody.innerHTML = '';
-
-                // 遍歷 JSON 資料並建立表格列
-                data.forEach(function (item) {
-                    var row = tbody.insertRow();
-                    row.insertCell().textContent = item.orderId;
-
-                    //將日期格式化為 "yyyy-mm-dd"
-                    var formattedDate = new Date(item.returnDate).toISOString().split('T')[0];
-                    row.insertCell().textContent = formattedDate;
-                    row.insertCell().textContent = item.returnReason;
-                    row.insertCell().textContent = item.statusName;
-                });
-
-                initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
-
-            });
-            */
-
             loadReturnRecords();
         });
         //載入退貨紀錄資料
@@ -1757,9 +1785,6 @@
                         imgContainer.appendChild(thumbnailImage);
                         imgContainer.appendChild(imagePopup);
                         imgCell.appendChild(imgContainer);
-
-
-
                         
                         row.insertCell().textContent = item.productName;
                         row.insertCell().textContent = item.remainingQuantity;
@@ -1813,6 +1838,7 @@
                         deleteCell.appendChild(deleteDiv);
                     });
 
+                    //表格化:套入dataTables套件會壞掉
                     /*
                     new DataTable('#favoriteRecordTable', {
                         language: {

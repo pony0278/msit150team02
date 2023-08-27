@@ -39,7 +39,7 @@ body {
 
 .img-profile {
     height: 50px;
-    margin: 0 0 0 10px;
+/*    margin: 0 0 0 10px;*/
 }
 
 .middle-content {
@@ -260,4 +260,35 @@ td .fas {
     border-bottom-right-radius: 12px;
     border-bottom-left-radius: 12px;
     max-width: 200px;
+}
+
+.question_content {
+    border: 2px dashed #b95756;
+    border-radius: 6px;
+    padding: 10px;
+    line-height: 35px;
+}
+
+#messageRecipientContent {
+    border: 2px solid #000000;
+    border-radius: 6px;
+    padding: 10px;
+    line-height: 35px;
+    color: #ffffff;
+    background-color: #b95756;
+}
+
+.time-colored-text {
+    color: #de9e4f
+}
+
+.modal-body .nav-link.active {
+    color: #ffffff !important;
+    font-weight: bold !important;
+    background-color: #b95756 !important;
+}
+
+.modal-body .nav-link {
+    color: #b95756 !important;
+    border: 3px dashed #b95756 !important;
 }

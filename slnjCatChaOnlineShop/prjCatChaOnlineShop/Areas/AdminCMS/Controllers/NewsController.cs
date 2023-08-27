@@ -9,6 +9,7 @@ using DataTables.AspNet.Core;
 using Microsoft.EntityFrameworkCore;
 using DataTables.AspNet.AspNetCore;
 using System.Data;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -26,13 +27,23 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult News()
         {
-
-            var NewsViewModel = new CNewsModel
+            //判斷是否有登入
+            if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
-                NewsType = _cachaContext.AnnouncementTypeData.ToList(),
-                NewsContent = _cachaContext.GameShopAnnouncement.ToList()
-            };
-            return View(NewsViewModel);
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
+                var NewsViewModel = new CNewsModel
+                {
+                    NewsType = _cachaContext.AnnouncementTypeData.ToList(),
+                    NewsContent = _cachaContext.GameShopAnnouncement.ToList()
+                };
+                return View(NewsViewModel);
+            }
+            return RedirectToAction("Login", "CMSHome");
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
