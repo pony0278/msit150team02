@@ -122,23 +122,23 @@
                         <li>
                             <div class="form-group quantity-box">
                                 <label class="control-label">請選擇</label>
-                                <select class="form-control">
+                                <select id="attr" class="form-control">
                                     @{
                                         
                                         @if (Model.attrList != null)
                                         {
-                                            int count = 1;
                                             
-                                            <option value="1" selected>@Model.selectedProduct.p子項目</option>
+
+                                            <option value="@Model.selectedProduct.p子項目" selected>@Model.selectedProduct.p子項目</option>
                                             foreach (var attr in Model.attrList)
                                             {
-                                                count++;
-                                                <option value="@count">@attr.其他子項目</option>
+                                                
+                                                <option value="@attr.其他子項目">@attr.其他子項目</option>
                                             }
                                         }
                                         else
                                         {
-                                            <option value="1" selected>商品</option>
+                                            <option value="商品" selected>商品</option>
                                         }
                                     }
                                     
@@ -148,14 +148,17 @@
                         <li>
                             <div class="form-group quantity-box">
                                 <label class="control-label">數量</label>
-                                <input class="form-control" value="1" min="1" max="10" type="number" />
+                                <input id="count" class="form-control" value="1" min="1" max="10" type="number" />
                             </div>
                         </li>
                     </ul>
 
                     <div class="price-box-bar">
                         <div id="add-to" class="cart-and-bay-btn">
-                            <a href="#" class="btn hvr-hover cart-btn" data-product-id=@Model.selectedProduct.pId><i class="fa-solid fa-cart-plus"></i></a>
+                            <a href="#" class="btn hvr-hover cart-btn" id="addToCartButton"
+                               data-product-id="@Model.selectedProduct.pId">
+                                <i class="fa-solid fa-cart-plus"></i>
+                            </a>
                             <a class="btn hvr-hover" asp-controller="Membership" asp-action="Membership"><i class="fas fa-heart"></i> </a>
                         </div>
                     </div>
@@ -296,7 +299,7 @@
                                         {
                                             <h5>$ @a.pPrice</h5>
                                         }
-                                        <a href="#" type="button" class="cart-btn add-to-cart-coustom" data-product-id=@Model.selectedProduct.pId>
+                                        <a href="#" type="button" class="cart-btn add-to-cart-coustom" data-product-id=@a.pId>
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
                                         <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
@@ -335,17 +338,21 @@
     <script src="~/js/custom.js"></script>
      
     <script>
-        var addToCart = $('#add-to');
-        addToCart.on('click', '.cart-btn', function (e) {
-            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(addToCart);
-            var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+        
+        //輸入數量加入購物車
+        $("#addToCartButton").on("click", function (event) {
+            event.preventDefault();
+
+            var attr = $("#attr").val();
+            var count = $("#count").val();
+            var productId = $(this).data("product-id");
+            
+            
+            // 發送 Ajax 請求
             $.ajax({
                 url: '/ProductApi/DetailsAddToCart',
                 type: 'POST',
-                data: { pId: productId },
+            data: { pId: productId, attr: attr, count: count },
                 dataType: 'json',
                 success: function (response) {
                     console.log('Added to Cart:', response.message);
@@ -356,9 +363,13 @@
                 }
             });
         });
-        relatableItems.on('click', '.cart-btn', function (e) {
+
+
+        
+        //相關商品加入購物車
+        $("#relatable-items").on('click', '.cart-btn', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(relatableItems);
+            
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
             // 透過 Ajax 將商品 ID 傳送到後端，加入購物車

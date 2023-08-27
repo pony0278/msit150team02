@@ -3,6 +3,7 @@ using Microsoft.Build.Experimental.ProjectCache;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using NuGet.Protocol;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
 
@@ -33,7 +34,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             try
             {
-                var datas = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == 4);
+                var datas = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == 1035);
 
                 if (datas != null)
                 {
@@ -115,7 +116,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     _context.ShopCommonAddressData.Remove(addressData);
                     _context.SaveChanges();
 
-                    return Content("移除成功");
+                    
+                    return new JsonResult(addressData);
                 }
                 else
                 {
@@ -124,7 +126,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
+                return null;
             }
         }
 
@@ -134,7 +136,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == 1 & coupons.CouponStatusId == true
+                            where coupons.MemberId == 1035 & coupons.CouponStatusId == true
                             orderby coupons.Coupon.ExpiryDate
                             select new
                             {
@@ -161,12 +163,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-        //更新帳戶基本資料到資料庫:需做防呆機制
+        //更新帳戶基本資料到資料庫
         public IActionResult UpdateMemberInfo(ShopMemberInfo member)
         {
             try
             {
-                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 4);
+                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 1035);
 
                 memberToUpdate.Name = member.Name;
                 memberToUpdate.Password = member.Password;
@@ -287,6 +289,37 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 return Content(ex.Message);
             }
+        }
+
+        //加入購物車
+        public IActionResult AddShopCart(int productid, ShopReturnDataTable returnn)
+        {
+            /*
+               try
+               {
+                   returnn.ReturnDate = DateTime.Now;
+                   returnn.ProcessingStatusId = 1;
+
+                   if (int.TryParse(HttpContext.Request.Form["orderId"], out int orderId))
+                   {
+                       returnn.OrderId = orderId;
+                   }
+                   if (int.TryParse(HttpContext.Request.Form["reasonId"], out int reasonId))
+                   {
+                       returnn.ReturnReasonId = reasonId;
+                   }
+
+                   _context.ShopReturnDataTable.Add(returnn);
+                   _context.SaveChanges();
+
+                   return Content("新增成功");
+               }
+               catch (Exception ex)
+               {
+                   return Content(ex.Message);
+               }
+            */
+            return null;
         }
 
         //取得申訴類型放到客服中心的頁面
@@ -484,7 +517,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
         /*5.客訴紀錄*/
 
         //取得客訴紀錄
-        
         public IActionResult GetComplaintCaseDetail(int complaintcaseid)
         {
             

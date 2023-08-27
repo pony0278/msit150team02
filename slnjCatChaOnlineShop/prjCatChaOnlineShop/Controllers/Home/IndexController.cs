@@ -20,17 +20,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult ShopDetail(int pId)
         {
-            var details = _productService.GetDetailsById(pId);
+            var details = _productService.getDetailsById(pId);
             return View(details);
         }
 
         public IActionResult Shop()
         {
-            return View(_productService.GetProductItems());
+            return View(_productService.getProductItems());
         }
         public IActionResult Index()
         {
-            return View(_productService.GetProductItems());
+            return View(_productService.getProductItems());
         }
         [HttpGet]
         public IActionResult CountDownProduct()

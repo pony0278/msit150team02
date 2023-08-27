@@ -58,20 +58,20 @@
                                                 <div class="ml-5 mt-2">
                                                         <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })" class="shop-prod-click nav-link">@item.cName</a>
                                                     <div class="">
-                                                        <select class="form-select for-detail-select me-4">
+                                                            <select data-product-id=@item.cId class="input-attr form-select for-detail-select me-4">
 
                                                                 @if (item.c子項目 != null && item.c其他子項目!=null)
                                                                 {
-                                                                    <option selected>@item.c子項目</option>
+                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
 
                                                                     foreach (var attr in item.c其他子項目)
                                                                     {
-                                                                        <option>@attr.其他子項目</option>
+                                                                        <option value="@attr.其他子項目">@attr.其他子項目</option>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option>商品</option>
+                                                                    <option value="商品">商品</option>
                                                                 }
                                                         </select>
                                                     </div>
@@ -295,6 +295,28 @@
             url: '/ProductApi/CartEditQuantity',
             type: 'POST',
             data: { newQuantity: newValue, pId:productId },
+            dataType: 'json',
+            success: function (response) {
+                console.log('Quantity updated:', response.message);
+            },
+            error: function (error) {
+                console.error('Ajax Error:', error);
+            }
+        });
+    });
+
+    //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
+    var inputAttr = $('.input-attr');
+
+        inputAttr.on('change', function () {
+        var newAttr = $(this).val();// 獲取輸入的新值
+        var productId = $(this).data('product-id')
+            console.log('New attr:', newAttr);
+        // 在這裡可以使用 Ajax 將新值傳回後端
+        $.ajax({
+            url: '/ProductApi/CartEditAttribute',
+            type: 'POST',
+            data: { newAttribute: newAttr, pId: productId },
             dataType: 'json',
             success: function (response) {
                 console.log('Quantity updated:', response.message);
