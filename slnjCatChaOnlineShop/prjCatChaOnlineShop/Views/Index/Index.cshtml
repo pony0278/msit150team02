@@ -24,6 +24,7 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/chatbox.css" />
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
+    <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css" />
 }
 
 <!-- Modal -->
@@ -758,7 +759,7 @@
             })
 
         })
-
+        const fullScreenContainer = document.getElementById('fullScreenContainer');
         //修復遊戲側邊按鈕
         document.getElementById("go-to-game").addEventListener("click", function (event) {
             event.preventDefault();
@@ -784,7 +785,43 @@
                     cat.classList.add('NyanCat');
                 });
             }
-            // 手動進行轉跳
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+
+            function createLine() {
+                const line = document.createElement('div');
+                line.classList.add('line');
+                line.style.width = `${getRandomInt(20, 100)}px`
+                line.style.right = `${getRandomInt(window.innerWidth, 100)}px`;
+                line.style.top = `${getRandomInt(0, window.innerHeight)}px`;
+                fullScreenContainer.appendChild(line);
+                return line;
+            }
+
+
+            function updateLine(line) {
+                const newX = parseInt(line.style.right) + 10;
+                if (newX > window.innerWidth) {
+                    line.style.right = `${getRandomInt(0, -100)}px`;
+                } else {
+                    line.style.right = `${newX}px`;
+                }
+            }
+
+            function main() {
+                const lines = [];
+
+                for (let i = 0; i < 100; i++) {
+                    lines.push(createLine());
+                }
+
+                setInterval(() => {
+                    lines.forEach(updateLine);
+                }, 50);
+            }
         });
 </script>
 }
