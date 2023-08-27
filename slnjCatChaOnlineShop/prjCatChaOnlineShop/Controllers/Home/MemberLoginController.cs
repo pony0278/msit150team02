@@ -9,6 +9,7 @@ using System.Security.Cryptography;
 using System.Text;
 using static prjCatChaOnlineShop.Models.ViewModels.CForgetPwdModel;
 using Google.Apis.Auth;
+using prjCatChaOnlineShop.Models.CModels;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -17,11 +18,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //將 _context 注入控制器，可以在控制器的操作方法中使用 _context 來執行資料庫查詢和操作
         private readonly cachaContext _context;
         private readonly IConfiguration _configuration;
+        
         public MemberLoginController(cachaContext context, IConfiguration configuration)
         {
             _context = context;
             _configuration = configuration;
         }
+
+       
 
         #region 登入
         public IActionResult Login()
@@ -43,7 +47,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return View();
         }
+
         #endregion
+
+       
 
         #region 註冊會員
         public IActionResult RegisterMember()

@@ -823,5 +823,32 @@
                 }, 50);
             }
         });
+
+        const targetloginTextClass = 'LoginText';
+        const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
+
+        function loginAndGetName(){
+            $.ajax({
+                url: '/api/GetUserName/',
+                contentType: 'application/json',
+                type: 'GET',
+                success: function (data) {
+                    if (data.length > 0) {
+                        targetElements.forEach(element => {
+                            element.textContent = `Hello, ${data}`;
+                        });
+                    }
+                },
+                error: function () {
+                    console.error('載入使用者名字失敗');
+                }
+            });
+        }
+        loginAndGetName();
+
+      
+        
+
+
 </script>
 }

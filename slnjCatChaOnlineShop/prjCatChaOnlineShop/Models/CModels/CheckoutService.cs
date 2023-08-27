@@ -30,6 +30,8 @@ namespace prjCatChaOnlineShop.Models.CModels
             return null;
         }
 
+       
+
         public List<CGetUsableCouponModel> GetUsableCoupons(int Id)
         {
             // 使用 Entity Framework Core 和 LINQ 查詢可用的優惠券
