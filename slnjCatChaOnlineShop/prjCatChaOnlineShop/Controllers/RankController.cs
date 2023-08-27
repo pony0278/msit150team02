@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 
-namespace prjCatChaOnlineShop.Controllers.Api
+namespace prjCatChaOnlineShop.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -16,14 +16,14 @@ namespace prjCatChaOnlineShop.Controllers.Api
             _context = context;
         }
 
-       
+
         public IActionResult Rank(int id)
         {
             //先全部抓出來，目的是取得目前使用者的名次
             var datas = (from p in _context.ShopMemberInfo
                          where p.RunGameHighestScore.HasValue
                          orderby p.RunGameHighestScore descending
-                         select new 
+                         select new
                          {
                              p.MemberId,
                              p.CharacterName,
@@ -43,7 +43,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
             if (rankedDatas.Any())
             {
-                
+
                 return new JsonResult(rankedDatas);
             }
             else
@@ -53,6 +53,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
         }
 
 
-      
+
     }
 }
