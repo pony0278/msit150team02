@@ -569,10 +569,11 @@
 
         })
         //小動畫
-        const fullScreenContainer = document.getElementById('fullScreenContainer');
-        //修復遊戲側邊按鈕
+        const fullScreenContainer = document.getElementById('fullScreenContainer');  
         document.getElementById("go-to-game").addEventListener("click", function (event) {
+            //修復遊戲側邊按鈕
             event.preventDefault();
+             //動畫內容
             main();
             $("#fullScreenContainer").addClass("fullscreen")
             $(".animate01").addClass("NyanCat-container01");
@@ -638,36 +639,36 @@
                 }, 40);
             }
         });
+        //小動畫結束
 
 
+        //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx") 
         const targetloginTextClass = 'LoginText';
         const loginLink = document.getElementById('loginLink');
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-
         function loginAndGetName(){
             $.ajax({
                 url: '/api/GetUserName/',
                 contentType: 'application/json',
                 type: 'GET',
                 success: function (data) {
-                    if (data.length > 0) {
+                    if (data.includes('Hello')) {
                         targetElements.forEach(element => {
                             element.textContent = `${data}`;
-                        });   
+                        });
+                        loginLink.href = '/Membership/Membership';
                     }
                 },
                 error: function () {
                     console.error('登入失敗');
                 }
-            });
-            if (targetElements)
-            loginLink.href = '/Membership/Membership';
+            }); 
         }
         loginAndGetName();
-
+        //登入字樣切換結束
      
 
-        //小動畫結束
+        
         //抓主打商品
         $(document).ready(function () {
             $.ajax({

@@ -24,13 +24,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
         #region 取得名字
         public IActionResult GetUserName()
         {
-
             var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
             if (memberInfoJson != null)
             {
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 return Content($"Hello, {memberInfo.Name}");
-                
             }
             return Content("登入/註冊");
         }
