@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
+using System.Linq;
+using System.Text.Json;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -11,12 +13,13 @@ namespace prjCatChaOnlineShop.Controllers.Api
     public class RankController : ControllerBase
     {
         private readonly cachaContext _context;
+
         public RankController(cachaContext context)
         {
             _context = context;
         }
 
-
+        [HttpGet]
         public IActionResult Rank(int id)
         {
             //先全部抓出來，目的是取得目前使用者的名次
@@ -30,6 +33,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
                              p.RunGameHighestScore,
                          })
                          .ToList();
+
+
+
+
+
+
 
 
             var rankedDatas = datas.Select((data, index) => new

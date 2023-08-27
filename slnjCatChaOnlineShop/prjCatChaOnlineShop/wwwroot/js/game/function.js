@@ -128,7 +128,7 @@ function updateRuby(num) {
 }
 
 
-//餵食貓貓得到折價券的方法 //10折價券 GameProductID = 19，couponID = 7
+//餵食貓貓得到折價券的方法 //50元折價券 GameProductID = 19，couponID = 7
 function feedCatGetCoupon(num) {
     $.ajax({
         type: "POST",
@@ -336,6 +336,8 @@ async function doCCoinTenDraw() {
     }
     else {
         console.log("貓幣不足");
+        alterConfirmWinBTN('確認', closeConfirmWin)
+        confirmWin_text.innerHTML = '貓幣不足'
     }
 
 }
@@ -401,6 +403,8 @@ async function doRubyTenDraw() {
     }
     else {
         console.log("紅利不足");
+        alterConfirmWinBTN('確認', closeConfirmWin)
+        confirmWin_text.innerHTML = '紅利不足'
     }
 }
 async function doCcoinSingleDraw() {
@@ -465,6 +469,8 @@ async function doCcoinSingleDraw() {
     }
     else {
         console.log("貓幣不足");
+        alterConfirmWinBTN('確認', closeConfirmWin)
+        confirmWin_text.innerHTML = '貓幣不足'
     }
 }
 async function doRubySingleDraw() {
@@ -529,6 +535,8 @@ async function doRubySingleDraw() {
     }
     else {
         console.log("紅利不足");
+        alterConfirmWinBTN('確認', closeConfirmWin)
+        confirmWin_text.innerHTML = '紅利不足'
     }
 }
 
