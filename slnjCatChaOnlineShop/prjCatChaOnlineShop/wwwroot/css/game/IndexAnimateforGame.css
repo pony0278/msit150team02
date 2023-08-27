@@ -61,8 +61,9 @@
     height: 2px;
     width: 2px;
     background-color: black;
-    opacity: 0.05;
+    opacity: 0.1;
     transition: all 0.1s linear;
+    z-index:-1;
 }
 .popup {
     position: fixed;
