@@ -16,7 +16,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const userMemberidlogin = document.getElementById("userMemberidlogin");
     const registerForm = document.getElementById('registerForm');
     const registerButton = document.getElementById('registerButton');
-
     const testDBlogin = document.getElementById('testDBlogin');
     const testGameDB = document.getElementById('testGameDB');
 

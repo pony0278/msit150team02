@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+
 
     //畫布
     const Canvasrungame = document.getElementById("Canvasrungame");
@@ -337,4 +337,3 @@ document.addEventListener("DOMContentLoaded", function () {
     //         rcat.jump();
     //     }
     // });
-}

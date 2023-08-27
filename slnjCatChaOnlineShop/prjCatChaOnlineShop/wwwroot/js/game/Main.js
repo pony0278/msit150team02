@@ -1,6 +1,6 @@
 ////innerWidth改406
 
-document.addEventListener("DOMContentLoaded", function () {
+
     //畫布
     const canvas = document.getElementById("Canvaslobby");
     const c = canvas.getContext('2d');
@@ -460,4 +460,3 @@ document.addEventListener("DOMContentLoaded", function () {
 
     }
     animate();
-}
