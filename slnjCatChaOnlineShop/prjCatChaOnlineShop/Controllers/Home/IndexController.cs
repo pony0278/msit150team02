@@ -17,10 +17,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _context = context;
             _productService = productService;
         }
-        public IActionResult ShopDetail() 
-        { 
-            return View();
+        public IActionResult ShopDetail(int pId)
+        {
+            var details = _productService.GetDetailsById(pId);
+            return View(details);
         }
+        //[HttpPost]
+        //public IActionResult ShopDetail()
+        //{
+        //    return View();
+        //}
+
         public IActionResult Shop()
         {
             return View(_productService.GetProductItems());
