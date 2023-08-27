@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
@@ -21,12 +22,24 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult ProductReview()
         {
-            var ReviewModel = new CproductsReviews
+            //判斷是否有登入
+            if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
-                reviewTables = _context.ShopProductReviewTable.ToList(),
-                productCategories = _context.ShopProductCategory.ToList(),
-            };
-            return View(ReviewModel);
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
+                var ReviewModel = new CproductsReviews
+                {
+                    reviewTables = _context.ShopProductReviewTable.ToList(),
+                    productCategories = _context.ShopProductCategory.ToList(),
+                };
+                return View(ReviewModel);
+            }
+            return RedirectToAction("Login", "CMSHome");
+            
         }
         [HttpGet]
         public IActionResult tableData()

@@ -76,9 +76,7 @@
                         <div class="center">
                             <ul class="sidebar-detail-ul">
                                 <li><a asp-area="AdminCMS" asp-controller="Order" asp-action="Order">商城訂單管理</a></li>
-                                @*<li><a asp-area="AdminCMS" asp-controller="Salon" asp-action="Salon">美容訂單管理</a></li>*@
                                 <li><a asp-area="AdminCMS" asp-controller="Product" asp-action="Product">產品管理</a></li>
-                                @*<li><a asp-area="AdminCMS" asp-controller="Grooming" asp-action="Grooming">寵物美容管理</a></li>*@
                                 <li><a asp-area="AdminCMS" asp-controller="Bonus" asp-action="Bonus">優惠券管理</a></li>
                                 <li><a asp-area="AdminCMS" asp-controller="Return" asp-action="Return">退換貨管理</a></li>
                                 <li><a asp-area="AdminCMS" asp-controller="ProductReview" asp-action="ProductReview">產品評論管理</a></li>
@@ -177,20 +175,18 @@
                     </div>
                     <div class="col-md-12 col-8 text-end">
                         @{
-                            //string adminName = HttpContext.Session.GetString("AdminName");
-
                             var adminName = ViewBag.AdminName as string;
 
                             if (!string.IsNullOrEmpty(adminName))
                             {
-                                <span>Welcome, @adminName</span>
+                                <span class="time-colored-text fw-bold fs-6">Welcome, @adminName</span>
                             }
                             else
                             {
-                                <span>Welcome, Guest</span>
+                                <span class="time-colored-text fw-bold">Welcome, Guest</span>
                             }
                         }
-                        <img class="img-profile rounded-circle" src="~/images/undraw_profile.svg" />
+                        <img class="img-profile rounded-circle" src="~/images/AdminUserImg.png" />
                     </div>
                 </div>
             </navbar>
