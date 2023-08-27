@@ -638,9 +638,10 @@
                 }, 40);
             }
         });
-<<<<<<< HEAD
+
 
         const targetloginTextClass = 'LoginText';
+        const loginLink = document.getElementById('loginLink');
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
 
         function loginAndGetName(){
@@ -651,23 +652,21 @@
                 success: function (data) {
                     if (data.length > 0) {
                         targetElements.forEach(element => {
-                            element.textContent = `Hello, ${data}`;
-                        });
+                            element.textContent = `${data}`;
+                        });   
                     }
                 },
                 error: function () {
-                    console.error('載入使用者名字失敗');
+                    console.error('登入失敗');
                 }
             });
+            if (targetElements)
+            loginLink.href = '/Membership/Membership';
         }
         loginAndGetName();
 
-      
-        
+     
 
-
-</script>
-=======
         //小動畫結束
         //抓主打商品
         $(document).ready(function () {
@@ -735,5 +734,5 @@
 
 
     </script>
->>>>>>> cc9d7972a3d82f754fbbf4465b08237552c70736
+
 }

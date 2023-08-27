@@ -29,13 +29,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             if (memberInfoJson != null)
             {
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                return new JsonResult(memberInfo.Name);
+                return Content($"Hello, {memberInfo.Name}");
                 
             }
-            return new JsonResult("none");
-            //string memberName = _getUserName.GetCurrentMemberName();
-            //string memberName = "avc";
-            //return new JsonResult(memberName);
+            return Content("登入/註冊");
         }
 
         #endregion
