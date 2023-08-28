@@ -60,16 +60,8 @@
             color: orange;
         }
 
-        .add-to-wishlist-coustom.favorited {
-            background-color: #000;
-            position: absolute;
-            cursor: pointer;
-            border: none;
-            color: #ffffff;
-            padding: 1px 10px;
-            height: 30px;
-            right: 10px;
-        }
+        
+        
     </style>
 }
 
@@ -402,7 +394,7 @@
         //所有頁面上不可有相同id
         var productIndexNew = $('#productIndexNew');
         var productIndexSale = $('#productIndexSale');
-
+        var isFavorited = false;
         // 點擊商品時獲取識別ID
         productIndexNew.on('click', '.shop-prod-click', function () {
 
@@ -493,7 +485,12 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    button.addClass("favorited");
+                    isFavorited = !isFavorited; // 切換狀態
+                    if (isFavorited) {
+                        button.addClass("favorited");
+                    } else {
+                        button.removeClass("favorited");
+                    }
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
@@ -513,7 +510,12 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    button.addClass("favorited");
+                    isFavorited = !isFavorited; // 切換狀態
+                    if (isFavorited) {
+                        button.addClass("favorited");
+                    } else {
+                        button.removeClass("favorited");
+                    }
                 },
                 error: function (error) {
                 }
