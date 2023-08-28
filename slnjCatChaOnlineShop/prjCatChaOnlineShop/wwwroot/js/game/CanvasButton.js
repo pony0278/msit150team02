@@ -9,21 +9,35 @@ function isInBtnRange(btn, x, y)//判斷滑鼠點到哪一個按鈕，參數btn�
 function loadRankData() {
 
     $.ajax({
+        type: "POST",
+        url: "/api/GetUserId", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        success: async function (data) {
+            
+          await getRankDataBeforeGetID(data);
+        },
+        error: function (error) {
+            console.log("抓取ID失敗", error);
+        }
+    });
+
+    
+}
+
+
+function getRankDataBeforeGetID(id) {
+    $.ajax({
         url: '/Api/Rank',
         type: 'GET',
         contentType: 'application/json', // 指定資料類型為 JSON
-
         success: function (data) {
             const topTenData = data.slice(0, 10);//取出前十名
-            const thisPlayerData = data.filter((item) => item.memberId === 1035);//取出目前玩家
-
-
-
+            const thisPlayerData = data.filter((item) => item.memberId === id);//取出目前玩家
             if (topTenData.length > 0) {
-
+                console.log(data);
                 const top10Rank = {
                     "排名": topTenData.map((item) => ({
-                        "id":item.memberId,
+                        "id": item.memberId,
                         "name": item.characterName,
                         "排名": item.rank,
                         "分數": item.runGameHighestScore
@@ -37,7 +51,7 @@ function loadRankData() {
                         "分數": item.runGameHighestScore
                     }))
                 };
-               
+
                 const rankDatas = top10Rank.排名.map(r => `
                                             <tr>
                                                  <td class="_${r.id}">${r.排名}</td>
@@ -56,23 +70,24 @@ function loadRankData() {
                                             </tr>
                                             ` );
                 let combinedRankDatas = rankDatas;
-                if (!topTenData.some(item => item.memberId === 1035)) {
-                   combinedRankDatas = rankDatas.concat(user);
-                } 
+                if (!topTenData.some(item => item.memberId === id)) {
+                    combinedRankDatas = rankDatas.concat(user);
+                }
                 document.querySelector('#emTable > tbody').innerHTML = combinedRankDatas.join("")
                 //設定目前腳色排行榜中的文字顏色
-                const targetClass = `_${1035}`;
-                const targetElements = document.querySelectorAll(`.${targetClass}`); 
+                const targetClass = `_${id}`;
+                const targetElements = document.querySelectorAll(`.${targetClass}`);
                 targetElements.forEach(element => {
                     element.style.color = 'red';
                 });
-                
+
             }
         },
         error: function () {
-            console.error('載入資料失敗');
+            console.error('抓取排行榜失敗');
         }
     });
+
 }
 
 CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後詢問頁面
