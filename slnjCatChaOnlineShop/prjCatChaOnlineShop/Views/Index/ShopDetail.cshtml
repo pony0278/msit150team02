@@ -328,7 +328,7 @@
     <script src="~/js/custom.js"></script>
      
     <script>
-        
+        var isFavorited = false;
         //輸入數量加入購物車
         $("#addToCartButton").on("click", function (event) {
             event.preventDefault();
@@ -367,7 +367,12 @@
                 data: { pId: productId},
                 dataType: 'json',
                 success: function (response) {
-                    button.addClass("favorited");
+                    isFavorited = !isFavorited; // 切換狀態
+                    if (isFavorited) {
+                        button.addClass("favorited");
+                    } else {
+                        button.removeClass("favorited");
+                    }
                 },
                 error: function (error) {
                 }
@@ -410,8 +415,13 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    
-                    button.addClass("favorited");
+
+                    isFavorited = !isFavorited; // 切換狀態
+                    if (isFavorited) {
+                        button.addClass("favorited");
+                    } else {
+                        button.removeClass("favorited");
+                    }
                 },
                 error: function (error) {
                 }

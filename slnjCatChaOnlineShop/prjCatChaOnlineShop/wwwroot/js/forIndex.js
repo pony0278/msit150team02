@@ -136,6 +136,7 @@ $(document).ready(async function () {
         });
     });
     // 點擊加入收藏按鈕(用類別去找addtocartaustom抓不到)
+    var isFavorited = false;
     productList.on('click', '.add-to-wishlist-coustom', async function (e) {
         e.preventDefault(); // 阻止<a>標籤的點擊預設行為
         
@@ -149,7 +150,12 @@ $(document).ready(async function () {
             data: { pId: productId },
             dataType: 'json',
             success: function (response) {
-                button.addClass("favorited");
+                isFavorited = !isFavorited; // 切換狀態
+                if (isFavorited) {
+                    button.addClass("favorited");
+                } else {
+                    button.removeClass("favorited");
+                }
             },
             error: function (error) {
             }

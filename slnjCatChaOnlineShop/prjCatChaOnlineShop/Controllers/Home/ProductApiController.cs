@@ -174,7 +174,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 _context.ShopFavoriteDataTable.Add(newItem);
             }
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return Json(new { success = true });
         }
 
 
