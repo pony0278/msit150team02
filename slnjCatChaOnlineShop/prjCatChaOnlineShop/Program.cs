@@ -35,7 +35,7 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 //==============解決 json too big 問題（Mandy需要的請勿刪~桑Q）
 
 //註冊session要加這個
-//builder.Services.AddSession();
+builder.Services.AddSession();
 
 //讓網頁可以解析DB資料庫
 

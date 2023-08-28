@@ -12,11 +12,15 @@
 
 <!-- Start 遊戲畫面 -->
 
-<div class="canvas-container" style="display:none;">
+<div class="canvas-container" @*style="display:none;"*@>
     <div class="gamelayer">
         <canvas id="Canvaslobby"></canvas>
         <!-- Start j轉蛋 -->
         <div id="CatchaGatCha">
+            <div id="gachaShowCoin">
+                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
+                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
+            </div>
             <div class="animation-container">
                 <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none; z-index:99;">
                 <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none; z-index:99;">
@@ -24,8 +28,9 @@
             </div>
            
             <div id="summon-buttons">
-                @*轉蛋按鈕*@
+                @*返回大廳按鈕*@
                 <button id="commonbackBTN"></button>
+                @*轉蛋按鈕*@
                 <div class="buttonRow">
                     <button id="CatPointSingleDrow"></button>
                     <button id="CatPointTenDrows"></button>
@@ -34,13 +39,11 @@
                     <button id="RubySingleDrow"></button>
                     <button id="RubyTenDrows"></button>
                 </div>
+                
             </div>
             <div id="result" class="result-container"></div>
             @* 使用者貓幣紅利顯示*@
-            <div id="gachaShowCoin">
-                <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
-                <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
-            </div>
+           
         </div>
         <!-- End 轉蛋 -->
         <!-- Start 小遊戲說明提示 -->
@@ -118,7 +121,7 @@
     </div>
     <!-- End Canvas遊戲畫布 -->
 </div>
-<div id="userMemberidlogin">
+<div id="userMemberidlogin" style="display: none";>
     <label for="memberId">請輸入memberId: </label>
     <input type="text" id="memberId" name="memberId" pattern="[0-9]*"><br><br>
     <input type="submit" id="memberIdLogin" value="Submit">
@@ -131,8 +134,8 @@
     <button id="registerButton">註冊</button>
 </div>
 
-<button type="submit" id="testDBlogin" style="display: none;">測試資料庫登入</button>
-<button type="submit" id="testGameDB" style="display: none;">測試寫入遊戲資料</button>
+<button type="submit" id="testDBlogin" @*style="display: none;"*@>測試資料庫登入</button>
+
 <!-- End 遊戲畫面 -->
 <!-- 遊戲相關js -->
 @section Scripts{

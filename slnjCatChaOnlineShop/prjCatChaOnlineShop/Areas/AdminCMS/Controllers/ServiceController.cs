@@ -18,7 +18,18 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
         public IActionResult Service()
         {
-            return View();
+            //判斷是否有登入
+            if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
+            {
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
+                return View();
+            }
+            return RedirectToAction("Login", "CMSHome");
         }
         public IActionResult ShowComplaintCase()
         {
@@ -102,9 +113,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
 
                 //得到資料庫裡所有狀態名稱並放到select option裡面
-                var complaintStatusSelect = _context.ShopComplaintStatusData
-                            .Select(c => c.ComplaintStatusName)
-                            .ToList();
+                //var complaintStatusSelect = _context.ShopComplaintStatusData
+                //            .Select(c => c.ComplaintStatusName)
+                //            .ToList();
 
                 //得到資料庫裡所有分類名稱並放到select option裡面
                 var complaintCategorySelect = _context.ShopAppealCategoryData
@@ -127,7 +138,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 var data = new
                 {
                     ServiceCase = serviceCase,
-                    ComplaintStatusSelect = complaintStatusSelect,
+                    //ComplaintStatusSelect = complaintStatusSelect,
                     ComplaintCategorySelect = complaintCategorySelect,
                     AdminUsername = adminUsername,
                     ComplaintCategoryName = complaintCategoryName,

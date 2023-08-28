@@ -16,7 +16,7 @@ namespace prjCatChaOnlineShop.Services.Function
         {
             _context = context;
         }
-        public List<CProductItem> GetProductItems()
+        public List<CProductItem> getProductItems()
         {
             var data = from p in _context.ShopProductTotal
                        from i in _context.ShopProductImageTable
@@ -42,7 +42,7 @@ namespace prjCatChaOnlineShop.Services.Function
             List<CProductItem> items = data.ToList();
             return items;
         }
-        public CProductItem GetProductById(int? id)
+        public CProductItem getProductById(int? id)
         {
             var data = from p in _context.ShopProductTotal
                        where p.ProductId == id
@@ -59,7 +59,7 @@ namespace prjCatChaOnlineShop.Services.Function
             CProductItem item = data.FirstOrDefault();
             return item;
         }   
-        public List<CProductItem> GetProductByCategoryName(string? categoryName)
+        public List<CProductItem> getProductByCategoryName(string? categoryName)
         {
             var data = from p in _context.ShopProductTotal
                        where p.ProductCategory.CategoryName == categoryName
@@ -75,7 +75,7 @@ namespace prjCatChaOnlineShop.Services.Function
             List<CProductItem> items = data.ToList();
             return items;
         }
-        public CDetailsViewModel GetDetailsById(int? id)
+        public CDetailsViewModel getDetailsById(int? id)
         {
             var data = (from p in _context.ShopProductTotal
                        where p.ProductId == id
@@ -102,18 +102,18 @@ namespace prjCatChaOnlineShop.Services.Function
                 CDetailsViewModel items = new CDetailsViewModel();
                 items.selectedProduct = data;
                 items.attrList = allAttr;
-                items.recommands = GetProductByCategoryName(data.pCategoryName);
+                items.recommands = getProductByCategoryName(data.pCategoryName);
                 return items;
             }
             else
             {
                 CDetailsViewModel items = new CDetailsViewModel();
                 items.selectedProduct = data;
-                items.recommands = GetProductByCategoryName(data.pCategoryName);
+                items.recommands = getProductByCategoryName(data.pCategoryName);
                 return items;
             }
         }
-        public List<CAttributesViewModel> GetOtherAttr(int? id)
+        public List<CAttributesViewModel> getOtherAttr(int? id)
         {
             var data = from p in _context.ShopProductTotal
                        where p.ProductId == id
@@ -150,7 +150,7 @@ namespace prjCatChaOnlineShop.Services.Function
                 return (decimal)price;//無特價時金額
             }
         }
-        public void AddCartItem(List<CCartItem> cart, CProductItem prodItem, int count)
+        public void addCartItem(List<CCartItem> cart, CProductItem prodItem, int count)
         {
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId);
             if (existingCartItem != null)
@@ -168,10 +168,11 @@ namespace prjCatChaOnlineShop.Services.Function
                 cartItem.c子項目 = prodItem.p子項目;
                 cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
                 cartItem.c數量 = count;
+                cartItem.c其他子項目 = getOtherAttr(cartItem.cId);
                 cart.Add(cartItem);
             }
         }
-        public void DetailsAddCartItem(List<CCartItem> cart, CProductItem prodItem, string option, int count)
+        public void detailsAddCartItem(List<CCartItem> cart, CProductItem prodItem, string option, int count)
         {
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId);
             if (existingCartItem != null)
@@ -189,8 +190,17 @@ namespace prjCatChaOnlineShop.Services.Function
                 cartItem.c子項目 = option;
                 cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
                 cartItem.c數量 = count;
+                cartItem.c其他子項目 = getOtherAttr(cartItem.cId);
                 cart.Add(cartItem);
             }
+        }
+
+        internal int getIdFromAttribute(string newAttribute)
+        {
+            var data = (from p in _context.ShopProductTotal
+                       where p.Attributes== newAttribute
+                       select p.ProductId).FirstOrDefault();
+            return data;
         }
     }
 }

@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
+using prjCatChaOnlineShop.Models.CDictionary;
+using System.Linq;
+using System.Text.Json;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -11,22 +14,30 @@ namespace prjCatChaOnlineShop.Controllers.Api
     public class UpdateLobbyBackpackController : ControllerBase
     {
         private readonly cachaContext _context;
-        public UpdateLobbyBackpackController(cachaContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public UpdateLobbyBackpackController(IHttpContextAccessor httpContextAccessor, cachaContext context)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
         }
 
+       
         [HttpPost]
         public IActionResult updateUserBackpack(CPlayerItem nID)
         {
-            var dbMilkConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == nID.fId && p.ProductId == 7);
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            int _memberId = memberInfo.MemberId;
+
+
+            var dbMilkConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 7);
             if (dbMilkConut != null)
             {
                 dbMilkConut.QuantityOfInGameItems += nID.fMilkCount;
                 _context.SaveChanges();
             }
 
-            var dbCanConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == nID.fId && p.ProductId == 8);
+            var dbCanConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 8);
             if (dbCanConut != null)
             {
                 dbCanConut.QuantityOfInGameItems += nID.fCanCount;

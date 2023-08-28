@@ -7,15 +7,17 @@ function isInBtnRange(btn, x, y)//判斷滑鼠點到哪一個按鈕，參數btn�
 
 //載入排行榜資料
 function loadRankData() {
+
     $.ajax({
         url: '/Api/Rank',
         type: 'GET',
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: { id: UserID },
-       
+
         success: function (data) {
             const topTenData = data.slice(0, 10);//取出前十名
-            const thisPlayerData = data.filter((item) => item.memberId === UserID);//取出目前玩家
+            const thisPlayerData = data.filter((item) => item.memberId === 1035);//取出目前玩家
+
+
 
             if (topTenData.length > 0) {
 
@@ -54,12 +56,12 @@ function loadRankData() {
                                             </tr>
                                             ` );
                 let combinedRankDatas = rankDatas;
-                if (!topTenData.some(item => item.memberId === UserID)) {
+                if (!topTenData.some(item => item.memberId === 1035)) {
                    combinedRankDatas = rankDatas.concat(user);
                 } 
                 document.querySelector('#emTable > tbody').innerHTML = combinedRankDatas.join("")
                 //設定目前腳色排行榜中的文字顏色
-                const targetClass = `_${UserID}`;
+                const targetClass = `_${1035}`;
                 const targetElements = document.querySelectorAll(`.${targetClass}`); 
                 targetElements.forEach(element => {
                     element.style.color = 'red';

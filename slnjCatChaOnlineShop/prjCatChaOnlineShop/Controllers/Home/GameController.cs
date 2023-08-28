@@ -2,7 +2,7 @@
 
 namespace prjCatChaOnlineShop.Controllers
 {
-    public class GameController : Controller
+    public class GameController : SuperController
     {
         public IActionResult Index()
         {

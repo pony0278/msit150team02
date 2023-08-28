@@ -33,5 +33,9 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 
         public virtual GameProductCategory ProductCategory { get; set; }
 
+
+        public IFormFile? Image { get; set; }
+        public List<IFormFile>? ProductPhotos { get; set; }
+
     }
 }

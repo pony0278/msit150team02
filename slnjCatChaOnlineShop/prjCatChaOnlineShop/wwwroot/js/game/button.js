@@ -40,9 +40,3 @@ closeinstruction.addEventListener("click", () => {
     pagesControl(Canvaslobby); //畫面返回大廳
 });
 
-
-const testGameDB = document.getElementById('testGameDB');
-testGameDB.addEventListener("click", () => {
-    console.log('開始測試')
-
-});
