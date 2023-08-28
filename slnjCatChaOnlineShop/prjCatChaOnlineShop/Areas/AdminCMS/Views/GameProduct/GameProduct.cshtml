@@ -1,4 +1,4 @@
-﻿@model prjCatChaOnlineShop.Models.GameProductTotal
+﻿@model prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels.GameProductVM
 @{
     ViewData["Title"] = "遊戲產品管理";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
@@ -86,7 +86,12 @@
 
                         <div class="form-group">
                             <label>類別：</label>
-                            <select class="form-control" id="create_category" name="ProductCategory">
+                            <select class="form-control" id="create_categoryid" name="ProductCategoryId">
+                              <option value="">全部訂單</option>
+                                @foreach (var category in Model.GameProductCategory)
+                                {
+                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                }
                             </select>
                         </div>
 
@@ -136,6 +141,10 @@
                 <select class="form-select" id="payList">
                     <option value="" selected disabled>請選擇類別</option>
                     <option value="">全部訂單</option>
+                                @foreach (var category in Model.GameProductCategory)
+                                {
+                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                }
                 </select>
             </div>
         </div>
@@ -187,7 +196,12 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>類別</label>
-                                            <select class="form-control" id="editcategory" name="ProductCategory">
+                                            <select class="form-control" id="editcategoryid" name="ProductCategoryId">
+                                             <option value="">全部訂單</option>
+                                                @foreach (var category in Model.GameProductCategory)
+                                                {
+                                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                                }
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -261,6 +275,9 @@
         //初始化表格==================================================
         $(document).ready(function () {
             var table = $('#GProduct-table').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                },
                 responsive: true,
                 "paging": true,
                 "ajax": {
@@ -272,7 +289,7 @@
                 "columns": [
                     { "data": "productId" },
                     { "data": "productName" },
-                    { "data": "productCategory" },
+                    { "data": "productCategoryId" },
                     { "data": "productDescription" },
                     { "data": "productPrice" },
                     {
@@ -307,7 +324,7 @@
                             $('#editid').val(response.data.productId);
                             $('#editname').val(response.data.productName);
                             $('#editdescription').val(response.data.productDescription);
-                            $('#editcategory').val(response.data.productCategory);
+                            $('#editcategoryid').val(response.data.productCategoryId);
                             $('#editprice').val(response.data.productPrice);
                             $('#editpurchasedquantity').val(response.data.purchasedQuantity);
                             $('#editremainingquantity').val(response.data.remainingQuantity);
@@ -338,80 +355,86 @@
                 }
             });
 
+
         //儲存按鈕==============================
         $('.submitButton-edior').click(function () {
+            var ProductId = $('#editid').val()
+            var ProductName = $('#editname').val();
+            var ProductDescription = $('#editdescription').val();
+            var ProductCategoryId = $('#editcategoryid').val();
+            var ProductPrice = $('#editprice').val();
+            var PurchasedQuantity = $('#editpurchasedquantity').val();
+            var RemainingQuantity = $('#editremainingquantity').val();
+            var LotteryProbability = $('#editrate').val();
+            var fileInput = $('#editimage')[0];
+            var file = fileInput.files[0];
 
-                var ProductId = $('#editid').val()
-                var ProductName = $('#editname').val();
-                var ProductDescription = $('#editdescription').val();
-                var ProductCategory = $('#editcategory').val();
-                var ProductPrice = $('#editprice').val();
-                var PurchasedQuantity = $('#editpurchasedquantity').val();
-                var RemainingQuantity = $('#editremainingquantity').val();
-                var LotteryProbability = $('#editrate').val();
-                var fileInput = $('#editimage');
-                var file = fileInput.files;
+            var formData = new FormData();
+            formData.append("ProductId", ProductId);
+            formData.append("Productname", ProductName);
+            formData.append("ProductDescription", ProductDescription);
+            formData.append("ProductCategoryId", ProductCategoryId);
+            formData.append("ProductPrice", ProductPrice);
+            formData.append("PurchasedQuantity", PurchasedQuantity);
+            formData.append("RemainingQuantity", RemainingQuantity);
+            formData.append("LotteryProbability", LotteryProbability);
+            if (file) {
+                formData.append("ProductImage", file)
+            }
 
-                var formData = new FormData();
-                formData.append("ProductId", ProductId);
-                formData.append("Productname", ProductName);
-                formData.append("ProductDescription", ProductDescription);
-                formData.append("ProductCategory", ProductCategory);
-                formData.append("ProductPrice", ProductPrice);
-                formData.append("PurchasedQuantity", PurchasedQuantity);
-                formData.append("RemainingQuantity", RemainingQuantity);
-                formData.append("LotteryProbability", LotteryProbability);
-                if (file) {
-                    for (var i = 0; i < file.length; i++) {
-                        formData.append("ProductImage", file[i])
-                    }
-                }
-
-                $.ajax({
+            $.ajax({
                 url: "@Url.Action("EditProduct","GameProduct" , new { area="AdminCMS" })",
                 type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
-                    success: function (response) {
-                        if (response.success) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '編輯成功',
-                                text: response.message
-                            });
-
-                            //關閉modal
-                            $('#addGProductModalToggle').modal('hide');
-                            $('#GProduct-table').DataTable().ajax.reload(); 
-                        } 
-                        else {
-                            更新失敗
-                            Swal.fire({
-                                icon: 'error',
-                                title: '失敗',
-                                text: response.message
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.log(error);
+                success: function (response) {
+                    if (response.success) {
+                        showSuccessMessage("編輯成功", response.message);
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("編輯失敗", response.message);
                     }
+                },
+                error: function (error) {
+                    console.error("AJAX Request Error:", error);
+                }
+            });
+
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
                 });
-            })
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#addGProductModalToggle').modal('hide');
+                $('#GProduct-table').DataTable().ajax.reload();
+            }
+        });
 
             //新增商品====================
         $(document).on("click", "#submitButton", function () {
             const ProductId = $('#create_id').val()
             const ProductName = $('#create_name').val();
             const ProductDescription = $('#create_description').val();
-            const ProductCategory = $('#create_category').val();
+            const ProductCategoryId = $('#create_categoryid').val();
             const ProductPrice = $('#create_price').val();
             const PurchasedQuantity = $('#create_purchasedquantity').val();
             const RemainingQuantity = $('#create_remainingquantity').val();
             const LotteryProbability = $('#create_rate').val();
-            var fileInput = $("#create-image");
-            var file = fileInput.files;
+            var fileInput = $('#create-image')[0];
+            var file = fileInput.files[0];
 
             // 檢查必填欄位是否有值
             // if (!ProductId || !ProductName || !ProductDescription || !ProductCategory || !ProductPrice || !PurchasedQuantity || !RemainingQuantity || !LotteryProbability || !ProductImage) {
@@ -427,16 +450,13 @@
             formData.append("ProductId", ProductId);
             formData.append("Productname", ProductName);
             formData.append("ProductDescription", ProductDescription);
-            formData.append("ProductCategory", ProductCategory);
+            formData.append("ProductCategoryId", ProductCategoryId);
             formData.append("ProductPrice", ProductPrice);
             formData.append("PurchasedQuantity", PurchasedQuantity);
             formData.append("RemainingQuantity", RemainingQuantity);
             formData.append("LotteryProbability", LotteryProbability);
-            if (file) {
-                for (var i = 0; i < file.length; i++) {
-                    formData.append("ProductImage", file[i])
-                }
-            }
+            formData.append("ProductImage", file);
+
 
             $.ajax({
                 url: "@Url.Action("CreateProduct" , "GameProduct" , new { area="AdminCMS" })",
@@ -446,8 +466,8 @@
                 contentType: false,
                 success: function (response) {
                     alert("Content saved successfully!");
-                    // $('#addGProductModalToggle').modal('hide');
-                    // $('#GProduct-table').DataTable().ajax.reload();
+                     $('#addGProductModalToggle').modal('hide');
+                     $('#GProduct-table').DataTable().ajax.reload();
                 }
             })
         })
@@ -470,41 +490,47 @@
 
         //刪除================================================
 
-        $(document).ready(function () {
-            $(document).on("click", ".delete-button", function () {
-                var productId = $(this).data("id");
+            $(document).ready(function () {
+                $(document).on("click", ".delete-button", function () {
+                    var productId = $(this).data("id");
+                    var deleteButton = $(this);
 
-                Swal.fire({
-                    title: '確定要刪除嗎?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        var deleteButton = $(this);
-                        $.ajax({
-                            url: "/AdminCMS/GameProduct/Delete",
-                            type: "POST",
-                            data: { id: productId },
-                            success: function (response) {
-                                if (response.success) {
-                                    console.log("項目已成功刪除");
-                                    deleteButton.closest("tr").remove();
-                                    $('#GProduct-table').DataTable().ajax.reload();
-                                } else {
-                                    console.log("刪除項目失敗。");
+                    var confirmMessage = "確定要刪除嗎?";
+                    var confirmButtonText = "Yes, delete it!";
+
+                    Swal.fire({
+                        title: confirmMessage,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: confirmButtonText
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: "/AdminCMS/GameProduct/Delete",
+                                type: "POST",
+                                data: { id: productId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        console.log("項目已成功刪除");
+                                        deleteButton.closest("tr").remove();
+                                        $('#GProduct-table').DataTable().ajax.reload();
+                                    } else {
+                                        console.log("刪除項目失敗。");
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log("刪除項目時發生錯誤：", error);
                                 }
-                            },
-                            error: function (error) {
-                                console.log("刪除項目時發生錯誤：", error);
-                            }
-                        });
-                    }
+                            });
+                        } else if (result.dismiss === Swal.DismissReason.cancel) {
+                            console.log("使用者取消刪除。");
+                        }
+                    });
                 });
             });
-        });
+
         
     </script>
 }
