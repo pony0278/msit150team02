@@ -19,6 +19,8 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<AnnouncementTypeData> AnnouncementTypeData { get; set; }
 
+    public virtual DbSet<EcpayOrders> EcpayOrders { get; set; }
+
     public virtual DbSet<Game1on1MessageData> Game1on1MessageData { get; set; }
 
     public virtual DbSet<GameAchievementList> GameAchievementList { get; set; }
@@ -149,6 +151,22 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.AnnouncementTypeId).HasColumnName("Announcement Type ID");
             entity.Property(e => e.AnnouncementTypeName).HasColumnName("Announcement Type Name");
+        });
+
+        modelBuilder.Entity<EcpayOrders>(entity =>
+        {
+            entity.HasKey(e => e.MerchantTradeNo);
+
+            entity.Property(e => e.MerchantTradeNo).HasMaxLength(50);
+            entity.Property(e => e.MemberId)
+                .HasMaxLength(50)
+                .HasColumnName("MemberID");
+            entity.Property(e => e.PaymentDate).HasColumnType("datetime");
+            entity.Property(e => e.PaymentType).HasMaxLength(50);
+            entity.Property(e => e.PaymentTypeChargeFee).HasMaxLength(50);
+            entity.Property(e => e.RtnMsg).HasMaxLength(50);
+            entity.Property(e => e.TradeDate).HasMaxLength(50);
+            entity.Property(e => e.TradeNo).HasMaxLength(50);
         });
 
         modelBuilder.Entity<Game1on1MessageData>(entity =>
@@ -1092,6 +1110,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ProductPrice)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("Product Price");
+            entity.Property(e => e.ProductSpId).HasColumnName("ProductSpID");
             entity.Property(e => e.PushToShop).HasColumnName("pushToShop");
             entity.Property(e => e.ReleaseDate)
                 .HasColumnType("date")
