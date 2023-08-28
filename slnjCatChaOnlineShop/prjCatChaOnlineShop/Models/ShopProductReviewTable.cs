@@ -21,7 +21,11 @@ public partial class ShopProductReviewTable
 
     public bool? HideReview { get; set; }
 
+    public int? OrderId { get; set; }
+
     public virtual ShopMemberInfo Member { get; set; }
+
+    public virtual ShopOrderTotalTable Order { get; set; }
 
     public virtual ShopProductTotal Product { get; set; }
 }

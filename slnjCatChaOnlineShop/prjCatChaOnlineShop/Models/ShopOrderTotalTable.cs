@@ -42,4 +42,6 @@ public partial class ShopOrderTotalTable
     public virtual ShopShippingMethod ShippingMethod { get; set; }
 
     public virtual ICollection<ShopOrderDetailTable> ShopOrderDetailTable { get; set; } = new List<ShopOrderDetailTable>();
+
+    public virtual ICollection<ShopProductReviewTable> ShopProductReviewTable { get; set; } = new List<ShopProductReviewTable>();
 }
