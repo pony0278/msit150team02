@@ -651,13 +651,11 @@
         const logoutcontainer = 'Logout';
         const loginLink = document.getElementById('loginLink');
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-<<<<<<< HEAD
         const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
         //取得使用者名稱API
-        function loginAndGetName(){
-=======
+
         function loginAndGetName() {
->>>>>>> ea619f67a71311cd1ebac0d16e6584650be1a591
+
             $.ajax({
                 url: '/api/GetUserName/',
                 contentType: 'application/json',
