@@ -1,4 +1,6 @@
-﻿namespace prjCatChaOnlineShop.Models.CModels
+﻿using prjCatChaOnlineShop.Models.ViewModels;
+
+namespace prjCatChaOnlineShop.Models.CModels
 {
     public class CProductItem
     {
@@ -30,16 +32,8 @@
             get { return pItems.ProductCategoryId; }
             set { pItems.ProductCategoryId = value; }
         }
-        public string? pCategoryName
-        {
-            get;
-            set;
-        }
-        public string? pCategoryImg
-        {
-            get;
-            set;
-        }
+        public string? pCategoryName { get; set; }
+        public string? pCategoryImg { get; set; }
         public DateTime? p上架時間
         {
             get { return pItems.ReleaseDate; }
@@ -56,11 +50,7 @@
             get { return pItems.ProductDescription; }
             set { pItems.ProductDescription = value; }
         }
-        public string? p子項目
-        {
-            get { return pItems.Attributes; }
-            set { pItems.Attributes = value; }
-        }
+        public List<string?>? p子項目{ get; set;}
         public decimal? p優惠價格
         {
             get
@@ -71,6 +61,6 @@
                     return this.pItems.ProductPrice - this.pItems.Discount;
             }
         }
-        public string? p圖片路徑 { get; set; }
+        public List<string?>? p圖片路徑 { get; set; }
     }
 }

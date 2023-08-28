@@ -183,22 +183,22 @@
         </div>
         <div id="productIndexNew" class="row special-list">
             @{
-                foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
+                foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                    <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
-                                    </div>
-                                    <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                            <!-- start prod  -->
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                <p class="sale">Sale</p>
+                                            </div>
+                                            <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4>@item.pName</h4>
+                                        @if (item.pDiscount != null)
                                 {
                                     <h5>$ @item.p優惠價格</h5>
                                     <del>$ @item.pPrice</del>
@@ -246,19 +246,19 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
-                                    </div>
-                                    <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                <p class="sale">Sale</p>
+                                            </div>
+                                            <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4>@item.pName</h4>
+                                        @if (item.pDiscount != null)
                                 {
                                     <h5>$ @item.p優惠價格</h5>
                                     <del>$ @item.pPrice</del>

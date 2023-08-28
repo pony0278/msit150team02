@@ -231,11 +231,10 @@
                     {
                         "data": "bannerId",
                         "render": function (data, type, row) {
-                            var deleteUrl = '@Url.Action("Delete", "Bannrt", new { area = "AdminCMS", id = "bannerId" })';
+                            var deleteUrl = '@Url.Action("Delete", "Banner", new { area = "AdminCMS", id = "bannerId" })';
                             deleteUrl = deleteUrl.replace('bannerId', row.bannerId);
                             return `<button class="edit-button" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#EditBannerModalToggle"><i class="fas fa-edit"></i></button> |
-                                                                                                                <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>
-        `;
+                                                                                                                <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`;
                         }
                     }
                 ]
