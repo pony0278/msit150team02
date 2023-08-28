@@ -5,6 +5,7 @@ using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 
 
@@ -16,7 +17,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly cachaContext _context;
-        private int _memberId;
+
 
        //public TestDBLoginController(cachaContext context)
        // {
@@ -277,6 +278,14 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
             try
             {
+                var existingMemberInfo = _context.ShopMemberInfo
+                     .FirstOrDefault(record => record.MemberId == rgm.MemberId);
+                if (existingMemberInfo != null)
+                {
+                    existingMemberInfo.CatCoinQuantity = rgm.CatCoinQuantity;
+                    existingMemberInfo.LoyaltyPoints = rgm.LoyaltyPoints;
+                }
+                _context.SaveChanges();
                 foreach (var gachaResult in rgm.GachaResult)
                 {
                     int productId = gachaResult.productId;
@@ -316,17 +325,17 @@ namespace prjCatChaOnlineShop.Controllers.Api
                             _context.ShopMemberCouponData.Add(dbCouponModel);
                         }
                     }
+                    if (gachaResult.productCategoryId == 6)
+                    {
+                        var existingCoin = _context.ShopMemberInfo
+                            .FirstOrDefault(record => record.MemberId == rgm.MemberId);
+                        if (existingCoin != null)
+                        {
+                            existingCoin.CatCoinQuantity +=50;
+                        }
+                        _context.SaveChanges();
+                    }
                 }
-
-                var existingMemberInfo = _context.ShopMemberInfo
-                    .FirstOrDefault(record => record.MemberId == rgm.MemberId);
-                if (existingMemberInfo != null)
-                {
-                    existingMemberInfo.CatCoinQuantity = rgm.CatCoinQuantity;
-                    existingMemberInfo.LoyaltyPoints = rgm.LoyaltyPoints;
-                }
-
-                _context.SaveChanges();
 
                 return Ok(new { message = "數據已成功保存" });
             }

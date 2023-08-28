@@ -1,4 +1,4 @@
-#summon-buttons {
+ï»¿#summon-buttons {
     position: absolute;
     top: 76%;
     left: 0%;
@@ -13,33 +13,33 @@
 #gachaCCoinIcon {
     position: absolute;
     background: transparent;
-    width: 30px; /* ³]©w«ö¶s¼e«× */
-    background-image: url('/images/game/catcoin.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    height: 30px; /* ³]©w«ö¶s°ª«× */
-    left: 164px;
-    top: 25px;
+    width: 30px; 
+    background-image: url('/images/game/catcoin.png');
+    background-size: cover; 
+    background-position: center; 
+    height: 30px; 
+    left: 240px;
+    top: 10px;
 }
 
 #gachaRubyIcon {
     position: absolute;
     background: transparent;
-    background-image: url('/images/game/ruby.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    width: 30px; /* ³]©w«ö¶s¼e«× */
-    height: 30px; /* ³]©w«ö¶s°ª«× */
-    left: 282px;
-    top: 25px;
+    background-image: url('/images/game/ruby.png'); 
+    background-size: cover;
+    background-position: center;
+    width: 30px; 
+    height: 30px; 
+    left: 240px;
+    top: 44px;
 }
 
 #gachaTextCCoin {
     position: absolute;
     font-size: 25px;
     font-family: fantasy;
-    left: 200px;
-    top: 20px;
+    left: 275px;
+    top: 2px;
     color: black;
 }
 
@@ -47,51 +47,51 @@
     position: absolute;
     font-size: 25px;
     font-family: fantasy;
-    left: 318px;
-    top: 20px;
+    left: 275px;
+    top: 38px;
     color: black;
 }
 
 #RubySingleDrow {
     background: transparent;
-    width: 120px; /* ³]©w«ö¶s¼e«× */
-    height: 40px; /* ³]©w«ö¶s°ª«× */
-    background-image: url('/images/game/rubyBTN.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    border: none; /* ²¾°£«ö¶sÃä®Ø */
+    width: 120px; /* è¨­å®šæŒ‰éˆ•å¯¬åº¦ */
+    height: 40px; /* è¨­å®šæŒ‰éˆ•é«˜åº¦ */
+    background-image: url('/images/game/rubyBTN.png'); /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è·¯å¾‘ */
+    background-size: cover; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è¦†è“‹æ•´å€‹æŒ‰éˆ• */
+    background-position: center; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡å±…ä¸­å°é½Š */
+    border: none; /* ç§»é™¤æŒ‰éˆ•é‚Šæ¡† */
 }
 
 #RubyTenDrows {
     background: transparent;
-    width: 120px; /* ³]©w«ö¶s¼e«× */
-    height: 40px; /* ³]©w«ö¶s°ª«× */
-    background-image: url('/images/game/rubyBTN_10.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    border: none; /* ²¾°£«ö¶sÃä®Ø */
+    width: 120px; /* è¨­å®šæŒ‰éˆ•å¯¬åº¦ */
+    height: 40px; /* è¨­å®šæŒ‰éˆ•é«˜åº¦ */
+    background-image: url('/images/game/rubyBTN_10.png'); /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è·¯å¾‘ */
+    background-size: cover; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è¦†è“‹æ•´å€‹æŒ‰éˆ• */
+    background-position: center; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡å±…ä¸­å°é½Š */
+    border: none; /* ç§»é™¤æŒ‰éˆ•é‚Šæ¡† */
 }
 
 
 #CatPointSingleDrow {
     background: transparent;
-    width: 120px; /* ³]©w«ö¶s¼e«× */
-    height: 40px; /* ³]©w«ö¶s°ª«× */
-    background-image: url('/images/game/ccoinBTN.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    border: none; /* ²¾°£«ö¶sÃä®Ø */
+    width: 120px; /* è¨­å®šæŒ‰éˆ•å¯¬åº¦ */
+    height: 40px; /* è¨­å®šæŒ‰éˆ•é«˜åº¦ */
+    background-image: url('/images/game/ccoinBTN.png'); /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è·¯å¾‘ */
+    background-size: cover; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è¦†è“‹æ•´å€‹æŒ‰éˆ• */
+    background-position: center; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡å±…ä¸­å°é½Š */
+    border: none; /* ç§»é™¤æŒ‰éˆ•é‚Šæ¡† */
 }
 
 
 #CatPointTenDrows {
     background: transparent;
-    width: 120px; /* ³]©w«ö¶s¼e«× */
-    height: 40px; /* ³]©w«ö¶s°ª«× */
-    background-image: url('/images/game/ccoinBTN_10.png'); /* ³]©w­I´º¹Ï¤ù¸ô®| */
-    background-size: cover; /* ³]©w­I´º¹Ï¤ùÂĞ»\¾ã­Ó«ö¶s */
-    background-position: center; /* ³]©w­I´º¹Ï¤ù©~¤¤¹ï»ô */
-    border: none; /* ²¾°£«ö¶sÃä®Ø */
+    width: 120px; /* è¨­å®šæŒ‰éˆ•å¯¬åº¦ */
+    height: 40px; /* è¨­å®šæŒ‰éˆ•é«˜åº¦ */
+    background-image: url('/images/game/ccoinBTN_10.png'); /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è·¯å¾‘ */
+    background-size: cover; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡è¦†è“‹æ•´å€‹æŒ‰éˆ• */
+    background-position: center; /* è¨­å®šèƒŒæ™¯åœ–ç‰‡å±…ä¸­å°é½Š */
+    border: none; /* ç§»é™¤æŒ‰éˆ•é‚Šæ¡† */
 }
 
 #Btn_itemOk {
@@ -100,7 +100,7 @@
     background: #f0cf75;
     padding-right: 15px;
     padding-left: 15px;
-    font-family: ·L³n¥¿¶ÂÅé;
+    font-family: å¾®è»Ÿæ­£é»‘é«”;
     font-size: 20px;
 }
 .animation-container {
