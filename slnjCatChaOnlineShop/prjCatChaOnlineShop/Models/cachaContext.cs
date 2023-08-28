@@ -117,6 +117,8 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<ShopProductReviewTable> ShopProductReviewTable { get; set; }
 
+    public virtual DbSet<ShopProductSpecification> ShopProductSpecification { get; set; }
+
     public virtual DbSet<ShopProductSupplier> ShopProductSupplier { get; set; }
 
     public virtual DbSet<ShopProductTotal> ShopProductTotal { get; set; }
@@ -1054,6 +1056,19 @@ public partial class cachaContext : DbContext
                 .HasConstraintName("FK_Products.Reviews_Products");
         });
 
+        modelBuilder.Entity<ShopProductSpecification>(entity =>
+        {
+            entity.ToTable("Shop.ProductSpecification");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Disable).HasColumnName("disable");
+            entity.Property(e => e.ProductId).HasColumnName("ProductID");
+
+            entity.HasOne(d => d.Product).WithMany(p => p.ShopProductSpecification)
+                .HasForeignKey(d => d.ProductId)
+                .HasConstraintName("FK_Shop.ProductSpecification_Shop.Product Total");
+        });
+
         modelBuilder.Entity<ShopProductSupplier>(entity =>
         {
             entity.HasKey(e => e.SupplierId).HasName("PK_Shop.產品供應商");
@@ -1092,6 +1107,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ProductPrice)
                 .HasColumnType("decimal(18, 2)")
                 .HasColumnName("Product Price");
+            entity.Property(e => e.ProductSpId).HasColumnName("ProductSpID");
             entity.Property(e => e.PushToShop).HasColumnName("pushToShop");
             entity.Property(e => e.ReleaseDate)
                 .HasColumnType("date")
@@ -1104,6 +1120,10 @@ public partial class cachaContext : DbContext
             entity.HasOne(d => d.ProductCategory).WithMany(p => p.ShopProductTotal)
                 .HasForeignKey(d => d.ProductCategoryId)
                 .HasConstraintName("FK_Products_Products.Categories");
+
+            entity.HasOne(d => d.ProductSp).WithMany(p => p.ShopProductTotal)
+                .HasForeignKey(d => d.ProductSpId)
+                .HasConstraintName("FK_Shop.Product Total_Shop.ProductSpecification");
 
             entity.HasOne(d => d.Supplier).WithMany(p => p.ShopProductTotal)
                 .HasForeignKey(d => d.SupplierId)
