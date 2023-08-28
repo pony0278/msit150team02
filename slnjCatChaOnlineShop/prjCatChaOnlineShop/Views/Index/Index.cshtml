@@ -723,6 +723,7 @@
             });
 
         });
+
         //抓評論
         $.ajax({
             url: "@Url.Action("GetReivews","Index")",
@@ -747,7 +748,31 @@
                     swipers.append(reviewsDiv)
                     console.log(response.data)
                 })
-
+                var swiper = new Swiper(".swiper", {
+                    effect: "coverflow",
+                    grabCursor: true,
+                    centeredSlides: true,
+                    slidesPerView: "auto",
+                    coverflowEffect: {
+                        rotate: 0,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 2,
+                        slideShadows: true
+                    },
+                    keyboard: {
+                        enabled: true
+                    },
+                    mousewheel: {
+                        thresholdDelta: 70
+                    },
+                    spaceBetween: 60,
+                    loop: true,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true
+                    }
+                });
             },
             error: function (error) {
                 console.log("Error:", error)
@@ -755,31 +780,7 @@
         })
 
 
-        var swiper = new Swiper(".swiper", {
-            effect: "coverflow",
-            grabCursor: true,
-            centeredSlides: true,
-            slidesPerView: "auto",
-            coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 100,
-                modifier: 2,
-                slideShadows: true
-            },
-            keyboard: {
-                enabled: true
-            },
-            mousewheel: {
-                thresholdDelta: 70
-            },
-            spaceBetween: 60,
-            loop: false,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true
-            }
-        });
+
         //倒數計時
         function handleCountdown() {
             const times = $(".countTime").map(function () {
