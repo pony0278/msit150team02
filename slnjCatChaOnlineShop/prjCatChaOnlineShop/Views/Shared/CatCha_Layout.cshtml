@@ -114,9 +114,11 @@
                             </a>
                         </li>
                         <li class="Logout" style="display: none;">
-                            <a asp-controller="Index" asp-action="Index" >
-                                <span class="LogoutText">登出</span>
-                            </a>
+                            <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px 15px">
+                                    <span class="LogoutText">登出</span>
+                                </button>
+                            </form>
                         </li>
                     </ul>
                 </div>
