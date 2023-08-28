@@ -59,11 +59,12 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             }
         }
         //=============新增管理員檢查帳號是否重複
-        public IActionResult CheckDuplicateAccount(string account)
+        public IActionResult CheckDuplicateAccount(string account, string name)
         {
-            bool result = _context.ShopGameAdminData != null && _context.ShopGameAdminData.Where(c => c.AdminAccount == account).Count() >= 1;
+            bool accountExists = _context.ShopGameAdminData.Any(c => c.AdminAccount == account);
+            bool nameExists = _context.ShopGameAdminData.Any(c => c.AdminUsername == name);
 
-            return Json(new { IsDuplicate = result });
+            return Json(new { IsDuplicateAccount = accountExists, IsDuplicateName = nameExists });
         }
     }
 }

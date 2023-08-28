@@ -34,13 +34,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
                          })
                          .ToList();
 
-
-
-
-
-
-
-
             var rankedDatas = datas.Select((data, index) => new
             {
                 Rank = index + 1, // 排名是索引 + 1
@@ -48,7 +41,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 data.CharacterName,
                 data.RunGameHighestScore
             }).ToList();
-
 
             if (rankedDatas.Any())
             {
@@ -60,8 +52,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 return NotFound();
             }
         }
-
-
 
     }
 }

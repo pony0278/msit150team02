@@ -156,7 +156,7 @@
 
                                     <input type="hidden" class="form-control" id="orderId" readonly disabled>
 
-                                    <div class="col-12">
+                                    <div class="col-12 mb-3">
                                         <label>退換貨原因</label>
                                         <select class="form-select" id="returnReasonId">
                                             <option value="1">商品品質問題</option>
@@ -169,7 +169,7 @@
                                             <option value="8">其他原因</option>
                                         </select>
                                     </div>
-                                    <div class="col-12">
+                                    <div class="col-12 mb-3">
                                         <label>狀態</label>
                                         <select class="form-select" id="processingStatusId">
                                             <option value="1">待處理</option>
@@ -199,7 +199,7 @@
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title bg-dark text-white" id="exampleModalToggleLabel">
+                                <h5 class="modal-title" id="exampleModalToggleLabel">
                                     詳細資訊
                                 </h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -220,11 +220,11 @@
                                         </button>
                                     </div>
                                 </nav>
-                                <div class="tab-content" id="nav-tabContent">
+                                <div class="tab-content mt-3" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                                          aria-labelledby="nav-home-tab">
                                         <div class="row">
-                                            <div class="col-12 col-lg-6" style="border-right: 1px solid #000;">
+                                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
                                                 <h5><strong>訂購人(會員)</strong></h5>
                                                 <p id="order_memberId"></p>
                                                 <p id="order_name"></p>
@@ -246,7 +246,7 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="tab-pane fade" id="nav-profile" role="tabpanel">
+                                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
                                                 <p id="order_orderId"></p>

@@ -20,6 +20,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[EcpayOrders]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Game.1on1MessageData]",
          "ObjectType": 0
       },
