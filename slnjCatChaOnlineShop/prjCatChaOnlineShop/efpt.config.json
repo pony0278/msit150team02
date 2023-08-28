@@ -224,6 +224,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Shop.ProductSpecification]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Shop.Reply Data]",
          "ObjectType": 0
       },

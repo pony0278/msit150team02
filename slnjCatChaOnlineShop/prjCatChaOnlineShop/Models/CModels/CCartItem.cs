@@ -20,7 +20,7 @@ namespace prjCatChaOnlineShop.Models.CModels
             }
 
         }
-        public List<CAttributesViewModel>? c其他子項目 { get; set; }
+        public List<string>? c其他子項目 { get; set; }
 
     }
 }
