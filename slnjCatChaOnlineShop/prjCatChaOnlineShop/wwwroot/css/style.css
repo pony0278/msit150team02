@@ -127,10 +127,10 @@ a, .btn {
     padding: 0;
 }
 
-blockquote {
+/*blockquote {
     margin: 20px 0 20px;
     padding: 30px;
-}
+}*/
 
 ul, li, ol {
     list-style: none;

@@ -56,7 +56,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     productRating = x.ProductRating,
                     productID = x.ProductId,
                     productName = x.Product.ProductName,
-                    Member = x.Member.Name,
+                    productdescription = x.ReviewContent,
+                    Member = x.Member.Name.Length > 2? 
+                             x.Member.Name.Substring(0 , x.Member.Name.Length -2) + "*"+"*":
+                             x.Member.Name,
                     productPhoto = x.Product.ShopProductImageTable.FirstOrDefault().ProductPhoto,
                 }).ToList();
             return Json(new { data });

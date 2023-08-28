@@ -38,7 +38,7 @@
 
         .swiper-pagination-bullet,
         .swiper-pagination-bullet-active {
-            background: #fff;
+            background: orange;
         }
 
         .swiper-slide h2 {
@@ -54,6 +54,10 @@
         .swiper-3d .swiper-slide-shadow-left,
         .swiper-3d .swiper-slide-shadow-right {
             background-image: none;
+        }
+
+        .checked {
+            color: orange;
         }
     </style>
 }
@@ -122,7 +126,7 @@
 <div class="box-add-products position-relative">
     <div class="container padding-custom">
         <div class="home-title text-center">
-            <h1>貓寵補給站</h1><div class="review"></div>
+            <h1>貓寵補給站</h1>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-3 col-md-3 col-sm-6 div-center-custom">
@@ -282,9 +286,9 @@
 <!-- End 熱賣商品  -->
 <!-- 開始評論輪播 -->
 
-<div class="container mt-3">
+<div class="container mt-3 mb-5">
     <div class="home-title text-center">
-        <h1>貓寵補給站</h1>
+        <h1>推薦好評</h1>
     </div>
     <div class="swiper pt-3 pb-3">
         <div class="swiper-wrapper pb-4" id="swipers">
@@ -716,11 +720,17 @@
                     var reviewsDiv = $('<div class="swiper-slide swiper-slide--one position-relative shadow rounded"></div>')
                     const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
                     const productName = $('<div class="position-absolute position-absolute top-0 start-0"></div>').append(`<h3 class="bg-warning text-dark ">${value.productName}</h3>`)
-                    const productRating = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<div class="review"></div>`)
-                    const rating = $('<div class="review"></div>');
-                    reviewsDiv.append(img, productName, productRating)
-                    swipers.append(reviewsDiv, rating)
-                    
+                    let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3"></div>');
+                    if(value.productRating == 5 ){
+                        for(let i = 0; i<value.productRating ; i++){
+                            stars.append('<span class="fs-1 fa fa-star checked "></span>');
+                        }
+                    }
+                    const productdescription = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<blockquote class="fs-2" ><cite><q>${value.productdescription}</q></cite></blockquote>`)
+                    const member = $('<div class="d-flex justify-content-around align-self-center mb-1"></div>').append(`<p>${value.member} <span>這樣說</span></p>`)
+                    reviewsDiv.append(img, productName, stars, productdescription, member)
+                    swipers.append(reviewsDiv)
+                    console.log(response.data)
                 })
 
             },
@@ -728,16 +738,6 @@
                 console.log("Error:", error)
             }
         })
-
-
-            $(".review").rating({
-                "value": 2,
-                "click": function (e) {
-                    console.log(e);
-                }
-            });
-
-
 
 
         var swiper = new Swiper(".swiper", {
