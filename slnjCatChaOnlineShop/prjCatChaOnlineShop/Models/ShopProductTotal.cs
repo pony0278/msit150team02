@@ -43,6 +43,8 @@ public partial class ShopProductTotal
 
     public string ProductImage3 { get; set; }
 
+    public int? ProductSpId { get; set; }
+
     public virtual ShopProductCategory ProductCategory { get; set; }
 
     public virtual ICollection<ShopFavoriteDataTable> ShopFavoriteDataTable { get; set; } = new List<ShopFavoriteDataTable>();
