@@ -11,7 +11,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetUserNameController : ControllerBase
+    public class GetUserNameController : Controller
 
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
@@ -32,6 +32,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return Content("登入/註冊");
         }
+
+
+        //public IActionResult GetUserName()
+        //{
+        //    var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+        //    if (memberInfoJson != null)
+        //    {
+        //        string userName = HttpContext.Session.GetString("UserName");
+        //        ViewBag.UserName = userName;
+        //        return View();
+        //    }
+        //    return RedirectToAction("Index", "Index");
+        //}
 
         #endregion
 

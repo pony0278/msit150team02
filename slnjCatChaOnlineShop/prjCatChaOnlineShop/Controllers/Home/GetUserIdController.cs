@@ -11,7 +11,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class GetUserIdController : ControllerBase
+    public class GetUserIdController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         public GetUserIdController(IHttpContextAccessor httpContextAccessor)
@@ -29,7 +29,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 return new JsonResult(memberInfo.MemberId);
             }
-            return Content("登入/註冊");
+            return Content("取得ID失敗");
         }
 
         #endregion
