@@ -93,8 +93,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         public async Task<IActionResult> EditBanner([FromForm] CBannerWrap cBanner)
         {
             var image = cBanner.Image;
-            var editBanner = _cachaContext.GameShopBanner
-                .FirstOrDefault(b => b.BannerId == cBanner.BannerId);
+            GameShopBanner editBanner = _cachaContext.GameShopBanner
+                                                                        .FirstOrDefault(b => b.BannerId == cBanner.BannerId);
 
             string imageURL = null;
             if (image != null && image.Length > 0)
@@ -108,42 +108,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     return BadRequest("圖片上傳錯誤.");
                 }
             }
-            var insertImgList = _cachaContext.GameShopBanner
-                                .Where(x => x.BannerId == cBanner.BannerId)
-                                .ToList();
-
-            List<string> imageUrls = new List<string>();
-            if (cBanner.BannerImage != null && cBanner.BannerImage.Count > 0)
-            {
-                for (int i = 0; i < cBanner.BannerImage.Count; i++)
-                {
-                    try
-                    {
-                        var uploadedImageUrl = await _imageService.UploadImageAsync(cBanner.BannerImage[i]);
-                        imageUrls.Add(uploadedImageUrl);
-
-                        if (i < insertImgList.Count)
-                        {
-                            insertImgList[i].Link = uploadedImageUrl;
-                        }
-                        else
-                        {
-                            var newImageItem = new GameShopBanner
-                            {
-                                BannerId = cBanner.BannerId,
-                                Link = uploadedImageUrl
-                            };
-                            _cachaContext.GameShopBanner.Add(newImageItem);
-                            _cachaContext.SaveChanges();
-                        }
-                    }
-                    catch
-                    {
-                        return BadRequest("圖片上傳錯誤.");
-                    }
-                }
-            }
-
 
             if (editBanner != null)
             {
@@ -167,36 +131,36 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public async Task<IActionResult> CreateBanner([FromForm] CBannerWrap cBanner)
         {
+            var image = cBanner.Image;
+
+            string imageURL = null;
+            if (image != null && image.Length > 0)
+            {
+                try
+                {
+                    imageURL = await _imageService.UploadImageAsync(image);
+                }
+                catch
+                {
+                    return BadRequest("圖片上傳錯誤.");
+                }
+            }
+
             var NewBanner = new GameShopBanner
             {
                 BannerId = cBanner.BannerId,
                 Banner = cBanner.Banner,
-                PublishDate = cBanner.PublishDate
-            };
-            _cachaContext.GameShopBanner.Add(NewBanner);
-            await _cachaContext.SaveChangesAsync();
-
-            List<string> imageUrls = new List<string>();
-            if (cBanner.BannerImage != null && cBanner.BannerImage.Count > 0)
+                PublishDate = cBanner.PublishDate,
+                Link = imageURL
+        };
+            try
             {
-                for (var i = 0; i < cBanner.BannerImage.Count; i++)
-                {
-                    try
-                    {
-                        var uploadedImageUrl = await _imageService.UploadImageAsync(cBanner.BannerImage[i]);
-                        var newImageItem = new GameShopBanner
-                        {
-                            BannerId = NewBanner.BannerId,
-                            Link = uploadedImageUrl
-                        };
-                        _cachaContext.GameShopBanner.Add(newImageItem);
-                    }
-                    catch
-                    {
-                        return BadRequest("圖片上傳錯誤.");
-                    }
-                }
+                _cachaContext.GameShopBanner.Add(NewBanner);
                 await _cachaContext.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Error saving the product.");
             }
             return Json(new { success = true, message = "Content saved!" });
         }

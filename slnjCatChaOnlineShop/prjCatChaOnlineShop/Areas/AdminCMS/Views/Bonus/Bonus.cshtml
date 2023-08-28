@@ -296,7 +296,7 @@
                 {
                     "data": "couponId",
                     "render": function (data, type, row) {
-                        var deleteUrl = '@Url.Action("Delete", "Bonus", new { area = "AdminCMS", id = "announcementId" })';
+                        var deleteUrl = '@Url.Action("Delete", "Bonus", new { area = "AdminCMS", id = "couponId" })';
                         deleteUrl = deleteUrl.replace('couponId', row.couponId);
                         return `<button class="edit-button" data-id="${row.couponId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
                                                                                                                                 <button class="btn delete-button" data-id="${row.couponId}" ><i class="fas fa-trash-alt"></i></button>`
@@ -363,7 +363,6 @@
                         $('#Bonus-table').DataTable().ajax.reload();
                     }
                     else {
-                        更新失敗
                         Swal.fire({
                             icon: 'error',
                             title: '失敗',
@@ -412,7 +411,6 @@
                         $('#Bonus-table').DataTable().ajax.reload();
                     }
                     else {
-                        更新失敗
                         Swal.fire({
                             icon: 'error',
                             title: '失敗',

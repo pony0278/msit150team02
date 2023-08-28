@@ -379,8 +379,8 @@
                             "render": function (data, type, row) {
                                 var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
                                 deleteUrl = deleteUrl.replace('productId', row.productIdd);
-                                return `<button class="edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> |
-                                                                                        <a href="${deleteUrl}" onclick="return confirm('確定要刪除嗎?')"><i class="fas fa-trash-alt"></i></a>`;
+                                return `<button class="edit-button " data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> |
+                                                                                                                <button class="btn delete-button" data-id="${row.productId}" ><i class="fas fa-trash-alt"></i></button>`;
                             }
                         }
                     ]
@@ -437,24 +437,42 @@
             });
 
             //刪除按鈕================================
-            function userDelete() {
-                Swal.fire({
-                    title: '確定要刪除嗎?',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        Swal.fire(
-                            'Deleted!',
-                            'Your file has been deleted.',
-                            'success'
-                        )
-                    }
-                })
-            }
+            $(document).ready(function () {
+                $(document).on("click", ".delete-button", function () {
+                    var productId = $(this).data("id");
+
+                    Swal.fire({
+                        title: '確定要刪除嗎?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var deleteButton = $(this);
+                            $.ajax({
+                                url: "/AdminCMS/Product/Delete",
+                                type: "POST",
+                                data: { id: productId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        console.log("項目已成功刪除");
+                                        deleteButton.closest("tr").remove();
+                                        $('#Product-table').DataTable().ajax.reload();
+                                    } else {
+                                        console.log("刪除項目失敗。");
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log("刪除項目時發生錯誤：", error);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
 
             //編輯按鈕==============================================
             $('#Product-table').on('click', '.edit-button', function () {

@@ -91,9 +91,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     _cachaContext.ShopProductTotal.Remove(cShopproduct);
                     _cachaContext.SaveChanges();
+                    return Json(new { success = true });
                 }
             }
-            return RedirectToAction("Product", "Product", new { area = "AdminCMS" });
+            return Json(new { success = false });
         }
 
 
@@ -142,7 +143,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                                 .ToList();
             if (insertImgList.Any() && cShopproduct.FrontCover != null)
             {
-                var targetImg = insertImgList.FirstOrDefault(x=>x.ProductImageId==cShopproduct.ProductImageIDforFrontCover);  
+                var targetImg = insertImgList.FirstOrDefault(x => x.ProductImageId == cShopproduct.ProductImageIDforFrontCover);
                 targetImg.FrontCover = cShopproduct.FrontCover;
                 _cachaContext.Update(targetImg);
                 _cachaContext.SaveChanges();
@@ -236,7 +237,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 Size = cShopProduct.Size,
                 Weight = cShopProduct.Weight,
                 RemainingQuantity = cShopProduct.RemainingQuantity,
-                
+
             };
             _cachaContext.ShopProductTotal.Add(NewProduct);
             await _cachaContext.SaveChangesAsync();
@@ -330,7 +331,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
-
 
     }
 }
