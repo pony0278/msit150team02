@@ -71,6 +71,7 @@
 </div>
 <!-- End All Title Box -->
 <!--中間主畫面Start-->
+
 <div class="cart-box-main">
     <div class="container">
         <div class="row ">
@@ -80,33 +81,26 @@
                         <h3>購物明細</h3>
                     </div>
                     <div class="rounded p-2 bg-light">
-                        <div class="media mb-2 border-bottom">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> 熱帶雨林芭蕉樹貓跳台</a>
-                                <div class="small text-muted">
-                                    價格: NT1,280 <span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT1,280
-                                </div>
-                            </div>
-                        </div>
-                        <div class="media mb-2 border-bottom">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> 小黃花仙人掌貓抓柱</a>
-                                <div class="small text-muted">
-                                    價格: NT699<span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT699
-                                </div>
-                            </div>
-                        </div>
-                        <div class="media mb-2">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> ZEZE 好柿幸運貓抓柱</a>
-                                <div class="small text-muted">
-                                    價格: NT990 <span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT990
-                                </div>
-                            </div>
-                        </div>
+                        @{
+                            if (Model != null)
+                            {
+                                if (Model.cartItems != null)
+                                {
+                                    foreach (var item in Model.cartItems)
+                                    {
+                                        <div class="media mb-2 border-bottom">
+                                            <div class="media-body">
+                                                <a asp-controller="Index" asp-action="ShopDetail"> @item.cName </a>
+                                                <div class="small text-muted">
+                                                    價格: NT @item.cPrice <span class="mx-2">|</span> 數量:
+                                                    <span class="mx-2">|</span> 小計: NT
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -144,8 +138,8 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
-                                <input type="text" class="form-control" placeholder="請選擇優惠券"
-                                       aria-label="請選擇優惠券" aria-describedby="button-addon2">
+                                <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
+                                       aria-label="請選擇優惠券" aria-describedby="button-addon2" readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
                                 <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
                                         data-bs-toggle="modal" data-bs-target="#myCouponBackdrop">
@@ -179,14 +173,14 @@
                                                             <div class="coupon-intro  text-center">
                                                                 <!--刪除MyCss.css 123行，增加160行hover-->
                                                                 <div class="coupon-status align-middle text-center">
-                                                                    <button type="button" class=" btn">使用</button>
+                                                                    <button type="button" class="btn useCouponBtn" data-coupon-code="@coupon.CouponName">使用</button>
                                                                 </div>
                                                             </div>
                                                             <div class="coupon-middle flex-container flex-1">
                                                                 <div class="middle-left flex-1">
                                                                     <span class="coupon-tag">
                                                                         限用1次
-                                                                    </span>&ensp;<span class="coupon-name"> @coupon.CouponName </span>
+                                                                    </span>&ensp;<span class="coupon-name" name="couponName"> @coupon.CouponName </span>
                                                                     <div class="coupon-description">
                                                                         @coupon.CouponContent
                                                                     </div>
@@ -277,7 +271,10 @@
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
-                                    選擇門市
+                                    我儲存的門市
+                                </button>
+                                <button type="button" class="chooseStore_btn" id="choose711CVS">
+                                    選擇新的超商門市
                                 </button>
                                 <!-- 選擇711超商的互動視窗 -->
                                 <div class="modal fade" id="choose711Store" data-bs-backdrop="static"
@@ -436,21 +433,23 @@
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-homeMemberInfo" role="tabpanel"
                                          aria-labelledby="nav-homeMemberInfo-tab">
-                                        <ul>
-                                            <li>姓名：徐雅莉</li>
-                                            <li>電話：0923468145</li>
-                                            <li>Email：seoari@gmail.com</li>
-                                            <li>地址： 台北市信義區松壽路12號</li>
-                                        </ul>
+                                        @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                                        {
+                                            <ul>
+                                                <li>姓名：@memberinfo.Name </li>
+                                                <li>電話：@memberinfo.PhoneNumber </li>
+                                                <li>Email：@memberinfo.Email</li>
+                                                <li>地址： @memberinfo.Address</li>
+                                            </ul>
+                                        }
                                     </div>
 
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel"
                                          aria-labelledby="nav-profile-tab">
                                         <ul>
-                                            <li>姓名：尹詩炫</li>
-                                            <li>電話：0983726593</li>
-                                            <li>Email：chungah@gmail.com</li>
-                                            <li>地址： 新北市板橋區縣民大道二段7號</li>
+                                            <li>姓名：<span id="recipientNameDisplay"></span></li>
+                                            <li>電話：<span id="recipientPhoneDisplay"></span></li>
+                                            <li>地址：<span id="recipientAddressDisplay"></span></li>
                                         </ul>
                                         <div class="input-group mb-3">
                                             <!-- 觸發選擇地址視窗的按鈕 -->
@@ -478,42 +477,35 @@
                                                                 <tr>
                                                                     <th>選擇</th>
                                                                     <th>姓名</th>
-                                                                    <th>電子信箱</th>
                                                                     <th>地址</th>
                                                                     <th>聯絡電話</th>
-                                                                    <th>刪除</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>徐雅莉</td>
-                                                                    <td>123@gmail.com</td>
-                                                                    <td>台北市信義區松壽路12號</td>
-                                                                    <td>0923468145</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>王小美</td>
-                                                                    <td>567@gmail.com</td>
-                                                                    <td>台北市萬華區成都路33號</td>
-                                                                    <td>0985624473</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
+                                                                @if (Model != null && Model.memberUsableAddress != null)
+                                                                {
+                                                                    foreach (var address in Model.memberUsableAddress)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="radio" name="select" value="option1" class="address-radio"
+                                                                                       data-RecipientName="@address.RecipientName" data-RecipientAddress="@address.RecipientAddress"
+                                                                                       data-RecipientPhone="@address.RecipientPhone">
+
+                                                                            </td>
+                                                                            <td> @address.RecipientName </td>
+                                                                            <td> @address.RecipientAddress </td>
+                                                                            <td> @address.RecipientPhone </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
                                                             </tbody>
                                                         </table>
 
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="coupon-btn"
-                                                                data-bs-dismiss="modal">
+                                                                data-bs-dismiss="modal" id="selectedAddress">
                                                             確定
                                                         </button>
 
@@ -1154,6 +1146,7 @@
                         <a href="https://www.einvoice.nat.gov.tw/?CSRT=6201288656407980614"
                            class="einvoice-link">財政部電子發票流程說明</a>
                     </label>
+                    <div id="error-message" class="text-danger"></div>
                 </div>
             </div>
         </div>
@@ -1191,7 +1184,7 @@
                 </div>
             </div>
             <div class=" coupon-box-btn col-12 d-flex shopping-box ">
-                <a asp-controller="Cart" asp-action="ConfrimOrder"
+                <a asp-controller="Cart" asp-action="ConfrimOrder" id="submit-order-btn"
                    class=" checkout-btn ml-auto btn hvr-hover">送出訂單</a>
             </div>
         </div>
@@ -1214,7 +1207,7 @@
             crossorigin="anonymous"></script>
     <!---->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/jquery-3.2.1.min.js"></script>
+    @*<script src="~/js/jquery-3.2.1.min.js"></script>*@
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <!-- ALL PLUGINS -->
@@ -1228,11 +1221,34 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
     <!--nav導覽與頁籤使用-->
-    <script src="~/js/myScript.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="~/js/checkout.js"></script>
+    @* <script>
+        $(document).ready(function () {
+            $("#choose711CVS").click(function () {
+                $.ajax({
+                    Headers: 'Access-Control-Allow-Origin: *',
+                    type: 'POST',
+                    url: 'https://logistics-stage.ecpay.com.tw/Express/Create', // API 串接網址
+                    contentType: 'application / x - www - form - urlencoded',
+                    success: function (response) {
+                        // 處理成功回應
+                        console.log(response);
+                        // 在這裡可以處理 API 回應，例如顯示在頁面上
+                    },
+                    error: function (error) {
+                        // 處理錯誤回應
+                        console.log(error);
+                        // 在這裡可以處理錯誤情況，例如顯示錯誤訊息
+                    },
+                });
+            });
+        });
+    </script>*@
+
 }
 
 

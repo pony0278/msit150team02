@@ -44,12 +44,12 @@ function initialize() {
                     data[0]["gameItemInfo"][1]["quantityOfInGameItems"] > 0)
                     userBagData.catOG = true;
 
-                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
                     data[0]["gameItemInfo"][2]["quantityOfInGameItems"] > 0)
                     userBagData.catBB = true;
 
-                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
-                    data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
+                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                    data[0]["gameItemInfo"][13]["quantityOfInGameItems"] > 0)
                     userBagData.catBK = true;
                 loadUserBagCatInfo()
             }
@@ -273,6 +273,7 @@ function chooseCatBeforeGame() {
 
 
 //===============轉蛋方法
+
 async function doCCoinTenDraw() {
     if (貓幣數量 >= 9000) {
         try {
@@ -325,6 +326,7 @@ async function doCCoinTenDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+
                 closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);

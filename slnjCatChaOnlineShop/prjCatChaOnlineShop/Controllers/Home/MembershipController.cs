@@ -5,7 +5,12 @@ using Newtonsoft.Json;
 using NuGet.Protocol;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CDictionary;
+using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
+using System.Security.Cryptography;
+using System.Text.Json;
+using prjCatChaOnlineShop.Controllers.Home;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -15,11 +20,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
     public class MembershipController : Controller
     {
         private readonly cachaContext _context;
+        private readonly ProductService _productService;
+
 
         //建構子先載入資料
-        public MembershipController(cachaContext context)
+        public MembershipController(cachaContext context, ProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         public IActionResult Membership()
@@ -188,8 +196,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-
-
         /*2.消費紀錄*/
 
         //取得訂單資訊
@@ -291,36 +297,38 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //加入購物車
-        public IActionResult AddShopCart(int productid, ShopReturnDataTable returnn)
+        //加入購物車1:若採用ProductApiController的方式會自動導回shop頁面，故改用寫在下方維持原頁面
+        public IActionResult AddToCart(int pId)
         {
-            /*
-               try
-               {
-                   returnn.ReturnDate = DateTime.Now;
-                   returnn.ProcessingStatusId = 1;
-
-                   if (int.TryParse(HttpContext.Request.Form["orderId"], out int orderId))
-                   {
-                       returnn.OrderId = orderId;
-                   }
-                   if (int.TryParse(HttpContext.Request.Form["reasonId"], out int reasonId))
-                   {
-                       returnn.ReturnReasonId = reasonId;
-                   }
-
-                   _context.ShopReturnDataTable.Add(returnn);
-                   _context.SaveChanges();
-
-                   return Content("新增成功");
-               }
-               catch (Exception ex)
-               {
-                   return Content(ex.Message);
-               }
-            */
+            var prodItem = _productService.getProductById(pId);
+            var cart = GetCartFromSession();
+            _productService.addCartItem(cart, prodItem, 1);
+            SaveCart(cart);
+            
             return null;
         }
+        //加入購物車2
+        private void SaveCart(List<CCartItem> cart)
+        {
+            string json = System.Text.Json.JsonSerializer.Serialize(cart);
+            HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
+        }
+        //加入購物車3
+        private List<CCartItem> GetCartFromSession()
+        {
+            string json = "";
+            if (HttpContext.Session.Keys.Contains(CDictionary.SK_PURCHASED_PRODUCTS_LIST))
+            {
+                json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+                return System.Text.Json.JsonSerializer.Deserialize<List<CCartItem>>(json);
+            }
+            else
+            {
+                return new List<CCartItem>();
+            }
+        }
+        
+
 
         //取得申訴類型放到客服中心的頁面
         public IActionResult GetReturnReasonCategory()

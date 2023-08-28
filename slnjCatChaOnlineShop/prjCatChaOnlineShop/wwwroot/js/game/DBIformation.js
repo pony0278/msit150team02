@@ -110,3 +110,36 @@ testDBlogin.addEventListener('click', async function () {
         console.error('錯誤:', error);
     }
 });
+
+async function fetchDataAndProcess() {
+    try {
+        const gachaData = await fetchData(); // 取得轉蛋資料
+        const information = await fetchDBData();
+        const userData = await initialize();
+        gachaData.forEach(testlProbability => {
+            console.log(testlProbability.scaledProbability)
+        })
+        information.forEach(IFM => {
+            console.log(
+                'ProductId:', IFM.ProductId,
+                'QuantityOfInGameItems:', IFM.QuantityOfInGameItems,
+                'ItemName:', IFM.ItemName
+            )
+        },
+            使用者ID = information[0].MemberId,
+            角色名稱 = information[0].CharacterName,
+            貓幣數量 = information[0].CatCoinQuantity,
+            紅利數量 = information[0].LoyaltyPoints,
+            console.log(
+                information[0].MemberId,
+                information[0].CharacterName,
+                information[0].CatCoinQuantity,
+                information[0].LoyaltyPoints,
+                information[0].RunGameHighestScore
+            )
+        )
+    } catch (error) {
+        console.error('錯誤:', error);
+    }
+}
+

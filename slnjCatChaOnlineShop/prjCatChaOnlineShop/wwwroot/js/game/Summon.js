@@ -40,6 +40,7 @@ function SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults) {
                 if (!response.ok) {
                     throw new Error('發送數據時發生錯誤GGGGGG');
                 }
+                fetchDataAndProcess();
                 initialize();
                 return response.json();
             })

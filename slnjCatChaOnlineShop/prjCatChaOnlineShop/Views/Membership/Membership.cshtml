@@ -918,6 +918,7 @@
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
+                                    <button class="btn hvr-hover mx-2" id="complaintSubmitDemo" type="button">Demo填入訊息</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -1458,7 +1459,15 @@
                                     cartIcon.className = 'fa-solid fa-cart-plus';
                                     cartLink.appendChild(cartIcon);
                                     cartLink.addEventListener('click', function () {
-                                        console.log(item.productId);
+                                        fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                            .then(response => {
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: '加入成功',
+                                                });
+                                            })
+                                            .catch(error => {
+                                            });
                                     });
 
                                     buttonDiv.appendChild(cartLink);
@@ -1809,7 +1818,15 @@
 
 
                         cartLink.addEventListener('click', function () {
-                            console.log('Cart link clicked');
+                            fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                .then(response => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '加入成功',
+                                    });
+                                })
+                                .catch(error => {
+                                });
                         });
 
                         cartDiv.appendChild(cartLink);
@@ -1944,7 +1961,13 @@
                     selectElement.appendChild(option);
                 });
             });
-            
+
+            //Demo鍵:載入客訴訊息
+            $('#complaintSubmitDemo').click(function (event) {
+                $('#ComplaintTitle').val("訂單運送急件處理");
+                $('#ComplaintContent').val("請問我的訂單於8/28成立後付款，能於3日內收到貨嗎?貴公司是否能用急件處理，讓我能在月底收到商品呢?");
+            });
+
             //送出客訴內容
             $('#complaintSubmit').click(function (event) {
                 var selectedValue = $('#appealCategorySelect').val();

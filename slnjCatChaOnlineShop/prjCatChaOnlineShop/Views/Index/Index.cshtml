@@ -11,13 +11,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/css/star-rating.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-fas/theme.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick-theme.min.css" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.5.9/slick.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css" />
 
     <link rel="stylesheet" href="~/css/review.css" />
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css">
-        @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> *@
+            @* <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"> *@
     <link rel="stylesheet" href="~/css/style.css" />
     <!-- Responsive CSS -->
     <link rel="stylesheet" href="~/css/responsive.css" />
@@ -25,6 +24,42 @@
     <link rel="stylesheet" href="~/css/chatbox.css" />
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
     <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css" />
+    <style>
+        .swiper-slide {
+            width: 300px;
+            filter: blur(1px);
+            height: 100%;
+            background: #ffff;
+        }
+
+        .swiper-slide-active {
+            filter: blur(0px);
+        }
+
+        .swiper-pagination-bullet,
+        .swiper-pagination-bullet-active {
+            background: orange;
+        }
+
+        .swiper-slide h2 {
+            color: black;
+            font-family: "Roboto", sans-serif;
+            font-weight: 400;
+            font-size: 1.3rem;
+            line-height: 1.4;
+            margin-bottom: 15px;
+            padding: 25px 45px 0 25px;
+        }
+
+        .swiper-3d .swiper-slide-shadow-left,
+        .swiper-3d .swiper-slide-shadow-right {
+            background-image: none;
+        }
+
+        .checked {
+            color: orange;
+        }
+    </style>
 }
 
 <!-- Modal -->
@@ -139,6 +174,7 @@
             <div class="col-lg-12">
                 <div class="home-section-title">
                     <h2>新進商品!</h2>
+
                     <a asp-controller="Index" asp-action="Shop">
                         <span>瀏覽所有新商品</span>
                     </a>
@@ -149,38 +185,38 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                            <!-- start prod  -->
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
-                                            </div>
-                                            <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                    <!-- start prod  -->
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                            <h5>$ @item.p優惠價格</h5>
-                                            <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                            <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
-                                        <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </a>
-                                        <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
+                                    <i class="far fa-heart"></i>
+                                </a>
                             </div>
-                            <!-- end prod  -->
+                        </div>
+                    </div>
+                    <!-- end prod  -->
                 }
             }
         </div>
@@ -210,37 +246,37 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
-                                            </div>
-                                            <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                            <h5>$ @item.p優惠價格</h5>
-                                            <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                            <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
-                                        <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                            <i class="fa-solid fa-cart-plus"></i>
-                                        </a>
-                                        <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                    </div>
-                                </div>
+                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
+                                    <i class="far fa-heart"></i>
+                                </a>
                             </div>
-                            <!-- end prod1  -->
+                        </div>
+                    </div>
+                    <!-- end prod1  -->
                 }
             }
 
@@ -249,43 +285,22 @@
 </div>
 <!-- End 熱賣商品  -->
 <!-- 開始評論輪播 -->
-<div class="container">
-    <div class="row my-5">
-        <div class="col-lg-12">
-            <div class="title-all text-center">
-                <h1>推薦</h1>
-                <p>熱銷好評商品</p>
-            </div>
-            <div class="featured-products-box owl-carousel owl-theme">
-                <div class="item">
-                    <div class="products-single fix">
-                        <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image">
-                        <div class="why-text">
-                            <div class="d-flex align-items-center justify-content-around mt-3">
 
-                                <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" fill="currentColor"
-                                     class="bi bi-person-circle" viewBox="0 0 16 16">
-                                    <path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z" />
-                                    <path fill-rule="evenodd"
-                                          d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z" />
-                                </svg>
+<div class="container mt-3 mb-5">
+    <div class="home-title text-center">
+        <h1>推薦好評</h1>
+    </div>
+    <div class="swiper pt-3 pb-3">
+        <div class="swiper-wrapper pb-4" id="swipers">
 
-
-                                <span class="slides-span">陳xx東</span>
-
-                            </div>
-                            <div class="d-flex justify-content-center">
-                                <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" dir="ltr" data-size="lg"
-                                       data-show-clear="false" data-show-caption="false">
-                            </div>
-                            <p>真的非常好用 我也很推薦給其他人 真的非常好用</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
+        <!-- Add Pagination -->
+        <div class="swiper-pagination"></div>
     </div>
 </div>
+
+
+
 <!-- 結束評論輪播 -->
 <!-- start側邊 -->
 <div class="body-font-style" id="go-to-game" title="進入遊戲">
@@ -318,7 +333,6 @@
 
 
 
-
 </div>
 <!-- end 側邊 -->
 <!-- 小動畫-->
@@ -345,23 +359,20 @@
     </div>
 </div>
 
+
 @section Scripts{
 
     <!-- ALL JS FILES -->
     <!-- 首頁跑版 -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <!--<script src="~/js/jquery-3.2.1.min.js"></script>-->
     <script src="~/js/popper.min.js"></script>
 
     <script src="~/js/review.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/star-rating.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/js/locales/LANG.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap-star-rating@4.1.2/js/star-rating.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-fas/theme.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="~/js/rating.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
 
     <!-- ALL PLUGINS -->
     <script src="~/js/jquery.superslides.min.js"></script>
@@ -462,13 +473,10 @@
         });
 
 
+        //評論區
 
-        $('.kv-ltr-theme-fas-star').rating({
-            hoverOnClear: false,
-            theme: 'krajee-fas',
-            containerClass: 'is-star',
-            disabled: true
-        });
+
+
         $(function () {
             var INDEX = 0;
             $("#chat-submit").click(function (e) {
@@ -569,23 +577,23 @@
 
         })
         //小動畫
-        const fullScreenContainer = document.getElementById('fullScreenContainer');  
+        const fullScreenContainer = document.getElementById('fullScreenContainer');
         document.getElementById("go-to-game").addEventListener("click", function (event) {
             //修復遊戲側邊按鈕
             event.preventDefault();
-             //動畫內容
+            //動畫內容
             main();
             $("#fullScreenContainer").addClass("fullscreen")
             $(".animate01").addClass("NyanCat-container01");
             $(".animate02").addClass("NyanCat-container02");
 
             $(".animate03").one("animationend", function () {
-                    $("#my-popup").addClass("show");
-                    setTimeout(function () {
-                        $("#my-popup").removeClass("show");
+                $("#my-popup").addClass("show");
+                setTimeout(function () {
+                    $("#my-popup").removeClass("show");
                     window.location.href = '/Game/Index';
-                    }, 3000);
-                })
+                }, 3000);
+            })
                 .addClass("NyanCat-container03");
 
             const nyanCats = document.querySelectorAll('.animate');
@@ -642,11 +650,16 @@
         //小動畫結束
 
 
-        //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx") 
+        //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
         const targetloginTextClass = 'LoginText';
+        const logoutcontainer = 'Logout';
         const loginLink = document.getElementById('loginLink');
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-        function loginAndGetName(){
+        const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
+        //取得使用者名稱API
+
+        function loginAndGetName() {
+
             $.ajax({
                 url: '/api/GetUserName/',
                 contentType: 'application/json',
@@ -657,18 +670,30 @@
                             element.textContent = `${data}`;
                         });
                         loginLink.href = '/Membership/Membership';
+                        //讓登出按鈕出現
+                        logoutElements.forEach(element => {
+                            element.style.display = 'block';
+                        });
                     }
                 },
                 error: function () {
                     console.error('登入失敗');
                 }
-            }); 
+            });
         }
-        loginAndGetName();
-        //登入字樣切換結束
-     
+        loginAndGetName();//載入頁面時檢查
 
-        
+
+
+
+
+
+
+
+        //登入字樣切換結束
+
+
+
         //抓主打商品
         $(document).ready(function () {
             $.ajax({
@@ -696,19 +721,66 @@
                     console.error("Error:", error);
                 }
             });
-            //抓評論
-            $.ajax({
-                url: "@Url.Action("GetReivews","Index")",
-                type:"GET",
-                dataType:"json",
-                success: function (response) {
-                    console.log(response.data)
-                },
-                error: function (error) {
-                    console.log("Error:", error)
-                }
-            })
+
         });
+
+        //抓評論
+        $.ajax({
+            url: "@Url.Action("GetReivews","Index")",
+            type: "GET",
+            dataType: "json",
+            success: function (response) {
+
+                var swipers = $("#swipers")
+                $.each(response.data, function (index, value) {
+                    var reviewsDiv = $('<div class="swiper-slide swiper-slide--one position-relative shadow rounded"></div>')
+                    const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
+                    const productName = $('<div class="position-absolute position-absolute top-0 start-0"></div>').append(`<h3 class="bg-warning text-dark ">${value.productName}</h3>`)
+                    let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3"></div>');
+                    if(value.productRating == 5 ){
+                        for(let i = 0; i<value.productRating ; i++){
+                            stars.append('<span class="fs-1 fa fa-star checked "></span>');
+                        }
+                    }
+                    const productdescription = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<blockquote class="fs-2" ><cite><q>${value.productdescription}</q></cite></blockquote>`)
+                    const member = $('<div class="d-flex justify-content-around align-self-center mb-1"></div>').append(`<p>${value.member} <span>這樣說</span></p>`)
+                    reviewsDiv.append(img, productName, stars, productdescription, member)
+                    swipers.append(reviewsDiv)
+                    console.log(response.data)
+                })
+                var swiper = new Swiper(".swiper", {
+                    effect: "coverflow",
+                    grabCursor: true,
+                    centeredSlides: true,
+                    slidesPerView: "auto",
+                    coverflowEffect: {
+                        rotate: 0,
+                        stretch: 0,
+                        depth: 100,
+                        modifier: 2,
+                        slideShadows: true
+                    },
+                    keyboard: {
+                        enabled: true
+                    },
+                    mousewheel: {
+                        thresholdDelta: 70
+                    },
+                    spaceBetween: 60,
+                    loop: true,
+                    pagination: {
+                        el: ".swiper-pagination",
+                        clickable: true
+                    }
+                });
+            },
+            error: function (error) {
+                console.log("Error:", error)
+            }
+        })
+
+
+
         //倒數計時
         function handleCountdown() {
             const times = $(".countTime").map(function () {
