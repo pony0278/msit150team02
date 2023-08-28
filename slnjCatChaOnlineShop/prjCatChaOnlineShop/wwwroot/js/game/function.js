@@ -44,12 +44,12 @@ function initialize() {
                     data[0]["gameItemInfo"][1]["quantityOfInGameItems"] > 0)
                     userBagData.catOG = true;
 
-                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
                     data[0]["gameItemInfo"][2]["quantityOfInGameItems"] > 0)
                     userBagData.catBB = true;
 
-                if (data[0].gameItemInfo.find(item => item.productId === 3) &&
-                    data[0]["gameItemInfo"][10]["quantityOfInGameItems"] > 0)
+                if (data[0].gameItemInfo.find(item => item.productId === 14) &&
+                    data[0]["gameItemInfo"][13]["quantityOfInGameItems"] > 0)
                     userBagData.catBK = true;
                 loadUserBagCatInfo()
             }
@@ -273,6 +273,7 @@ function chooseCatBeforeGame() {
 
 
 //===============轉蛋方法
+
 async function doCCoinTenDraw() {
     if (貓幣數量 >= 9000) {
         try {
