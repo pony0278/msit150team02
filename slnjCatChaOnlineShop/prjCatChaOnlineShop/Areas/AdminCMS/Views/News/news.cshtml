@@ -116,7 +116,11 @@
                             <input type="file" accept="image/*" id="AnnouncementImageHeader" class="form-control" name="ImageHeader">
                         </div>
                     </div>
-
+                    <div class=" mb-3 align-items-center mt-3">
+                        <label>目前標題圖片：</label>
+                        <div class="d-flex justify-content-center" id="preview">
+                        </div>
+                    </div>
 
                     <button class="btn btn-danger btn-block" style="width: 100%;" id="submitButton">儲存</button>
                 </div>
@@ -352,9 +356,29 @@
 
                 reader.readAsDataURL(file);
             } else {
-                alert('Please select an image file.');
+                alert('請選擇圖片');
             }
         });
+        $("#AnnouncementImageHeader").on('change', function () {
+            var preview = $("#preview");
+            preview.empty();
+            const file = this.files[0];
+
+            if (file && file.type.startsWith("image/")) {
+                var img = $("<img>").addClass("img-thumbnail");
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    img.attr("src", e.target.result);
+                };
+
+                reader.readAsDataURL(file); 
+                preview.append(img);
+            } else {
+                alert('請選擇圖片');
+            }
+        });
+
         
 
         $(document).ready(function () {
@@ -420,7 +444,7 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        alert("Content saved successfully!");
+                        alert("儲存成功!");
                         window.location.reload();
                     }
                 });
