@@ -61,16 +61,12 @@ function consumeFood() { //扣除食物數量邏輯，數量為0就不能被扣
             return;
         }
         updateMilkAmount(-1)
-        initialize();
-        
     }
     if (itmCan.isSelected) {
         if (canCount === 0) {
             return;
         }
         updateCanAmount(-1)
-        initialize();
-        
     }
 }
 
@@ -110,6 +106,7 @@ function feedAndGetReward() {//隨機獲得貓幣方法
     setTimeout(() => { // 計時器  
         confirmWin.style.display = 'block';
         initialize();
+        fetchDataAndProcess();
     }, 3000);
 }
 
