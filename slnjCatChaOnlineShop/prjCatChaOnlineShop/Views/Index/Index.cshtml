@@ -652,9 +652,14 @@
 
         //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
         const targetloginTextClass = 'LoginText';
+        const logoutcontainer = 'Logout';
         const loginLink = document.getElementById('loginLink');
         const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
+        const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
+        //取得使用者名稱API
+
         function loginAndGetName() {
+
             $.ajax({
                 url: '/api/GetUserName/',
                 contentType: 'application/json',
@@ -665,6 +670,10 @@
                             element.textContent = `${data}`;
                         });
                         loginLink.href = '/Membership/Membership';
+                        //讓登出按鈕出現
+                        logoutElements.forEach(element => {
+                            element.style.display = 'block';
+                        });
                     }
                 },
                 error: function () {
@@ -672,7 +681,13 @@
                 }
             });
         }
-        loginAndGetName();
+        loginAndGetName();//載入頁面時檢查
+
+
+
+
+
+
 
 
         //登入字樣切換結束

@@ -326,6 +326,7 @@ async function doCCoinTenDraw() {
             //將資料傳到Data傳進伺服器
             SAVEDATA(使用者ID, 貓幣數量, 紅利數量, drawResults)
             if (maxResult) {
+
                 closeConfirmWinForGacha();
                 // 顯示最高等級的動畫和結果，並傳遞所有物品的圖片到畫面上
                 showGachaResult(maxResult.scaledProbability, allImages, allItemName);

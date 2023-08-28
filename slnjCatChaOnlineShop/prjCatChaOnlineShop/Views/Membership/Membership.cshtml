@@ -1459,7 +1459,15 @@
                                     cartIcon.className = 'fa-solid fa-cart-plus';
                                     cartLink.appendChild(cartIcon);
                                     cartLink.addEventListener('click', function () {
-                                        console.log(item.productId);
+                                        fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                            .then(response => {
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: '加入成功',
+                                                });
+                                            })
+                                            .catch(error => {
+                                            });
                                     });
 
                                     buttonDiv.appendChild(cartLink);
@@ -1810,10 +1818,12 @@
 
 
                         cartLink.addEventListener('click', function () {
-                            // addToCartAjax(item.productId);
                             fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
-                                .then(response => response.json())
-                                .then(data => {
+                                .then(response => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '加入成功',
+                                    });
                                 })
                                 .catch(error => {
                                 });
@@ -1862,32 +1872,6 @@
                 }
                 
             });
-        }
-
-        //加入購物車
-        function addToCartAjax(productId) {
-
-            var data = { pId: productId };
-
-            fetch('/ProductApi/AddToCart', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Requested-With': 'XMLHttpRequest' // 如果需要的話，可以加上這個 header
-                },
-                body: JSON.stringify(data) 
-            })
-                .then(response => response.json()) 
-                .then(result => {
-                    if (result.success) {
-                        console.log('Added to cart successfully');
-                    } else {
-                        console.error('Failed to add to cart');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
         }
 
     </script>
