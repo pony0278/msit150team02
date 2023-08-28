@@ -73,9 +73,10 @@
             <div class="col d-flex justify-content-between">
                 <select class="form-select" id="CpayList">
                     <option value="" selected disabled>請選擇類別</option>
-                    <option value="">全部訂單</option>
-                    <option value="食品">食品</option>
-                    <option value="零食">零食</option>
+                    @foreach (var category in Model.ProductCategories)
+                    {
+                        <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                    }
                 </select>
             </div>
         </div>
