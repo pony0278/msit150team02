@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 using prjCatChaOnlineShop.Models;
@@ -7,6 +8,7 @@ using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Xml.Schema;
@@ -94,10 +96,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             // 調用簡化方法，傳入產品物件和數量
             _productService.addCartItem(cart, prodItem, 1);
             SaveCart(cart);
-
-            //json = JsonSerializer.Serialize(cart);
-            //HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
-
             return RedirectToAction("Shop");
         }
 
@@ -134,22 +132,52 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return new List<CCartItem>();
             }
         }
-
-
         private void SaveCart(List<CCartItem> cart)
         {
             string json = JsonSerializer.Serialize(cart);
             HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
         }
-
-        
-
-
         public IActionResult GetDetails(int? pId)
         {
-            var details = _productService.getDetailsById(pId);
+            var prodItem = _productService.getProductById(pId);
 
-            return Json(details);
+            var cart = GetCartFromSession();
+
+
+            // 調用簡化方法，傳入產品物件和數量
+            _productService.addCartItem(cart, prodItem, 1);
+            SaveCart(cart);
+            return RedirectToAction("Shop");
         }
+
+        public IActionResult AddToWishlist(int? pId)
+        {
+            //TODO...getMemberId方法(?)
+            var existingItem = (from w in _context.ShopFavoriteDataTable.AsEnumerable()
+                                where w.MemberId== 1033/*getMemberId方法(?)*/&&w.ProductId==pId
+                                select w).FirstOrDefault();
+            //判斷是否已加入
+            if (existingItem!=null)
+            {
+                _context.ShopFavoriteDataTable.Remove(existingItem);
+            }
+            else
+            {
+                // 如果清單中沒有該 pId 的商品，則加入該商品到資料表
+                var newItem = new ShopFavoriteDataTable
+                {
+                    //TODO...getMemberId方法(?)
+                    MemberId = 1033, //getMemberId();
+                    ProductId = pId,
+                    CreationDate = DateTime.Now
+                };
+                _context.ShopFavoriteDataTable.Add(newItem);
+            }
+            _context.SaveChanges();
+            return RedirectToAction("Index");
+        }
+
+
+
     }
 }
