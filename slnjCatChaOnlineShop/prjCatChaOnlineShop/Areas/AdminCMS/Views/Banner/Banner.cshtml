@@ -83,7 +83,7 @@
 
                                 <div class="col-md-12">
                                     <label>圖片：</label>
-                                    <input type="file" class="form-control" id="create-image" name="Link" accept="image/*"  />
+                            <input type="file" class="form-control" id="create-image" name="Image" accept="image/*" />
                                 </div>
 
                         <div id="preview-createimage"></div>
@@ -158,7 +158,7 @@
                                         </div>
                                         <div class="col-md-12">
                                             <label>圖片</label>
-                                            <input type="file" class="form-control" id="editor-img" name="Link" accept="image/*">
+                                            <input type="file" class="form-control" id="editor-img" name="Image" accept="image/*">
                                         </div>
 
                                         <div class=" mb-3 align-items-center mt-3">
@@ -209,36 +209,43 @@
         });
 
         //初始化表格==================================================
-        $(document).ready(function () {
-            var table = $('#Banner-table').DataTable({
-                responsive: true,
-                "paging": true,
-                "ajax": {
-                    "url": "@Url.Action("LoadDataTable", "Banner" , new{ area="AdminCMS"})",
-                    type: 'GET',
-                },
-                //載入欄位資料庫資料==========================================
-                "columns": [
-                    { "data": "bannerId" },
-                    { "data": "banner" },
-                    { "data": "publishDate" },
-                    {
-                        "data": "link",
-                        render: function (data, type, row) {
-                            return `<img class="img-thumbnail" src="${data}">`;
-                        }
-                    },
-                    {
-                        "data": "bannerId",
-                        "render": function (data, type, row) {
-                            var deleteUrl = '@Url.Action("Delete", "Banner", new { area = "AdminCMS", id = "bannerId" })';
-                            deleteUrl = deleteUrl.replace('bannerId', row.bannerId);
-                            return `<button class="edit-button" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#EditBannerModalToggle"><i class="fas fa-edit"></i></button> |
-                                                                                                                <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`;
-                        }
+        $('#Banner-table').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+            },
+            "responsive": true,
+            "searching": true,
+            "processing": true,
+            "serverSide": false,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "全部"]],
+            "info": true,
+            "ajax": {
+                "url": "@Url.Action("LoadDataTable", "Banner" , new{ area="AdminCMS"})",
+                type: 'GET',
+            },
+            "columns": [
+                { "data": "bannerId" },
+                { "data": "banner" },
+                { "data": "publishDate" },
+                {
+                    "data": "link",
+                    render: function (data, type, row) {
+                        return `<img class="img-thumbnail" src="${data}">`;
                     }
-                ]
-            })
+                },
+                {
+                    "data": "bannerId",
+                    "render": function (data, type, row) {
+                        var deleteUrl = '@Url.Action("Delete", "Banner", new { area = "AdminCMS", id = "bannerId" })';
+                        deleteUrl = deleteUrl.replace('bannerId', row.bannerId);
+                        return `<button class="edit-button" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#EditBannerModalToggle"><i class="fas fa-edit"></i></button> |
+                                                                                                                                                <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`
+                    }
+                }
+            ]
         });
         //編輯按鈕==============================================
         $('#Banner-table').on('click', '.edit-button', function () {
@@ -283,99 +290,133 @@
             var id = $('#editor-id').val();
             var name = $('#editor-name').val()
             var date = $('#editor-date').val()
-            var fileInput = $('#image');
-            var file = fileInput.files;
+            var fileInput = $('#editor-img')[0];
+            var file = fileInput.files[0];
 
             var formData = new FormData();
             formData.append("BannerId", id);
             formData.append("Banner", name);
             formData.append("PublishDate)", date);
             if (file) {
-                for (var i = 0; i < file.length; i++) {
-                    formData.append("Link", file[i])
-                }
+                formData.append("Image", file)
             }
+
 
             $.ajax({
                 url: "@Url.Action("EditBanner","Banner" , new { area="AdminCMS" })",
-                type: "POST",
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
                     if (response.success) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '編輯成功',
-                            text: response.message
-                        });
-
-                        $('#EditBannerModalToggle').modal('hide');
-                        $('#Banner-table').DataTable().ajax.reload(); 
-                    }
-                    else {
-                        更新失敗
-                        Swal.fire({
-                            icon: 'error',
-                            title: '失敗',
-                            text: response.message
-                        });
+                        showSuccessMessage("編輯成功", response.message);
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("編輯失敗", response.message);
                     }
                 },
                 error: function (error) {
-                    console.log(error);
+                    console.error("AJAX Request Error:", error);
                 }
             });
-        })
+
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#EditBannerModalToggle').modal('hide');
+                $('#Banner-table').DataTable().ajax.reload();
+            }
+        });
 
         //新增==================================
-
-        $(document).on("click", "#submitButton", function () {
+        $('#submitButton').click(function () {
             const name = $("#create-name").val();
             const publishdate = $("#editor-date").val();
-            var fileInput = $("#create-image");
-            var file = fileInput.files;
+            var fileInput = $('#create-image')[0];
+            var file = fileInput.files[0];
+
 
             let formData = new FormData();
             formData.append("Banner", name)
             formData.append("PublishDate", publishdate);
             if (file) {
-                for (let i = 0; i < file.length; i++) {
-                    formData.append("Link", file[i])
-                }
+                formData.append("Image", file)
             }
+            //圖片
+            $(document).on("change", "#preview-createimage", function () {
+                var files = $(this)[0].files;
+                var preview = $("#preview-createimage");
+                preview.empty();
+
+                for (var i = 0; i < files.length; i++) {
+                    var file = files[i];
+                    var img = $("<img>").addClass("img-thumbnail");
+                    var reader = new FileReader();
+                    reader.onload = (function (aImg) {
+                        return function (e) {
+                            aImg.attr("src", e.target.result);
+                        };
+                    })(img);
+                    reader.readAsDataURL(file);
+                    preview.append(img);
+                }
+            });
             $.ajax({
-                url: "@Url.Action("CreateBanner" , "Banner" , new { area="AdminCMS" })",
-                type: "POST",
+                url: "@Url.Action("CreateBanner","Banner" , new { area="AdminCMS" })",
+                type: 'POST',
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    alert("Content saved successfully!");
-                    $('#addBannerModalToggle').modal('hide');
-                    $('#Banner-table').DataTable().ajax.reload();
+                    if (response.success) {
+                        showSuccessMessage("新增成功", response.message);
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("新增失敗", response.message);
+                    }
+                },
+                error: function (error) {
+                    console.error("AJAX Request Error:", error);
                 }
-            })
-        })
-        //圖片
-        $(document).on("change", "#preview-createimage", function () {
-            var files = $(this)[0].files;
-            var preview = $("#preview-createimage");
-            preview.empty();
+            });
 
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                var img = $("<img>").addClass("img-thumbnail");
-                var reader = new FileReader();
-                reader.onload = (function (aImg) {
-                    return function (e) {
-                        aImg.attr("src", e.target.result);
-                    };
-                })(img);
-                reader.readAsDataURL(file);
-                preview.append(img);
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#addBannerModalToggle').modal('hide');
+                $('#Banner-table').DataTable().ajax.reload();
             }
         });
+
 
 
         //刪除================================================

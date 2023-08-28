@@ -37,41 +37,6 @@ namespace prjCatChaOnlineShop.Services.Function
             return items;
 
         }
-
-        //public List<CProductItem> getProductItems()
-        //{
-        //    var data = from p in _context.ShopProductTotal
-        //               select new CProductItem
-        //               {
-        //                   pItems = p,
-        //                   p子項目= getAllAttrs(p.ProductId),
-        //                   p圖片路徑 = getAllImgs(p.ProductId),
-        //                   pCategoryName = p.ProductCategory.CategoryName,
-        //                   pCategoryImg = p.ProductCategory.CategoryDescription
-        //               };
-
-
-        //    List<CProductItem> items = data.ToList();
-        //    return items;
-        //}
-        //public List<string> getAllAttrs(int id)
-        //{
-        //    var data = from p in _context.ShopProductTotal
-        //               where p.ProductId == id
-        //               select p.ProductSp.Specification;
-        //    return data.ToList();
-        //}
-        //public List<string> getAllImgs(int id)
-        //{
-        //    var data = from p in _context.ShopProductTotal
-        //               where p.ProductId == id
-        //               from i in _context.ShopProductImageTable
-        //               where i.ProductId == id
-        //               select i.ProductPhoto;
-        //    return data.ToList();
-        //}
-
-
         public CProductItem getProductById(int? id)
         {
             var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
@@ -141,7 +106,8 @@ namespace prjCatChaOnlineShop.Services.Function
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId);
             if (existingCartItem != null)
             {
-                if (existingCartItem.c剩餘庫存 >= 1)
+                //TODO...
+                //if (existingCartItem.c剩餘庫存 >= 1)
                     existingCartItem.c數量=existingCartItem.c數量+ count;
             }
             else
@@ -180,7 +146,5 @@ namespace prjCatChaOnlineShop.Services.Function
                 cart.Add(cartItem);
             }
         }
-
-        
     }
 }

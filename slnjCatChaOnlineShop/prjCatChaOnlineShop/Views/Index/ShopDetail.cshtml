@@ -39,12 +39,14 @@
             <div class="col-xl-5 col-lg-5 col-md-6">
                 <div id="carousel-example-1" class="single-product-slider carousel slide" data-ride="carousel">
                     <div class="carousel-inner" role="listbox">
-
                     @if (Model.selectedProduct.p圖片路徑.Count() != 0)
                     {
-                        @foreach (var img in Model.selectedProduct.p圖片路徑)
+                        <div class="carousel-item active">
+                            <img class="d-block w-100" src="@Model.selectedProduct.p圖片路徑.FirstOrDefault()" />
+                        </div>
+                        @foreach (var img in Model.selectedProduct.p圖片路徑.Where(i => i != Model.selectedProduct.p圖片路徑.FirstOrDefault()))
                         {
-                         <div class="carousel-item active">
+                         <div class="carousel-item">
                             <img class="d-block w-100" src="@img"/>
                         </div>
                         }
@@ -59,23 +61,24 @@
                         <span class="sr-only">Next</span>
                     </a>
                     <ol class="carousel-indicators">
-                    @{
-                        
-                        @if (Model.selectedProduct.p圖片路徑.Count() != 0)
+                    @if (Model.selectedProduct.p圖片路徑.Count() != 0)
+                    {
+                            <li data-target="#carousel-example-1" data-slide-to="0" class="active">
+                                <img class="d-block w-100 img-fluid" src="@Model.selectedProduct.p圖片路徑.FirstOrDefault()" />
+                            </li>
+                        int i = 0;
+                        @foreach (var img in Model.selectedProduct.p圖片路徑.Where(i => i != Model.selectedProduct.p圖片路徑.FirstOrDefault()))
                         {
-                            int i = 0;
-                            @foreach (var img in Model.selectedProduct.p圖片路徑)
-                            {
-                                i++;
-                                <li data-target="#carousel-example-1" data-slide-to="@i">
-                                    <img class="d-block w-100 img-fluid" src="@img"/>
-                                </li>
-                            }
+                            i++;
+                            <li data-target="#carousel-example-1" data-slide-to="@i">
+                                <img class="d-block w-100 img-fluid" src="@img"/>
+                            </li>
                         }
                     }
                     </ol>
                 </div>
             </div>
+
             <div class="col-xl-7 col-lg-7 col-md-6">
                 <div class="single-product-details">
                     <div class="add-to-btn float-end">
@@ -138,11 +141,15 @@
 
                     <div class="price-box-bar">
                         <div id="add-to" class="cart-and-bay-btn">
-                            <a href="#" class="btn hvr-hover cart-btn" id="addToCartButton"
+
+                            <a href="#" id="addToCartButton" class="btn hvr-hover cart-btn"
                                data-product-id="@Model.selectedProduct.pId">
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
-                            <a class="btn hvr-hover" asp-controller="Membership" asp-action="Membership"><i class="fas fa-heart"></i> </a>
+                            <a href="#" id="addToWishListButton" class="btn hvr-hover"
+                                data-product-id="@Model.selectedProduct.pId">
+                                <i class="fas fa-heart"></i> 
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -282,10 +289,10 @@
                                         {
                                             <h5>$ @a.pPrice</h5>
                                         }
-                                        <a href="#" type="button" class="cart-btn add-to-cart-coustom" data-product-id=@a.pId>
+                                        <a href="#" data-product-id=@a.pId type ="button" class="cart-btn add-to-cart-coustom">
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
-                                        <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
+                                        <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom" >
                                             <i class="far fa-heart"></i>
                                         </a>
 
@@ -346,7 +353,26 @@
                 }
             });
         });
+        //加入收藏
+        $("#addToWishListButton").on("click", function (event) {
+            event.preventDefault();
+            var button = $(this);
+            var productId = $(this).data("product-id");
 
+
+            // 發送 Ajax 請求
+            $.ajax({
+                url: '/ProductApi/AddToWishList',
+                type: 'POST',
+                data: { pId: productId},
+                dataType: 'json',
+                success: function (response) {
+                    button.addClass("favorited");
+                },
+                error: function (error) {
+                }
+            });
+        });
 
         
         //相關商品加入購物車
@@ -367,6 +393,27 @@
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
+                }
+            });
+        });
+
+        //相關商品加入收藏
+        $("#relatable-items").on('click', '.add-to-wishlist-coustom', function (e) {
+            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
+            var button = $(this);
+            var productId = $(this).data('product-id');
+            console.log('Clicked Add to Cart, Product ID:', productId);
+            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            $.ajax({
+                url: '/ProductApi/AddToWishList',
+                type: 'POST',
+                data: { pId: productId },
+                dataType: 'json',
+                success: function (response) {
+                    
+                    button.addClass("favorited");
+                },
+                error: function (error) {
                 }
             });
         });

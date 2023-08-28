@@ -32,9 +32,13 @@
             cursor: pointer;
         }
 
-        #member-table_filter {
-            display: inline-block;
-            margin-bottom: 10px;
+        /*         #member-table_filter {
+                    display: inline-block;
+                    margin-bottom: 10px;
+                } */
+
+        paginate_button: hover {
+            background-color: unset !important;
         }
     </style>
 }
@@ -138,24 +142,17 @@
     </div>
     <!---新增會員 modal-->
 
-    <div class="search-row row mt-3">
-        <div class="row align-items-center mb-3">
-        </div>
-
-        <div class="container-fluid">
+        <div class="container-fluid mt-3">
             <div class="row">
                 <div class="col-12 col-xs-12">
-                    @*                 <div class="dt-buttons">
-                    <button class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="member-table" type="button">
-                    匯出PDF
-                    </button>
-                    </div> *@
-                    <label>會員狀態</label>
-                    <select class="form-select w-25" id="payList" style="display: inline-block !important;">
-                        <option value="" selected>全部資料</option>
-                        <option value="開放">開放</option>
-                        <option value="凍結">凍結</option>
-                    </select>
+                    <div class="mb-3">
+                        <label>會員狀態</label>
+                        <select class="form-select w-25" id="payList" style="display: inline-block !important;">
+                            <option value="" selected>全部資料</option>
+                            <option value="開放">開放</option>
+                            <option value="凍結">凍結</option>
+                        </select>
+                    </div>
                     <!--表格-->
                     <table id="member-table" class="table table-striped nowrap" style="width:100%">
                         <thead>
@@ -419,7 +416,6 @@
                 </div>
             </div>
         </div>
-    </div>
 
     @section Scripts{
 
@@ -427,37 +423,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
-        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"> *@
-
-        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"> *@
-
-        <!-- jQuery -->
-        @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
-
-        <!-- DataTables -->
-        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> *@
-        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> *@
-
-        <!-- DataTables Buttons -->
-        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.colVis.min.js"></script> *@
-
-        <!-- PDF Make (required by Buttons) -->
-        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
-
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.bootstrap.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/2.5.0/jszip.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script> *@
-
+        <!---File export--->
+        <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
         <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
-
 
         <script>
             let isVaild = ""; //驗證bool
@@ -537,7 +510,7 @@
                 }
             }
 
-            
+
             //==================驗證密碼
             function checkPassword() {
                 var password = $('#CreatMemberPassword').val();
@@ -593,12 +566,26 @@
             validateCheckPassword($("#CreatMemberCheckPassword"), $("#error4"));
 
 
+
+
+            //=======================搜尋功能
+
+            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+            $('#payList').on('change', function () {
+                var filterOption1 = $(this).val();
+
+                // 使用DataTable的column().search()方法進行過濾
+                dataTable.column(7).search(filterOption1).draw();
+                // 其他列...
+            });
+
+
             //==================datatable
             var dataTable = $('#member-table').DataTable({
                 "ajax": '@Url.Action("ShowMemeberInfo", "Member")',
-                // language: {
-                //     url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-                // },
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                },
                 "columns": [
                     //這裡要注意json裡面是大寫還是小寫
                     { data: 'memberId' },
@@ -640,31 +627,21 @@
                 "paging": true, //分頁功能
                 responsive: true, //RWD
                 // "searching": false, //隱藏搜尋框
-                dom: '<"top"lf>rtip', // Custom positioning
-
-                initComplete: function () {
-                    // 將搜尋框移動到顯示資料筆數選擇器的上方
-                    var searchContainer = $('.dataTables_filter');
-                    var lengthContainer = $('.dataTables_length');
-                    lengthContainer.insertAfter(searchContainer);
-                },
-
                 dom: 'Bfrtip',
                 buttons: [
-                    'copy', 'csv', 'excel', 'print',
+                    'copy', 'excel', 'print',
                 ],
                 "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
             });
 
-            //=======================搜尋功能
+            // 選取 "copy" 按鈕的 DOM 元素
+            var copyButton = dataTable.buttons().container().find('.buttons-copy');
 
-            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-            $('#payList').on('change', function () {
-                var filterOption1 = $(this).val();
-
-                // 使用DataTable的column().search()方法進行過濾
-                dataTable.column(7).search(filterOption1).draw();
-                // 其他列...
+            // 添加點擊事件處理函式
+            copyButton.on('click', function () {
+                // 在這裡添加你的點擊事件處理邏輯
+                // 例如，可以在這裡執行特定的操作或顯示提示訊息
+                alert("Copy button clicked!");
             });
 
 
@@ -747,12 +724,12 @@
                                 var addressNumber = i + 1; //計算幾筆資料的數字
 
                                 itemDiv.innerHTML = `
-                                                                                                                                                                                        <h5><b>常用地址－${addressNumber}</b></h5>
-                                                                                                                                                                                        <p>收件人姓名: ${item.recipientName}</p>
-                                                                                                                                                                                        <p>連絡電話: ${item.recipientPhone}</p>
-                                                                                                                                                                                        <p>收件地址: ${item.recipientAddress}</p>
-                                                                                                                                                                                <hr>
-                                                                                                                                                                            `;
+                                                                                                                                                                                                    <h5><b>常用地址－${addressNumber}</b></h5>
+                                                                                                                                                                                                    <p>收件人姓名: ${item.recipientName}</p>
+                                                                                                                                                                                                    <p>連絡電話: ${item.recipientPhone}</p>
+                                                                                                                                                                                                    <p>收件地址: ${item.recipientAddress}</p>
+                                                                                                                                                                                            <hr>
+                                                                                                                                                                                        `;
                                 CAContainer.append(itemDiv);
                             }
                         } else {
@@ -781,13 +758,13 @@
                                 }
 
                                 itemDiv.innerHTML = `
-                                                                                                                                                                                                <h5><b>優惠券第${couponNumber}張</b></h5>
-                                                                                                                                                                                                        <p>優惠券ID: ${item.couponId}</p>
-                                                                                                                                                                                                                <p>優惠券內容: ${item.coupon.couponContent}</p>
-                                                                                                                                                                                                                                <p>有效日期: ${formattedExpiryDate}</p>
-                                                                                                                                                                                                        <p>優惠券狀態: ${item.couponStatusId}</p>
-                                                                                                                                                                                <hr>
-                                                                                                                                                                            `;
+                                                                                                                                                                                                            <h5><b>優惠券第${couponNumber}張</b></h5>
+                                                                                                                                                                                                                    <p>優惠券ID: ${item.couponId}</p>
+                                                                                                                                                                                                                            <p>優惠券內容: ${item.coupon.couponContent}</p>
+                                                                                                                                                                                                                                            <p>有效日期: ${formattedExpiryDate}</p>
+                                                                                                                                                                                                                    <p>優惠券狀態: ${item.couponStatusId}</p>
+                                                                                                                                                                                            <hr>
+                                                                                                                                                                                        `;
                                 couponContainer.append(itemDiv);
                             }
                         } else {
@@ -1073,24 +1050,5 @@
                     console.error('Error:', error);
                 }
             });
-
-                                                                                                                                                    // function userDelete() {
-                                                                                                                                                    //     Swal.fire({
-                                                                                                                                                    //         title: '確定要刪除嗎?',
-                                                                                                                                                    //         icon: 'warning',
-                                                                                                                                                    //         showCancelButton: true,
-                                                                                                                                                    //         confirmButtonColor: '#3085d6',
-                                                                                                                                                    //         cancelButtonColor: '#d33',
-                                                                                                                                                    //         confirmButtonText: 'Yes, delete it!'
-                                                                                                                                                    //     }).then((result) => {
-                                                                                                                                                    //         if (result.isConfirmed) {
-                                                                                                                                                    //             Swal.fire(
-                                                                                                                                                    //                 'Deleted!',
-                                                                                                                                                    //                 'Your file has been deleted.',
-                                                                                                                                                    //                 'success'
-                                                                                                                                                    //             )
-                                                                                                                                                    //         }
-                                                                                                                                                    //     })
-                                                                                                                                                    // }
         </script>
     }

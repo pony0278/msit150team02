@@ -145,5 +145,49 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return Json(new { success = false, message = "編輯失敗：" + ex.Message });
             }
         }
+        public IActionResult ReasonList()
+        {
+            var serviceCase = _context.ShopReturnReasonDataTable;
+
+            if (serviceCase != null)
+            {
+
+                //得到資料庫裡所有分類名稱並放到select option裡面
+                var complaintCategorySelect = _context.ShopReturnReasonDataTable
+                            .Select(c => c.ReturnReason)
+                            .ToList();
+
+                var data = new
+                {
+                    ServiceCase = serviceCase,
+                    ComplaintCategorySelect = complaintCategorySelect,
+                };
+
+                return Json(new { data });
+            }
+            else
+            {
+                return NotFound();
+            }
+        }
+        [HttpPost]
+        public IActionResult AddReturnReason(List<ShopReturnReasonDataTable> reasons)
+        {
+            try
+            {
+                foreach (var reason in reasons)
+                {
+                    _context.ShopReturnReasonDataTable.Add(reason);
+                    _context.SaveChanges();
+                }
+
+                return Json(new { success = true, message = "編輯成功！" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error: " + ex.Message);
+                return Json(new { success = false, message = "編輯失敗：" + ex.Message });
+            }
+        }
     }
 }

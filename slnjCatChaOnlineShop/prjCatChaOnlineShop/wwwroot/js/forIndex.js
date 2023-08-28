@@ -51,7 +51,7 @@ $(document).ready(async function () {
                     var productPrice = $('<h5></h5>');
 
                     var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
-                    var addToWishlistLink = $('<a href="/Membership/Membership" class="add-to-wishlist-coustom"><i class="far fa-heart"></i></a>');
+                    var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom"><i class="far fa-heart"></i></>`);
 
                     whyText.append(productName);
 
@@ -88,7 +88,7 @@ $(document).ready(async function () {
     await fetchMoreProducts();
 
     //載入更多
-    showMoreButton.click(async function () {
+    showMoreButton.click(async function() {
         await fetchMoreProducts();
     });
 
@@ -109,7 +109,7 @@ $(document).ready(async function () {
                 window.location.href = '/Index/ShopDetail?pId=' + productId;
             },
             error: function (error) {
-                console.error('Ajax Error:', error);
+               
             }
         });
     });
@@ -128,27 +128,6 @@ $(document).ready(async function () {
             data: { pId: productId },
             dataType: 'json',
             success: function (response) {
-                
-                toastr.options = {
-                    // 參數設定[註1]
-                    "closeButton": false, // 顯示關閉按鈕
-                    "debug": false, // 除錯
-                    "newestOnTop": false,  // 最新一筆顯示在最上面
-                    "progressBar": true, // 顯示隱藏時間進度條
-                    "positionClass": "toast-bottom-left", // 位置的類別
-                    "preventDuplicates": false, // 隱藏重覆訊息
-                    "onclick": null, // 當點選提示訊息時，則執行此函式
-                    "showDuration": "300", // 顯示時間(單位: 毫秒)
-                    "hideDuration": "1000", // 隱藏時間(單位: 毫秒)
-                    "timeOut": "5000", // 當超過此設定時間時，則隱藏提示訊息(單位: 毫秒)
-                    "extendedTimeOut": "1000", // 當使用者觸碰到提示訊息時，離開後超過此設定時間則隱藏提示訊息(單位: 毫秒)
-                    "showEasing": "swing", // 顯示動畫時間曲線
-                    "hideEasing": "linear", // 隱藏動畫時間曲線
-                    "showMethod": "fadeIn", // 顯示動畫效果
-                    "hideMethod": "fadeOut" // 隱藏動畫效果
-                }
-                // 顯示加入購物車成功的提示訊息
-                toastr.success("已加入購物車!");
                 console.log('Added to Cart:', response.message);
             },
             error: function (error) {
@@ -156,6 +135,25 @@ $(document).ready(async function () {
             }
         });
     });
-
+    // 點擊加入收藏按鈕(用類別去找addtocartaustom抓不到)
+    productList.on('click', '.add-to-wishlist-coustom', async function (e) {
+        e.preventDefault(); // 阻止<a>標籤的點擊預設行為
+        
+        var button = $(this);
+        var productId = $(this).data('product-id');
+        console.log('Clicked Add to Cart, Product ID:', productId);
+        // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+        $.ajax({
+            url: '/ProductApi/AddToWishList',
+            type: 'POST',
+            data: { pId: productId },
+            dataType: 'json',
+            success: function (response) {
+                button.addClass("favorited");
+            },
+            error: function (error) {
+            }
+        });
+    });
 
 });

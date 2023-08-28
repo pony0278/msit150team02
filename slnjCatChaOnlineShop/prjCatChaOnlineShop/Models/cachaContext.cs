@@ -767,9 +767,7 @@ public partial class cachaContext : DbContext
 
             entity.ToTable("Shop.Favorite Data Table");
 
-            entity.Property(e => e.FavoriteId)
-                .ValueGeneratedNever()
-                .HasColumnName("Favorite ID");
+            entity.Property(e => e.FavoriteId).HasColumnName("Favorite ID");
             entity.Property(e => e.CreationDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Creation Date");
@@ -1060,9 +1058,10 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.ProductReviewId).HasColumnName("Product Review ID");
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
+            entity.Property(e => e.OrderId).HasColumnName("OrderID");
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
             entity.Property(e => e.ProductRating)
-                .HasColumnType("decimal(18, 0)")
+                .HasColumnType("decimal(18, 1)")
                 .HasColumnName("Product Rating");
             entity.Property(e => e.ReviewContent).HasColumnName("Review Content");
             entity.Property(e => e.ReviewTime).HasColumnType("datetime");
@@ -1070,6 +1069,10 @@ public partial class cachaContext : DbContext
             entity.HasOne(d => d.Member).WithMany(p => p.ShopProductReviewTable)
                 .HasForeignKey(d => d.MemberId)
                 .HasConstraintName("FK_Shop.商品評論表_Shop.會員資訊");
+
+            entity.HasOne(d => d.Order).WithMany(p => p.ShopProductReviewTable)
+                .HasForeignKey(d => d.OrderId)
+                .HasConstraintName("FK_Shop.Product Review Table_Shop.Order Total Table");
 
             entity.HasOne(d => d.Product).WithMany(p => p.ShopProductReviewTable)
                 .HasForeignKey(d => d.ProductId)

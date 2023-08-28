@@ -35,7 +35,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 var product = new GameProductVM
                 {
                     GameProductCategory = _cachaContext.GameProductCategory.ToList(),
-                    GameProductTotal = _cachaContext.GameProductTotal.ToList(),
+                    //GameProductTotal = _cachaContext.GameProductTotal.ToList(),
                 };
                 return View(product);
             }
@@ -45,22 +45,19 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //載入DataTable資料
         public IActionResult LoadDataTable()
         {
-            var data = _cachaContext.GameProductTotal.ToList();
-
+            var data = _cachaContext.GameProductTotal.Select(x => new
+            {
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ProductCategoryId = x.ProductCategory.CategoryName,
+                ProductDescription = x.ProductDescription,
+                ProductPrice = x.ProductPrice,
+                ProductImage = x.ProductImage,
+                PurchasedQuantity = x.PurchasedQuantity,
+                RemainingQuantity = x.RemainingQuantity,
+                LotteryProbability = x.LotteryProbability
+            }).ToList();
             return Json(new { data });
-            //var data = _cachaContext.GameProductTotal.Select(x => new
-            //{
-            //    ProductId = x.ProductId,
-            //    ProductName = x.ProductName,
-            //    ProductCategoryId = x.ProductCategory.CategoryName.ToString(),
-            //    ProductDescription = x.ProductDescription,
-            //    ProductPrice = x.ProductPrice,
-            //    ProductImage = x.ProductImage,
-            //    PurchasedQuantity = x.PurchasedQuantity,
-            //    RemainingQuantity = x.RemainingQuantity,
-            //    LotteryProbability = x.LotteryProbability
-            //}).ToList();
-            //return Json(new { data });
         }
 
         //編輯商品資料
@@ -114,19 +111,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             GameProductTotal editProduct = _cachaContext.GameProductTotal
                 .FirstOrDefault(p => p.ProductId == cGameproduct.ProductId);
 
-            if (image == null || image.Length == 0)
+            string imageURL = null;
+            if (image != null && image.Length > 0)
             {
-                return BadRequest("未選擇圖片");
-            }
-
-            string? imageURL = null;
-            try
-            {
-                imageURL = await _imageService.UploadImageAsync(image);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest("圖片上傳錯誤");
+                try
+                {
+                    imageURL = await _imageService.UploadImageAsync(image);
+                }
+                catch
+                {
+                    return BadRequest("圖片上傳錯誤.");
+                }
             }
 
 
@@ -166,37 +161,35 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //新增
 
         [HttpPost]
-        public async Task<IActionResult> CreateProduct(CGameProductWrap cProduct)
+        public async Task<IActionResult> CreateProduct([FromForm] CGameProductWrap cGameproduct)
         {
-            var image = cProduct.Image;
-            if (image == null || image.Length == 0)
-            {
-                return BadRequest("No image provided.");
-            }
+            var image = cGameproduct.Image;
 
-            string imageUrl;
-            try
+            string imageURL = null;
+            if (image != null && image.Length > 0)
             {
-                imageUrl = await _imageService.UploadImageAsync(image);
-            }
-            catch
-            {
-
-                return BadRequest("Error uploading the image.");
+                try
+                {
+                    imageURL = await _imageService.UploadImageAsync(image);
+                }
+                catch
+                {
+                    return BadRequest("圖片上傳錯誤.");
+                }
             }
 
             var newProduct = new GameProductTotal
             {
 
-                ProductImage = imageUrl,
-                ProductId = cProduct.ProductId,
-                ProductName = cProduct.ProductName,
-                ProductDescription = cProduct.ProductDescription,
-                ProductCategoryId = cProduct.ProductCategoryId,
-                ProductPrice = cProduct.ProductPrice,
-                PurchasedQuantity = cProduct.PurchasedQuantity,
-                RemainingQuantity = cProduct.RemainingQuantity,
-                LotteryProbability = cProduct.LotteryProbability,
+                ProductImage = imageURL,
+                ProductId = cGameproduct.ProductId,
+                ProductName = cGameproduct.ProductName,
+                ProductDescription = cGameproduct.ProductDescription,
+                ProductCategoryId = cGameproduct.ProductCategoryId,
+                ProductPrice = cGameproduct.ProductPrice,
+                PurchasedQuantity = cGameproduct.PurchasedQuantity,
+                RemainingQuantity = cGameproduct.RemainingQuantity,
+                LotteryProbability = cGameproduct.LotteryProbability,
 
             };
             try
@@ -206,7 +199,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-                return BadRequest("Error saving the announcement.");
+                return BadRequest("Error saving the product.");
             }
             return Json(new { success = true, message = "Content saved!" });
         }
@@ -228,8 +221,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = false });
         }
-
-
 
     }
 }

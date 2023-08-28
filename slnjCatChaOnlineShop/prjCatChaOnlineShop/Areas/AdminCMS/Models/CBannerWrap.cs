@@ -5,27 +5,14 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 {
     public class CBannerWrap
     {
-        private GameShopBanner _banr = null;
-        public GameShopBanner banner { get { return _banr; } set { _banr = value; } }
-        public CBannerWrap() 
-        {
-            _banr = new GameShopBanner();
-        }
+        public int BannerId { get; set; }
 
-        [DisplayName("ID")]
-        public int BannerId { get { return _banr.BannerId; } set { _banr.BannerId = value; } }
+        public string Banner { get; set; }
 
-        [DisplayName("名稱")]
-        public string Banner { get { return _banr.Banner; } set { _banr.Banner = value; } }
+        public DateTime? PublishDate { get; set; }
 
-        [DisplayName("發佈日期")]
-        public DateTime? PublishDate { get { return _banr.PublishDate; } set { _banr.PublishDate = value; } }
-
-        [DisplayName("圖片")]
-        public string Link { get { return _banr.Link; } set { _banr.Link = value; } }
+        public string Link { get; set; }
 
         public IFormFile? Image { get; set; }
-        public List<IFormFile>? BannerImage { get; set; }
-
     }
 }
