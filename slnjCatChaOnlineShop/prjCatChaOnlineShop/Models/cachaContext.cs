@@ -1061,7 +1061,9 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ProductReviewId).HasColumnName("Product Review ID");
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
             entity.Property(e => e.ProductId).HasColumnName("Product ID");
-            entity.Property(e => e.ProductRating).HasColumnName("Product Rating");
+            entity.Property(e => e.ProductRating)
+                .HasColumnType("decimal(18, 0)")
+                .HasColumnName("Product Rating");
             entity.Property(e => e.ReviewContent).HasColumnName("Review Content");
             entity.Property(e => e.ReviewTime).HasColumnType("datetime");
 

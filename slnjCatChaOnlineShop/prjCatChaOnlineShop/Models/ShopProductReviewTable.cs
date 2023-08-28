@@ -13,7 +13,7 @@ public partial class ShopProductReviewTable
 
     public string ReviewContent { get; set; }
 
-    public int? ProductRating { get; set; }
+    public decimal? ProductRating { get; set; }
 
     public int ProductReviewId { get; set; }
 
