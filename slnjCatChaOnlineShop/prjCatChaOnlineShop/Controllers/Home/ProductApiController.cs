@@ -31,6 +31,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
+
         public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
         {
             
@@ -52,22 +53,22 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
 
         }
-
+       
         [HttpPost]
-        public IActionResult CartEditQuantity(int newQuantity, int pId) 
+        public IActionResult CartEditQuantity(int newQuantity, int pId, string attr) 
         {
             string json = "";
             List<CCartItem> cart;
             json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-            var existingCartItem = cart.FirstOrDefault(item => item.cId == pId);
+            var existingCartItem = cart.FirstOrDefault(item => item.cId == pId&&item.c子項目== attr);
             existingCartItem.c數量 = newQuantity;
             // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
             SaveCart(cart);
 
             return RedirectToAction("Cart");
         }
-
+        //TODO...改變選項
         [HttpPost]
         public IActionResult CartEditAttribute(string newAttribute, int pId)
         {
@@ -76,9 +77,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
             var existingCartItem = cart.FirstOrDefault(item => item.cId == pId);
-
             existingCartItem.c子項目 = newAttribute;
-            existingCartItem.cId= _productService.getIdFromAttribute(newAttribute);
             // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
             SaveCart(cart);
 
@@ -120,23 +119,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return RedirectToAction("ShopDetail");
 
         }
-        //[HttpPost]
-        //public IActionResult DetailsAddToCart(int pId, string selected, int count)
-        //{
-        //    var prodItem = _productService.GetProductById(pId);
-
-        //    var cart = GetCartFromSession();
-
-
-        //    // 調用簡化方法，傳入產品物件和數量
-        //    _productService.DetailsAddCartItem(cart, prodItem, selected, count);
-        //    SaveCart(cart);
-
-        //    //json = JsonSerializer.Serialize(cart);
-        //    //HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
-
-        //    return RedirectToAction("ShopDetail");
-        //}
+        
 
         private List<CCartItem> GetCartFromSession()
         {

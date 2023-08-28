@@ -50,141 +50,59 @@
                             foreach (var item in Model)
                             {
 
-                                <div class="row gy-3 mb-4">
-                                    <div class="col-lg-5">
-                                        <div class="me-lg-5">
-                                            <div class="d-flex">
-                                                <img src="@item.cImgPath" class="border rounded me-3" style="width: 96px; height: 96px;" />
-                                                <div class="ml-5 mt-2">
-                                                        <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })" class="shop-prod-click nav-link">@item.cName</a>
-                                                    <div class="">
-                                                            <select data-product-id=@item.cId class="input-attr form-select for-detail-select me-4">
+                                    <div class="row gy-3 mb-4">
+                                        <div class="col-lg-5">
+                                            <div class="me-lg-5">
+                                                <div class="d-flex">
+                                                    <img src="@item.cImgPath" class="border rounded me-3" style="width: 96px; height: 96px;" />
+                                                    <div class="ml-5 mt-2">
+                                                            <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })" class="shop-prod-click nav-link">@item.cName</a>
+                                                        <div class="">
+                                                                <select data-product-id=@item.cId class="input-attr form-select for-detail-select me-4">
 
-                                                                @if (item.c子項目 != null && item.c其他子項目!=null)
+                                                                    @if (item.c子項目 != null && item.c其他子項目!=null)
                                                                 {
-                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
+                                                                        <option value="@item.c子項目" selected>@item.c子項目</option>
 
                                                                     foreach (var attr in item.c其他子項目)
                                                                     {
-                                                                        <option value="@attr.其他子項目">@attr.其他子項目</option>
+                                                                            <option value="@attr">@attr</option>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="商品">商品</option>
+                                                                        <option value="商品">商品</option>
                                                                 }
-                                                        </select>
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                                        <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
 
 
-                                            <div class="mt-2">
-                                                <span>數量</span>
-                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
+                                                <div class="mt-2">
+                                                    <span>數量</span>
+                                                    <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
+                                                </div>
+
+                                            <div class="mt-2 ml-5">
+                                                <p class=" mb-0">價格</p>
+                                                <span class="h6">$ @item.c小計</span><br />
+                                                <small class="text-muted text-nowrap">$ @item.cPrice</small><small>/份</small>
                                             </div>
-
-                                        <div class="mt-2 ml-5">
-                                            <p class=" mb-0">價格</p>
-                                            <span class="h6">$ @item.c小計</span><br />
-                                            <small class="text-muted text-nowrap">$ @item.cPrice</small><small>/份</small>
                                         </div>
-                                    </div>
-                                    <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
-                                        <div class="float-md-end">
-                                            <a href="#" class="btn btn-light border  icon-hover-danger"> 移除</a>
+                                        <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
+                                            <div class="float-md-end">
+                                                <a href="#" class="btn btn-light border  icon-hover-danger"> 移除</a>
+                                            </div>
                                         </div>
+                                        <hr class="for-hr">
                                     </div>
-                                    <hr class="for-hr">
-                                </div>
                             }
                         }
 
-                        @* <div class="row gy-3 mb-4">
-                        <div class="col-lg-5">
-                        <div class="me-lg-5">
-                        <div class="d-flex">
-                        <img src="~/images/instagram-img-08.jpg" class="border rounded me-3" style="width: 96px; height: 96px;" />
-                        <div class="ml-5 mt-2">
-                        <a href="#" class="nav-link">一個貓罐頭</a>
-                        <div class="">
-                        <select class="form-select me-4 for-detail-select">
-                        <option>1kg,小份</option>
-                        <option>2kg,中份</option>
-                        <option>3kg,大份</option>
-                        </select>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-                        <div class="mt-2">
-                        <span>數量</span>
-                        <select class="form-select me-4 for-count-select">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        </select>
-                        </div>
-                        <div class="mt-2 ml-5">
-                        <p class=" mb-0">價格</p>
-                        <span class="h6">$1,156</span> <br />
-                        <small class="text-muted text-nowrap"> $460 / 份 </small>
-                        </div>
-                        </div>
-                        <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
-                        <div class="float-md-end">
-                        <a href="#" class="btn btn-light border  icon-hover-danger"> 移除</a>
-                        </div>
-                        </div>
-                        <hr class="for-hr">
-                        </div> *@
-
-                        @* <div class="row gy-3">
-                        <div class="col-lg-5">
-                        <div class="me-lg-5">
-                        <div class="d-flex">
-                        <img src="~/images/instagram-img-08.jpg" class="border rounded me-3" style="width: 96px; height: 96px;" />
-                        <div class="ml-5 mt-2">
-                        <a href="#" class="nav-link">一個貓罐頭</a>
-                        <div class="">
-                        <select class="form-select me-4 for-detail-select">
-                        <option>1kg,小份</option>
-                        <option>2kg,中份</option>
-                        <option>3kg,大份</option>
-                        </select>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        </div>
-                        <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-                        <div class="mt-2">
-                        <span>數量</span>
-                        <select class="form-select me-4 for-count-select">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        </select>
-                        </div>
-                        <div class="mt-2 ml-5">
-                        <p class=" mb-0">價格</p>
-                        <span class="h6">$1,156</span> <br />
-                        <small class="text-muted text-nowrap"> $460 / 份 </small>
-                        </div>
-                        </div>
-                        <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
-                        <div class="float-md-end">
-                        <a href="#" class="btn btn-light border  icon-hover-danger"> 移除</a>
-                        </div>
-                        </div>
-                        </div> *@
                     </div>
                 </div>
             </div>
@@ -285,16 +203,17 @@
     <script>
     //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var inputQuantity = $('.input-quantity');
-    
+        var inputAttr = $('.input-attr');
     inputQuantity.on('change', function () {
         var newValue = $(this).val();// 獲取輸入的新值
+        var attr = inputAttr.val();//獲取選到的值
         var productId = $(this).data('product-id')
         console.log('New value:', newValue);
         // 在這裡可以使用 Ajax 將新值傳回後端
         $.ajax({
             url: '/ProductApi/CartEditQuantity',
             type: 'POST',
-            data: { newQuantity: newValue, pId:productId },
+            data: { newQuantity: newValue, pId:productId, attr=attr },
             dataType: 'json',
             success: function (response) {
                 console.log('Quantity updated:', response.message);
@@ -306,8 +225,6 @@
     });
 
     //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
-    var inputAttr = $('.input-attr');
-
         inputAttr.on('change', function () {
         var newAttr = $(this).val();// 獲取輸入的新值
         var productId = $(this).data('product-id')
