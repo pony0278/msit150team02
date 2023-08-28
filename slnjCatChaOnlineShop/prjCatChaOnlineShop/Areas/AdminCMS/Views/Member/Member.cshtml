@@ -6,8 +6,12 @@
 @section Styles{
 
     <style>
-        .RequiredText, .error-message {
+        .RequiredText {
             color: #b95756;
+        }
+
+        .error-message {
+            color: red;
         }
 
         .toggle-password {
@@ -29,8 +33,8 @@
         }
 
         #member-table_filter {
-        display: inline-block;
-        margin-bottom: 10px;
+            display: inline-block;
+            margin-bottom: 10px;
         }
     </style>
 }
@@ -53,9 +57,11 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">新增會員</h5>
+                    <button class="btn btn-danger ms-2" onclick="setValue()">demo</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
+
                 <div class="modal-body">
                     <div class="form-group mb-2">
                         <label>姓名</label><span class="RequiredText"> *必填</span>
@@ -64,8 +70,8 @@
 
                     <div class="form-group mb-2">
                         <label>帳號</label><span class="RequiredText"> *必填</span>
-                        <input type="email" class="form-control" id="CreatMemberAccount" name="MemberAccount" onblur="CheckDuplicateAccount()" onfocus="hideErrorMessage()" placeholder="請輸入電子信箱">
-                        <span id="duplicateMessage" style="display:none;color:red;" class="alert alert-danger"></span>
+                        <input type="email" class="form-control" id="CreatMemberAccount" name="MemberAccount" onblur="CheckDuplicateAccount()" placeholder="請輸入電子信箱">
+                        @* <span id="duplicateMessage" style="display:none;color:red;"></span> *@
                         <span id="error1" class="error-message"></span>
                     </div>
 
@@ -122,11 +128,11 @@
                         </select>
                     </div>
 
-                    <button id="CreatMember" class="btn btn-danger btn-block"
-                            style="width: 100%;">
+                    <button id="CreatMember" class="btn btn-danger btn-block" style="width: 100%;">
                         儲存
                     </button>
                 </div>
+
             </div>
         </div>
     </div>
@@ -134,341 +140,310 @@
 
     <div class="search-row row mt-3">
         <div class="row align-items-center mb-3">
-            @* 會員狀態：
-            <select class="form-select w-25" id="payList">
-                <option value="" selected>全部資料</option>
-                <option value="開放">開放</option>
-                <option value="凍結">凍結</option>
-            </select> *@
-@*             <select class="form-select" id="payList">
-                <option value="" selected disabled>付款方式篩選</option>
-                <option value="">全部訂單</option>
-                <option value="取貨付款">取貨付款</option>
-                <option value="信用卡">信用卡</option>
-            </select> *@
-
-@*             <select class="form-select" id="deliveryList">
-                <option value="" selected disabled>配送方式篩選</option>
-                <option value="">全部訂單</option>
-                <option value="7-Eleven">7-Eleven</option>
-                <option value="全家">全家</option>
-            </select>
-
-            <select class="form-select" id="statusList">
-                <option value="" selected>訂單狀態篩選</option>
-            </select> *@
         </div>
-@*         <div class="row align-items-center mb-3">
-            關鍵字搜尋：
-            <input type="text" id="searchKeyword" class="form-control" style="width:25%;" />
-        </div> *@
 
-        @* <button type="button" class="keyword_input col-xl-1 col-lg-2 col-md-3 col-sm-2 col-3" id="searchButton">查詢</button> *@
-    </div>
-
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-12 col-xs-12">
-@*                 <div class="dt-buttons">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-xs-12">
+                    @*                 <div class="dt-buttons">
                     <button class="dt-button buttons-pdf buttons-html5" tabindex="0" aria-controls="member-table" type="button">
-                        匯出PDF
+                    匯出PDF
                     </button>
-                </div> *@
-                <label>會員狀態</label>
-                <select class="form-select w-25" id="payList" style="display: inline-block !important;">
-                    <option value="" selected>全部資料</option>
-                    <option value="開放">開放</option>
-                    <option value="凍結">凍結</option>
-                </select>
-                <!--表格-->
-                <table id="member-table" class="table table-striped nowrap" style="width:100%">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>姓名</th>
-                            <th>帳號</th>
-                            <th>性別</th>
-                            <th>E-mail</th>
-                            <th>電話</th>
-                            <th>地址</th>
-                            <th>狀態</th>
-                            <th>詳細資料</th>
-                            <th>編輯</th>
-                        </tr>
-                    </thead>
-                </table>
-                <!--表格-->
-                <!---詳細資料model-->
-                <div class="modal fade" id="DetailModalToggle" tabindex="-1">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">
-                                    其他資訊
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                    </div> *@
+                    <label>會員狀態</label>
+                    <select class="form-select w-25" id="payList" style="display: inline-block !important;">
+                        <option value="" selected>全部資料</option>
+                        <option value="開放">開放</option>
+                        <option value="凍結">凍結</option>
+                    </select>
+                    <!--表格-->
+                    <table id="member-table" class="table table-striped nowrap" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>姓名</th>
+                                <th>帳號</th>
+                                <th>性別</th>
+                                <th>E-mail</th>
+                                <th>電話</th>
+                                <th>地址</th>
+                                <th>狀態</th>
+                                <th>詳細資料</th>
+                                <th>編輯</th>
+                            </tr>
+                        </thead>
+                    </table>
+                    <!--表格-->
+                    <!---詳細資料model-->
+                    <div class="modal fade" id="DetailModalToggle" tabindex="-1">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalToggleLabel">
+                                        其他資訊
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-home-tab"
+                                                    data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+                                                    role="tab">
+                                                基本資料
+                                            </button>
+                                            <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#nav-profile" type="button"
+                                                    role="tab">
+                                                遊戲資訊
+                                            </button>
+                                            <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#nav-contact" type="button"
+                                                    role="tab">
+                                                常用地址
+                                            </button>
+                                            <button class="nav-link" id="nav-contact2-tab" data-bs-toggle="tab"
+                                                    data-bs-target="#nav-paper" type="button"
+                                                    role="tab">
+                                                會員優惠券
+                                            </button>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content mt-3" id="nav-tabContent">
+                                        <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                                             aria-labelledby="nav-home-tab">
+                                            <div class="row">
+                                                <div class="col-12 col-lg-6">
+                                                    <p id="memberId"></p>
+                                                    <p id="memberAccount"></p>
+                                                    <p id="birthday"></p>
+                                                    <p id="phoneNumber"></p>
+                                                    <p id="registrationTime"></p>
+                                                    <p id="memberStatus"></p>
+                                                </div>
+                                                <div class="col-12 col-lg-6">
+                                                    <p id="name"></p>
+                                                    <p id="gender"></p>
+                                                    <p id="email"></p>
+                                                    <p id="address"></p>
+                                                    <p id="lastLoginTime"></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
+                                            <p id="levelId"></p>
+                                            <p id="characterName"></p>
+                                            <p id="catCoinQuantity"></p>
+                                            <p id="loyaltyPoints"></p>
+                                            <p id="runGameHighestScore"></p>
+                                        </div>
+                                        <div class="tab-pane fade mt-3" id="nav-contact" role="tabpanel">
+                                            <div id="commonaddressContainer"></div>
+                                        </div>
+                                        <div class="tab-pane fade mt-3" id="nav-paper" role="tabpanel">
+                                            <div id="couponContainer"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <nav>
-                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <button class="nav-link active" id="nav-home-tab"
-                                                data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
-                                                role="tab">
-                                            基本資料
-                                        </button>
-                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-profile" type="button"
-                                                role="tab">
-                                            遊戲資訊
-                                        </button>
-                                        <button class="nav-link" id="nav-contact-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-contact" type="button"
-                                                role="tab">
+                        </div>
+                    </div>
+                    <!--詳細資料model-->
+                    <!--編輯彈出視窗-->
+                    <div class="modal fade" id="EditModalToggle" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalToggleLabel">編輯會員資料</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-home-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#member-edit-nav-home" type="button"
+                                                    role="tab">
+                                                基本資料
+                                            </button>
+                                            <button class="nav-link" id="nav-profile-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#member-edit-nav-profile" type="button"
+                                                    role="tab">
+                                                遊戲資訊
+                                            </button>
+                                            @* <button class="nav-link" id="nav-contact-tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#member-edit-nav-contact" type="button"
+                                            role="tab">
                                             常用地址
-                                        </button>
-                                        <button class="nav-link" id="nav-contact2-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-paper" type="button"
-                                                role="tab">
+                                            </button> *@
+                                            @*                                         <button class="nav-link" id="nav-contact2-tab"
+                                            data-bs-toggle="tab"
+                                            data-bs-target="#member-edit-nav-paper" type="button"
+                                            role="tab">
                                             會員優惠券
-                                        </button>
-                                    </div>
-                                </nav>
-                                <div class="tab-content mt-3" id="nav-tabContent">
-                                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                         aria-labelledby="nav-home-tab">
-                                        <div class="row">
-                                            <div class="col-12 col-lg-6">
-                                                <p id="memberId"></p>
-                                                <p id="memberAccount"></p>
-                                                <p id="birthday"></p>
-                                                <p id="phoneNumber"></p>
-                                                <p id="registrationTime"></p>
-                                                <p id="memberStatus"></p>
-                                            </div>
-                                            <div class="col-12 col-lg-6">
-                                                <p id="name"></p>
-                                                <p id="gender"></p>
-                                                <p id="email"></p>
-                                                <p id="address"></p>
-                                                <p id="lastLoginTime"></p>
-                                            </div>
+                                            </button> *@
                                         </div>
-                                    </div>
-                                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
-                                        <p id="levelId"></p>
-                                        <p id="characterName"></p>
-                                        <p id="catCoinQuantity"></p>
-                                        <p id="loyaltyPoints"></p>
-                                        <p id="runGameHighestScore"></p>
-                                    </div>
-                                    <div class="tab-pane fade mt-3" id="nav-contact" role="tabpanel">
-                                        <div id="commonaddressContainer"></div>
-                                    </div>
-                                    <div class="tab-pane fade mt-3" id="nav-paper" role="tabpanel">
-                                        <div id="couponContainer"></div>
+                                    </nav>
+                                    <div class="tab-content mt-3" id="nav-tabContent">
+                                        <div class="tab-pane fade show active"
+                                             id="member-edit-nav-home">
+                                            <input type="hidden" class="form-control" id="memberId_edit" disabled readonly>
+
+                                            <div class="form-group mb-2">
+                                                <label>姓名：</label>
+                                                <input type="text" class="form-control" id="name_edit">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <input type="hidden" class="form-control" id="memberAccount_edit" disabled readonly>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>性別：</label>
+                                                <select class="form-control" id="gender_edit">
+                                                    <option value="男">男</option>
+                                                    <option value="女">女</option>
+                                                    <option value="其他">其他</option>
+                                                </select>
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>生日：</label>
+                                                <input type="date" class="form-control" id="birthday_edit" onfocus="this.showPicker()">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>E-mail：</label>
+                                                <input type="email" class="form-control" id="email_edit">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>電話：</label>
+                                                <input type="text" class="form-control" id="phoneNumber_edit">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>地址：</label>
+                                                <input type="text" class="form-control" id="address_edit">
+                                            </div>
+
+                                            <div class="form-group mb-2">
+                                                <label>會員狀態：</label>
+                                                <select class="form-control" id="memberStatus_edit">
+                                                    <option value="true">開放</option>
+                                                    <option value="false">凍結</option>
+                                                </select>
+                                            </div>
+
+                                            <button class="btn btn-danger btn-block mt-2 EditMember_Save"
+                                                    style="width: 100%;">
+                                                儲存
+                                            </button>
+                                        </div>
+                                        <div class="tab-pane fade mt-3" id="member-edit-nav-profile">
+                                            <div class="form-group mb-3">
+                                                <label>等級：</label>
+                                                <input type="number" class="form-control" id="levelId_edit">
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>遊戲角色名稱：</label>
+                                                <input type="text" class="form-control" id="characterName_edit">
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>貓幣數量：</label>
+                                                <input type="number" class="form-control" id="catCoinQuantity_edit">
+                                            </div>
+
+                                            <div class="form-group mb-3">
+                                                <label>紅利數量：</label>
+                                                <input type="number" class="form-control" id="loyaltyPoints_edit">
+                                            </div>
+
+                                            <button type="submit" class="btn btn-danger btn-block EditMember_Save"
+                                                    style="width: 100%;">
+                                                儲存
+                                            </button>
+                                        </div>
+                                        @* <div class="tab-pane fade" id="member-edit-nav-contact">
+                                        <div class="form-group">
+                                        <label>Address ID：</label>
+
+                                        <input type="text" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Recipient Name：</label>
+                                        <input type="text" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Recipient Phone：</label>
+                                        <input type="text" class="form-control">
+                                        </div>
+
+                                        <div class="form-group">
+                                        <label>Recipient Address：</label>
+                                        <input type="text" class="form-control">
+                                        </div>
+
+                                        <button class="btn btn-danger btn-block"
+                                        style="width: 100%;">
+                                        儲存
+                                        </button>
+                                        </div> *@
+                                        @*                                     <div class="tab-pane fade" id="member-edit-nav-paper">
+                                        <div style="border: 1px solid #000;">
+                                        <p>折價券ID：2</p>
+                                        <p>折價券內容：滿500折10</p>
+                                        <p>使用狀態：未使用</p>
+                                        <p>優惠券狀態：_______(此欄待確認)</p>
+                                        <button class="btn btn-danger btn-block" style="width: 100%"
+                                        onclick="userDelete()">
+                                        刪除
+                                        </button>
+                                        </div>
+                                        </div> *@
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <!--編輯彈出視窗-->
+
                 </div>
-                <!--詳細資料model-->
-                <!--編輯彈出視窗-->
-                <div class="modal fade" id="EditModalToggle" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯會員資料</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <nav>
-                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <button class="nav-link active" id="nav-home-tab"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#member-edit-nav-home" type="button"
-                                                role="tab">
-                                            基本資料
-                                        </button>
-                                        <button class="nav-link" id="nav-profile-tab"
-                                                data-bs-toggle="tab"
-                                                data-bs-target="#member-edit-nav-profile" type="button"
-                                                role="tab">
-                                            遊戲資訊
-                                        </button>
-                                        @* <button class="nav-link" id="nav-contact-tab"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#member-edit-nav-contact" type="button"
-                                        role="tab">
-                                        常用地址
-                                        </button> *@
-                                        @*                                         <button class="nav-link" id="nav-contact2-tab"
-                                        data-bs-toggle="tab"
-                                        data-bs-target="#member-edit-nav-paper" type="button"
-                                        role="tab">
-                                        會員優惠券
-                                        </button> *@
-                                    </div>
-                                </nav>
-                                <div class="tab-content mt-3" id="nav-tabContent">
-                                    <div class="tab-pane fade show active"
-                                         id="member-edit-nav-home">
-                                        <input type="hidden" class="form-control" id="memberId_edit" disabled readonly>
-
-                                        <div class="form-group mb-2">
-                                            <label>姓名：</label>
-                                            <input type="text" class="form-control" id="name_edit">
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <input type="hidden" class="form-control" id="memberAccount_edit" disabled readonly>
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>性別：</label>
-                                            <select class="form-control" id="gender_edit">
-                                                <option value="男">男</option>
-                                                <option value="女">女</option>
-                                                <option value="其他">其他</option>
-                                            </select>
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>生日：</label>
-                                            <input type="date" class="form-control" id="birthday_edit" onfocus="this.showPicker()">
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>E-mail：</label>
-                                            <input type="email" class="form-control" id="email_edit">
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>電話：</label>
-                                            <input type="text" class="form-control" id="phoneNumber_edit">
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>地址：</label>
-                                            <input type="text" class="form-control" id="address_edit">
-                                        </div>
-
-                                        <div class="form-group mb-2">
-                                            <label>會員狀態：</label>
-                                            <select class="form-control" id="memberStatus_edit">
-                                                <option value="true">開放</option>
-                                                <option value="false">凍結</option>
-                                            </select>
-                                        </div>
-
-                                        <button class="btn btn-danger btn-block mt-2 EditMember_Save"
-                                                style="width: 100%;">
-                                            儲存
-                                        </button>
-                                    </div>
-                                    <div class="tab-pane fade mt-3" id="member-edit-nav-profile">
-                                        <div class="form-group mb-3">
-                                            <label>等級：</label>
-                                            <input type="number" class="form-control" id="levelId_edit">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>遊戲角色名稱：</label>
-                                            <input type="text" class="form-control" id="characterName_edit">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>貓幣數量：</label>
-                                            <input type="number" class="form-control" id="catCoinQuantity_edit">
-                                        </div>
-
-                                        <div class="form-group mb-3">
-                                            <label>紅利數量：</label>
-                                            <input type="number" class="form-control" id="loyaltyPoints_edit">
-                                        </div>
-
-                                        <button type="submit" class="btn btn-danger btn-block EditMember_Save"
-                                                style="width: 100%;">
-                                            儲存
-                                        </button>
-                                    </div>
-                                    @* <div class="tab-pane fade" id="member-edit-nav-contact">
-                                    <div class="form-group">
-                                    <label>Address ID：</label>
-
-                                    <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                    <label>Recipient Name：</label>
-                                    <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                    <label>Recipient Phone：</label>
-                                    <input type="text" class="form-control">
-                                    </div>
-
-                                    <div class="form-group">
-                                    <label>Recipient Address：</label>
-                                    <input type="text" class="form-control">
-                                    </div>
-
-                                    <button class="btn btn-danger btn-block"
-                                    style="width: 100%;">
-                                    儲存
-                                    </button>
-                                    </div> *@
-                                    @*                                     <div class="tab-pane fade" id="member-edit-nav-paper">
-                                    <div style="border: 1px solid #000;">
-                                    <p>折價券ID：2</p>
-                                    <p>折價券內容：滿500折10</p>
-                                    <p>使用狀態：未使用</p>
-                                    <p>優惠券狀態：_______(此欄待確認)</p>
-                                    <button class="btn btn-danger btn-block" style="width: 100%"
-                                    onclick="userDelete()">
-                                    刪除
-                                    </button>
-                                    </div>
-                                    </div> *@
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!--編輯彈出視窗-->
-
             </div>
         </div>
     </div>
-</div>
 
-@section Scripts{
+    @section Scripts{
 
-    <!--Moment.js-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
+        <!--Moment.js-->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
-    @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"> *@
+        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"> *@
 
-    @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"> *@
+        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css"> *@
 
-    <!-- jQuery -->
-    @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
+        <!-- jQuery -->
+        @* <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> *@
 
-    <!-- DataTables -->
-    @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> *@
-@*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> *@
+        <!-- DataTables -->
+        @* <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css"> *@
+        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js"></script> *@
 
-    <!-- DataTables Buttons -->
-
-@*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
+        <!-- DataTables Buttons -->
+        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/dataTables.buttons.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.colVis.min.js"></script> *@
 
-    <!-- PDF Make (required by Buttons) -->
-@*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
+        <!-- PDF Make (required by Buttons) -->
+        @*     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.print.min.js"></script>
 
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/1.2.2/js/buttons.bootstrap.min.js"></script>
@@ -476,622 +451,646 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/pdfmake.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.rawgit.com/bpampuch/pdfmake/0.1.18/build/vfs_fonts.js"></script> *@
 
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+        <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
 
-    <script>
-        var isVaild = ""; //驗證bool
-        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
-        $(document).ready(function () {
-            $.ajax({
-                url: '@Url.Action("ShowMemeberInfo", "Member")',
-                type: 'GET',
-                success: function (data) {
-                    console.log(data);
-                },
-                error: function (error) {
-                    console.log(error);
-                }
-            });
+        <script>
+            let isVaild = ""; //驗證bool
+            let isVaild_mail = "";
+            let isVaild_acc = "";
             //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+            $(document).ready(function () {
+                $.ajax({
+                    url: '@Url.Action("ShowMemeberInfo", "Member")',
+                    type: 'GET',
+                    success: function (data) {
+                        console.log(data);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+                //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
 
-            //==========禁止使用者選擇生日為未來日期
-            // 獲取現在日期
-            var currentDate = new Date();
-            // 將日期格式化為YYYY-MM-DD格式
-            var formattedDate = currentDate.toISOString().split('T')[0];
-            // 設置MaxDate属性
-            $("#CreatBirthday").attr("max", formattedDate);
-            $('#birthday_edit').attr("max", formattedDate);
+                //==========禁止使用者選擇生日為未來日期
+                // 獲取現在日期
+                var currentDate = new Date();
+                // 將日期格式化為YYYY-MM-DD格式
+                var formattedDate = currentDate.toISOString().split('T')[0];
+                // 設置MaxDate属性
+                $("#CreatBirthday").attr("max", formattedDate);
+                $('#birthday_edit').attr("max", formattedDate);
 
-            // 監聽輸入事件，攔截輸入過程
-            $("#CreatBirthday, #birthday_edit").on("input", function () {
-                var inputDate = new Date($(this).val());
+                // 監聽輸入事件，攔截輸入過程
+                $("#CreatBirthday, #birthday_edit").on("input", function () {
+                    var inputDate = new Date($(this).val());
 
-                if (inputDate > currentDate) {
-                    // 如果輸入的日期大於當前日期，重置輸入框的值為最大日期
-                    $(this).val(formattedDate);
-                }
+                    if (inputDate > currentDate) {
+                        // 如果輸入的日期大於當前日期，重置輸入框的值為最大日期
+                        $(this).val(formattedDate);
+                    }
+                });
+
+                //==============密碼眼睛
+                $('#togglePassword').click(function () {
+                    if ($('#CreatMemberPassword').attr('type') === 'password') {
+                        $('#CreatMemberPassword').attr('type', 'text');
+                    } else {
+                        $('#CreatMemberPassword').attr('type', 'password');
+                    }
+                });
+
+
             });
 
-            //==============密碼眼睛
-            $('#togglePassword').click(function () {
-                if ($('#CreatMemberPassword').attr('type') === 'password') {
-                    $('#CreatMemberPassword').attr('type', 'text');
+
+            //==================驗證信箱格式
+            function checkMail() {
+
+                var emailAccount = $('#CreatMemberAccount').val();
+                var email = $('#CreatEmail').val();
+
+                const emailRegex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+
+                checkAcc = emailRegex.test(emailAccount);
+                checkUserMail = emailRegex.test(email);
+
+                if ((!checkAcc)) {
+                    $('#error1').text('Email格式不正確');
+                    isVaild_acc = false;
                 } else {
-                    $('#CreatMemberPassword').attr('type', 'password');
+                    $('#error1').text('');
+                    isVaild_acc = true;
                 }
-            });
+
+                if ((!checkUserMail)) {
+                    $('#error2').text('Email格式不正確');
+                    isVaild_mail = false;
+                } else {
+                    $('#error2').text('');
+                    isVaild_mail = true;
+                }
+            }
+
+            
+            //==================驗證密碼
+            function checkPassword() {
+                var password = $('#CreatMemberPassword').val();
+                const containsLetter = /[a-zA-Z]/.test(password);
+                const containsNumber = /\d/.test(password);
+
+                if (password.length < 8 || (!containsLetter) || (!containsNumber)) {
+                    console.log(containsLetter);
+                    $('#error3').text("密碼需包含至少一個英文字母和一個數字，且長度至少8字元");
+                    isVaild = false;
+                } else {
+                    $('#error3').text("");
+                    isVaild = true;
+                }
+            }
+
+            //=======================驗證確認密碼
+            function isValidCheckPassword() {
+                var check_password = $('#CreatMemberCheckPassword').val();
+                var password = $('#CreatMemberPassword').val();
+
+                if (check_password !== password) {
+                    $('#error4').text("密碼與確認密碼不相符");
+                    isVaild = false;
+                } else {
+                    $('#error4').text("");
+                    isVaild = true;
+                }
+            }
+
 
             function validateEmail(input, error) {
                 input.on("blur", function () {
-                    if (!isValidEmail(input.val())) {
-                        error.text("Email格式不正確");
-                        isVaild = false;
-                    } else {
-                        error.text("");
-                        isVaild = true;
-                    }
+                    checkMail();
                 });
             }
 
             function validatePassword(input, error) {
                 input.on("blur", function () {
-                    if (!isValidPassword(input.val())) {
-                        error.text("密碼需包含至少一個英文字母和一個數字，且長度至少8字元");
-                        isVaild = false;
-                    } else {
-                        error.text("");
-                        isVaild = true;
-                    }
+                    checkPassword();
                 });
             }
 
             function validateCheckPassword(input, error) {
                 input.on("blur", function () {
-                    if (!isValidCheckPassword(input.val())) {
-                        error.text("密碼與確認密碼不相符");
-                        isVaild = false;
-                    } else {
-                        error.text("");
-                        isVaild = true;
-                    }
+                    isValidCheckPassword();
                 });
-            }
-
-            //==================驗證帳號信箱格式是否正確
-            function isValidEmail(email) {
-                const emailRegex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-                return emailRegex.test(email);
-            }
-
-            //==================驗證密碼格式是否正確
-            function isValidPassword(password) {
-                // 包含至少一個英文字母和一個數字和至少8字元
-                if (password.length < 8) {
-                    return false;
-                } else {
-                    const containsLetter = /[a-zA-Z]/.test(password);
-                    const containsNumber = /\d/.test(password);
-
-                    return containsLetter && containsNumber;
-                }
-            }
-
-            //==================驗證確認密碼與密碼兩者是否相符
-            function isValidCheckPassword(check_password) {
-                var pwd = $('#CreatMemberPassword').val();
-
-                if (check_password !== pwd) {
-                    return false;
-                } else {
-                    return true;
-                }
             }
 
             validateEmail($("#CreatMemberAccount"), $("#error1"));
             validateEmail($("#CreatEmail"), $("#error2"));
             validatePassword($("#CreatMemberPassword"), $("#error3"));
             validateCheckPassword($("#CreatMemberCheckPassword"), $("#error4"));
-        });
 
 
-        //==================datatable
-        var dataTable = $('#member-table').DataTable({
-            "ajax": '@Url.Action("ShowMemeberInfo", "Member")',
-            // language: {
-            //     url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-            // },
-            "columns": [
-                //這裡要注意json裡面是大寫還是小寫
-                { data: 'memberId' },
-                { data: 'name' },
-                { data: 'memberAccount' },
-                { data: 'gender' },
-                { data: 'email' },
-                { data: 'phoneNumber' },
-                { data: 'address' },
-                {
-                    data: 'memberStatus',
-                    render: function (data, type, row, meta) {
-                        if (data) {
-                            return '<span class="badge rounded-pill bg-success fs-6">開放</span>';
-                        } else {
-                            return '<span class="badge rounded-pill bg-danger fs-6">凍結</span>';
-                        }
-                    }
-                },
-                {
-                    data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
-                    render: function (data, type, row, meta) {
-                        return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
-                    }
-                },
-                {
-                    data: null,
-                    render: function (data, type, row, meta) {
-                        var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#EditModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
-                        return editButton;
-                    }
-                },
-            ],
-            columnDefs: [
-                { targets: 7, searchable: true },
-                // { targets: 5, searchable: true }
-                // 其他列...
-            ],
-            "paging": true, //分頁功能
-            responsive: true, //RWD
-            // "searching": false, //隱藏搜尋框
-            dom: '<"top"lf>rtip', // Custom positioning
-
-            initComplete: function () {
-                // 將搜尋框移動到顯示資料筆數選擇器的上方
-                var searchContainer = $('.dataTables_filter');
-                var lengthContainer = $('.dataTables_length');
-                lengthContainer.insertAfter(searchContainer);
-            },
-
-            dom: 'Bfrtip',
-            buttons: [
-                'copy', 'csv', 'excel', 'print',
-            ],
-            // initComplete: function (settings, json) {
-            //     var footer = $("#example tfoot tr");
-            //     $("#example thead").append(footer);
-            // },
-            "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
-        });
-
-        //=======================搜尋功能
-
-        // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-        $('#payList').on('change', function () {
-            var filterOption1 = $(this).val();
-
-            // 使用DataTable的column().search()方法進行過濾
-            dataTable.column(7).search(filterOption1).draw();
-            // 其他列...
-        });
-        
-
-        //==================按下「詳細資料」按鈕的點擊事件處理
-        $('#member-table').on('click', '.detail_input', function () {
-            var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
-            // console.log('Clicked on "詳細資料" button for memberId:', memberId);
-
-            //----------------AJAX
-            $.ajax({
-                url: '@Url.Action("GetMemberDetails", "Member")',
-                type: 'GET',
-                data: { id: memberId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                success: function (data) {
-                    // console.log(data);
-
-                    function formatDateTime(dateTimeString) {
-                        var dateTime = new Date(dateTimeString);
-                        var year = dateTime.getFullYear();
-                        var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                        var day = String(dateTime.getDate()).padStart(2, '0');
-                        var hours = String(dateTime.getHours()).padStart(2, '0');
-                        var minutes = String(dateTime.getMinutes()).padStart(2, '0');
-                        var seconds = String(dateTime.getSeconds()).padStart(2, '0');
-
-                        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-                    }
-
-                    function formatDate(date) {
-                        var dateTime = new Date(date);
-                        var year = dateTime.getFullYear();
-                        var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                        var day = String(dateTime.getDate()).padStart(2, '0');
-
-                        return year + '-' + month + '-' + day;
-                    }
-
-                    //============基本資料
-                    $('#memberId').text("ID：" + data.data.memberId);
-                    $('#name').text("姓名：" + data.data.name);
-                    $('#memberAccount').text("帳號：" + data.data.memberAccount);
-                    $('#gender').text("性別：" + data.data.gender);
-
-                    var formattedBirthday = formatDate(data.data.birthday);
-                    $('#birthday').text("生日：" + formattedBirthday);
-
-                    $('#email').text("E-mail：" + data.data.email);
-                    $('#phoneNumber').text("電話：" + data.data.phoneNumber);
-                    $('#address').text("地址：" + data.data.address);
-
-                    var formattedregistration = formatDateTime(data.data.registrationTime);
-                    $('#registrationTime').text("註冊日期：" + formattedregistration);
-
-                    var formattedlastLoginTime = formatDateTime(data.data.lastLoginTime);
-                    $('#lastLoginTime').text("最後登入：" + formattedlastLoginTime);
-
-                    if (data.data.memberStatus == true) {
-                        $('#memberStatus').text("會員狀態：開放");
-                    } else {
-                        $('#memberStatus').text("會員狀態：凍結");
-                    }
-
-                    //============遊戲資料
-                    $('#levelId').text("等級：" + data.data.levelId);
-                    $('#characterName').text("遊戲角色名稱：" + data.data.characterName);
-                    $('#catCoinQuantity').text("貓幣數量：" + data.data.catCoinQuantity);
-                    $('#loyaltyPoints').text("紅利數量：" + data.data.loyaltyPoints);
-                    $('#runGameHighestScore').text("遊戲最高分數：" + data.data.runGameHighestScore);
-
-                    //===========常用地址
-                    var CAContainer = $("#commonaddressContainer");
-                    CAContainer.text(""); // 每次抓都要reset掉，讓之前append的地址才不會存在
-
-                    if (data.data.shopCommonAddressData.length != 0) {
-                        for (var i = 0; i < data.data.shopCommonAddressData.length; i++) {
-
-                            var item = data.data.shopCommonAddressData[i];
-
-                            var itemDiv = document.createElement("div");
-                            var addressNumber = i + 1; //計算幾筆資料的數字
-
-                            itemDiv.innerHTML = `
-                                                                                                                                                                <h5><b>常用地址－${addressNumber}</b></h5>
-                                                                                                                                                                <p>收件人姓名: ${item.recipientName}</p>
-                                                                                                                                                                <p>連絡電話: ${item.recipientPhone}</p>
-                                                                                                                                                                <p>收件地址: ${item.recipientAddress}</p>
-                                                                                                                                                        <hr>
-                                                                                                                                                    `;
-                            CAContainer.append(itemDiv);
-                        }
-                    } else {
-                        CAContainer.text("此會員尚未新增任何常用地址");
-                    }
-
-
-                    //===========優惠券專區
-                    var couponContainer = $("#couponContainer");
-                    couponContainer.text("");
-
-                    if (data.data.shopCommonAddressData.length != 0) {
-                        for (var i = 0; i < data.data.shopMemberCouponData.length; i++) {
-
-                            var item = data.data.shopMemberCouponData[i];
-
-                            var itemDiv = document.createElement("div");
-                            var couponNumber = i + 1; //計算幾筆資料的數字
-
-                            var formattedExpiryDate = formatDate(item.coupon.expiryDate);
-
-                            if (item.couponStatusId === "true") {
-                                item.couponStatusId = "已使用";
+            //==================datatable
+            var dataTable = $('#member-table').DataTable({
+                "ajax": '@Url.Action("ShowMemeberInfo", "Member")',
+                // language: {
+                //     url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                // },
+                "columns": [
+                    //這裡要注意json裡面是大寫還是小寫
+                    { data: 'memberId' },
+                    { data: 'name' },
+                    { data: 'memberAccount' },
+                    { data: 'gender' },
+                    { data: 'email' },
+                    { data: 'phoneNumber' },
+                    { data: 'address' },
+                    {
+                        data: 'memberStatus',
+                        render: function (data, type, row, meta) {
+                            if (data) {
+                                return '<span class="badge rounded-pill bg-success fs-6">開放</span>';
                             } else {
-                                item.couponStatusId = "未使用";
+                                return '<span class="badge rounded-pill bg-danger fs-6">凍結</span>';
                             }
-
-                            itemDiv.innerHTML = `
-                                                                                                                                                                        <h5><b>優惠券第${couponNumber}張</b></h5>
-                                                                                                                                                                                <p>優惠券ID: ${item.couponId}</p>
-                                                                                                                                                                                        <p>優惠券內容: ${item.coupon.couponContent}</p>
-                                                                                                                                                                                                        <p>有效日期: ${formattedExpiryDate}</p>
-                                                                                                                                                                                <p>優惠券狀態: ${item.couponStatusId}</p>
-                                                                                                                                                        <hr>
-                                                                                                                                                    `;
-                            couponContainer.append(itemDiv);
                         }
-                    } else {
-                        couponContainer.text("此會員未持有優惠券");
-                    }
+                    },
+                    {
+                        data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                        render: function (data, type, row, meta) {
+                            return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#EditModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
+                            return editButton;
+                        }
+                    },
+                ],
+                columnDefs: [
+                    { targets: 7, searchable: true },
+                    // { targets: 5, searchable: true }
+                    // 其他列...
+                ],
+                "paging": true, //分頁功能
+                responsive: true, //RWD
+                // "searching": false, //隱藏搜尋框
+                dom: '<"top"lf>rtip', // Custom positioning
+
+                initComplete: function () {
+                    // 將搜尋框移動到顯示資料筆數選擇器的上方
+                    var searchContainer = $('.dataTables_filter');
+                    var lengthContainer = $('.dataTables_length');
+                    lengthContainer.insertAfter(searchContainer);
                 },
-                error: function (error, a, b) {
-                    console.log(error);
-                    console.log(a);
-                    console.log(b);
-                    console.log("Error retrieving member details.");
-                }
+
+                dom: 'Bfrtip',
+                buttons: [
+                    'copy', 'csv', 'excel', 'print',
+                ],
+                "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
             });
-        });
 
-        //==================按下「編輯」按鈕的點擊事件處理
-        $('#member-table').on('click', '.edit_memberbtn', function () {
-            var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+            //=======================搜尋功能
 
-            //----------------AJAX
-            $.ajax({
-                url: '@Url.Action("EditMemeber", "Member")',
-                type: 'GET',
-                data: { id: memberId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                success: function (data) {
-                    console.log(data);
+            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+            $('#payList').on('change', function () {
+                var filterOption1 = $(this).val();
 
-                    //==================基本資料
-                    $('#memberId_edit').val(data.data.memberId);
-                    $('#name_edit').val(data.data.name);
-                    $('#memberAccount_edit').val(data.data.memberAccount);
-                    $('#gender_edit').val(data.data.gender);
-
-                    //生日日期轉換：use Moment.js
-                    var date = moment(data.data.birthday);
-                    // 格式化日期為 yyyy-MM-dd 格式
-                    var formattedDate = date.format("YYYY-MM-DD");
-                    $('#birthday_edit').val(formattedDate);
-
-                    $('#email_edit').val(data.data.email);
-                    $('#phoneNumber_edit').val(data.data.phoneNumber);
-                    $('#address_edit').val(data.data.address);
-
-                    if (data.data.memberStatus == null) {
-                        $('#memberStatus_edit').val("true");
-                    } else {
-                        $('#memberStatus_edit').val(data.data.memberStatus.toString());
-                    }
-
-                    //==================遊戲資料
-                    $('#levelId_edit').val(data.data.levelId);
-                    $('#characterName_edit').val(data.data.characterName);
-                    $('#catCoinQuantity_edit').val(data.data.catCoinQuantity);
-                    $('#loyaltyPoints_edit').val(data.data.loyaltyPoints);
-                }
+                // 使用DataTable的column().search()方法進行過濾
+                dataTable.column(7).search(filterOption1).draw();
+                // 其他列...
             });
-        });
-
-        //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
-        $('.EditMember_Save').click(function () {
-
-            //==============送出前先驗證信箱格式
-            var email = $('#email_edit').val();
-            const emailRegex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-
-            if (!emailRegex.test(email)) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'email格式有誤',
-                    text: '請重新輸入'
-                });
-                return;
-            }
-
-            //==================基本資料
-            var MemberId = $('#memberId_edit').val();
-            var Name = $('#name_edit').val();
-            var MemberAccount = $('#memberAccount_edit').val();
-            var Gender = $('#gender_edit').val();
-            var Birthday = $('#birthday_edit').val();
-
-            var Email = $('#email_edit').val();
-            var PhoneNumber = $('#phoneNumber_edit').val();
-            var Address = $('#address_edit').val();
-            var MemberStatus = $('#memberStatus_edit').val();
-
-            //==================遊戲資料
-            var LevelId = $('#levelId_edit').val();
-            var CharacterName = $('#characterName_edit').val();
-            var CatCoinQuantity = $('#catCoinQuantity_edit').val();
-            var LoyaltyPoints = $('#loyaltyPoints_edit').val();
-
-            var editMember = {
-                MemberId: MemberId,
-                Name: Name,
-                MemberAccount: MemberAccount,
-                Gender: Gender,
-                Birthday: Birthday,
-                Email: Email,
-                PhoneNumber: PhoneNumber,
-                Address: Address,
-                MemberStatus: MemberStatus,
-                LevelId: LevelId,
-                CharacterName: CharacterName,
-                CatCoinQuantity: CatCoinQuantity,
-                LoyaltyPoints: LoyaltyPoints
-            };
-
-            $.ajax({
-                url: '/AdminCMS/Member/UpdateMember',
-                type: 'POST',
-                data: { editMember: editMember },
-                success: function (response) {
-                    if (response.success) {
-                        // 更新成功的處理
-                        // 顯示成功訊息
-                        Swal.fire({
-                            icon: 'success',
-                            title: '編輯成功',
-                            text: response.message
-                        });
-
-                        // 關閉modal
-                        $('#EditModalToggle').modal('hide');
-
-                        // 重新整理dataTable
-                        $('#member-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
-                    } else {
-                        // 更新失敗
-                        Swal.fire({
-                            icon: 'error',
-                            title: '失敗',
-                            text: response.message
-                        });
-                    }
-                },
-                error: function (error) {
-                    // 錯誤處理
-                    // 會員編輯失敗，顯示錯誤訊息
-                    console.log(error);
-                }
-            });
-        })
 
 
-        var CheckAccResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+            //==================按下「詳細資料」按鈕的點擊事件處理
+            $('#member-table').on('click', '.detail_input', function () {
+                var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                // console.log('Clicked on "詳細資料" button for memberId:', memberId);
 
-        //====================離開input 驗證帳號是否重複
-        function CheckDuplicateAccount() {
-            var account = $('#CreatMemberAccount').val(); //抓到使用者輸入的帳號
-
-            if (account === "") { //當輸入框為空時，隱藏錯誤消息
-                hideErrorMessage();
-                CheckAccResult = "";
-                return;
-            }
-
-            //===============打API驗證姓名是否已存在
-            //資料庫有的帳號：catCha2、catCha
-            $.ajax({
-                url: '/AdminCMS/Member/CheckDuplicateAccount',
-                type: 'GET',
-                data: { account: account },
-                success: function (result) {
-                    // console.log(result)
-                    CheckAccResult = result.isDuplicate;
-
-                    if (result.isDuplicate) { //如果等於true
-                        CheckAccResult = result.isDuplicate;
-                        $('#duplicateMessage').text("此帳號已存在");
-                        $('#duplicateMessage').css("display", "block"); //顯示錯誤訊息
-
-                    } else {
-                        CheckAccResult = result.isDuplicate;
-                        $('#duplicateMessage').text("");
-                        $('#duplicateMessage').css("display", "none"); //顯示錯誤訊息
-                    }
-                },
-                error: function (error) {
-                    console.error(error);
-                }
-            });
-        }
-
-        function hideErrorMessage() {
-            $('#duplicateMessage').css("display", "none");
-        }
-
-
-        //====================新增會員
-        $('#CreatMember').click(function () {
-
-            var Name = $('#CreatName').val();
-            var MemberAccount = $('#CreatMemberAccount').val();
-            var Password = $('#CreatMemberPassword').val();
-            var CheckPassword = $('#CreatMemberCheckPassword').val();
-            var Gender = $('#CreatGender').val();
-            var Birthday = $('#CreatBirthday').val();
-            var Email = $('#CreatEmail').val();
-            var PhoneNumber = $('#CreatPhoneNumber').val();
-            var Address = $('#CreatAddress').val();
-            var MemberStatus = $('#CreatMemberStatus').val();
-
-            // 檢查必填欄位是否有值
-            if (!Name || !MemberAccount || !Password || !CheckPassword || !Gender || !Birthday || !Email || !PhoneNumber) {
-                Swal.fire({
-                    icon: 'error',
-                    title: '錯誤',
-                    text: '請填寫所有必填欄位。'
-                });
-                return; // 不執行後續動作
-            }
-
-            // 檢查帳號是否已存在或者isVaild只要是false就return
-            if (CheckAccResult == true || isVaild == false) {
-                return; // 不執行後續動作
-            }
-
-            var now = new Date();
-
-            //將日期時間對象轉換為適合SQL Server的格式 (YYYY-MM-DD HH:MI:SS)
-            var formattedDateTime = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
-
-            var newMember = {
-                Name: Name,
-                MemberAccount: MemberAccount,
-                Gender: Gender,
-                Birthday: Birthday,
-                Email: Email,
-                PhoneNumber: PhoneNumber,
-                Address: Address,
-                MemberStatus: MemberStatus,
-                RegistrationTime: formattedDateTime
-            };
-
-            try {
+                //----------------AJAX
                 $.ajax({
-                    url: '/AdminCMS/Member/AddMember',
+                    url: '@Url.Action("GetMemberDetails", "Member")',
+                    type: 'GET',
+                    data: { id: memberId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        // console.log(data);
+
+                        function formatDateTime(dateTimeString) {
+                            var dateTime = new Date(dateTimeString);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
+                            var hours = String(dateTime.getHours()).padStart(2, '0');
+                            var minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                            var seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+                            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                        }
+
+                        function formatDate(date) {
+                            var dateTime = new Date(date);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
+
+                            return year + '-' + month + '-' + day;
+                        }
+
+                        //============基本資料
+                        $('#memberId').text("ID：" + data.data.memberId);
+                        $('#name').text("姓名：" + data.data.name);
+                        $('#memberAccount').text("帳號：" + data.data.memberAccount);
+                        $('#gender').text("性別：" + data.data.gender);
+
+                        var formattedBirthday = formatDate(data.data.birthday);
+                        $('#birthday').text("生日：" + formattedBirthday);
+
+                        $('#email').text("E-mail：" + data.data.email);
+                        $('#phoneNumber').text("電話：" + data.data.phoneNumber);
+                        $('#address').text("地址：" + data.data.address);
+
+                        var formattedregistration = formatDateTime(data.data.registrationTime);
+                        $('#registrationTime').text("註冊日期：" + formattedregistration);
+
+                        var formattedlastLoginTime = formatDateTime(data.data.lastLoginTime);
+                        $('#lastLoginTime').text("最後登入：" + formattedlastLoginTime);
+
+                        if (data.data.memberStatus == true) {
+                            $('#memberStatus').text("會員狀態：開放");
+                        } else {
+                            $('#memberStatus').text("會員狀態：凍結");
+                        }
+
+                        //============遊戲資料
+                        $('#levelId').text("等級：" + data.data.levelId);
+                        $('#characterName').text("遊戲角色名稱：" + data.data.characterName);
+                        $('#catCoinQuantity').text("貓幣數量：" + data.data.catCoinQuantity);
+                        $('#loyaltyPoints').text("紅利數量：" + data.data.loyaltyPoints);
+                        $('#runGameHighestScore').text("遊戲最高分數：" + data.data.runGameHighestScore);
+
+                        //===========常用地址
+                        var CAContainer = $("#commonaddressContainer");
+                        CAContainer.text(""); // 每次抓都要reset掉，讓之前append的地址才不會存在
+
+                        if (data.data.shopCommonAddressData.length != 0) {
+                            for (var i = 0; i < data.data.shopCommonAddressData.length; i++) {
+
+                                var item = data.data.shopCommonAddressData[i];
+
+                                var itemDiv = document.createElement("div");
+                                var addressNumber = i + 1; //計算幾筆資料的數字
+
+                                itemDiv.innerHTML = `
+                                                                                                                                                                                        <h5><b>常用地址－${addressNumber}</b></h5>
+                                                                                                                                                                                        <p>收件人姓名: ${item.recipientName}</p>
+                                                                                                                                                                                        <p>連絡電話: ${item.recipientPhone}</p>
+                                                                                                                                                                                        <p>收件地址: ${item.recipientAddress}</p>
+                                                                                                                                                                                <hr>
+                                                                                                                                                                            `;
+                                CAContainer.append(itemDiv);
+                            }
+                        } else {
+                            CAContainer.text("此會員尚未新增任何常用地址");
+                        }
+
+
+                        //===========優惠券專區
+                        var couponContainer = $("#couponContainer");
+                        couponContainer.text("");
+
+                        if (data.data.shopCommonAddressData.length != 0) {
+                            for (var i = 0; i < data.data.shopMemberCouponData.length; i++) {
+
+                                var item = data.data.shopMemberCouponData[i];
+
+                                var itemDiv = document.createElement("div");
+                                var couponNumber = i + 1; //計算幾筆資料的數字
+
+                                var formattedExpiryDate = formatDate(item.coupon.expiryDate);
+
+                                if (item.couponStatusId === "true") {
+                                    item.couponStatusId = "已使用";
+                                } else {
+                                    item.couponStatusId = "未使用";
+                                }
+
+                                itemDiv.innerHTML = `
+                                                                                                                                                                                                <h5><b>優惠券第${couponNumber}張</b></h5>
+                                                                                                                                                                                                        <p>優惠券ID: ${item.couponId}</p>
+                                                                                                                                                                                                                <p>優惠券內容: ${item.coupon.couponContent}</p>
+                                                                                                                                                                                                                                <p>有效日期: ${formattedExpiryDate}</p>
+                                                                                                                                                                                                        <p>優惠券狀態: ${item.couponStatusId}</p>
+                                                                                                                                                                                <hr>
+                                                                                                                                                                            `;
+                                couponContainer.append(itemDiv);
+                            }
+                        } else {
+                            couponContainer.text("此會員未持有優惠券");
+                        }
+                    },
+                    error: function (error, a, b) {
+                        console.log(error);
+                        console.log(a);
+                        console.log(b);
+                        console.log("Error retrieving member details.");
+                    }
+                });
+            });
+
+            //==================按下「編輯」按鈕的點擊事件處理
+            $('#member-table').on('click', '.edit_memberbtn', function () {
+                var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+
+                //----------------AJAX
+                $.ajax({
+                    url: '@Url.Action("EditMemeber", "Member")',
+                    type: 'GET',
+                    data: { id: memberId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        console.log(data);
+
+                        //==================基本資料
+                        $('#memberId_edit').val(data.data.memberId);
+                        $('#name_edit').val(data.data.name);
+                        $('#memberAccount_edit').val(data.data.memberAccount);
+                        $('#gender_edit').val(data.data.gender);
+
+                        //生日日期轉換：use Moment.js
+                        var date = moment(data.data.birthday);
+                        // 格式化日期為 yyyy-MM-dd 格式
+                        var formattedDate = date.format("YYYY-MM-DD");
+                        $('#birthday_edit').val(formattedDate);
+
+                        $('#email_edit').val(data.data.email);
+                        $('#phoneNumber_edit').val(data.data.phoneNumber);
+                        $('#address_edit').val(data.data.address);
+
+                        if (data.data.memberStatus == null) {
+                            $('#memberStatus_edit').val("true");
+                        } else {
+                            $('#memberStatus_edit').val(data.data.memberStatus.toString());
+                        }
+
+                        //==================遊戲資料
+                        $('#levelId_edit').val(data.data.levelId);
+                        $('#characterName_edit').val(data.data.characterName);
+                        $('#catCoinQuantity_edit').val(data.data.catCoinQuantity);
+                        $('#loyaltyPoints_edit').val(data.data.loyaltyPoints);
+                    }
+                });
+            });
+
+            //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
+            $('.EditMember_Save').click(function () {
+
+                //==============送出前先驗證信箱格式
+                var email = $('#email_edit').val();
+                const emailRegex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
+
+                if (!emailRegex.test(email)) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'email格式有誤',
+                        text: '請重新輸入'
+                    });
+                    return;
+                }
+
+                //==================基本資料
+                var MemberId = $('#memberId_edit').val();
+                var Name = $('#name_edit').val();
+                var MemberAccount = $('#memberAccount_edit').val();
+                var Gender = $('#gender_edit').val();
+                var Birthday = $('#birthday_edit').val();
+
+                var Email = $('#email_edit').val();
+                var PhoneNumber = $('#phoneNumber_edit').val();
+                var Address = $('#address_edit').val();
+                var MemberStatus = $('#memberStatus_edit').val();
+
+                //==================遊戲資料
+                var LevelId = $('#levelId_edit').val();
+                var CharacterName = $('#characterName_edit').val();
+                var CatCoinQuantity = $('#catCoinQuantity_edit').val();
+                var LoyaltyPoints = $('#loyaltyPoints_edit').val();
+
+                var editMember = {
+                    MemberId: MemberId,
+                    Name: Name,
+                    MemberAccount: MemberAccount,
+                    Gender: Gender,
+                    Birthday: Birthday,
+                    Email: Email,
+                    PhoneNumber: PhoneNumber,
+                    Address: Address,
+                    MemberStatus: MemberStatus,
+                    LevelId: LevelId,
+                    CharacterName: CharacterName,
+                    CatCoinQuantity: CatCoinQuantity,
+                    LoyaltyPoints: LoyaltyPoints
+                };
+
+                $.ajax({
+                    url: '/AdminCMS/Member/UpdateMember',
                     type: 'POST',
-                    data: { newMember: newMember },
+                    data: { editMember: editMember },
                     success: function (response) {
-                        // console.log(result)
                         if (response.success) {
+                            // 更新成功的處理
+                            // 顯示成功訊息
                             Swal.fire({
                                 icon: 'success',
-                                title: '新增成功',
+                                title: '編輯成功',
                                 text: response.message
                             });
 
                             // 關閉modal
-                            $('#addMemberModalToggle').modal('hide');
+                            $('#EditModalToggle').modal('hide');
 
                             // 重新整理dataTable
                             $('#member-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
                         } else {
+                            // 更新失敗
                             Swal.fire({
                                 icon: 'error',
-                                title: '錯誤',
+                                title: '失敗',
                                 text: response.message
                             });
                         }
                     },
-                    error: function (xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '錯誤',
-                            text: "An error occurred: " + xhr.responseText
-                        });
+                    error: function (error) {
+                        // 錯誤處理
+                        // 會員編輯失敗，顯示錯誤訊息
+                        console.log(error);
                     }
                 });
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        });
+            })
 
-                                                                                                                            // function userDelete() {
-                                                                                                                            //     Swal.fire({
-                                                                                                                            //         title: '確定要刪除嗎?',
-                                                                                                                            //         icon: 'warning',
-                                                                                                                            //         showCancelButton: true,
-                                                                                                                            //         confirmButtonColor: '#3085d6',
-                                                                                                                            //         cancelButtonColor: '#d33',
-                                                                                                                            //         confirmButtonText: 'Yes, delete it!'
-                                                                                                                            //     }).then((result) => {
-                                                                                                                            //         if (result.isConfirmed) {
-                                                                                                                            //             Swal.fire(
-                                                                                                                            //                 'Deleted!',
-                                                                                                                            //                 'Your file has been deleted.',
-                                                                                                                            //                 'success'
-                                                                                                                            //             )
-                                                                                                                            //         }
-                                                                                                                            //     })
-                                                                                                                            // }
-    </script>
-}
+
+            var CheckAccResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+
+            //====================離開input 驗證帳號是否重複
+            function CheckDuplicateAccount() {
+                var account = $('#CreatMemberAccount').val(); //抓到使用者輸入的帳號
+
+                if (account === "") { //當輸入框為空時，隱藏錯誤消息
+                    $('#error1').text("");
+                    CheckAccResult = "";
+                    return;
+                }
+
+                //===============打API驗證姓名是否已存在
+                //資料庫有的帳號：catCha2、catCha
+                $.ajax({
+                    url: '/AdminCMS/Member/CheckDuplicateAccount',
+                    type: 'GET',
+                    data: { account: account },
+                    success: function (result) {
+                        // console.log(result)
+                        CheckAccResult = result.isDuplicate;
+
+                        if (result.isDuplicate) { //如果等於true
+                            CheckAccResult = result.isDuplicate;
+                            $('#error1').text("此帳號已存在");
+                        } else if (isVaild_acc == false) {
+                            $('#error1').text("Email格式不正確");
+                        } else {
+                            CheckAccResult = result.isDuplicate;
+                            $('#error1').text("");
+                        }
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            }
+
+            //====================新增會員demo鍵
+            function setValue() {
+                var Name = $('#CreatName').val("王小明");
+                var MemberAccount = $('#CreatMemberAccount').val("catcha@yahoo.com.tw");
+                var Password = $('#CreatMemberPassword').val("12345678a");
+                var CheckPassword = $('#CreatMemberCheckPassword').val("12345678");
+                var Birthday = $('#CreatBirthday').val("1992-10-04");
+                var Email = $('#CreatEmail').val("catcha");
+                var PhoneNumber = $('#CreatPhoneNumber').val("0912345678");
+                var Address = $('#CreatAddress').val("235新北市中和區中山路二段347號");
+            }
+
+            //====================新增會員
+            $('#CreatMember').click(function () {
+
+                var Name = $('#CreatName').val();
+                var MemberAccount = $('#CreatMemberAccount').val();
+                var Password = $('#CreatMemberPassword').val();
+                var CheckPassword = $('#CreatMemberCheckPassword').val();
+                var Gender = $('#CreatGender').val();
+                var Birthday = $('#CreatBirthday').val();
+                var Email = $('#CreatEmail').val();
+                var PhoneNumber = $('#CreatPhoneNumber').val();
+                var Address = $('#CreatAddress').val();
+                var MemberStatus = $('#CreatMemberStatus').val();
+
+                CheckDuplicateAccount();
+                checkMail();
+                checkPassword();
+                isValidCheckPassword();
+
+                // 檢查必填欄位是否有值
+                if (!Name || !MemberAccount || !Password || !CheckPassword || !Gender || !Birthday || !Email || !PhoneNumber) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: '請填寫所有必填欄位。'
+                    });
+                    return;
+                }
+
+                // 檢查帳號是否已存在或者isVaild只要是false就return
+                if (CheckAccResult == true || isVaild == false || isVaild_mail == false || isVaild_acc == false) {
+                    return;
+                }
+
+                var now = new Date();
+
+                //將日期時間對象轉換為適合SQL Server的格式 (YYYY-MM-DD HH:MI:SS)
+                var formattedDateTime = now.toLocaleString('en-US', { timeZone: 'Asia/Taipei' });
+
+                var newMember = {
+                    Name: Name,
+                    MemberAccount: MemberAccount,
+                    Gender: Gender,
+                    Birthday: Birthday,
+                    Email: Email,
+                    PhoneNumber: PhoneNumber,
+                    Address: Address,
+                    MemberStatus: MemberStatus,
+                    RegistrationTime: formattedDateTime
+                };
+
+                try {
+                    $.ajax({
+                        url: '/AdminCMS/Member/AddMember',
+                        type: 'POST',
+                        data: { newMember: newMember },
+                        success: function (response) {
+                            // console.log(result)
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    text: response.message
+                                });
+
+                                // 關閉modal
+                                $('#addMemberModalToggle').modal('hide');
+
+                                // 重新整理dataTable
+                                $('#member-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '錯誤',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: "An error occurred: " + xhr.responseText
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+
+                                                                                                                                                    // function userDelete() {
+                                                                                                                                                    //     Swal.fire({
+                                                                                                                                                    //         title: '確定要刪除嗎?',
+                                                                                                                                                    //         icon: 'warning',
+                                                                                                                                                    //         showCancelButton: true,
+                                                                                                                                                    //         confirmButtonColor: '#3085d6',
+                                                                                                                                                    //         cancelButtonColor: '#d33',
+                                                                                                                                                    //         confirmButtonText: 'Yes, delete it!'
+                                                                                                                                                    //     }).then((result) => {
+                                                                                                                                                    //         if (result.isConfirmed) {
+                                                                                                                                                    //             Swal.fire(
+                                                                                                                                                    //                 'Deleted!',
+                                                                                                                                                    //                 'Your file has been deleted.',
+                                                                                                                                                    //                 'success'
+                                                                                                                                                    //             )
+                                                                                                                                                    //         }
+                                                                                                                                                    //     })
+                                                                                                                                                    // }
+        </script>
+    }

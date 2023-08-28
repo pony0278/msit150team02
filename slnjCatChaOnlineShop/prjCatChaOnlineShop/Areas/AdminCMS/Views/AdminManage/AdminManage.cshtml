@@ -49,13 +49,15 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">新增管理員</h5>
+                    <button class="btn btn-danger ms-2" onclick="setValue()">demo</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group mb-2">
                         <label>管理員姓名：</label><span class="RequiredText"> *必填</span>
-                        <input type="text" class="form-control" id="AddAdminUsername" name="AdminUsername">
+                        <input type="text" class="form-control" id="AddAdminUsername" name="AdminUsername" onblur="CheckDuplicateAccount()" onfocus="hideErrorMessage()">
+                        <span id="duplicateNameMessage" style="display:none;color:red;" class="alert alert-danger"></span>
                     </div>
 
                     <div class="form-group mb-2">
@@ -178,59 +180,53 @@
                     $('#AddAdminPassword').attr('type', 'password');
                 }
             });
-
-            function validatePassword(input, error) {
-                input.on("blur", function () {
-                    if (!isValidPassword(input.val())) {
-                        error.text("密碼需包含至少一個英文字母和一個數字，且長度至少8字元");
-                        isVaild = false;
-                    } else {
-                        error.text("");
-                        isVaild = true;
-                    }
-                });
-            }
-
-            function validateCheckPassword(input, error) {
-                input.on("blur", function () {
-                    if (!isValidCheckPassword(input.val())) {
-                        error.text("密碼與確認密碼不相符");
-                        isVaild = false;
-                    } else {
-                        error.text("");
-                        isVaild = true;
-                    }
-                });
-            }
-
-            //==================驗證密碼格式是否正確
-            function isValidPassword(password) {
-                // 包含至少一個英文字母和一個數字和至少8字元
-                if (password.length < 8) {
-                    return false;
-                } else {
-                    const containsLetter = /[a-zA-Z]/.test(password);
-                    const containsNumber = /\d/.test(password);
-
-                    return containsLetter && containsNumber;
-                }
-            }
-
-            //==================驗證確認密碼與密碼兩者是否相符
-            function isValidCheckPassword(check_password) {
-                var pwd = $('#AddAdminPassword').val();
-
-                if (check_password !== pwd) {
-                    return false;
-                } else {
-                    return true;
-                }
-            }
-
-            validatePassword($("#AddAdminPassword"), $("#errorPwd"));
-            validateCheckPassword($("#AddCheckAdminPassword"), $("#errorCheckPwd"));
         });
-        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+
+
+        //==================驗證密碼
+        function checkPassword() {
+            var password = $('#AddAdminPassword').val();
+            const containsLetter = /[a-zA-Z]/.test(password);
+            const containsNumber = /\d/.test(password);
+
+            if (password.length < 8 || (!containsLetter) || (!containsNumber)) {
+                $('#errorPwd').text("密碼需包含至少一個英文字母和一個數字，且長度至少8字元");
+                isVaild = false;
+            } else {
+                $('#errorPwd').text("");
+                isVaild = true;
+            }
+        }
+
+        //=======================驗證確認密碼
+        function isValidCheckPassword() {
+            var check_password = $('#AddCheckAdminPassword').val();
+            var password = $('#AddAdminPassword').val();
+
+            if (check_password !== password) {
+                $('#errorCheckPwd').text("密碼與確認密碼不相符");
+                isVaild = false;
+            } else {
+                $('#errorCheckPwd').text("");
+                isVaild = true;
+            }
+        }
+
+        function validatePassword(input, error) {
+            input.on("blur", function () {
+                checkPassword();
+            });
+        }
+
+        function validateCheckPassword(input, error) {
+            input.on("blur", function () {
+                isValidCheckPassword();
+            });
+        }
+
+        validatePassword($("#AddAdminPassword"), $("#errorPwd"));
+        validateCheckPassword($("#AddCheckAdminPassword"), $("#errorCheckPwd"));
+
 
         //==================datatable
         $('#admin-table').DataTable({
@@ -241,28 +237,24 @@
                 { data: 'adminUsername' },
                 { data: 'adminAccount' },
                 { data: 'adminPassword' },
-                //{
-                //    data: null,
-                //    render: function (data, type, row, meta) {
-                //        var editButton = '<button class="btn edit_memberbtn" data-bs-toggle="modal" href="#editAdminModalToggle" role="button" data-memberid="' + row.memberId + '"><i class="fas fa-edit"></i></button>';
-                //        // var deleteButton = '<button class="btn" onclick="userDelete(' + row.memberId + ')"><a href="#" id="b5"><i class="fas fa-trash-alt"></i></a></button>';
-                //        return editButton;
-                //        // return editButton + ' | ' + deleteButton;
-                //    }
-                //},
             ],
             "paging": true, //分頁功能
             responsive: true, //RWD
             "searching": false, //隱藏搜尋框
         });
 
+        var CheckAccResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+        var CheckNameResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+
         //====================離開input 驗證帳號是否重複
         function CheckDuplicateAccount() {
             var account = $('#AddAdminAccount').val(); //抓到使用者輸入的帳號
+            var name = $('#AddAdminUsername').val();
 
             if (account === "") { //當輸入框為空時，隱藏錯誤消息
                 hideErrorMessage();
                 CheckAccResult = "";
+                CheckNameResult = "";
                 return;
             }
 
@@ -270,20 +262,33 @@
             $.ajax({
                 url: '/AdminCMS/AdminManage/CheckDuplicateAccount',
                 type: 'GET',
-                data: { account: account },
+                data: { 
+                    account: account,
+                    name: name,
+                },
                 success: function (result) {
-                    // console.log(result)
-                    CheckAccResult = result.isDuplicate;
+                    console.log(result)
+                    CheckAccResult = result.isDuplicateAccount;
+                    CheckNameResult = result.isDuplicateName;
 
-                    if (result.isDuplicate) { //如果等於true
-                        CheckAccResult = result.isDuplicate;
+                    if (result.isDuplicateAccount) { //如果等於true
+                        CheckAccResult = result.isDuplicateAccount;
                         $('#duplicateMessage').text("此帳號已存在");
                         $('#duplicateMessage').css("display", "block"); //顯示錯誤訊息
-
                     } else {
-                        CheckAccResult = result.isDuplicate;
+                        CheckAccResult = result.isDuplicateAccount;
                         $('#duplicateMessage').text("");
                         $('#duplicateMessage').css("display", "none"); //顯示錯誤訊息
+                    }
+
+                    if (result.isDuplicateName) { //如果等於true
+                        CheckNameResult = result.isDuplicateName;
+                        $('#duplicateNameMessage').text("此姓名已存在");
+                        $('#duplicateNameMessage').css("display", "block"); //顯示錯誤訊息
+                    } else {
+                        CheckNameResult = result.isDuplicateName;
+                        $('#duplicateNameMessage').text("");
+                        $('#duplicateNameMessage').css("display", "none"); //顯示錯誤訊息
                     }
                 },
                 error: function (error) {
@@ -294,6 +299,16 @@
 
         function hideErrorMessage() {
             $('#duplicateMessage').css("display", "none");
+            $('#duplicateNameMessage').css("display", "none");
+        }
+
+        //====================新增會員demo鍵
+        function setValue() {
+            var AdminUsername = $('#AddAdminUsername').val("管理員測試");
+            var AdminAccount = $('#AddAdminAccount').val("catcha");
+            var AdminPassword = $('#AddAdminPassword').val("123456");
+            var CheckAdminPassword = $('#AddCheckAdminPassword').val("1234567");
+
         }
 
         //====================新增管理員
@@ -302,6 +317,10 @@
             var AdminAccount = $('#AddAdminAccount').val();
             var AdminPassword = $('#AddAdminPassword').val();
             var CheckAdminPassword = $('#AddCheckAdminPassword').val();
+
+            CheckDuplicateAccount();
+            checkPassword();
+            isValidCheckPassword();
 
             if (!AdminUsername || !AdminAccount || !AdminPassword || !CheckAdminPassword) {
                 Swal.fire({
