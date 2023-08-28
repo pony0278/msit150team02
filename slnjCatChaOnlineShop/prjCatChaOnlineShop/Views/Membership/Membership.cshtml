@@ -918,6 +918,7 @@
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
+                                    <button class="btn hvr-hover mx-2" id="complaintSubmitDemo" type="button">Demo填入訊息</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -1809,7 +1810,13 @@
 
 
                         cartLink.addEventListener('click', function () {
-                            console.log('Cart link clicked');
+                            // addToCartAjax(item.productId);
+                            fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                .then(response => response.json())
+                                .then(data => {
+                                })
+                                .catch(error => {
+                                });
                         });
 
                         cartDiv.appendChild(cartLink);
@@ -1855,6 +1862,32 @@
                 }
                 
             });
+        }
+
+        //加入購物車
+        function addToCartAjax(productId) {
+
+            var data = { pId: productId };
+
+            fetch('/ProductApi/AddToCart', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest' // 如果需要的話，可以加上這個 header
+                },
+                body: JSON.stringify(data) 
+            })
+                .then(response => response.json()) 
+                .then(result => {
+                    if (result.success) {
+                        console.log('Added to cart successfully');
+                    } else {
+                        console.error('Failed to add to cart');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
 
     </script>
@@ -1944,7 +1977,13 @@
                     selectElement.appendChild(option);
                 });
             });
-            
+
+            //Demo鍵:載入客訴訊息
+            $('#complaintSubmitDemo').click(function (event) {
+                $('#ComplaintTitle').val("訂單運送急件處理");
+                $('#ComplaintContent').val("請問我的訂單於8/28成立後付款，能於3日內收到貨嗎?貴公司是否能用急件處理，讓我能在月底收到商品呢?");
+            });
+
             //送出客訴內容
             $('#complaintSubmit').click(function (event) {
                 var selectedValue = $('#appealCategorySelect').val();

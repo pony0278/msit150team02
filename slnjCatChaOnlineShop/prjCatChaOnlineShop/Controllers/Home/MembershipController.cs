@@ -5,7 +5,12 @@ using Newtonsoft.Json;
 using NuGet.Protocol;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CDictionary;
+using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
+using System.Security.Cryptography;
+using System.Text.Json;
+
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -15,11 +20,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
     public class MembershipController : Controller
     {
         private readonly cachaContext _context;
+        private readonly ProductService _productService;
 
         //建構子先載入資料
-        public MembershipController(cachaContext context)
+        public MembershipController(cachaContext context, ProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         public IActionResult Membership()
@@ -292,7 +299,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         //加入購物車
-        public IActionResult AddShopCart(int productid, ShopReturnDataTable returnn)
+        public IActionResult AddToCart(int pId)
         {
             /*
                try
@@ -319,7 +326,33 @@ namespace prjCatChaOnlineShop.Controllers.Home
                    return Content(ex.Message);
                }
             */
+
+            var prodItem = _productService.getProductById(pId);
+            var cart = GetCartFromSession();
+            _productService.addCartItem(cart, prodItem, 1);
+            SaveCart(cart);
+
             return null;
+        }
+
+        private void SaveCart(List<CCartItem> cart)
+        {
+            string json = System.Text.Json.JsonSerializer.Serialize(cart);
+            HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
+        }
+
+        private List<CCartItem> GetCartFromSession()
+        {
+            string json = "";
+            if (HttpContext.Session.Keys.Contains(CDictionary.SK_PURCHASED_PRODUCTS_LIST))
+            {
+                json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+                return System.Text.Json.JsonSerializer.Deserialize<List<CCartItem>>(json);
+            }
+            else
+            {
+                return new List<CCartItem>();
+            }
         }
 
         //取得申訴類型放到客服中心的頁面

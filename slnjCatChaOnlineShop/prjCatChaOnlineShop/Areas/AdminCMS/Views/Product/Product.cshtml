@@ -464,6 +464,8 @@
                     type: 'GET',
                     success: function (response) {
                         if (response.success) {
+                            $('#editor-img').empty();
+                            $("#editor-imgID").empty();
                             $('#editor-id').val(response.data.productId);
                             $('#editor-name').val(response.data.productName);
                             $('#editor-description').val(response.data.productDescription);
@@ -487,7 +489,7 @@
                                 var container = $('<div class="image-container mt-2">').css('display', 'flex');
                                 container.append(spanImgID, frontCover, img);
                                 $('#editor-img').append(container);
-                                $("#editor-imgID").append(selectID)
+                                $("#editor-imgID").append(selectID);
                             });
                             console.log(response.data)
                         } else {

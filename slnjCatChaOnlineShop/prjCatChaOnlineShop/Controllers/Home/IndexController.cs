@@ -51,10 +51,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult GetReivews()
         {
             var data = _context.ShopProductReviewTable
-                .Where(x=>x.ProductRating == 5 && x.HideReview != true)
+                .Where(x=>x.ProductRating == 5 && x.HideReview != true || x.HideReview == null)
                 .Take(5).Select(x=> new {
                     productRating = x.ProductRating,
                     productID = x.ProductId,
+                    productName = x.Product.ProductName,
                     Member = x.Member.Name,
                     productPhoto = x.Product.ShopProductImageTable.FirstOrDefault().ProductPhoto,
                 }).ToList();
