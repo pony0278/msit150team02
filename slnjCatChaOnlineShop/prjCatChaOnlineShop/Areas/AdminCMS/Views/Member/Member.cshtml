@@ -157,6 +157,7 @@
                 <table id="member-table" class="table table-striped nowrap" style="width:100%">
                     <thead>
                         <tr>
+                            <th></th>
                             <th>ID</th>
                             <th>姓名</th>
                             <th>帳號</th>
@@ -589,6 +590,13 @@
                 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
             },
             "columns": [
+                {
+                    data: null, // Checkbox列
+                    orderable: false, // Disable sorting for this column
+                    render: function (data, type, row, meta) {
+                        return '<input type="checkbox" class="row-checkbox" data-memberid="' + row.memberId + '">';
+                    }
+                },
                 //這裡要注意json裡面是大寫還是小寫
                 { data: 'memberId' },
                 { data: 'name' },
@@ -625,7 +633,16 @@
                 { targets: 7, searchable: true },
                 // { targets: 5, searchable: true }
                 // 其他列...
+                {
+                    orderable: false,
+                    className: 'select-checkbox',
+                    targets: 0
+                }
             ],
+            select: {
+                style: 'os',
+                selector: 'td:first-child'
+            },
             "paging": true, //分頁功能
             responsive: true, //RWD
             // "searching": false, //隱藏搜尋框
