@@ -72,7 +72,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             return Json(new { success = true });
         }
-        //TODO...改變選項
+        
         [HttpPost]
         public IActionResult CartEditAttribute(string oldAttribute, string newAttribute, int pId)
         {
@@ -80,32 +80,30 @@ namespace prjCatChaOnlineShop.Controllers.Home
             List<CCartItem> cart;
             json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-            var existingCartItems = cart.Where(item => item.cId == pId && item.c子項目 == newAttribute).ToList();
-
-            if (existingCartItems.Any())
+            //找到跟要調整的子選項一模一樣的商品
+            var existingCartItem = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == newAttribute);
+            //找到正在調整的的商品
+            var oldCartItem = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
+            if (existingCartItem != null)
             {
-                int? totalQuantity = existingCartItems.Sum(item => item.c數量);
+                int? totalQuantity = existingCartItem.c數量+oldCartItem.c數量;
                 // 移除所有重複項目，只保留第一個項目
-                foreach (var itemToRemove in existingCartItems)
-                {
-                    // 移除購物車中所有項目
-                    cart.Remove(itemToRemove);
-                }
-                // 將第一個項目重新加入購物車
-                var firstCartItem = existingCartItems.First();
-                firstCartItem.c數量 = totalQuantity;
+                cart.Remove(existingCartItem);
+                cart.Remove(oldCartItem);
+                var prodItem = _productService.getProductById(pId);
+                _productService.detailsAddCartItem(cart, prodItem, newAttribute, totalQuantity);
+                
+
                 // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
                 SaveCart(cart);
             }
             else
             {
-                //找到原本加入購物車的商品
-                var oldCartItems = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
                 //先將新的加入
                 var prodItem = _productService.getProductById(pId);
-                _productService.detailsAddCartItem(cart, prodItem, newAttribute, oldCartItems.c數量);
+                _productService.detailsAddCartItem(cart, prodItem, newAttribute, oldCartItem.c數量);
                 //再刪除舊的
-                cart.Remove(oldCartItems);
+                cart.Remove(oldCartItem);
                 
                 SaveCart(cart);
             }
