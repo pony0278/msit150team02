@@ -18,7 +18,7 @@
 <!--提示訊息-->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
 
-    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
             <img src="..." class="rounded me-2" alt="...">
             <strong class="me-auto">訊息</strong>
@@ -283,12 +283,12 @@
                         foreach(var a in Model.recommands){
                             <div class="item">
                                 <div class="products-single-custom fix">
-                                    <a asp-controller="Index" asp-action="ShopDetail" title="@a.pName">
+                                    <a href="@Url.Action("ShopDetail", new {pId =  a.pId })" title="@a.pName">
                                         <div class="box-img-hover">
                                             <div class="type-lb">
                                                 <p class="sale">Sale</p>
                                             </div>
-                                            <img src="@a.p圖片路徑" class="img-fluid shop-image" alt="Image" />
+                                            <img src="@a.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
 
                                         </div>
                                     </a>

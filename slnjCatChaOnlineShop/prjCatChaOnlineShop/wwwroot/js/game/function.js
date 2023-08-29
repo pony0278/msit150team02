@@ -21,7 +21,14 @@ function initialize() {
                 UserName = data[0].characterName; //登入時載入使用者名稱
                 Ccoin = gachaTextCCoin.innerHTML = data[0].catCoinQuantity; //貓幣數量
                 Ruby = gachaTextRuby.innerHTML = data[0].loyaltyPoints; //紅利數量
-                hightestScore = data[0].runGameHighestScore//小遊戲最高分數
+
+                if (data[0].runGameHighestScore == null) {//小遊戲最高分數
+                    hightestScore = 0;
+                }
+                else {
+                    hightestScore = data[0].runGameHighestScore
+                }
+              
 
                 if (data[0].gameItemInfo.find(item => item.productId === 7))
                     milkCount = data[0].gameItemInfo.find(item => item.productId === 7).quantityOfInGameItems; //牛奶數量id7
