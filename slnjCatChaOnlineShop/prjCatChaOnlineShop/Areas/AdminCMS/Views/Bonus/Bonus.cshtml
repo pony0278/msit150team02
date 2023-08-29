@@ -96,10 +96,10 @@
 
                         <div class="col-md-6">
                             <label>是否可使用：</label>
-                            <select class="form-select" id="create-useable" name="Useable">
+                            <select class="form-select" id="create-usable" name="Usable">
                                 <option value="" selected disabled>請選擇狀態</option>
-                                <option value="是">是</option>
-                                <option value="否">否</option>
+                                <option value="true">是</option>
+                                <option value="false">否</option>
                              </select>
                         </div>
 
@@ -184,10 +184,10 @@
 
                                             <div class="col-md-6">
                                                 <label>是否可使用：</label>
-                                                <select class="form-select" id="edit-useable" name="Useable">
+                                                <select class="form-select" id="edit-usable" name="Usable">
                                                     <option value="" selected disabled>請選擇狀態</option>
-                                                    <option value="是">是</option>
-                                                    <option value="否">否</option>
+                                                    <option value="true">是</option>
+                                                    <option value="false">否</option>
                                                 </select>
                                             </div>
 
@@ -300,7 +300,7 @@
                 { "data": "couponContent" },
                 { "data": "expiryDate" },
                 { "data": "totalQuantity" },
-                { "data": "useable" },
+                { "data": "usable" },
                 {
                     "data": "couponId",
                     "render": function (data, type, row) {
@@ -334,7 +334,7 @@
                         $('#edit-content').val(response.data.couponContent);
                         $('#edit-expirydate').val(response.data.expiryDate);
                         $('#edit-quantity').val(response.data.totalQuantity);
-                        $('#edit-useable').val(response.data.useable);
+                        $('#edit-usable').val(response.data.usable);
                         console.log(response.data)
 
                     } else {
@@ -351,7 +351,7 @@
             const content = $('#edit-content').val();
             const expirydate = $('#edit-expirydate').val();
             const quantity = $('#edit-quantity').val();
-            const useable = $('#edit-useable').val();
+            const usable = $('#edit-usable').val();
 
             var formData = new FormData();
             formData.append("CouponId", id);
@@ -359,7 +359,7 @@
             formData.append("CouponContent", content);
             formData.append("ExpiryDate", expirydate);
             formData.append("TotalQuantity", quantity);
-            formData.append("Useable", useable);
+            formData.append("Usable", usable);
 
 
             $.ajax({
@@ -399,7 +399,7 @@
             const content = $('#create-content').val();
             const expirydate = $('#create-expirydate').val();
             const quantity = $('#create-quantity').val();
-            const useable = $('#create-useable').val();
+            const usable = $('#create-usable').val();
 
             var formData = new FormData();
             formData.append("CouponId", id);
@@ -407,7 +407,7 @@
             formData.append("CouponContent", content);
             formData.append("ExpiryDate", expirydate);
             formData.append("TotalQuantity", quantity);
-            formData.append("Useable", useable);
+            formData.append("Usable", usable);
 
 
             $.ajax({

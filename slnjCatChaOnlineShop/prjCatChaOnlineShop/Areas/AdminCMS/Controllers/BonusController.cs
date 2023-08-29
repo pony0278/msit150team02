@@ -41,7 +41,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 CouponContent = x.CouponContent,
                 ExpiryDate = x.ExpiryDate,
                 TotalQuantity = x.TotalQuantity,
-                Useable = x.Usable == null ? "未設定" : (x.Usable == true ? "是" : "否")
+                Usable = x.Usable == null ? "未設定" : (x.Usable == true ? "是" : "否")
             }).ToList();
             return Json(new { data });
         }

@@ -90,7 +90,7 @@
                                 <option value="" selected disabled>請選擇類別</option>
                                 @foreach (var category in Model.GameProductCategory)
                                 {
-                                    <option value="@category.CategoryName">@category.CategoryName</option>
+                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
                                 }
                             </select>
                         </div>
@@ -200,7 +200,7 @@
                                                 <option value="" selected disabled>請選擇類別</option>
                                                 @foreach (var category in Model.GameProductCategory)
                                                 {
-                                                    <option value="@category.CategoryName">@category.CategoryName</option>
+                                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
                                                 }
                                             </select>
                                         </div>
