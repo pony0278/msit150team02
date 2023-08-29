@@ -22,16 +22,17 @@ namespace prjCatChaOnlineShop.Services.Function
         public List<CProductItem> getProductItems()
         {
             var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
-                       join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
-                       join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
-                       join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId 
-                       select new CProductItem
-                       {
-                           pItems = p,
-                           p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
-                           p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
-                           pCategoryName = c.CategoryName,
-                       }).ToList();
+                        join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
+                        join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
+                        join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
+                        where p.Discontinued !=true
+                        select new CProductItem
+                        {
+                            pItems = p,
+                            p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
+                            p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
+                            pCategoryName = c.CategoryName,
+                        }).ToList();
 
             List<CProductItem> items = data;
             return items;
@@ -44,7 +45,7 @@ namespace prjCatChaOnlineShop.Services.Function
                        join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
                        join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
                        join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
-
+                        where p.Discontinued != true
                         select new CProductItem
                        {
                            pItems = p,
@@ -62,6 +63,7 @@ namespace prjCatChaOnlineShop.Services.Function
                        join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
                         join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
                         where c.CategoryName == categoryName
+                        where p.Discontinued != true
                         select new CProductItem
                        {
                            pItems = p,
@@ -124,7 +126,7 @@ namespace prjCatChaOnlineShop.Services.Function
                 cart.Add(cartItem);
             }
         }
-        public void detailsAddCartItem(List<CCartItem> cart, CProductItem prodItem, string option, int count)
+        public void detailsAddCartItem(List<CCartItem> cart, CProductItem prodItem, string option, int? count)
         {
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId&&item.c子項目==option);
             if (existingCartItem != null)

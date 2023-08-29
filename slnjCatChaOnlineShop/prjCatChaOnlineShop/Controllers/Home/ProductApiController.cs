@@ -70,7 +70,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
             SaveCart(cart);
 
-            return RedirectToAction("Cart");
+            return Json(new { success = true });
         }
         //TODO...改變選項
         [HttpPost]
@@ -99,8 +99,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             else
             {
-                var changCartItems = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
-                changCartItems.c子項目 = newAttribute;
+                //找到原本加入購物車的商品
+                var oldCartItems = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
+                //先將新的加入
+                var prodItem = _productService.getProductById(pId);
+                _productService.detailsAddCartItem(cart, prodItem, newAttribute, oldCartItems.c數量);
+                //再刪除舊的
+                cart.Remove(oldCartItems);
+                
                 SaveCart(cart);
             }
             // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
