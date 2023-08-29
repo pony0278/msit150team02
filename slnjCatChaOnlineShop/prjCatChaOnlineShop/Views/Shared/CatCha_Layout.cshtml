@@ -82,16 +82,33 @@
                                 <span class="customRule for_header_twoIcon">3</span>
                             </a>
                         </li>
-                        <li class="Login">
-                            <a asp-controller="MemberLogin" asp-action="Login">
-                                <span class="LoginText">登入/註冊</span>
-                            </a>
-                        </li>
-                        <li class="Login">
-                            <a asp-controller="Index" asp-action="Index">
-                                <span class="Logout">登出</span>
-                            </a>
-                        </li>
+                        @{
+                            var userName = ViewBag.UserName as string;
+
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">Hello, @userName</span>
+                                    </a>
+                                </li>
+                                <li class="Logout">
+                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                            <span class="LogoutText">登出</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">登入/註冊</span>
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
 
@@ -110,7 +127,7 @@
                         </li>
                         
                         @{
-                            var userName = ViewBag.UserName as string;
+                           
 
                             if (!string.IsNullOrEmpty(userName))
                             {
