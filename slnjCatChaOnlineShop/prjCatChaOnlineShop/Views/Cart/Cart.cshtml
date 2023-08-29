@@ -204,6 +204,8 @@
     //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var inputQuantity = $('.input-quantity');
         var inputAttr = $('.input-attr');
+        
+
     inputQuantity.on('change', function () {
         var newValue = $(this).val();// 獲取輸入的新值
         var attr = inputAttr.val();//獲取選到的值
@@ -224,25 +226,36 @@
         });
     });
 
+        
     //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
-        inputAttr.on('change', function () {
-        var newAttr = $(this).val();// 獲取輸入的新值
-        var productId = $(this).data('product-id')
+        var oldAttr; // 儲存舊值的變數
+
+        // 在點擊下拉選單時更新舊值變數
+        
+        inputAttrinputAttr.on('focus', function () {
+            // 在輸入框獲取焦點時，將當前的值存入舊值變數中
+            oldAttr = $(this).val();
+        }).on('change', function () {
+            var newAttr = $(this).val(); // 獲取輸入的新值
+
+            var productId = $(this).data('product-id');
             console.log('New attr:', newAttr);
-        // 在這裡可以使用 Ajax 將新值傳回後端
-        $.ajax({
-            url: '/ProductApi/CartEditAttribute',
-            type: 'POST',
-            data: { newAttribute: newAttr, pId: productId },
-            dataType: 'json',
-            success: function (response) {
-                console.log('Quantity updated:', response.message);
-            },
-            error: function (error) {
-                console.error('Ajax Error:', error);
-            }
+            console.log('New attr:', oldAttr);
+            // 在這裡可以使用 Ajax 將新值和舊值傳回後端
+            $.ajax({
+                url: '/ProductApi/CartEditAttribute',
+                type: 'POST',
+                data: { oldAttribute: oldAttr, newAttribute: newAttr, pId: productId },
+                dataType: 'json',
+                success: function (response) {
+                    // 重新整理頁面
+                    location.reload();
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
         });
-    });
         // 點擊商品時獲取識別ID
         var goToDetail = $('#goToDetail');
 

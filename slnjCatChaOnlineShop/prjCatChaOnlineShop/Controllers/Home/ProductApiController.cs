@@ -21,12 +21,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly IWebHostEnvironment _host;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ProductService _productService;
-        public ProductApiController(cachaContext context, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
+        private readonly CheckoutService _checkoutService;
+        public ProductApiController(cachaContext context, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService, CheckoutService checkoutService)
         {
             _context = context;
             _host = host;
             _httpContextAccessor = httpContextAccessor;
             _productService = productService;
+            _checkoutService = checkoutService;
 
         }
         public IActionResult Index()
@@ -72,52 +74,78 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         //TODO...改變選項
         [HttpPost]
-        public IActionResult CartEditAttribute(string newAttribute, int pId)
+        public IActionResult CartEditAttribute(string oldAttribute, string newAttribute, int pId)
         {
             string json = "";
             List<CCartItem> cart;
             json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-            var existingCartItem = cart.FirstOrDefault(item => item.cId == pId);
-            existingCartItem.c子項目 = newAttribute;
-            // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
-            SaveCart(cart);
+            var existingCartItems = cart.Where(item => item.cId == pId && item.c子項目 == newAttribute).ToList();
 
-            return RedirectToAction("Cart");
+            if (existingCartItems.Any())
+            {
+                int? totalQuantity = existingCartItems.Sum(item => item.c數量);
+                // 移除所有重複項目，只保留第一個項目
+                foreach (var itemToRemove in existingCartItems)
+                {
+                    // 移除購物車中所有項目
+                    cart.Remove(itemToRemove);
+                }
+                // 將第一個項目重新加入購物車
+                var firstCartItem = existingCartItems.First();
+                firstCartItem.c數量 = totalQuantity;
+                // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
+                SaveCart(cart);
+            }
+            else
+            {
+                var changCartItems = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
+                changCartItems.c子項目 = newAttribute;
+                SaveCart(cart);
+            }
+            // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
+            return Json(new { success = true});
         }
         [HttpPost]
         public IActionResult AddToCart(int pId)
         {
-            var prodItem = _productService.getProductById(pId);
+            if (GetCurrentMemberId() != null)
+            {
+                var prodItem = _productService.getProductById(pId);
 
-            var cart = GetCartFromSession();
+                var cart = GetCartFromSession();
 
 
-            // 調用簡化方法，傳入產品物件和數量
-            _productService.addCartItem(cart, prodItem, 1);
-            SaveCart(cart);
-            return RedirectToAction("Shop");
+                // 調用簡化方法，傳入產品物件和數量
+                _productService.addCartItem(cart, prodItem, 1);
+                SaveCart(cart);
+                return Json(new { success = true, message = "已加入購物車!" });
+            }
+            return Json(new { success = false, message="請先登入!" });
         }
 
         [HttpPost]
         public IActionResult DetailsAddToCart(int pId, string attr, int count)
         {
-            
-           
-            var prodItem = _productService.getProductById(pId);
-            // 接下來進行購物車處理...
-            var cart = GetCartFromSession();
+
+            if (GetCurrentMemberId() != null)
+            {
+                var prodItem = _productService.getProductById(pId);
+                // 接下來進行購物車處理...
+                var cart = GetCartFromSession();
 
 
-            // 調用簡化方法，傳入產品物件和數量
-            _productService.detailsAddCartItem(cart, prodItem, attr, count);
-            SaveCart(cart);
+                // 調用簡化方法，傳入產品物件和數量
+                _productService.detailsAddCartItem(cart, prodItem, attr, count);
+                SaveCart(cart);
 
 
-            return RedirectToAction("ShopDetail");
+                return Json(new { success = true, message = "已加入購物車!" });
+            }
+            return Json(new { success = false, message = "請先登入!" });
 
         }
-        
+
 
         private List<CCartItem> GetCartFromSession()
         {
@@ -149,35 +177,50 @@ namespace prjCatChaOnlineShop.Controllers.Home
             SaveCart(cart);
             return RedirectToAction("Shop");
         }
+        //找到會員ID
+        private int? GetCurrentMemberId()
+        {
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            if (memberInfoJson != null)
+            {
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                return memberInfo.MemberId;
+            }
+
+            return null;
+        }
 
         public IActionResult AddToWishlist(int? pId)
         {
-            //TODO...getMemberId方法(?)
-            var existingItem = (from w in _context.ShopFavoriteDataTable.AsEnumerable()
-                                where w.MemberId== 1033/*getMemberId方法(?)*/&&w.ProductId==pId
+            if(GetCurrentMemberId() != null)
+            {
+                var existingItem = (from w in _context.ShopFavoriteDataTable.AsEnumerable()
+                                where w.MemberId== GetCurrentMemberId() && w.ProductId==pId
                                 select w).FirstOrDefault();
-            //判斷是否已加入
-            if (existingItem!=null)
-            {
-                _context.ShopFavoriteDataTable.Remove(existingItem);
-            }
-            else
-            {
-                // 如果清單中沒有該 pId 的商品，則加入該商品到資料表
-                var newItem = new ShopFavoriteDataTable
+
+                //判斷是否已加入
+                if (existingItem!=null)
                 {
-                    //TODO...getMemberId方法(?)
-                    MemberId = 1033, //getMemberId();
-                    ProductId = pId,
-                    CreationDate = DateTime.Now
-                };
-                _context.ShopFavoriteDataTable.Add(newItem);
+                    _context.ShopFavoriteDataTable.Remove(existingItem);
+                }
+                else
+                {
+                    // 如果清單中沒有該 pId 的商品，則加入該商品到資料表
+                    var newItem = new ShopFavoriteDataTable
+                    {
+                    
+                        MemberId = GetCurrentMemberId(),
+                        ProductId = pId,
+                        CreationDate = DateTime.Now
+                    };
+                    _context.ShopFavoriteDataTable.Add(newItem);
+                }
+                _context.SaveChanges();
+                return Json(new { success = true });
+
             }
-            _context.SaveChanges();
-            return Json(new { success = true });
+            return Json(new { success = false, message = "請先登入!" });
         }
-
-
 
     }
 }
