@@ -505,7 +505,23 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             try
             {
+                var datas = from p in _context.ShopFavoriteDataTable
+                            where p.MemberId == 1033
+                            orderby p.CreationDate descending
+                            select new
+                            {
+                                p.Product.ProductName,
+                                p.Product.ProductPrice,
+                                p.Product.RemainingQuantity,
+                                p.Product.ProductDescription,
+                                p.Product.ProductId,
+                                p.FavoriteId,
+                                //p.Product.ShopProductImageTable.Count
+                                ProductPhoto = p.Product.ShopProductImageTable.FirstOrDefault().ProductPhoto,
+                            };
 
+
+                /*
                 var datas = from p in _context.ShopFavoriteDataTable
                             join q in _context.ShopProductImageTable on p.ProductId equals q.ProductId
                             orderby p.CreationDate descending
@@ -518,10 +534,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 p.Product.ProductDescription,
                                 p.Product.ProductId,
                                 p.FavoriteId,
-                                p.Product.ProductImage1,
                                 q.ProductPhoto
                             };
-
+                */
 
                 if (datas.Any())
                 {

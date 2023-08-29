@@ -445,9 +445,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-body" style="min-height: 400px;">
-                        <div class="tab-content d-flex flex-column" id="nav-tabContent">
-                            <div class="tab-pane fade show active flex-grow-1" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
+                    <div class="modal-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
                                 <table class="table table-bordered table-hover" id="couponTable">
                                     <thead class="table-warning  text-center">
                                         <tr>
@@ -461,7 +461,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="tab-pane fade flex-grow-1" id="nav-invalid" role="tabpanel" aria-labelledby="nav-invalid-tab">
+                            <div class="tab-pane fade" id="nav-invalid" role="tabpanel" aria-labelledby="nav-invalid-tab">
                                 <table class="table table-bordered table-hover" id="invalidCouponTable">
                                     <thead class="table-warning  text-center">
                                         <tr>
@@ -480,7 +480,6 @@
                 </div>
             </div>
         </div>
-
 
         <!--彈跳視窗:更換個人照片-->
         <div class="modal fade" id="personalPictureModal">
@@ -1816,7 +1815,7 @@
                         imgContainer.className = 'image-container';
 
                         var thumbnailImage = document.createElement('img');
-                        thumbnailImage.src = item.productImage1 ? item.productImage1 : '@Url.Content("~/images/prod-eg-5.png")';
+                        thumbnailImage.src = item.productPhoto ? item.productPhoto : '@Url.Content("~/images/prod-eg-5.png")';
                         thumbnailImage.style.width = '100px';
                         thumbnailImage.style.height = 'auto';
                         thumbnailImage.classList.add('thumbnail-image', 'img-fluid');
@@ -1849,7 +1848,7 @@
                         
                         row.insertCell().textContent = item.productName;
                         row.insertCell().textContent = item.remainingQuantity;
-                        row.insertCell().textContent = "$" + item.productPrice + " / 份";
+                        row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
 
                         var cartCell = row.insertCell();
                         var deleteCell = row.insertCell();

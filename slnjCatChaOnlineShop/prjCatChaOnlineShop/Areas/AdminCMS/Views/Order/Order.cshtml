@@ -7,69 +7,76 @@
     <style>
         /*產品明細表格RWD*/
         .rwd-table {
-		 	 background: #fff;
-		 	 overflow: hidden;
-			}
+            background: #fff;
+            overflow: hidden;
+        }
 
-			.rwd-table tr:nth-of-type(2n){
-			  background: #eee;
-			}
-			.rwd-table th, 
-			.rwd-table td {
-			  margin: 0.5em 1em;
-			}
-			.rwd-table {
-			  min-width: 100%;
-			}
+            .rwd-table tr:nth-of-type(2n) {
+                background: #eee;
+            }
 
-			.rwd-table th {
-			  display: none;
-			}
+            .rwd-table th,
+            .rwd-table td {
+                margin: 0.5em 1em;
+            }
 
-			.rwd-table td {
-			  display: block;
-			}
+        .rwd-table {
+            min-width: 100%;
+        }
 
-			.rwd-table td:before {
-			  content: attr(data-th) " : ";
-			  font-weight: bold;
-			  width: 6.5em;
-			  display: inline-block;
-			}
+            .rwd-table th {
+                display: none;
+            }
 
-			.rwd-table th, .rwd-table td {
-			  text-align: left;
-			}
+            .rwd-table td {
+                display: block;
+            }
 
-			.rwd-table th, .rwd-table td:before {
+                .rwd-table td:before {
+                    content: attr(data-th) " : ";
+                    font-weight: bold;
+                    width: 6.5em;
+                    display: inline-block;
+                }
+
+            .rwd-table th, .rwd-table td {
+                text-align: left;
+            }
+
+                .rwd-table th, .rwd-table td:before {
                     color: #b95756;
-			  font-weight: bold;
-			}
+                    font-weight: bold;
+                }
 
-			@@media (min-width: 480px) {
-			  .rwd-table td:before {
-			    display: none;
-			  }
-			 .rwd-table th, .rwd-table td {
-			    display: table-cell;
-			    padding: 0.25em 0.5em;
-			  }
-			  .rwd-table th:first-child, 
-			  .rwd-table td:first-child {
-			    padding-left: 0;
-			  }
-			  .rwd-table th:last-child, 
-			  .rwd-table td:last-child {
-			    padding-right: 0;
-			  }
-			   .rwd-table th, 
-			   .rwd-table td {
-			    padding: 1em !important;
-			  }
+        @@media (min-width: 480px) {
+            .rwd-table td:before {
+                display: none;
+            }
+
+            .rwd-table th, .rwd-table td {
+                display: table-cell;
+                padding: 0.25em 0.5em;
+            }
+
+                .rwd-table th:first-child,
+                .rwd-table td:first-child {
+                    padding-left: 0;
+                }
+
+                .rwd-table th:last-child,
+                .rwd-table td:last-child {
+                    padding-right: 0;
+                }
+
+            .rwd-table th,
+            .rwd-table td {
+                padding: 1em !important;
+            }
+
             .rwd-table tr:nth-of-type(2n) {
                 background: #FFF !important;
             }
-			}
+        }
     </style>
 }
 
@@ -78,9 +85,9 @@
     <h2 class="mt-3">商城訂單管理</h2>
 
     <div class="search-row row mt-3">
-@*         <div class="row align-items-center mb-3">
-            訂單成立日期：
-            <input type="text" class="form-control w-25" name="dates" />
+        @*         <div class="row align-items-center mb-3">
+        訂單成立日期：
+        <input type="text" class="form-control w-25" name="dates" />
         </div> *@
         <div class="row align-items-center mb-3">
             付款方式：
@@ -150,7 +157,7 @@
                                 <!--內容表單-->
                                 <div class="row">
 
-                                     <input type="hidden" id="orderId" class="form-control" readonly disabled>
+                                    <input type="hidden" id="orderId" class="form-control" readonly disabled>
                                     <input type="hidden" id="memberId" class="form-control" readonly disabled>
 
                                     <div class="col-12 mb-3">
@@ -277,400 +284,401 @@
             </div>
         </div>
     </div>
+</div>
 
-    @section Scripts{
-        <!--日期插件-->
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-        <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+@section Scripts{
+    <!--日期插件-->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
-        <script>
-            //日期插件
-            $('input[name="dates"]').daterangepicker();
+    <script>
+        //日期插件
+        $('input[name="dates"]').daterangepicker();
 
-            //-------------------------------------------------
-            $(document).ready(function () {
-                $.ajax({
-                    url: '@Url.Action("ShowOrderTotal", "Order")',
-                    type: 'GET',
-                    success: function (data) {
-                        console.log(data);
+        //-------------------------------------------------
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("ShowOrderTotal", "Order")',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function () {
+                    console.log("error:" + error);
+                }
+            });
+
+            //==================datatable
+            var table = $('#order-table').DataTable({
+                "ajax": '@Url.Action("ShowOrderTotal", "Order")',
+
+                "columns": [
+                    { data: 'orderId' },
+                    { data: 'memberId' },
+                    { data: 'name' },
+                    { data: 'recipientName' },
+                    { data: 'recipientPhone' },
+                    { data: 'paymentMethodName' },
+                    {
+                        data: 'shippingMethodName',
+                        render: function (data, type, row, meta) {
+                            if (data === null) {
+                                return "無";
+                            }
+                            return data; // 如果不是 null，則返回原始值
+                        }
                     },
-                    error: function () {
-                        console.log("error:" + error);
-                    }
-                });
+                    {
+                        data: 'orderCreationDate',
+                        render: function (data, type, row, meta) {
+                            if (type === 'display' || type === 'filter') {
+                                var date = new Date(data);
+                                var year = date.getFullYear().toString(); // 年份
+                                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
+                                var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
+                                var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
+                                var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
+                                var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
 
-                //==================datatable
-                var table = $('#order-table').DataTable({
-                    "ajax": '@Url.Action("ShowOrderTotal", "Order")',
+                                return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
+                            }
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'lastUpdateTime',
+                        render: function (data, type, row, meta) {
+                            if (type === 'display' || type === 'filter') {
+                                var date = new Date(data);
+                                var year = date.getFullYear().toString(); // 年份
+                                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
+                                var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
+                                var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
+                                var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
+                                var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
 
-                    "columns": [
-                        { data: 'orderId' },
-                        { data: 'memberId' },
-                        { data: 'name' },
-                        { data: 'recipientName' },
-                        { data: 'recipientPhone' },
-                        { data: 'paymentMethodName' },
-                        {
-                            data: 'shippingMethodName',
-                            render: function (data, type, row, meta) {
-                                if (data === null) {
-                                    return "無";
-                                }
-                                return data; // 如果不是 null，則返回原始值
+                                return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
                             }
-                        },
-                        {
-                            data: 'orderCreationDate',
-                            render: function (data, type, row, meta) {
-                                if (type === 'display' || type === 'filter') {
-                                    var date = new Date(data);
-                                    var year = date.getFullYear().toString(); // 年份
-                                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
-                                    var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
-                                    var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
-                                    var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
-                                    var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
-
-                                    return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
-                                }
-                                return data;
+                            return data;
+                        }
+                    },
+                    {
+                        data: 'statusName',
+                        render: function (data, type, row, meta) {
+                            if (data == "已完成") {
+                                return '<span class="badge rounded-pill bg-success fs-6">已完成</span>';
+                            } else if (data == "處理中") {
+                                return '<span class="badge rounded-pill bg-danger fs-6">處理中</span>';
+                            } else if (data == "已確認") {
+                                return '<span class="badge rounded-pill bg-primary fs-6">已確認</span>';
+                            } else {
+                                return '<span class="badge rounded-pill bg-warning text-dark fs-6">已取消</span>';
                             }
-                        },
-                        {
-                            data: 'lastUpdateTime',
-                            render: function (data, type, row, meta) {
-                                if (type === 'display' || type === 'filter') {
-                                    var date = new Date(data);
-                                    var year = date.getFullYear().toString(); // 年份
-                                    var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
-                                    var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
-                                    var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
-                                    var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
-                                    var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
-
-                                    return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
-                                }
-                                return data;
-                            }
-                        },
-                        {
-                            data: 'statusName',
-                            render: function (data, type, row, meta) {
-                                if (data == "已完成") {
-                                    return '<span class="badge rounded-pill bg-success fs-6">已完成</span>';
-                                } else if (data == "處理中") {
-                                    return '<span class="badge rounded-pill bg-danger fs-6">處理中</span>';
-                                } else if (data == "已確認") {
-                                    return '<span class="badge rounded-pill bg-primary fs-6">已確認</span>';
-                                } else {
-                                    return '<span class="badge rounded-pill bg-warning text-dark fs-6">已取消</span>';
-                                }
-                            }
-                        },
-                        {
-                            data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
-                            render: function (data, type, row, meta) {
-                                // return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
-                                return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '" data-orderid="' + row.orderId + '">詳細資料</button>';
-                            }
-                        },
-                        {
-                            data: null,
-                            render: function (data, type, row, meta) {
-                                var editButton = '<button class="btn edit_orderbtn" data-bs-toggle="modal" href="#EditModalToggle" role="button" data-orderid="' + row.orderId + '" data-statusName="' + row.statusName + '"> <i class="fas fa-edit"></i></button>';
-                                return editButton;
-                            }
-                        },
-                    ],
-                    columnDefs: [
-                        { targets: 5, searchable: true },
-                        { targets: 6, searchable: true },
-                        { targets: 9, searchable: true }
-                        // 其他列...
-                    ],
-                    "paging": true, //分頁功能
-                    responsive: true, //RWD
-                    // "searching": false, //隱藏搜尋框
-                    "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
-                });
-
-                // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-                $('#payList').on('change', function () {
-                    var filterOption1 = $(this).val();
-
-                    // 使用DataTable的column().search()方法進行過濾
-                    table.column(5).search(filterOption1).draw();
+                        }
+                    },
+                    {
+                        data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                        render: function (data, type, row, meta) {
+                            // return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
+                            return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '" data-orderid="' + row.orderId + '">詳細資料</button>';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            var editButton = '<button class="btn edit_orderbtn" data-bs-toggle="modal" href="#EditModalToggle" role="button" data-orderid="' + row.orderId + '" data-statusName="' + row.statusName + '"> <i class="fas fa-edit"></i></button>';
+                            return editButton;
+                        }
+                    },
+                ],
+                columnDefs: [
+                    { targets: 5, searchable: true },
+                    { targets: 6, searchable: true },
+                    { targets: 9, searchable: true }
                     // 其他列...
-                });
+                ],
+                "paging": true, //分頁功能
+                responsive: true, //RWD
+                // "searching": false, //隱藏搜尋框
+                "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
+            });
 
-                $('#deliveryList').on('change', function () {
-                    // var filterOption1 = $('#payList').val();
-                    var filterOption2 = $(this).val();
+            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+            $('#payList').on('change', function () {
+                var filterOption1 = $(this).val();
 
-                    // 使用DataTable的column().search()方法進行過濾
-                    table.column(6).search(filterOption2).draw();
-                    // 其他列...
-                });
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(5).search(filterOption1).draw();
+                // 其他列...
+            });
 
-                $('#statusList').on('change', function () {
-                    // var filterOption1 = $('#payList').val();
-                    var filterOption3 = $(this).val();
+            $('#deliveryList').on('change', function () {
+                // var filterOption1 = $('#payList').val();
+                var filterOption2 = $(this).val();
 
-                    // 使用DataTable的column().search()方法進行過濾
-                    table.column(9).search(filterOption3).draw();
-                    // 其他列...
-                });
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(6).search(filterOption2).draw();
+                // 其他列...
+            });
 
-                //==================按下「詳細資料」按鈕的點擊事件處理
-                $('#order-table').on('click', '.detail_input', function () {
-                    var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
-                    var orderId = $(this).data('orderid');
-                    // console.log('Clicked on "詳細資料" button for memberId:', memberId);
+            $('#statusList').on('change', function () {
+                // var filterOption1 = $('#payList').val();
+                var filterOption3 = $(this).val();
 
-                    //----------------AJAX
-                    $.ajax({
-                        url: '@Url.Action("GetOrderDetails", "Order")',
-                        type: 'GET',
-                        data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                        success: function (data) {
-                            console.log(data.data.orderTotal);
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(9).search(filterOption3).draw();
+                // 其他列...
+            });
 
-                            function formatDateTime(dateTimeString) {
-                                var dateTime = new Date(dateTimeString);
-                                var year = dateTime.getFullYear();
-                                var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                                var day = String(dateTime.getDate()).padStart(2, '0');
-                                var hours = String(dateTime.getHours()).padStart(2, '0');
-                                var minutes = String(dateTime.getMinutes()).padStart(2, '0');
-                                var seconds = String(dateTime.getSeconds()).padStart(2, '0');
+            //==================按下「詳細資料」按鈕的點擊事件處理
+            $('#order-table').on('click', '.detail_input', function () {
+                var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                var orderId = $(this).data('orderid');
+                // console.log('Clicked on "詳細資料" button for memberId:', memberId);
 
-                                return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-                            }
+                //----------------AJAX
+                $.ajax({
+                    url: '@Url.Action("GetOrderDetails", "Order")',
+                    type: 'GET',
+                    data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        console.log(data.data.orderTotal);
 
-                            function formatDate(date) {
-                                var dateTime = new Date(date);
-                                var year = dateTime.getFullYear();
-                                var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                                var day = String(dateTime.getDate()).padStart(2, '0');
+                        function formatDateTime(dateTimeString) {
+                            var dateTime = new Date(dateTimeString);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
+                            var hours = String(dateTime.getHours()).padStart(2, '0');
+                            var minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                            var seconds = String(dateTime.getSeconds()).padStart(2, '0');
 
-                                return year + '-' + month + '-' + day;
-                            }
+                            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                        }
 
-                            //============訂購人(會員)基本資料
-                            $('#order_memberId').text("ID：" + data.data.memberInfo.memberId);
-                            $('#order_name').text("姓名：" + data.data.memberInfo.name);
-                            $('#order_memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
-                            $('#order_gender').text("性別：" + data.data.memberInfo.gender);
+                        function formatDate(date) {
+                            var dateTime = new Date(date);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
 
-                            var formattedBirthday = formatDate(data.data.memberInfo.birthday);
-                            $('#order_birthday').text("生日：" + formattedBirthday);
+                            return year + '-' + month + '-' + day;
+                        }
 
-                            $('#order_email').text("E-mail：" + data.data.memberInfo.email);
-                            $('#order_phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
-                            $('#order_address').text("地址：" + data.data.memberInfo.address);
+                        //============訂購人(會員)基本資料
+                        $('#order_memberId').text("ID：" + data.data.memberInfo.memberId);
+                        $('#order_name').text("姓名：" + data.data.memberInfo.name);
+                        $('#order_memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
+                        $('#order_gender').text("性別：" + data.data.memberInfo.gender);
 
-                            var formattedregistration = formatDateTime(data.data.memberInfo.registrationTime);
-                            $('#order_registrationTime').text("註冊日期：" + formattedregistration);
+                        var formattedBirthday = formatDate(data.data.memberInfo.birthday);
+                        $('#order_birthday').text("生日：" + formattedBirthday);
 
-                            var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
-                            $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
+                        $('#order_email').text("E-mail：" + data.data.memberInfo.email);
+                        $('#order_phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
+                        $('#order_address').text("地址：" + data.data.memberInfo.address);
 
-                            if (data.data.memberInfo.memberStatus == true) {
-                                $('#order_memberStatus').text("會員狀態：開放");
-                            } else {
-                                $('#order_memberStatus').text("會員狀態：凍結");
-                            }
+                        var formattedregistration = formatDateTime(data.data.memberInfo.registrationTime);
+                        $('#order_registrationTime').text("註冊日期：" + formattedregistration);
 
-                            //============收件人資料
-                            $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);
-                            $('#order_recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
-                            $('#order_recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
+                        var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
+                        $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
-                            //============訂單明細
-                            $('#order_orderId').text("訂單編號：" + data.data.orderTotal.orderId);
-                            $('#order_paymentMethod').text("付款方式：" + data.data.paymentMethod);
+                        if (data.data.memberInfo.memberStatus == true) {
+                            $('#order_memberStatus').text("會員狀態：開放");
+                        } else {
+                            $('#order_memberStatus').text("會員狀態：凍結");
+                        }
 
-                            if (data.data.shippment == null) {
-                                $('#order_shippment').text("運費：無");
-                            } else {
-                                $('#order_shippment').text("運費：" + data.data.shippment);
-                            }
+                        //============收件人資料
+                        $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);
+                        $('#order_recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
+                        $('#order_recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
 
-                            if (data.data.couponContent == null) {
-                                $('#order_couponContent').text("優惠券內容：無");
-                            } else {
-                                $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
-                            }
+                        //============訂單明細
+                        $('#order_orderId').text("訂單編號：" + data.data.orderTotal.orderId);
+                        $('#order_paymentMethod').text("付款方式：" + data.data.paymentMethod);
 
-                            if (data.data.couponContent == null) {
-                                $('#order_shippingMethod').text("配送方式：無");
-                            } else {
-                                $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
-                            }
+                        if (data.data.shippment == null) {
+                            $('#order_shippment').text("運費：無");
+                        } else {
+                            $('#order_shippment').text("運費：" + data.data.shippment);
+                        }
 
-                            var formattedlastUpdate = formatDateTime(data.data.orderTotal.lastUpdateTime);
-                            $('#order_lastUpdateTime').text("最後更新：" + formattedlastUpdate);
+                        if (data.data.couponContent == null) {
+                            $('#order_couponContent').text("優惠券內容：無");
+                        } else {
+                            $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
+                        }
 
-                            var formattedorderCreationDate = formatDateTime(data.data.orderTotal.orderCreationDate);
-                            $('#order_orderCreationDate').text("訂單成立日期：" + formattedorderCreationDate);
-                            $('#order_orderStatus').text("訂單狀態：" + data.data.orderStatus);
+                        if (data.data.couponContent == null) {
+                            $('#order_shippingMethod').text("配送方式：無");
+                        } else {
+                            $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
+                        }
 
-                            //===========訂購產品明細
-                            var PTContainer = $("#ProductTotalContainer");
-                            var totalPrice = 0; // 用於累加小計，秀出總金額
-                            PTContainer.html(""); // 使用html()方法來重置容器內容
+                        var formattedlastUpdate = formatDateTime(data.data.orderTotal.lastUpdateTime);
+                        $('#order_lastUpdateTime').text("最後更新：" + formattedlastUpdate);
 
-                            if (data.data.orderDetails.length != 0) {
-                                var tableHTML = `
-                    <table class="rwd-table">
-                        <thead style='border-bottom: 1px solid #ddd;'>
-                            <tr>
-                                <th>項次</th>
-                                <th>商品ID</th>
-                                <th>名稱</th>
-                                <th>數量</th>
-                                <th>單價</th>
-                                <th>小計</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
+                        var formattedorderCreationDate = formatDateTime(data.data.orderTotal.orderCreationDate);
+                        $('#order_orderCreationDate').text("訂單成立日期：" + formattedorderCreationDate);
+                        $('#order_orderStatus').text("訂單狀態：" + data.data.orderStatus);
 
-                                for (var i = 0; i < data.data.orderDetails.length; i++) {
-                                    var item = data.data.orderDetails[i];
-                                    var orderNumber = i + 1;
+                        //===========訂購產品明細
+                        var PTContainer = $("#ProductTotalContainer");
+                        var totalPrice = 0; // 用於累加小計，秀出總金額
+                        PTContainer.html(""); // 使用html()方法來重置容器內容
 
-                                    var subTotal = item.product.productPrice * item.productQuantity; // 計算小計
-                                    totalPrice += subTotal; // 將小計累加到總金額中
+                        if (data.data.orderDetails.length != 0) {
+                            var tableHTML = `
+                            <table class="rwd-table">
+                                <thead style='border-bottom: 1px solid #ddd;'>
+                                    <tr>
+                                        <th>項次</th>
+                                        <th>商品ID</th>
+                                        <th>名稱</th>
+                                        <th>數量</th>
+                                        <th>單價</th>
+                                        <th>小計</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                        `;
 
-                                    tableHTML += `
-                        <tr>
-                                                    <td data-th="項次">${orderNumber}</td>
-                                                    <td data-th="商品ID">${item.product.productId}</td>
-                                                    <td data-th="名稱">${item.product.productName}</td>
-                                                    <td data-th="數量">${item.productQuantity}</td>
-                                                    <td data-th="單價">${item.product.productPrice}</td>
-                                                                            <td data-th="小計">${subTotal}</td>
-                        </tr>
-                    `;
-                                }
+                            for (var i = 0; i < data.data.orderDetails.length; i++) {
+                                var item = data.data.orderDetails[i];
+                                var orderNumber = i + 1;
+
+                                var subTotal = item.product.productPrice * item.productQuantity; // 計算小計
+                                totalPrice += subTotal; // 將小計累加到總金額中
 
                                 tableHTML += `
-                        </tbody>
-                    </table>
-                `;
-
-                                PTContainer.html(tableHTML);
-
-                                //計算這筆訂單的總金額
-                                if (data.data.shippment != null) {
-                                    var totalPrice_includefreight = totalPrice + data.data.shippment
-                                    // 將總金額填入指定的元素中
-                                    $("#order_totalPrice").text(`總金額：NT＄${totalPrice_includefreight.toLocaleString()} (已含運費)`);
-                                } else {
-                                    $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
-                                }
-
-                            } else {
-                                PTContainer.text("沒有可顯示的產品明細");
+                                <tr>
+                                                            <td data-th="項次">${orderNumber}</td>
+                                                            <td data-th="商品ID">${item.product.productId}</td>
+                                                            <td data-th="名稱">${item.product.productName}</td>
+                                                            <td data-th="數量">${item.productQuantity}</td>
+                                                            <td data-th="單價">${item.product.productPrice}</td>
+                                                                                    <td data-th="小計">${subTotal}</td>
+                                </tr>
+                            `;
                             }
-                        },
-                        error: function (error, a, b) {
-                            console.log(error);
-                            console.log(a);
-                            console.log(b);
-                            console.log("Error retrieving order details.");
-                        }
-                    });
-                });
 
-                //==================按下「編輯」按鈕的點擊事件處理
-                $('#order-table').on('click', '.edit_orderbtn', function () {
-                    var orderId = $(this).data('orderid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                            tableHTML += `
+                                </tbody>
+                            </table>
+                        `;
 
-                    console.log(orderId);
+                            PTContainer.html(tableHTML);
 
-                    //----------------AJAX
-                    $.ajax({
-                        url: '@Url.Action("EditOrder", "Order")',
-                        type: 'GET',
-                        data: { id: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                        success: function (data) {
-                            console.log(data);
-
-                            //==================訂單資料
-                            $('#orderId').val(data.data.orderId);
-                            $('#memberId').val(data.data.memberId);
-                            $('#recipientName').val(data.data.recipientName);
-                            $('#recipientPhone').val(data.data.recipientPhone);
-                            $('#recipientAddress').val(data.data.recipientAddress);
-                            $('#orderStatusId').val(data.data.orderStatusId);
-                        },
-                        error: function (error) {
-                            console.error(error);
-                        }
-                    });
-                });
-
-
-                //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
-                $('.editOrder_save').click(function () {
-
-                    //==================訂單資料
-                    var orderId = $('#orderId').val();
-                    var memberId = $('#memberId').val();
-                    var recipientName = $('#recipientName').val();
-                    var recipientPhone = $('#recipientPhone').val();
-                    var recipientAddress = $('#recipientAddress').val();
-                    var orderStatusId = $('#orderStatusId').val();
-
-                    var editOrder = {
-                        orderId: orderId,
-                        memberId: memberId,
-                        recipientName: recipientName,
-                        recipientPhone: recipientPhone,
-                        recipientAddress: recipientAddress,
-                        orderStatusId: orderStatusId,
-                        LastUpdateTime: new Date().toISOString() // 將現在的日期和時間轉換成 ISO 8601 字串
-                    };
-
-                    $.ajax({
-                        url: '/AdminCMS/Order/UpdateOrder',
-                        type: 'POST',
-                        data: { editOrder: editOrder },
-                        success: function (response) {
-                            if (response.success) {
-                                // 更新成功的處理
-                                // 顯示成功訊息
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '編輯成功',
-                                    text: response.message
-                                });
-
-                                // 關閉modal
-                                $('#EditModalToggle').modal('hide');
-
-                                // 重新整理dataTable
-                                $('#order-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                            //計算這筆訂單的總金額
+                            if (data.data.shippment != null) {
+                                var totalPrice_includefreight = totalPrice + data.data.shippment
+                                // 將總金額填入指定的元素中
+                                $("#order_totalPrice").text(`總金額：NT＄${totalPrice_includefreight.toLocaleString()} (已含運費)`);
                             } else {
-                                // 更新失敗
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: '失敗',
-                                    text: response.message
-                                });
+                                $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
                             }
-                        },
-                        error: function (error) {
-                            // 錯誤處理
-                            // 會員編輯失敗，顯示錯誤訊息
-                            console.log(error);
+
+                        } else {
+                            PTContainer.text("沒有可顯示的產品明細");
                         }
-                    });
-                })
+                    },
+                    error: function (error, a, b) {
+                        console.log(error);
+                        console.log(a);
+                        console.log(b);
+                        console.log("Error retrieving order details.");
+                    }
+                });
             });
-        </script>
+
+            //==================按下「編輯」按鈕的點擊事件處理
+            $('#order-table').on('click', '.edit_orderbtn', function () {
+                var orderId = $(this).data('orderid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+
+                console.log(orderId);
+
+                //----------------AJAX
+                $.ajax({
+                    url: '@Url.Action("EditOrder", "Order")',
+                    type: 'GET',
+                    data: { id: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        console.log(data);
+
+                        //==================訂單資料
+                        $('#orderId').val(data.data.orderId);
+                        $('#memberId').val(data.data.memberId);
+                        $('#recipientName').val(data.data.recipientName);
+                        $('#recipientPhone').val(data.data.recipientPhone);
+                        $('#recipientAddress').val(data.data.recipientAddress);
+                        $('#orderStatusId').val(data.data.orderStatusId);
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+
+            //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
+            $('.editOrder_save').click(function () {
+
+                //==================訂單資料
+                var orderId = $('#orderId').val();
+                var memberId = $('#memberId').val();
+                var recipientName = $('#recipientName').val();
+                var recipientPhone = $('#recipientPhone').val();
+                var recipientAddress = $('#recipientAddress').val();
+                var orderStatusId = $('#orderStatusId').val();
+
+                var editOrder = {
+                    orderId: orderId,
+                    memberId: memberId,
+                    recipientName: recipientName,
+                    recipientPhone: recipientPhone,
+                    recipientAddress: recipientAddress,
+                    orderStatusId: orderStatusId,
+                    LastUpdateTime: new Date().toISOString() // 將現在的日期和時間轉換成 ISO 8601 字串
+                };
+
+                $.ajax({
+                    url: '/AdminCMS/Order/UpdateOrder',
+                    type: 'POST',
+                    data: { editOrder: editOrder },
+                    success: function (response) {
+                        if (response.success) {
+                            // 更新成功的處理
+                            // 顯示成功訊息
+                            Swal.fire({
+                                icon: 'success',
+                                title: '編輯成功',
+                                text: response.message
+                            });
+
+                            // 關閉modal
+                            $('#EditModalToggle').modal('hide');
+
+                            // 重新整理dataTable
+                            $('#order-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                        } else {
+                            // 更新失敗
+                            Swal.fire({
+                                icon: 'error',
+                                title: '失敗',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        // 錯誤處理
+                        // 會員編輯失敗，顯示錯誤訊息
+                        console.log(error);
+                    }
+                });
+            })
+        });
+    </script>
     }
