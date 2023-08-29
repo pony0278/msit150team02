@@ -132,14 +132,14 @@
             原因類別：
             <select class="form-select w-25" id="reasonList">
                 <option value="" selected>全部訂單</option>
-                <option value="商品品質問題">商品品質問題</option>
+@*                <option value="商品品質問題">商品品質問題</option>
                 <option value="不符合期望">不符合期望</option>
                 <option value="送錯商品">送錯商品</option>
                 <option value="重複運送商品">重複運送商品</option>
                 <option value="訂單問題">訂單問題</option>
                 <option value="售後服務問題">售後服務問題</option>
                 <option value="改變主意">改變主意</option>
-                <option value="其他原因">其他原因</option>
+                <option value="其他原因">其他原因</option>*@
             </select>
         </div>
         <div class="row align-items-center mb-3">
@@ -198,20 +198,20 @@
                                     <div class="col-12 mb-3">
                                         <label>退換貨原因</label>
                                         <select class="form-select" id="returnReasonId">
-                                            <option value="1">商品品質問題</option>
+@*                                            <option value="1">商品品質問題</option>
                                             <option value="2">不符合期望</option>
                                             <option value="3">送錯商品</option>
                                             <option value="4">重複運送商品</option>
                                             <option value="5">訂單問題</option>
                                             <option value="6">售後服務問題</option>
                                             <option value="7">改變主意</option>
-                                            <option value="8">其他原因</option>
+                                            <option value="8">其他原因</option>*@
                                         </select>
                                     </div>
                                     <div class="col-12 mb-3">
                                         <label>狀態</label>
                                         <select class="form-select" id="processingStatusId">
-                                            <option value="1">待處理</option>
+@*                                            <option value="1">待處理</option>
                                             <option value="2">審核中</option>
                                             <option value="3">已批准</option>
                                             <option value="4">待退貨</option>
@@ -219,7 +219,7 @@
                                             <option value="6">退貨中</option>
                                             <option value="7">換貨中</option>
                                             <option value="8">已完成</option>
-                                            <option value="9">取消</option>
+                                            <option value="9">取消</option>*@
                                         </select>
                                     </div>
 
@@ -331,16 +331,26 @@
 
                         $(document).ready(function () {
                             $.ajax({
-                                url: '@Url.Action("ShowReturnTotal", "Return")',
+                                url: '@Url.Action("ReasonList", "Return")',
                                 type: 'GET',
                                 success: function (data) {
-                                    console.log(data);
+                                    //console.log(data);
+                                    // 抓到資料庫的所有分類名稱並放入option中
+                                    var RRselectElement = $("#reasonList");
+
+                                    $.each(data.data.complaintCategorySelect, function (index, value) {
+                                        var option = $("<option>", {
+                                            value: value,
+                                            text: value
+                                        });
+
+                                        RRselectElement.append(option);
+                                    });
                                 },
                                 error: function () {
                                     console.log("error:" + error);
                                 }
                             });
-
                             //==================datatable
                             var table = $('#SReturn-table').DataTable({
                                 "ajax": '@Url.Action("ShowReturnTotal", "Return")',
@@ -540,7 +550,7 @@
                             $('#SReturn-table').on('click', '.edit_orderbtn', function () {
                                 var orderId = $(this).data('orderid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
 
-                                console.log(orderId);
+                                //console.log(orderId);
 
                                 //----------------AJAX
                                 $.ajax({
@@ -550,10 +560,40 @@
                                     success: function (data) {
                                         console.log(data);
 
-                                        //==================退貨資料
-                                        $('#orderId').val(data.data.orderId);
-                                        $('#processingStatusId').val(data.data.processingStatusId);
-                                        $('#returnReasonId').val(data.data.returnReasonId);
+                                        $('#orderId').val(data.data.orderReturn.orderId);
+
+                                        // 清空所有<select>元素的選項
+                                        $("#returnReasonId, #processingStatusId").empty();
+
+                                        // 抓到資料庫的所有退貨原因名稱並放入option中
+                                        var RRselectElement = $("#returnReasonId");
+
+                                        $.each(data.data.returnReasonSelect, function (index, value) {
+                                            var option = $("<option>", {
+                                                value: index + 1,
+                                                text: value
+                                            });
+
+                                            if (value === data.data.returnReasonNames) {
+                                                option.prop("selected", true); // Set the option as selected
+                                            }
+                                            RRselectElement.append(option);
+                                        });
+
+                                        // 抓到資料庫的所有退換貨狀態名稱並放入option中
+                                        var PSselectElement = $("#processingStatusId");
+
+                                        $.each(data.data.returnStatusSelect, function (index, value) {
+                                            var option = $("<option>", {
+                                                value: index + 1,
+                                                text: value
+                                            });
+
+                                            if (value === data.data.returnStatusNames) {
+                                                option.prop("selected", true); // Set the option as selected
+                                            }
+                                            PSselectElement.append(option);
+                                        });
                                     },
                                     error: function (error) {
                                         console.error(error);
@@ -568,6 +608,10 @@
                                 var orderId = $('#orderId').val();
                                 var returnReasonId = $('#returnReasonId').val();
                                 var processingStatusId = $('#processingStatusId').val();
+
+                                //console.log(orderId);
+                                //console.log(returnReasonId);
+                                //console.log(processingStatusId);
 
 
                                 var editReturn = {
@@ -620,7 +664,7 @@
 
                             //=======================新增原因方法
                             function setupReasonTable(data) {
-                                console.log(data);
+                                //console.log(data);
                                 var htmlToInsert = ''; // 用於存儲要插入的HTML字符串
 
                                 // 遍歷data數組中的每個對象
@@ -653,7 +697,7 @@
                                     url: '@Url.Action("ReasonList", "Return")',
                                     type: 'GET',
                                     success: function (data) {
-                                        console.log(data);
+                                        //console.log(data);
                                         setupReasonTable(data);
                                         maxId = data.data.serviceCase.length;
                                     },
@@ -740,6 +784,9 @@
 
                                                 // 關閉modal
                                                 $('#editStatusModalToggle').modal('hide');
+
+                                                // 重新整理dataTable
+                                                $('#return-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
                                             } else {
                                                 Swal.fire({
                                                     icon: 'error',
