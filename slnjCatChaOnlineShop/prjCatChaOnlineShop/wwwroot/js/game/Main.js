@@ -24,6 +24,7 @@
     const rankBTNimg = new Image();
     const gotoGachaimg = new Image();
     const gotoRunGameimg = new Image();
+    const editNameimg = new Image();
 
     const kittenDefault = new Image();
     const kittenBK = new Image();
@@ -419,7 +420,7 @@
     const gotoRunGame = new mainpageButton(12, 140, 50, 50, gotoRunGameimg);
     const rankBTN = new mainpageButton(15, 210, 40, 40, rankBTNimg);
     const gotoGacha = new mainpageButton(15, 280, 40, 40, gotoGachaimg);
-
+    const editNameBTN = new mainpageButton(167, 20, 40, 40, editNameimg);
 
 
     //大廳動畫
@@ -457,7 +458,7 @@
         gotoRunGame.load();
         rankBTN.load();
         gotoGacha.load();
-
+        editNameBTN.load();
 
     }
     animate();
