@@ -85,7 +85,7 @@
                     @foreach (var content in group.Value)
                     {
                         <div class="container mt-4 ">
-                            <a asp-controller="ShopNews" asp-action="NewsContent">
+                            <a asp-controller="ShopNews" asp-action="NewsContent" asp-route-id="@content.AnnouncementId">
                                 <div class="clickable-row w-100 position-relative">
                                     <img class="w-25 m-2 rounded shadow" src="@content.AnnouncementImageHeader"
                                          alt="...">

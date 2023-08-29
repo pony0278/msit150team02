@@ -204,6 +204,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             if (editorNews != null)
             {
+                editorNews.AnnouncementTypeId = cAnnounce.AnnouncementTypeId;
                 editorNews.AnnouncementTitle = cAnnounce.AnnouncementTitle;
                 editorNews.AnnouncementContent = cAnnounce.AnnouncementContent;
                 if(imageUrl!= null)
