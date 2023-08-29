@@ -3,6 +3,7 @@ using System.Reflection;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc;
 
 namespace prjCatChaOnlineShop.Models.CModels
 {
@@ -93,5 +94,7 @@ namespace prjCatChaOnlineShop.Models.CModels
             }
             return new List<CgetUsableAddressModel>(); // 如果沒有找到可用地址，返回空列表
         }
+
+       
     }
 }

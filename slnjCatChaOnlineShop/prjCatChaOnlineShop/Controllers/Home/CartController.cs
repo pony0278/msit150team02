@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Build.Experimental.ProjectCache;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
@@ -141,5 +143,60 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return View(cart);
             }
         }
+
+        // 刪除購物車商品
+        public IActionResult DeleteCartItem(int? id)
+        {
+            // 檢查傳入的 id 是否有效
+            if (id == null)
+            {
+                return BadRequest("無效的商品 ID");
+            }
+
+            // 從 Session 中獲取購物車內容
+            string json = "";
+            List<CCartItem> cart;
+            json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+            // 反序列化 Session 中的購物車內容
+            cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+            if (cart != null)
+            {
+                             
+                // 找到具有相同 ID 的商品
+                var itemToRemove = cart.FirstOrDefault(item=> item.cId==id);
+                if (itemToRemove != null)
+                {
+                    // 从购物车中删除找到的商品
+                    cart.Remove(itemToRemove);
+
+                    // 更新 Session 中的购物车内容
+                    _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(cart));
+
+                    return Ok("商品已從購物車刪除");
+                }
+                else
+                {
+                    return BadRequest("找不到具有指定 ID 的商品");
+                }
+            }
+            else
+            {
+                return BadRequest("購物車是空的");
+            }
+        }
+
+
+        ////刪除購物車商品
+        //public IActionResult DeleteCartItem(int? id)
+        //{
+        //    var memberCartInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+        //    if (memberCartInfoJson != null)
+        //    {
+        //        var memberCartInfo = JsonSerializer.Deserialize<CCartItem>(memberCartInfoJson);
+        //        var trashItem= memberCartInfo.Items
+
+        //        _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(memberCartInfo));
+        //    }
+        //}
     }
 }

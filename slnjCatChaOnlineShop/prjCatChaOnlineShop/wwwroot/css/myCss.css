@@ -383,3 +383,35 @@ background-color:#EDD8C0 ;
 .form-control[readonly] {
     background-color: #F8F0E7 !important;
 }
+
+/*MemberLogin頁面logo*/
+.logo-wrapper:hover {
+            transform: scale(1.1); /* 放大 10% */
+            transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+        }
+
+/*Cart頁面垃圾桶圖樣樣式*/
+.trashBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0; /* 清除默認的 padding，使按鈕更小 */
+}
+.trashBtn:hover {
+    transform: scale(1.3); /* 放大 10% */
+    transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+}
+.bi-trash {
+    color: #b4793594;
+}
+body {
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.custom-size {
+    width: 400px; /* 調整視窗寬度 */
+    height: 300px; /* 調整視窗高度 */
+}
+
+/*Cart頁面垃圾桶圖樣樣式End*/
+

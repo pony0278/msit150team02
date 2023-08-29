@@ -51,9 +51,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return View();
         }
 
-        #endregion
-
-       
+        #endregion    
 
         #region 註冊會員
         public IActionResult RegisterMember()
