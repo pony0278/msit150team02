@@ -20,16 +20,22 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult ShopDetail(int pId)
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             var details = _productService.getDetailsById(pId);
             return View(details);
         }
 
         public IActionResult Shop()
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             return View(_productService.getProductItems());
         }
         public IActionResult Index()
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             return View(_productService.getProductItems());
         }
         [HttpGet]

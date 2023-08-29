@@ -28,4 +28,8 @@ public partial class EcpayOrders
     public string TradeDate { get; set; }
 
     public int? SimulatePaid { get; set; }
+
+    public int? ShopOrderId { get; set; }
+
+    public virtual ShopOrderTotalTable ShopOrder { get; set; }
 }

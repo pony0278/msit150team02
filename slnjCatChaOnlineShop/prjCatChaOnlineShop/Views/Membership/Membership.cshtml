@@ -430,17 +430,14 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <!-- 添加 tab 標籤 -->
-                                    <ul class="nav nav-tabs" id="couponTabs" role="tablist">
-                                        <li class="nav-item" role="presentation">
-                                            <a class="nav-link active" id="couponList-tab" data-bs-toggle="tab" href="#couponList" role="tab" aria-controls="couponList" aria-selected="true">優惠券清單</a>
-                                        </li>
-                                        <li class="nav-item" role="presentation">
-                                            <a class="nav-link" id="usageHistory-tab" data-bs-toggle="tab" href="#usageHistory" role="tab" aria-controls="usageHistory" aria-selected="false">使用歷史</a>
-                                        </li>
-                                    </ul>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button" role="tab" aria-controls="nav-list" aria-selected="true">可使用</button>
+                                            <button class="nav-link" id="nav-invalid-tab" data-bs-toggle="tab" data-bs-target="#nav-invalid" type="button" role="tab" aria-controls="nav-invalid" aria-selected="false">已失效</button>
+                                        </div>
+                                    </nav>
                                 </div>
-                                <div class="col d-flex justify-content-end">
+                                <div class="col-auto">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
                                         X
                                     </button>
@@ -448,11 +445,9 @@
                             </div>
                         </div>
                     </div>
-                    <div class="modal-body">
-                        <!-- 添加 tab 內容 -->
-                        <div class="tab-content" id="couponTabContent">
-                            <div class="tab-pane fade show active" id="couponList" role="tabpanel" aria-labelledby="couponList-tab">
-                                <!-- 優惠券清單內容 -->
+                    <div class="modal-body" style="min-height: 400px;">
+                        <div class="tab-content d-flex flex-column" id="nav-tabContent">
+                            <div class="tab-pane fade show active flex-grow-1" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
                                 <table class="table table-bordered table-hover" id="couponTable">
                                     <thead class="table-warning  text-center">
                                         <tr>
@@ -466,9 +461,17 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="tab-pane fade" id="usageHistory" role="tabpanel" aria-labelledby="usageHistory-tab">
-                                <!-- 使用歷史內容 -->
-                                <!-- 在這裡放使用歷史的內容 -->
+                            <div class="tab-pane fade flex-grow-1" id="nav-invalid" role="tabpanel" aria-labelledby="nav-invalid-tab">
+                                <table class="table table-bordered table-hover" id="invalidCouponTable">
+                                    <thead class="table-warning  text-center">
+                                        <tr>
+                                            <th style="white-space: nowrap;">優惠名稱</th>
+                                            <th style="white-space: nowrap;">適用範圍</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -1068,6 +1071,7 @@
 
             //拿取優惠券數據
             $('#searchCoupon').click(function (event) {
+                //可使用的優惠券
                 $.getJSON('@Url.Content("~/membership/GetMemberCouponData")', function (data) {
                     var tbody = document.querySelector('#couponTable tbody');
 
@@ -1086,6 +1090,21 @@
                         dateCell.textContent = formattedDate;
                         dateCell.style.whiteSpace = 'nowrap';
 
+                    });
+                });
+
+                //已失效的優惠券
+                $.getJSON('@Url.Content("~/membership/GetInvalidCouponData")', function (data) {
+                    var tbody = document.querySelector('#invalidCouponTable tbody');
+
+                    // 清空表格內容
+                    tbody.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立表格列
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+                        row.insertCell().textContent = item.couponName;
+                        row.insertCell().textContent = item.couponContent;
                     });
                 });
             });

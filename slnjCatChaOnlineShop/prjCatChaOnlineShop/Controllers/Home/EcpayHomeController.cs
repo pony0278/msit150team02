@@ -93,7 +93,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ecpayOrder.SimulatePaid = int.Parse(id["SimulatePaid"]);
                 _context.SaveChanges();
             }
-            return View("ConfirmOrder","Cart");
+            return RedirectToAction("ConfrimOrder","Cart");
         }
         /// step5 : 取得虛擬帳號 資訊
         [HttpPost]
