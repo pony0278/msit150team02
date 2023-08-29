@@ -167,8 +167,13 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.PaymentType).HasMaxLength(50);
             entity.Property(e => e.PaymentTypeChargeFee).HasMaxLength(50);
             entity.Property(e => e.RtnMsg).HasMaxLength(50);
+            entity.Property(e => e.ShopOrderId).HasColumnName("ShopOrderID");
             entity.Property(e => e.TradeDate).HasMaxLength(50);
             entity.Property(e => e.TradeNo).HasMaxLength(50);
+
+            entity.HasOne(d => d.ShopOrder).WithMany(p => p.EcpayOrders)
+                .HasForeignKey(d => d.ShopOrderId)
+                .HasConstraintName("FK_EcpayOrders_Shop.Order Total Table");
         });
 
         modelBuilder.Entity<Game1on1MessageData>(entity =>
