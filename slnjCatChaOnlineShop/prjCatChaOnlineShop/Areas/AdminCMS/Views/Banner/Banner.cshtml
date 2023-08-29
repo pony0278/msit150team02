@@ -360,7 +360,7 @@
             //圖片
             $(document).on("change", "#preview-createimage", function () {
                 var files = $(this)[0].files;
-                var preview = $("#preview-createimage");
+                var preview = $("image");
                 preview.empty();
 
                 for (var i = 0; i < files.length; i++) {

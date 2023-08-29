@@ -1192,6 +1192,9 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.OrderId).HasColumnName("Order ID");
             entity.Property(e => e.ProcessingStatusId).HasColumnName("Processing Status ID");
+            entity.Property(e => e.ProductId).HasColumnName("Product ID");
+            entity.Property(e => e.ReturnContent).HasColumnName("Return Content");
+            entity.Property(e => e.ReturnCount).HasColumnName("Return Count");
             entity.Property(e => e.ReturnDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Return Date");

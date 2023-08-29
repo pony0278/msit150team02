@@ -131,6 +131,44 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
     }
 
+
+//    [HttpPost]
+//    public IActionResult SendCouponToMembers()
+//    {
+//        // 获取CouponId为1的优惠券
+//        CCouponWrap coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == 1);
+
+//        if (coupon == null)
+//        {
+//            // 优惠券不存在，执行适当的错误处理
+//            return NotFound();
+//        }
+
+//        // 获取所有会员
+//        List<ShopMemberInfo> members = _context.Members.ToList();
+
+//        foreach (var member in members)
+//        {
+//            // 创建会员优惠券数据
+//            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+//            {
+//                MemberId = member.MemberId,
+//                CouponId = coupon.CouponId,
+//                CouponStatusId = true // 假设设置为已使用
+//                // 根据需要设置其他属性
+//            };
+
+//            _context.MemberCouponData.Add(memberCouponData);
+//        }
+
+//        _context.SaveChanges();
+
+//        return RedirectToAction("Index");
+//    }
+//}
+
+
+
 }
 
 

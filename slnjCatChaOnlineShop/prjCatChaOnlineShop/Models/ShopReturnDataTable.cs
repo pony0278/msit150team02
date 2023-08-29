@@ -17,6 +17,12 @@ public partial class ShopReturnDataTable
 
     public int Id { get; set; }
 
+    public int? ProductId { get; set; }
+
+    public int? ReturnCount { get; set; }
+
+    public string ReturnContent { get; set; }
+
     public virtual ShopReturnStatusDataTable ProcessingStatus { get; set; }
 
     public virtual ShopReturnReasonDataTable ReturnReason { get; set; }
