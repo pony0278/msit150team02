@@ -129,43 +129,40 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = false });
         }
-    }
+    
 
+    [HttpPost]
+    public IActionResult SendCouponToMembers(int? id)
+    {
+            // 獲取CouponID=1的優惠券
+            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
 
-//    [HttpPost]
-//    public IActionResult SendCouponToMembers()
-//    {
-//        // 获取CouponId为1的优惠券
-//        CCouponWrap coupon = _context.Coupons.FirstOrDefault(c => c.CouponId == 1);
+        if (coupon == null)
+        {
+            return NotFound();
+        }
 
-//        if (coupon == null)
-//        {
-//            // 优惠券不存在，执行适当的错误处理
-//            return NotFound();
-//        }
+       //獲取所有會員
+        List<ShopMemberInfo> members = _cachaContext.ShopMemberInfo.ToList();
 
-//        // 获取所有会员
-//        List<ShopMemberInfo> members = _context.Members.ToList();
+        foreach (var member in members)
+        {
+            // 創建會員優惠券資料
+            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+            {
+                MemberId = member.MemberId,
+                CouponId = coupon.CouponId,
+                CouponStatusId = true //設置為可使用
+            };
 
-//        foreach (var member in members)
-//        {
-//            // 创建会员优惠券数据
-//            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
-//            {
-//                MemberId = member.MemberId,
-//                CouponId = coupon.CouponId,
-//                CouponStatusId = true // 假设设置为已使用
-//                // 根据需要设置其他属性
-//            };
+                _cachaContext.ShopMemberCouponData.Add(memberCouponData);
+        }
 
-//            _context.MemberCouponData.Add(memberCouponData);
-//        }
+            _cachaContext.SaveChanges();
 
-//        _context.SaveChanges();
-
-//        return RedirectToAction("Index");
-//    }
-//}
+            return Json(new { success = true });
+        }
+}
 
 
 

@@ -35,44 +35,33 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-
-        public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
-        {
-            
-            if(catName!=null)//有選category才會傳入catName
-            {
-                List<CCategoryItem> categoryItems = new List<CCategoryItem>();
-                var items = _productService.getProductByCategoryName(catName).Take(itemPerPage);
-                var name = items.FirstOrDefault()?.pCategoryName;
-                CCategoryItem c = new CCategoryItem();
-                c.pItem = items.ToList();
-                c.categoryName = name;
-                categoryItems.Add(c);
-                return Json(categoryItems);
-            }
-            else
-            {
-                var allItems = _productService.getProductItems().Take(itemPerPage);//只出現商品名稱不同的品項
-                return Json(allItems);
-            }
-
-        }
-       
+        //修改數量
         [HttpPost]
         public IActionResult CartEditQuantity(int newQuantity, int pId, string attr) 
         {
             string json = "";
             List<CCartItem> cart;
-            json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-            cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-            var existingCartItem = cart.FirstOrDefault(item => item.cId == pId&&item.c子項目== attr);
-            existingCartItem.c數量 = newQuantity;
-            // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
-            SaveCart(cart);
-
+            if (attr != null)
+            { 
+                json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+                cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+                var existingCartItem = cart.FirstOrDefault(item => item.cId == pId&&item.c子項目== attr);
+                existingCartItem.c數量 = newQuantity;
+                // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
+                SaveCart(cart);
+            }
+            else
+            {
+                json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+                cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+                var existingCartItem = cart.FirstOrDefault(item => item.cId == pId);
+                existingCartItem.c數量 = newQuantity;
+                // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
+                SaveCart(cart);
+            }
             return Json(new { success = true });
         }
-        
+        //修改子項目
         [HttpPost]
         public IActionResult CartEditAttribute(string oldAttribute, string newAttribute, int pId)
         {
@@ -86,8 +75,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             var oldCartItem = cart.FirstOrDefault(item => item.cId == pId && item.c子項目 == oldAttribute);
             if (existingCartItem != null)
             {
+                //先將相同的品項數量相加
                 int? totalQuantity = existingCartItem.c數量+oldCartItem.c數量;
-                // 移除所有重複項目，只保留第一個項目
+                // 移除所有重複項目，加入一個新的
                 cart.Remove(existingCartItem);
                 cart.Remove(oldCartItem);
                 var prodItem = _productService.getProductById(pId);
@@ -110,6 +100,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
             return Json(new { success = true});
         }
+
+
+        //點擊加入購物車按鈕加入購物車
         [HttpPost]
         public IActionResult AddToCart(int pId)
         {
@@ -127,7 +120,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return Json(new { success = false, message="請先登入!" });
         }
-
+        //在details點擊加入購物車按鈕加入購物車
         [HttpPost]
         public IActionResult DetailsAddToCart(int pId, string attr, int count)
         {
@@ -150,7 +143,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         }
 
-
+        //找到存取購物車的session
         private List<CCartItem> GetCartFromSession()
         {
             string json = "";
@@ -164,11 +157,34 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return new List<CCartItem>();
             }
         }
+        //存進session
         private void SaveCart(List<CCartItem> cart)
         {
             string json = JsonSerializer.Serialize(cart);
             HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, json);
         }
+        public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
+        {
+
+            if (catName != null)//有選category才會傳入catName
+            {
+                List<CCategoryItem> categoryItems = new List<CCategoryItem>();
+                var items = _productService.getProductByCategoryName(catName).Take(itemPerPage);
+                var name = items.FirstOrDefault()?.pCategoryName;
+                CCategoryItem c = new CCategoryItem();
+                c.pItem = items.ToList();
+                c.categoryName = name;
+                categoryItems.Add(c);
+                return Json(categoryItems);
+            }
+            else
+            {
+                var allItems = _productService.getProductItems().Take(itemPerPage);//只出現商品名稱不同的品項
+                return Json(allItems);
+            }
+
+        }
+
         public IActionResult GetDetails(int? pId)
         {
             var prodItem = _productService.getProductById(pId);
