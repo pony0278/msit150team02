@@ -33,6 +33,8 @@ public partial class ShopOrderTotalTable
 
     public virtual ShopCommonAddressData Address { get; set; }
 
+    public virtual ICollection<EcpayOrders> EcpayOrders { get; set; } = new List<EcpayOrders>();
+
     public virtual ShopMemberInfo Member { get; set; }
 
     public virtual ShopOrderStatusData OrderStatus { get; set; }

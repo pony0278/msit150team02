@@ -11,5 +11,7 @@ namespace prjCatChaOnlineShop.Models.ViewModels
 
         //會員儲存的常用地址
         public List<CgetUsableAddressModel> memberUsableAddress { get; set; }
+        //創建綠界訂單
+        public Dictionary<string, string> keyValuePairs { get; set; }
     }
 }

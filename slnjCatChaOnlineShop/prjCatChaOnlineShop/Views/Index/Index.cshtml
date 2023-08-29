@@ -38,7 +38,7 @@
 
         .swiper-pagination-bullet,
         .swiper-pagination-bullet-active {
-            background: orange;
+            background: #fff;
         }
 
         .swiper-slide h2 {
@@ -55,13 +55,6 @@
         .swiper-3d .swiper-slide-shadow-right {
             background-image: none;
         }
-
-        .checked {
-            color: orange;
-        }
-
-        
-        
     </style>
 }
 
@@ -129,7 +122,7 @@
 <div class="box-add-products position-relative">
     <div class="container padding-custom">
         <div class="home-title text-center">
-            <h1>貓寵補給站</h1>
+            <h1>貓寵補給站</h1><div class="review"></div>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-3 col-md-3 col-sm-6 div-center-custom">
@@ -186,22 +179,22 @@
         </div>
         <div id="productIndexNew" class="row special-list">
             @{
-                foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4))
+                foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                            <!-- start prod  -->
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
-                                            </div>
-                                            <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                    <!-- start prod  -->
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src="@item.p圖片路徑" class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
                                     <h5>$ @item.p優惠價格</h5>
                                     <del>$ @item.pPrice</del>
@@ -213,7 +206,7 @@
                                 <a data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
                                     <i class="far fa-heart"></i>
                                 </a>
                             </div>
@@ -249,19 +242,19 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
-                                            </div>
-                                            <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src=@item.p圖片路徑 class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
                                     <h5>$ @item.p優惠價格</h5>
                                     <del>$ @item.pPrice</del>
@@ -273,7 +266,7 @@
                                 <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
                                 </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom">
                                     <i class="far fa-heart"></i>
                                 </a>
                             </div>
@@ -289,9 +282,9 @@
 <!-- End 熱賣商品  -->
 <!-- 開始評論輪播 -->
 
-<div class="container mt-3 mb-5">
+<div class="container mt-3">
     <div class="home-title text-center">
-        <h1>推薦好評</h1>
+        <h1>貓寵補給站</h1>
     </div>
     <div class="swiper pt-3 pb-3">
         <div class="swiper-wrapper pb-4" id="swipers">
@@ -394,7 +387,7 @@
         //所有頁面上不可有相同id
         var productIndexNew = $('#productIndexNew');
         var productIndexSale = $('#productIndexSale');
-        var isFavorited = false;
+
         // 點擊商品時獲取識別ID
         productIndexNew.on('click', '.shop-prod-click', function () {
 
@@ -410,7 +403,7 @@
                     console.log('GoToDetail:', response.message);
                 },
                 error: function (error) {
-                    
+                    console.error('Ajax Error:', error);
                 }
             });
         });
@@ -427,12 +420,12 @@
                     console.log('Added to Cart:', response.message);
                 },
                 error: function (error) {
-                    
+                    console.error('Ajax Error:', error);
                 }
             });
         });
 
-        //加入購物車:獲取id
+        //點加入購物車獲取id
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             console.log(productIndexNew);
@@ -449,10 +442,11 @@
                     $('#myModal').modal('show'); // 顯示 Modal
                 },
                 error: function (error) {
-                    
+                    console.error('Ajax Error:', error);
                 }
             });
         });
+
         productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             console.log(productIndexSale);
@@ -466,61 +460,14 @@
                 dataType: 'json',
                 success: function (response) {
                     console.log('Added to Cart:', response.message);
-                    
-                },
-                error: function (error) {
-                }
-            });
-        });
-        //加入收藏:獲取id
-        productIndexNew.on('click', '.add-to-wishlist-coustom', function (e) {
-            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            var button = $(this);
-            var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToWishlist',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
-                    }
+                    $('#myModal').modal('show'); // 顯示 Modal
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
                 }
             });
         });
-        productIndexSale.on('click', '.add-to-wishlist-coustom', function (e) {
-            e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(productIndexSale);
-            var button = $(this);
-            var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToWishlist',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
-                    }
-                },
-                error: function (error) {
-                }
-            });
-        });
+
 
         //評論區
 
@@ -698,51 +645,6 @@
         });
         //小動畫結束
 
-
-        //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
-        const targetloginTextClass = 'LoginText';
-        const logoutcontainer = 'Logout';
-        const loginLink = document.getElementById('loginLink');
-        const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-        const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
-        //取得使用者名稱API
-
-        function loginAndGetName() {
-
-            $.ajax({
-                url: '/api/GetUserName/',
-                contentType: 'application/json',
-                type: 'GET',
-                success: function (data) {
-                    if (data.includes('Hello')) {
-                        targetElements.forEach(element => {
-                            element.textContent = `${data}`;
-                        });
-                        loginLink.href = '/Membership/Membership';
-                        //讓登出按鈕出現
-                        logoutElements.forEach(element => {
-                            element.style.display = 'block';
-                        });
-                    }
-                },
-                error: function () {
-                    console.error('登入失敗');
-                }
-            });
-        }
-        loginAndGetName();//載入頁面時檢查
-
-
-
-
-
-
-
-
-        //登入字樣切換結束
-
-
-
         //抓主打商品
         $(document).ready(function () {
             $.ajax({
@@ -772,7 +674,6 @@
             });
 
         });
-
         //抓評論
         $.ajax({
             url: "@Url.Action("GetReivews","Index")",
@@ -785,43 +686,13 @@
                     var reviewsDiv = $('<div class="swiper-slide swiper-slide--one position-relative shadow rounded"></div>')
                     const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
                     const productName = $('<div class="position-absolute position-absolute top-0 start-0"></div>').append(`<h3 class="bg-warning text-dark ">${value.productName}</h3>`)
-                    let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3"></div>');
-                    if(value.productRating == 5 ){
-                        for(let i = 0; i<value.productRating ; i++){
-                            stars.append('<span class="fs-1 fa fa-star checked "></span>');
-                        }
-                    }
-                    const productdescription = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<blockquote class="fs-2" ><cite><q>${value.productdescription}</q></cite></blockquote>`)
-                    const member = $('<div class="d-flex justify-content-around align-self-center mb-1"></div>').append(`<p>${value.member} <span>這樣說</span></p>`)
-                    reviewsDiv.append(img, productName, stars, productdescription, member)
-                    swipers.append(reviewsDiv)
-                    console.log(response.data)
+                    const productRating = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<div class="review"></div>`)
+                    const rating = $('<div class="review"></div>');
+                    reviewsDiv.append(img, productName, productRating)
+                    swipers.append(reviewsDiv, rating)
+                    
                 })
-                var swiper = new Swiper(".swiper", {
-                    effect: "coverflow",
-                    grabCursor: true,
-                    centeredSlides: true,
-                    slidesPerView: "auto",
-                    coverflowEffect: {
-                        rotate: 0,
-                        stretch: 0,
-                        depth: 100,
-                        modifier: 2,
-                        slideShadows: true
-                    },
-                    keyboard: {
-                        enabled: true
-                    },
-                    mousewheel: {
-                        thresholdDelta: 70
-                    },
-                    spaceBetween: 60,
-                    loop: true,
-                    pagination: {
-                        el: ".swiper-pagination",
-                        clickable: true
-                    }
-                });
+
             },
             error: function (error) {
                 console.log("Error:", error)
@@ -829,7 +700,41 @@
         })
 
 
+            $(".review").rating({
+                "value": 2,
+                "click": function (e) {
+                    console.log(e);
+                }
+            });
 
+
+
+
+        var swiper = new Swiper(".swiper", {
+            effect: "coverflow",
+            grabCursor: true,
+            centeredSlides: true,
+            slidesPerView: "auto",
+            coverflowEffect: {
+                rotate: 0,
+                stretch: 0,
+                depth: 100,
+                modifier: 2,
+                slideShadows: true
+            },
+            keyboard: {
+                enabled: true
+            },
+            mousewheel: {
+                thresholdDelta: 70
+            },
+            spaceBetween: 60,
+            loop: false,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true
+            }
+        });
         //倒數計時
         function handleCountdown() {
             const times = $(".countTime").map(function () {
