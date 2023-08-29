@@ -216,7 +216,7 @@
 
 <div class="modal fade" id="EditProductModalToggle" aria-hidden="true"
      aria-labelledby="EditProductModalToggleLabel" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="EditProductModalToggleLabel">編輯 Edit</h5>
@@ -314,7 +314,7 @@
                         <label>商品描述</label>
                         <textarea id="editor-description" class="form-control" name="ProductDescription"></textarea>
                     </div>
-                    <div class="col-md-12 d-flex flex-column" id="editor-img">
+                    <div class="col-md-12 d-flex " id="editor-img">
                     </div>
                     <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
                             style="width: 100%;">
@@ -546,13 +546,17 @@
                         $('#editor-image').val(response.data.shopproductImagetable);
                         $('#editor-pinToShop').prop("checked", response.data.pushToShop)
                         $('#editor-offdate').val(response.data.offDay)
+                        
                         $.each(response.data.shopProductImageTable, function (index, value) {
-                            var img = $('<img class="img-thumbnail previewable-image">').attr('src', value.productPhoto).attr('data-image-id', value.productImageId);
+                            var blockdiv = $('<div class="d-flex flex-column align-items-center"></div>')
+                            var img = $('<img class="img-thumbnail previewable-image w-25">').attr('src', value.productPhoto).attr('data-image-id', value.productImageId);
                             var spanImgID = $('<h6>').text(`圖片編號：${value.productImageId}`);
-                            var frontCover = $(`<input type="checkbox" class="frontCoverCheckbox" data-product-image-id="${value.productImageId}">`).prop("checked", value.frontCover);
+                            // var frontCover = $(`<input type="checkbox" class="frontCoverCheckbox" data-product-image-id="${value.productImageId}">`).prop("checked", value.frontCover);
+                            var button = $(`<button class="btn deletedImg" data-product-image-id="${value.productImageId}"><a href="/AdminCMS/Product/DeleteEditImg/?id=${value.productImageId}">X</a></button>`);
                             var selectID = $('<option>').val(value.productImageId).text(value.productImageId);
                             var container = $('<div class="image-container mt-2">').css('display', 'flex');
-                            container.append(spanImgID, frontCover, img);
+                            blockdiv.append(spanImgID, button, img)
+                            container.append(blockdiv);
                             $('#editor-img').append(container);
                             $("#editor-imgID").append(selectID);
                         });

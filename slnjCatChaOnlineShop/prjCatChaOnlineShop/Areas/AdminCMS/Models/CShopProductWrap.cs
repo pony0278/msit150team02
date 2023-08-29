@@ -29,5 +29,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
         public List<int>? ProductImageID {  get; set; }
         public bool? FrontCover { get; set; }
         public int? ProductImageIDforFrontCover { get;set; }
+
+        public int? deletedProductImageID { get; set; }
     }
 }

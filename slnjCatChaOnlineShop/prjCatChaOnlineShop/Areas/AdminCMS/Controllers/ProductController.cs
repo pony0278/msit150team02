@@ -303,10 +303,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return RedirectToAction("Login", "CMSHome");
 
         }
-        public IActionResult AI()
-        {
-            return View();
-        }
+
         [HttpPost]
         public async Task<ActionResult> GenerateArticle([FromForm] Dictionary<string, string> keywords)
         {
@@ -343,6 +340,26 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
                 return BadRequest($"An error occurred: {ex.Message}");
             }
+        }
+
+        public async Task<IActionResult> DeleteEditImg(int? id)
+        {
+            if (id == null)
+            {
+                return BadRequest("Id cannot be null.");
+            }
+
+            ShopProductImageTable imageTable = await _cachaContext.ShopProductImageTable.FirstOrDefaultAsync(x => x.ProductImageId == id);
+
+            if (imageTable == null)
+            {
+                return NotFound("Image not found.");
+            }
+
+            _cachaContext.ShopProductImageTable.Remove(imageTable);
+            await _cachaContext.SaveChangesAsync();
+
+            return RedirectToAction("Product", "Product", new { area = "AdminCMS" });
         }
 
     }
