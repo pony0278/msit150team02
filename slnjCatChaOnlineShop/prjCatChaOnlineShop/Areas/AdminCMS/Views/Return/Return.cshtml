@@ -110,7 +110,7 @@
                             </tr>
                         </thead>
                         <tbody id="appendReason">
-                            </tbody>
+                        </tbody>
                     </table>
 
                     <button id="CreatReturnReason" class="btn btn-danger btn-block" style="width: 100%;">
@@ -124,15 +124,15 @@
     <!---新增退換貨狀態 modal-->
 
     <div class="search-row row mt-3">
-@*         <div class="row align-items-center mb-3">
-            退換貨日期：
-            <input type="text" class="form-control w-25" name="dates" />
+        @*         <div class="row align-items-center mb-3">
+        退換貨日期：
+        <input type="text" class="form-control w-25" name="dates" />
         </div> *@
         <div class="row align-items-center mb-3">
             原因類別：
             <select class="form-select w-25" id="reasonList">
                 <option value="" selected>全部訂單</option>
-@*                <option value="商品品質問題">商品品質問題</option>
+                @*                <option value="商品品質問題">商品品質問題</option>
                 <option value="不符合期望">不符合期望</option>
                 <option value="送錯商品">送錯商品</option>
                 <option value="重複運送商品">重複運送商品</option>
@@ -179,667 +179,673 @@
                     </thead>
                 </table>
                 <!--表格-->
-                <!--編輯彈出視窗-->
-                <div class="modal fade" id="returnEditModalToggle" aria-hidden="true"
-                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯退換貨資料</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!---詳細資料model-->
+<div class="modal fade" id="returnDetailModalToggle" aria-hidden="true"
+     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">
+                    詳細資訊
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <nav>
+                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                        <button class="nav-link active" id="nav-home-tab"
+                                data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
+                                role="tab">
+                            訂購人 / 收件人資料
+                        </button>
+                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-profile" type="button"
+                                role="tab">
+                            訂單明細
+                        </button>
+                    </div>
+                </nav>
+                <div class="tab-content mt-3" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
+                         aria-labelledby="nav-home-tab">
+                        <div class="row">
+                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
+                                <h5><strong>訂購人(會員)</strong></h5>
+                                <p id="order_memberId"></p>
+                                <p id="order_name"></p>
+                                <p id="order_memberAccount"></p>
+                                <p id="order_gender"></p>
+                                <p id="order_birthday"></p>
+                                <p id="order_email"></p>
+                                <p id="order_phoneNumber"></p>
+                                <p id="order_address"></p>
+                                <p id="order_registrationTime"></p>
+                                <p id="order_lastLoginTime"></p>
+                                <p id="order_memberStatus"></p>
                             </div>
-                            <div class="modal-body">
-                                <!--內容表單-->
-                                <div class="row">
-
-                                    <input type="hidden" class="form-control" id="orderId" readonly disabled>
-
-                                    <div class="col-12 mb-3">
-                                        <label>退換貨原因</label>
-                                        <select class="form-select" id="returnReasonId">
-@*                                            <option value="1">商品品質問題</option>
-                                            <option value="2">不符合期望</option>
-                                            <option value="3">送錯商品</option>
-                                            <option value="4">重複運送商品</option>
-                                            <option value="5">訂單問題</option>
-                                            <option value="6">售後服務問題</option>
-                                            <option value="7">改變主意</option>
-                                            <option value="8">其他原因</option>*@
-                                        </select>
+                            <div class="col-12 col-lg-6">
+                                <h5><strong>收件人</strong></h5>
+                                <p id="order_recipientName"></p>
+                                <p id="order_recipientPhone"></p>
+                                <p id="order_recipientAddress"></p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <p id="order_orderId"></p>
+                                <p id="order_paymentMethod"></p>
+                                <p id="order_shippment"></p>
+                                <p id="order_totalPrice"></p>
+                                <p id="order_lastUpdateTime"></p>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <p id="order_orderCreationDate"></p>
+                                <p id="order_shippingMethod"></p>
+                                <p id="order_couponContent"></p>
+                                <p id="order_orderStatus"></p>
+                            </div>
+                            <div class="col-12">
+                                <!--下拉卷軸-->
+                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                    訂購產品明細
+                                </button>
+                                <div class="collapse show" id="collapseExample">
+                                    <div class="card card-body">
+                                        <div id="ProductTotalContainer"></div>
                                     </div>
-                                    <div class="col-12 mb-3">
-                                        <label>狀態</label>
-                                        <select class="form-select" id="processingStatusId">
-@*                                            <option value="1">待處理</option>
-                                            <option value="2">審核中</option>
-                                            <option value="3">已批准</option>
-                                            <option value="4">待退貨</option>
-                                            <option value="5">待換貨</option>
-                                            <option value="6">退貨中</option>
-                                            <option value="7">換貨中</option>
-                                            <option value="8">已完成</option>
-                                            <option value="9">取消</option>*@
-                                        </select>
-                                    </div>
-
-                                    <button type="button" class="mt-3 btn btn-danger btn-block editReturn_save"
-                                            style="width: 100%;">
-                                        儲存
-                                    </button>
                                 </div>
+                                <!--下拉卷軸-->
                             </div>
                         </div>
                     </div>
                 </div>
-                <!---詳細資料model-->
-                <div class="modal fade" id="returnDetailModalToggle" aria-hidden="true"
-                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">
-                                    詳細資訊
-                                </h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <nav>
-                                    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-                                        <button class="nav-link active" id="nav-home-tab"
-                                                data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
-                                                role="tab">
-                                            訂購人 / 收件人資料
-                                        </button>
-                                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
-                                                data-bs-target="#nav-profile" type="button"
-                                                role="tab">
-                                            訂單明細
-                                        </button>
-                                    </div>
-                                </nav>
-                                <div class="tab-content mt-3" id="nav-tabContent">
-                                    <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
-                                         aria-labelledby="nav-home-tab">
-                                        <div class="row">
-                                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
-                                                <h5><strong>訂購人(會員)</strong></h5>
-                                                <p id="order_memberId"></p>
-                                                <p id="order_name"></p>
-                                                <p id="order_memberAccount"></p>
-                                                <p id="order_gender"></p>
-                                                <p id="order_birthday"></p>
-                                                <p id="order_email"></p>
-                                                <p id="order_phoneNumber"></p>
-                                                <p id="order_address"></p>
-                                                <p id="order_registrationTime"></p>
-                                                <p id="order_lastLoginTime"></p>
-                                                <p id="order_memberStatus"></p>
-                                            </div>
-                                            <div class="col-12 col-lg-6">
-                                                <h5><strong>收件人</strong></h5>
-                                                <p id="order_recipientName"></p>
-                                                <p id="order_recipientPhone"></p>
-                                                <p id="order_recipientAddress"></p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
-                                        <div class="row">
-                                            <div class="col-12 col-lg-6">
-                                                <p id="order_orderId"></p>
-                                                <p id="order_paymentMethod"></p>
-                                                <p id="order_shippment"></p>
-                                                <p id="order_totalPrice"></p>
-                                                <p id="order_lastUpdateTime"></p>
-                                            </div>
-                                            <div class="col-12 col-lg-6">
-                                                <p id="order_orderCreationDate"></p>
-                                                <p id="order_shippingMethod"></p>
-                                                <p id="order_couponContent"></p>
-                                                <p id="order_orderStatus"></p>
-                                            </div>
-                                            <div class="col-12">
-                                                <!--下拉卷軸-->
-                                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-                                                    訂購產品明細
-                                                </button>
-                                                <div class="collapse show" id="collapseExample">
-                                                    <div class="card card-body">
-                                                        <div id="ProductTotalContainer"></div>
-                                                    </div>
-                                                </div>
-                                                <!--下拉卷軸-->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!---詳細資料model-->
+<!--編輯彈出視窗-->
+<div class="modal fade" id="returnEditModalToggle" aria-hidden="true"
+     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">編輯退換貨資料</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!--內容表單-->
+                <div class="row">
+
+                    <input type="hidden" class="form-control" id="orderId" readonly disabled>
+
+                    <div class="col-12 mb-3">
+                        <label>退換貨原因</label>
+                        <select class="form-select" id="returnReasonId">
+                            @*                                            <option value="1">商品品質問題</option>
+                            <option value="2">不符合期望</option>
+                            <option value="3">送錯商品</option>
+                            <option value="4">重複運送商品</option>
+                            <option value="5">訂單問題</option>
+                            <option value="6">售後服務問題</option>
+                            <option value="7">改變主意</option>
+                            <option value="8">其他原因</option>*@
+                        </select>
                     </div>
+                    <div class="col-12 mb-3">
+                        <label>狀態</label>
+                        <select class="form-select" id="processingStatusId">
+                            @*                                            <option value="1">待處理</option>
+                            <option value="2">審核中</option>
+                            <option value="3">已批准</option>
+                            <option value="4">待退貨</option>
+                            <option value="5">待換貨</option>
+                            <option value="6">退貨中</option>
+                            <option value="7">換貨中</option>
+                            <option value="8">已完成</option>
+                            <option value="9">取消</option>*@
+                        </select>
+                    </div>
+
+                    <button type="button" class="mt-3 btn btn-danger btn-block editReturn_save"
+                            style="width: 100%;">
+                        儲存
+                    </button>
                 </div>
-                <!---詳細資料model-->
-                @section Scripts{
-
-                    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
-                    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-                    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-
-                    <script>
-                        $('input[name="dates"]').daterangepicker();
-
-                        $(document).ready(function () {
-                            $.ajax({
-                                url: '@Url.Action("ReasonList", "Return")',
-                                type: 'GET',
-                                success: function (data) {
-                                    //console.log(data);
-                                    // 抓到資料庫的所有分類名稱並放入option中
-                                    var RRselectElement = $("#reasonList");
-
-                                    $.each(data.data.complaintCategorySelect, function (index, value) {
-                                        var option = $("<option>", {
-                                            value: value,
-                                            text: value
-                                        });
-
-                                        RRselectElement.append(option);
-                                    });
-                                },
-                                error: function () {
-                                    console.log("error:" + error);
-                                }
-                            });
-                            //==================datatable
-                            var table = $('#SReturn-table').DataTable({
-                                "ajax": '@Url.Action("ShowReturnTotal", "Return")',
-
-                                "columns": [
-                                    { data: 'orderId' },
-                                    { data: 'memberId' },
-                                    { data: 'name' },
-                                    {
-                                        data: 'returnDate',
-                                        render: function (data, type, row, meta) {
-                                            if (type === 'display' || type === 'filter') {
-                                                var date = new Date(data);
-                                                var year = date.getFullYear().toString(); // 年份
-                                                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
-                                                var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
-                                                var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
-                                                var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
-                                                var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
-
-                                                return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
-                                            }
-                                            return data;
-                                        }
-                                    },
-                                    { data: 'returnReason' },
-                                    { data: 'statusName' },
-                                    {
-                                        data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
-                                        render: function (data, type, row, meta) {
-                                            // return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
-                                            return '<button class="detail_input" data-bs-toggle="modal" href="#returnDetailModalToggle" role="button"  data-orderid="' + row.orderId + '" data-memberId="' + row.memberId + '">詳細資料</button>';
-                                        }
-                                    },
-                                    {
-                                        data: null,
-                                        render: function (data, type, row, meta) {
-                                            var editButton = '<button class="btn edit_orderbtn" data-bs-toggle="modal" href="#returnEditModalToggle" role="button" data-orderid="' + row.orderId + '"><i class="fas fa-edit"></i></button>';
-                                            return editButton;
-                                        }
-                                    },
-                                ],
-                                columnDefs: [
-                                    { targets: 4, searchable: true },
-                                    { targets: 5, searchable: true }
-                                    // 其他列...
-                                ],
-                                "paging": true, //分頁功能
-                                responsive: true, //RWD
-                                // "searching": false, //隱藏搜尋框
-                            });
-
-                            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-                            $('#reasonList').on('change', function () {
-                                var filterOption1 = $(this).val();
-
-                                // 使用DataTable的column().search()方法進行過濾
-                                table.column(4).search(filterOption1).draw();
-                                // 其他列...
-                            });
-
-                            $('#statusList').on('change', function () {
-                                // var filterOption1 = $('#payList').val();
-                                var filterOption2 = $(this).val();
-
-                                // 使用DataTable的column().search()方法進行過濾
-                                table.column(5).search(filterOption2).draw();
-                                // 其他列...
-                            });
-
-                            //==================按下「詳細資料」按鈕的點擊事件處理
-                            $('#SReturn-table').on('click', '.detail_input', function () {
-                                var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
-                                var orderId = $(this).data('orderid');
-                                // console.log('Clicked on "詳細資料" button for memberId:', memberId);
-
-                                //----------------AJAX
-                                $.ajax({
-                                    url: '@Url.Action("GetOrderDetails", "Order")',
-                                    type: 'GET',
-                                    data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                                    success: function (data) {
-                                        console.log(data.data.orderTotal);
-
-
-                                        function formatDateTime(dateTimeString) {
-                                            var dateTime = new Date(dateTimeString);
-                                            var year = dateTime.getFullYear();
-                                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                                            var day = String(dateTime.getDate()).padStart(2, '0');
-                                            var hours = String(dateTime.getHours()).padStart(2, '0');
-                                            var minutes = String(dateTime.getMinutes()).padStart(2, '0');
-                                            var seconds = String(dateTime.getSeconds()).padStart(2, '0');
-
-                                            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
-                                        }
-
-                                        function formatDate(date) {
-                                            var dateTime = new Date(date);
-                                            var year = dateTime.getFullYear();
-                                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
-                                            var day = String(dateTime.getDate()).padStart(2, '0');
-
-                                            return year + '-' + month + '-' + day;
-                                        }
-
-                                        //============訂購人(會員)基本資料
-                                        $('#order_memberId').text("ID：" + data.data.memberInfo.memberId);
-                                        $('#order_name').text("姓名：" + data.data.memberInfo.name);
-                                        $('#order_memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
-                                        $('#order_gender').text("性別：" + data.data.memberInfo.gender);
-
-                                        var formattedBirthday = formatDate(data.data.memberInfo.birthday);
-                                        $('#order_birthday').text("生日：" + formattedBirthday);
-
-                                        $('#order_email').text("E-mail：" + data.data.memberInfo.email);
-                                        $('#order_phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
-                                        $('#order_address').text("地址：" + data.data.memberInfo.address);
-
-                                        var formattedregistration = formatDateTime(data.data.memberInfo.registrationTime);
-                                        $('#order_registrationTime').text("註冊日期：" + formattedregistration);
-
-                                        var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
-                                        $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
-
-                                        if (data.data.memberInfo.memberStatus == true) {
-                                            $('#order_memberStatus').text("會員狀態：開放");
-                                        } else {
-                                            $('#order_memberStatus').text("會員狀態：凍結");
-                                        }
-
-                                        //============收件人資料
-                                        $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);
-                                        $('#order_recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
-                                        $('#order_recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
-
-                                        //============訂單明細
-                                        $('#order_orderId').text("訂單編號：" + data.data.orderTotal.orderId);
-                                        $('#order_paymentMethod').text("付款方式：" + data.data.paymentMethod);
-
-                                        if (data.data.shippment == null) {
-                                            $('#order_shippment').text("運費：無");
-                                        } else {
-                                            $('#order_shippment').text("運費：" + data.data.shippment);
-                                        }
-
-                                        if (data.data.couponContent == null) {
-                                            $('#order_couponContent').text("優惠券內容：無");
-                                        } else {
-                                            $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
-                                        }
-
-                                        if (data.data.couponContent == null) {
-                                            $('#order_shippingMethod').text("配送方式：無");
-                                        } else {
-                                            $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
-                                        }
-                                        var formattedlastUpdate = formatDateTime(data.data.orderTotal.lastUpdateTime);
-                                        $('#order_lastUpdateTime').text("最後更新：" + formattedlastUpdate);
-
-                                        var formattedorderCreationDate = formatDateTime(data.data.orderTotal.orderCreationDate);
-                                        $('#order_orderCreationDate').text("訂單成立日期：" + formattedorderCreationDate);
-
-                                        $('#order_orderStatus').text("訂單狀態：" + data.data.orderStatus);
-
-                                        //===========訂購產品明細
-                                        var PTContainer = $("#ProductTotalContainer");
-                                        var totalPrice = 0; // 用於累加小計，秀出總金額
-                                        PTContainer.html(""); // 使用html()方法來重置容器內容
-
-                                        if (data.data.orderDetails.length != 0) {
-                                            var tableHTML = `
-                                                                    <table class="rwd-table">
-                                                                        <thead style='border-bottom: 1px solid #ddd;'>
-                                                                            <tr>
-                                                                                <th>項次</th>
-                                                                                <th>商品ID</th>
-                                                                                <th>名稱</th>
-                                                                                <th>數量</th>
-                                                                                <th>單價</th>
-                                                                                <th>小計</th>
-                                                                            </tr>
-                                                                        </thead>
-                                                                        <tbody>
-                                                                `;
-
-                                            for (var i = 0; i < data.data.orderDetails.length; i++) {
-                                                var item = data.data.orderDetails[i];
-                                                var orderNumber = i + 1;
-
-                                                var subTotal = item.product.productPrice * item.productQuantity; // 計算小計
-                                                totalPrice += subTotal; // 將小計累加到總金額中
-
-                                                tableHTML += `
-                                                                        <tr>
-                                                                                                    <td data-th="項次">${orderNumber}</td>
-                                                                                                    <td data-th="商品ID">${item.product.productId}</td>
-                                                                                                    <td data-th="名稱">${item.product.productName}</td>
-                                                                                                    <td data-th="數量">${item.productQuantity}</td>
-                                                                                                    <td data-th="單價">${item.product.productPrice}</td>
-                                                                                                                            <td data-th="小計">${subTotal}</td>
-                                                                        </tr>
-                                                                    `;
-                                            }
-
-                                            tableHTML += `
-                                                                        </tbody>
-                                                                    </table>
-                                                                `;
-
-                                            PTContainer.html(tableHTML);
-
-                                            // 將總金額填入指定的元素中
-                                            $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
-                                        } else {
-                                            PTContainer.text("沒有可顯示的產品明細");
-                                        }
-                                    },
-                                    error: function (error, a, b) {
-                                        console.log(error);
-                                        console.log(a);
-                                        console.log(b);
-                                        console.log("Error retrieving order details.");
-                                    }
-                                });
-                            });
-
-                            //==================按下「編輯」按鈕的點擊事件處理
-                            $('#SReturn-table').on('click', '.edit_orderbtn', function () {
-                                var orderId = $(this).data('orderid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
-
-                                //console.log(orderId);
-
-                                //----------------AJAX
-                                $.ajax({
-                                    url: '@Url.Action("EditReturn", "Return")',
-                                    type: 'GET',
-                                    data: { id: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
-                                    success: function (data) {
-                                        console.log(data);
-
-                                        $('#orderId').val(data.data.orderReturn.orderId);
-
-                                        // 清空所有<select>元素的選項
-                                        $("#returnReasonId, #processingStatusId").empty();
-
-                                        // 抓到資料庫的所有退貨原因名稱並放入option中
-                                        var RRselectElement = $("#returnReasonId");
-
-                                        $.each(data.data.returnReasonSelect, function (index, value) {
-                                            var option = $("<option>", {
-                                                value: index + 1,
-                                                text: value
-                                            });
-
-                                            if (value === data.data.returnReasonNames) {
-                                                option.prop("selected", true); // Set the option as selected
-                                            }
-                                            RRselectElement.append(option);
-                                        });
-
-                                        // 抓到資料庫的所有退換貨狀態名稱並放入option中
-                                        var PSselectElement = $("#processingStatusId");
-
-                                        $.each(data.data.returnStatusSelect, function (index, value) {
-                                            var option = $("<option>", {
-                                                value: index + 1,
-                                                text: value
-                                            });
-
-                                            if (value === data.data.returnStatusNames) {
-                                                option.prop("selected", true); // Set the option as selected
-                                            }
-                                            PSselectElement.append(option);
-                                        });
-                                    },
-                                    error: function (error) {
-                                        console.error(error);
-                                    }
-                                });
-                            });
-
-                            //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
-                            $('.editReturn_save').click(function () {
-
-                                //==================退換貨資料
-                                var orderId = $('#orderId').val();
-                                var returnReasonId = $('#returnReasonId').val();
-                                var processingStatusId = $('#processingStatusId').val();
-
-                                //console.log(orderId);
-                                //console.log(returnReasonId);
-                                //console.log(processingStatusId);
-
-
-                                var editReturn = {
-                                    orderId: orderId,
-                                    returnReasonId: returnReasonId,
-                                    processingStatusId: processingStatusId,
-                                };
-
-                                console.log(editReturn);
-                                // return;
-
-                                $.ajax({
-                                    url: '/AdminCMS/Return/UpdateReturn',
-                                    type: 'POST',
-                                    data: { editReturn: editReturn },
-                                    success: function (response) {
-                                        if (response.success) {
-                                            // 更新成功的處理
-                                            // 顯示成功訊息
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: '編輯成功',
-                                                text: response.message
-                                            });
-
-                                            // 關閉modal
-                                            $('#returnEditModalToggle').modal('hide');
-
-                                            // 重新整理dataTable
-                                            $('#SReturn-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
-                                        } else {
-                                            // 更新失敗
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: '失敗',
-                                                text: response.message
-                                            });
-                                        }
-                                    },
-                                    error: function (error) {
-                                        // 錯誤處理
-                                        // 會員編輯失敗，顯示錯誤訊息
-                                        console.log(error);
-                                    }
-                                });
-                            })
-
-
-
-
-                            //=======================新增原因方法
-                            function setupReasonTable(data) {
-                                //console.log(data);
-                                var htmlToInsert = ''; // 用於存儲要插入的HTML字符串
-
-                                // 遍歷data數組中的每個對象
-                                $.each(data.data.serviceCase, function (index, reason) {
-                                    htmlToInsert += `
-                                <tr>
-                                    <td>${reason.returnReasonId}</td>
-                                    <td>${reason.returnReason}</td>
-                                </tr>
-                            `;
-                                });
-
-                                // 將HTML字符串添加到目標元素
-                                $('#appendReason').html(htmlToInsert);
-
-                                let maxId = data.data.serviceCase.length;
-
-                                // 找到最後一個元素並添加加號圖標
-                                let lastElement = data.data.serviceCase[data.data.serviceCase.length - 1];
-                                if (lastElement) {
-                                    $('#appendReason tr:last-child td:last-child').append('<i class="fas fa-plus ms-2"></i>');
-                                }
-                            }
-
-                            let maxId; //最大ID
-
-                            //================按下新增原因按鈕事件
-                            $('#createReason').click(function () {
-                                $.ajax({
-                                    url: '@Url.Action("ReasonList", "Return")',
-                                    type: 'GET',
-                                    success: function (data) {
-                                        //console.log(data);
-                                        setupReasonTable(data);
-                                        maxId = data.data.serviceCase.length;
-                                    },
-                                    error: function () {
-                                        console.log("error:" + error);
-                                    }
-                                });
-                            })
-
-                            
-                            // 監聽加號圖標的點擊事件
-                            $('#appendReason').on('click', 'i.fa-plus', function () {
-                                // 增加最大ID
-                                maxId++;
-
-                                // 創建一個新的<tr>行
-                                let newRow = $('<tr></tr>');
-
-                                // 在新的<tr>行中創建新的<td>元素，顯示ID
-                                let newIdCell = $(`<td>${maxId}</td>`);
-
-                                // 創建新的<td>元素，其中包含新的<input>元素
-                                let newInputCell = $('<td><input type="text" class="newadd" /><i class="fas fa-minus-circle"></i></td>');
-
-                                // 將新的<td>元素添加到新的<tr>行中
-                                newRow.append(newIdCell);
-                                newRow.append(newInputCell);
-
-                                // 在最後一行的後面插入新的<tr>行
-                                $('#appendReason tr:last-child').after(newRow);
-
-                            });
-
-                           
-
-                            // 監聽刪除圖標的點擊事件
-                            $('#appendReason').on('click', 'i.fa-minus-circle', function () {
-                                // 找到被點擊圖標所在的<tr>行
-                                let deletedRow = $(this).closest('tr');
-
-                                deletedRow.remove();
-                                recalculateMaxId();
-                            });
-
-                            // 重新計算maxId
-                            function recalculateMaxId() {
-                                let idCells = $('#appendReason td:first-child');
-                                maxId = 0;
-
-                                idCells.each(function () {
-                                    let idValue = parseInt($(this).text(), 10);
-                                    if (!isNaN(idValue) && idValue > maxId) {
-                                        maxId = idValue;
-                                    }
-                                });
-                            }
-
-                            //=================新增原因按下「儲存」的事件
-                            $('#CreatReturnReason').click(function () {
-                                
-
-                                var reasons = []; //[{},{},{}]
-                                $('input[type="text"].newadd').each(function () {
-                                    var id = "null";
-                                    reasons.push({ ReturnReasonId: id, ReturnReason: $(this).val() });
-                                });
-
-                                console.log(reasons);
-
-
-                                try {
-                                    $.ajax({
-                                        url: '/AdminCMS/Return/AddReturnReason',
-                                        type: 'POST',
-                                        data: { reasons: reasons },
-                                        success: function (response) {
-                                            // console.log(result)
-                                            if (response.success) {
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: '新增成功',
-                                                    text: response.message
-                                                });
-
-                                                // 關閉modal
-                                                $('#editStatusModalToggle').modal('hide');
-
-                                                // 重新整理dataTable
-                                                $('#return-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
-                                            } else {
-                                                Swal.fire({
-                                                    icon: 'error',
-                                                    title: '錯誤',
-                                                    text: response.message
-                                                });
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            Swal.fire({
-                                                icon: 'error',
-                                                title: '錯誤',
-                                                text: "An error occurred: " + xhr.responseText
-                                            });
-                                        }
-                                    });
-                                } catch (error) {
-                                    console.error('Error:', error);
-                                }
-                            });
+            </div>
+        </div>
+    </div>
+</div>
+<!--編輯彈出視窗-->
+@section Scripts{
+
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+    <script>
+        $('input[name="dates"]').daterangepicker();
+
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("ReasonList", "Return")',
+                type: 'GET',
+                success: function (data) {
+                    //console.log(data);
+                    // 抓到資料庫的所有分類名稱並放入option中
+                    var RRselectElement = $("#reasonList");
+
+                    $.each(data.data.complaintCategorySelect, function (index, value) {
+                        var option = $("<option>", {
+                            value: value,
+                            text: value
                         });
-                    </script>
+
+                        RRselectElement.append(option);
+                    });
+                },
+                error: function () {
+                    console.log("error:" + error);
                 }
+            });
+            //==================datatable
+            var table = $('#SReturn-table').DataTable({
+                "ajax": '@Url.Action("ShowReturnTotal", "Return")',
+
+                "columns": [
+                    { data: 'orderId' },
+                    { data: 'memberId' },
+                    { data: 'name' },
+                    {
+                        data: 'returnDate',
+                        render: function (data, type, row, meta) {
+                            if (type === 'display' || type === 'filter') {
+                                var date = new Date(data);
+                                var year = date.getFullYear().toString(); // 年份
+                                var month = (date.getMonth() + 1).toString().padStart(2, '0'); // 月份並補0
+                                var day = date.getDate().toString().padStart(2, '0'); // 日期並補0
+                                var hours = date.getHours().toString().padStart(2, '0'); // 小時並補0
+                                var minutes = date.getMinutes().toString().padStart(2, '0'); // 分鐘並補0
+                                var seconds = date.getSeconds().toString().padStart(2, '0'); // 秒鐘並補0
+
+                                return `${year}-${month}-${day} <span class="time-colored-text">${hours}:${minutes}:${seconds}</span>`;
+                            }
+                            return data;
+                        }
+                    },
+                    { data: 'returnReason' },
+                    { data: 'statusName' },
+                    {
+                        data: null, // 這裡設置為 null，因為我們會在 render 中創建按鈕
+                        render: function (data, type, row, meta) {
+                            // return '<button class="detail_input" data-bs-toggle="modal" href="#DetailModalToggle" role="button" data-memberid="' + row.memberId + '">詳細資料</button>';
+                            return '<button class="detail_input" data-bs-toggle="modal" href="#returnDetailModalToggle" role="button"  data-orderid="' + row.orderId + '" data-memberId="' + row.memberId + '">詳細資料</button>';
+                        }
+                    },
+                    {
+                        data: null,
+                        render: function (data, type, row, meta) {
+                            var editButton = '<button class="btn edit_orderbtn" data-bs-toggle="modal" href="#returnEditModalToggle" role="button" data-orderid="' + row.orderId + '"><i class="fas fa-edit"></i></button>';
+                            return editButton;
+                        }
+                    },
+                ],
+                columnDefs: [
+                    { targets: 4, searchable: true },
+                    { targets: 5, searchable: true }
+                    // 其他列...
+                ],
+                "paging": true, //分頁功能
+                responsive: true, //RWD
+                // "searching": false, //隱藏搜尋框
+            });
+
+            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
+            $('#reasonList').on('change', function () {
+                var filterOption1 = $(this).val();
+
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(4).search(filterOption1).draw();
+                // 其他列...
+            });
+
+            $('#statusList').on('change', function () {
+                // var filterOption1 = $('#payList').val();
+                var filterOption2 = $(this).val();
+
+                // 使用DataTable的column().search()方法進行過濾
+                table.column(5).search(filterOption2).draw();
+                // 其他列...
+            });
+
+            //==================按下「詳細資料」按鈕的點擊事件處理
+            $('#SReturn-table').on('click', '.detail_input', function () {
+                var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+                var orderId = $(this).data('orderid');
+                // console.log('Clicked on "詳細資料" button for memberId:', memberId);
+
+                //----------------AJAX
+                $.ajax({
+                    url: '@Url.Action("GetOrderDetails", "Order")',
+                    type: 'GET',
+                    data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        console.log(data.data.orderTotal);
+
+
+                        function formatDateTime(dateTimeString) {
+                            var dateTime = new Date(dateTimeString);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
+                            var hours = String(dateTime.getHours()).padStart(2, '0');
+                            var minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                            var seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+                            return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                        }
+
+                        function formatDate(date) {
+                            var dateTime = new Date(date);
+                            var year = dateTime.getFullYear();
+                            var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                            var day = String(dateTime.getDate()).padStart(2, '0');
+
+                            return year + '-' + month + '-' + day;
+                        }
+
+                        //============訂購人(會員)基本資料
+                        $('#order_memberId').text("ID：" + data.data.memberInfo.memberId);
+                        $('#order_name').text("姓名：" + data.data.memberInfo.name);
+                        $('#order_memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
+                        $('#order_gender').text("性別：" + data.data.memberInfo.gender);
+
+                        var formattedBirthday = formatDate(data.data.memberInfo.birthday);
+                        $('#order_birthday').text("生日：" + formattedBirthday);
+
+                        $('#order_email').text("E-mail：" + data.data.memberInfo.email);
+                        $('#order_phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
+                        $('#order_address').text("地址：" + data.data.memberInfo.address);
+
+                        var formattedregistration = formatDateTime(data.data.memberInfo.registrationTime);
+                        $('#order_registrationTime').text("註冊日期：" + formattedregistration);
+
+                        var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
+                        $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
+
+                        if (data.data.memberInfo.memberStatus == true) {
+                            $('#order_memberStatus').text("會員狀態：開放");
+                        } else {
+                            $('#order_memberStatus').text("會員狀態：凍結");
+                        }
+
+                        //============收件人資料
+                        $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);
+                        $('#order_recipientPhone').text("收件人電話：" + data.data.orderTotal.recipientPhone);
+                        $('#order_recipientAddress').text("收件地址：" + data.data.orderTotal.recipientAddress);
+
+                        //============訂單明細
+                        $('#order_orderId').text("訂單編號：" + data.data.orderTotal.orderId);
+                        $('#order_paymentMethod').text("付款方式：" + data.data.paymentMethod);
+
+                        if (data.data.shippment == null) {
+                            $('#order_shippment').text("運費：無");
+                        } else {
+                            $('#order_shippment').text("運費：" + data.data.shippment);
+                        }
+
+                        if (data.data.couponContent == null) {
+                            $('#order_couponContent').text("優惠券內容：無");
+                        } else {
+                            $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
+                        }
+
+                        if (data.data.couponContent == null) {
+                            $('#order_shippingMethod').text("配送方式：無");
+                        } else {
+                            $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
+                        }
+                        var formattedlastUpdate = formatDateTime(data.data.orderTotal.lastUpdateTime);
+                        $('#order_lastUpdateTime').text("最後更新：" + formattedlastUpdate);
+
+                        var formattedorderCreationDate = formatDateTime(data.data.orderTotal.orderCreationDate);
+                        $('#order_orderCreationDate').text("訂單成立日期：" + formattedorderCreationDate);
+
+                        $('#order_orderStatus').text("訂單狀態：" + data.data.orderStatus);
+
+                        //===========訂購產品明細
+                        var PTContainer = $("#ProductTotalContainer");
+                        var totalPrice = 0; // 用於累加小計，秀出總金額
+                        PTContainer.html(""); // 使用html()方法來重置容器內容
+
+                        if (data.data.orderDetails.length != 0) {
+                            var tableHTML = `
+                                                                                                        <table class="rwd-table">
+                                                                                                            <thead style='border-bottom: 1px solid #ddd;'>
+                                                                                                                <tr>
+                                                                                                                    <th>項次</th>
+                                                                                                                    <th>商品ID</th>
+                                                                                                                    <th>名稱</th>
+                                                                                                                    <th>數量</th>
+                                                                                                                    <th>單價</th>
+                                                                                                                    <th>小計</th>
+                                                                                                                </tr>
+                                                                                                            </thead>
+                                                                                                            <tbody>
+                                                                                                    `;
+
+                            for (var i = 0; i < data.data.orderDetails.length; i++) {
+                                var item = data.data.orderDetails[i];
+                                var orderNumber = i + 1;
+
+                                var subTotal = item.product.productPrice * item.productQuantity; // 計算小計
+                                totalPrice += subTotal; // 將小計累加到總金額中
+
+                                tableHTML += `
+                                                                                                            <tr>
+                                                                                                                                        <td data-th="項次">${orderNumber}</td>
+                                                                                                                                        <td data-th="商品ID">${item.product.productId}</td>
+                                                                                                                                        <td data-th="名稱">${item.product.productName}</td>
+                                                                                                                                        <td data-th="數量">${item.productQuantity}</td>
+                                                                                                                                        <td data-th="單價">${item.product.productPrice}</td>
+                                                                                                                                                                <td data-th="小計">${subTotal}</td>
+                                                                                                            </tr>
+                                                                                                        `;
+                            }
+
+                            tableHTML += `
+                                                                                                            </tbody>
+                                                                                                        </table>
+                                                                                                    `;
+
+                            PTContainer.html(tableHTML);
+
+                            // 將總金額填入指定的元素中
+                            $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                        } else {
+                            PTContainer.text("沒有可顯示的產品明細");
+                        }
+                    },
+                    error: function (error, a, b) {
+                        console.log(error);
+                        console.log(a);
+                        console.log(b);
+                        console.log("Error retrieving order details.");
+                    }
+                });
+            });
+
+            //==================按下「編輯」按鈕的點擊事件處理
+            $('#SReturn-table').on('click', '.edit_orderbtn', function () {
+                var orderId = $(this).data('orderid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
+
+                //console.log(orderId);
+
+                //----------------AJAX
+                $.ajax({
+                    url: '@Url.Action("EditReturn", "Return")',
+                    type: 'GET',
+                    data: { id: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
+                    success: function (data) {
+                        console.log(data);
+
+                        $('#orderId').val(data.data.orderReturn.orderId);
+
+                        // 清空所有<select>元素的選項
+                        $("#returnReasonId, #processingStatusId").empty();
+
+                        // 抓到資料庫的所有退貨原因名稱並放入option中
+                        var RRselectElement = $("#returnReasonId");
+
+                        $.each(data.data.returnReasonSelect, function (index, value) {
+                            var option = $("<option>", {
+                                value: index + 1,
+                                text: value
+                            });
+
+                            if (value === data.data.returnReasonNames) {
+                                option.prop("selected", true); // Set the option as selected
+                            }
+                            RRselectElement.append(option);
+                        });
+
+                        // 抓到資料庫的所有退換貨狀態名稱並放入option中
+                        var PSselectElement = $("#processingStatusId");
+
+                        $.each(data.data.returnStatusSelect, function (index, value) {
+                            var option = $("<option>", {
+                                value: index + 1,
+                                text: value
+                            });
+
+                            if (value === data.data.returnStatusNames) {
+                                option.prop("selected", true); // Set the option as selected
+                            }
+                            PSselectElement.append(option);
+                        });
+                    },
+                    error: function (error) {
+                        console.error(error);
+                    }
+                });
+            });
+
+            //==================編輯資料後，按下「儲存」按鈕的點擊事件處理
+            $('.editReturn_save').click(function () {
+
+                //==================退換貨資料
+                var orderId = $('#orderId').val();
+                var returnReasonId = $('#returnReasonId').val();
+                var processingStatusId = $('#processingStatusId').val();
+
+                //console.log(orderId);
+                //console.log(returnReasonId);
+                //console.log(processingStatusId);
+
+
+                var editReturn = {
+                    orderId: orderId,
+                    returnReasonId: returnReasonId,
+                    processingStatusId: processingStatusId,
+                };
+
+                console.log(editReturn);
+                // return;
+
+                $.ajax({
+                    url: '/AdminCMS/Return/UpdateReturn',
+                    type: 'POST',
+                    data: { editReturn: editReturn },
+                    success: function (response) {
+                        if (response.success) {
+                            // 更新成功的處理
+                            // 顯示成功訊息
+                            Swal.fire({
+                                icon: 'success',
+                                title: '編輯成功',
+                                text: response.message
+                            });
+
+                            // 關閉modal
+                            $('#returnEditModalToggle').modal('hide');
+
+                            // 重新整理dataTable
+                            $('#SReturn-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                        } else {
+                            // 更新失敗
+                            Swal.fire({
+                                icon: 'error',
+                                title: '失敗',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        // 錯誤處理
+                        // 會員編輯失敗，顯示錯誤訊息
+                        console.log(error);
+                    }
+                });
+            })
+
+
+
+
+            //=======================新增原因方法
+            function setupReasonTable(data) {
+                //console.log(data);
+                var htmlToInsert = ''; // 用於存儲要插入的HTML字符串
+
+                // 遍歷data數組中的每個對象
+                $.each(data.data.serviceCase, function (index, reason) {
+                    htmlToInsert += `
+                                                                    <tr>
+                                                                        <td>${reason.returnReasonId}</td>
+                                                                        <td>${reason.returnReason}</td>
+                                                                    </tr>
+                                                                `;
+                });
+
+                // 將HTML字符串添加到目標元素
+                $('#appendReason').html(htmlToInsert);
+
+                let maxId = data.data.serviceCase.length;
+
+                // 找到最後一個元素並添加加號圖標
+                let lastElement = data.data.serviceCase[data.data.serviceCase.length - 1];
+                if (lastElement) {
+                    $('#appendReason tr:last-child td:last-child').append('<i class="fas fa-plus ms-2"></i>');
+                }
+            }
+
+            let maxId; //最大ID
+
+            //================按下新增原因按鈕事件
+            $('#createReason').click(function () {
+                $.ajax({
+                    url: '@Url.Action("ReasonList", "Return")',
+                    type: 'GET',
+                    success: function (data) {
+                        //console.log(data);
+                        setupReasonTable(data);
+                        maxId = data.data.serviceCase.length;
+                    },
+                    error: function () {
+                        console.log("error:" + error);
+                    }
+                });
+            })
+
+
+            // 監聽加號圖標的點擊事件
+            $('#appendReason').on('click', 'i.fa-plus', function () {
+                // 增加最大ID
+                maxId++;
+
+                // 創建一個新的<tr>行
+                let newRow = $('<tr></tr>');
+
+                // 在新的<tr>行中創建新的<td>元素，顯示ID
+                let newIdCell = $(`<td>${maxId}</td>`);
+
+                // 創建新的<td>元素，其中包含新的<input>元素
+                let newInputCell = $('<td><input type="text" class="newadd" /><i class="fas fa-minus-circle"></i></td>');
+
+                // 將新的<td>元素添加到新的<tr>行中
+                newRow.append(newIdCell);
+                newRow.append(newInputCell);
+
+                // 在最後一行的後面插入新的<tr>行
+                $('#appendReason tr:last-child').after(newRow);
+
+            });
+
+
+
+            // 監聽刪除圖標的點擊事件
+            $('#appendReason').on('click', 'i.fa-minus-circle', function () {
+                // 找到被點擊圖標所在的<tr>行
+                let deletedRow = $(this).closest('tr');
+
+                deletedRow.remove();
+                recalculateMaxId();
+            });
+
+            // 重新計算maxId
+            function recalculateMaxId() {
+                let idCells = $('#appendReason td:first-child');
+                maxId = 0;
+
+                idCells.each(function () {
+                    let idValue = parseInt($(this).text(), 10);
+                    if (!isNaN(idValue) && idValue > maxId) {
+                        maxId = idValue;
+                    }
+                });
+            }
+
+            //=================新增原因按下「儲存」的事件
+            $('#CreatReturnReason').click(function () {
+
+
+                var reasons = []; //[{},{},{}]
+                $('input[type="text"].newadd').each(function () {
+                    var id = "null";
+                    reasons.push({ ReturnReasonId: id, ReturnReason: $(this).val() });
+                });
+
+                console.log(reasons);
+
+
+                try {
+                    $.ajax({
+                        url: '/AdminCMS/Return/AddReturnReason',
+                        type: 'POST',
+                        data: { reasons: reasons },
+                        success: function (response) {
+                            // console.log(result)
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    text: response.message
+                                });
+
+                                // 關閉modal
+                                $('#editStatusModalToggle').modal('hide');
+
+                                // 重新整理dataTable
+                                $('#return-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '錯誤',
+                                    text: response.message
+                                });
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: "An error occurred: " + xhr.responseText
+                            });
+                        }
+                    });
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+    </script>
+    }
 
