@@ -67,12 +67,22 @@ function initialize() {
 //大廳更改名字功能
 function changeUserName() {
 
-    alterConfirmWinBTN('送出', checkNameisUsed)
-    confirmWin.style.display = 'block';
     confirmWin_title.innerHTML = '更改名字'
-    confirmWin_text.innerHTML = `請輸入想更換的腳色名稱<br>(最多輸入七個字)`
-    confirmWin_fillin.style.display = "block"
+    confirmWin.style.display = 'block';
+    confirmWin_text.innerHTML = `確定要消耗20000貓幣進行更名?`
 
+
+
+    alterConfirmWinBTN('確定', function () {
+        if (Ccoin < 20000) {
+            alterConfirmWinBTN('確認', closeConfirmWin)
+            confirmWin_text.innerHTML = '貓幣不足'
+            return;
+        }
+        alterConfirmWinBTN('送出', checkNameisUsed)
+        confirmWin_text.innerHTML = `請輸入想更換的腳色名稱<br>(最多輸入七個字)`
+        confirmWin_fillin.style.display = "block"
+    })
 }
 
 function checkNameisUsed() {
@@ -90,8 +100,10 @@ function checkNameisUsed() {
             }
                 
             else {
+                confirmWin_fillin.style.display = "none"
                 console.log("更改成功", result.message);  
                 alterConfirmWinBTN('確認', closeConfirmWin)
+                updateCCoint(-20000)
                 confirmWin_text.innerHTML = `更改成功!`
                 initialize(); 
             }
