@@ -284,6 +284,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     ProductCategories = _cachaContext.ShopProductCategory.ToList(),
                     shopProductTotals = _cachaContext.ShopProductTotal.ToList(),
+                    Suppliers = _cachaContext.ShopProductSupplier.ToList(),
                 };
                 return View(product);
             }

@@ -265,7 +265,14 @@
                         </div>
                         <div class="col-md-6">
                             <label>供應商</label>
-                            <input type="text" id="editor-supplier" class="form-control" name="Supplier">
+@*                            <input type="text" id="editor-supplier" class="form-control" name="Supplier">*@
+                            <select class="form-control" id="editor-supplier">
+                                <option selected>請選擇</option>
+                                @foreach (var suppliers in Model.Suppliers)
+                                {
+                                    <option value="@suppliers.SupplierId">@suppliers.CompanyName</option>
+                                }
+                            </select>
                         </div>
                         <div class="col-md-12">
                             <label>圖片</label>
@@ -382,10 +389,9 @@
                         {
                             "data": "productId",
                             "render": function (data, type, row) {
-                                var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
-                                deleteUrl = deleteUrl.replace('productId', row.productIdd);
-                                return `<button class="edit-button " data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> |
-                                                                                                                <button class="btn delete-button" data-id="${row.productId}" ><i class="fas fa-trash-alt"></i></button>`;
+                                //var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
+                                //deleteUrl = deleteUrl.replace('productId', row.productIdd);
+                                return `<button class="edit-button " data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> `;
                             }
                         }
                     ]
@@ -499,7 +505,7 @@
                             $('#editor-size').val(response.data.size);
                             $('#editor-weight').val(response.data.weight);
                             $("#editor-discount").val(response.data.discount);
-                            $('#editor-supplier').val(response.data.supplier.companyName);
+                            $('#editor-supplier').val(response.data.supplier.supplierId);
                             $('#editor-discontinued').prop("checked",response.data.discontinued);
                             $('#editor-image').val(response.data.shopproductImagetable);
                             $('#editor-pinToShop').prop("checked", response.data.pushToShop)
