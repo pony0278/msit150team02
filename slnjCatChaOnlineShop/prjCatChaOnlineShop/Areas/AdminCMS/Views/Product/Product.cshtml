@@ -520,12 +520,12 @@
             });
         });
 
-
+        let productID = 0;
         //編輯按鈕==============================================
         $('#Product-table').on('click', '.edit-button', function () {
-            let id = $(this).data('id')
+            productID = $(this).data('id')
             $.ajax({
-                url: '/AdminCMS/Product/EditShopProducts?id=' + id,
+                url: '/AdminCMS/Product/EditShopProducts?id=' + productID,
                 type: 'GET',
                 success: function (response) {
                     if (response.success) {
@@ -548,14 +548,14 @@
                         $('#editor-offdate').val(response.data.offDay)
                         
                         $.each(response.data.shopProductImageTable, function (index, value) {
-                            var blockdiv = $('<div class="d-flex flex-column align-items-center"></div>')
+                            var blockdiv = $(`<div class="d-flex flex-column align-items-center" id="item-${value.productImageId}"></div>`)
                             var img = $('<img class="img-thumbnail previewable-image w-25">').attr('src', value.productPhoto).attr('data-image-id', value.productImageId);
                             var spanImgID = $('<h6>').text(`圖片編號：${value.productImageId}`);
                             // var frontCover = $(`<input type="checkbox" class="frontCoverCheckbox" data-product-image-id="${value.productImageId}">`).prop("checked", value.frontCover);
-                            var button = $(`<button class="btn deletedImg" data-product-image-id="${value.productImageId}"><a href="/AdminCMS/Product/DeleteEditImg/?id=${value.productImageId}">X</a></button>`);
+                            var button = $(`<button class="btn btn-danger deletedImg mt-2" data-product-image-id="${value.productImageId}">刪除</button>`);
                             var selectID = $('<option>').val(value.productImageId).text(value.productImageId);
                             var container = $('<div class="image-container mt-2">').css('display', 'flex');
-                            blockdiv.append(spanImgID, button, img)
+                            blockdiv.append(spanImgID, img, button)
                             container.append(blockdiv);
                             $('#editor-img').append(container);
                             $("#editor-imgID").append(selectID);
@@ -567,6 +567,32 @@
                 }
             });
         });
+        $(document).on("click", ".deletedImg" , function(){
+            const id = $(this).data('product-image-id')
+            $.ajax({
+                url: "@Url.Action("DeleteEditImg" , "Product" , new{ area = "AdminCMS" })",
+                type:"POST",
+                data:JSON.stringify(id),
+                contentType:"application/json",
+                success: function (response) {
+                    if (response.success) {
+                        $('#item-'+ id).remove()
+                        $.ajax({
+                            url: '/AdminCMS/Product/EditShopProducts?id=' + productID,
+                            type: 'GET',
+                            success: function (response) { 
+                                console.log(response.data)
+                                $("#editor-imgID").empty();
+                                $.each(response.data.shopProductImageTable, function (index, value) {
+                                    var selectID = $('<option>').val(value.productImageId).text(value.productImageId);
+                                    $("#editor-imgID").append(selectID);
+                                })
+                            }
+                        })
+                    }
+                }
+            })
+        })
         $("#editor-image").on("change", function () {
             var files = this.files;
 

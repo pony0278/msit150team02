@@ -341,8 +341,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return BadRequest($"An error occurred: {ex.Message}");
             }
         }
-
-        public async Task<IActionResult> DeleteEditImg(int? id)
+        [HttpPost]
+        public async Task<IActionResult> DeleteEditImg([FromBody]int? id)
         {
             if (id == null)
             {
@@ -359,7 +359,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             _cachaContext.ShopProductImageTable.Remove(imageTable);
             await _cachaContext.SaveChangesAsync();
 
-            return RedirectToAction("Product", "Product", new { area = "AdminCMS" });
+            return Ok(new { success = true, message = "Content saved!" });
         }
 
     }
