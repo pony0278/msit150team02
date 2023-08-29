@@ -66,7 +66,20 @@
 }
 
 <!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="toast-container position-fixed top-25 start-50 translate-middle">
+    
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="...">
+            <strong class="me-auto">訊息</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        </div>
+    </div>
+</div>
+@* <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -84,7 +97,7 @@
             </div>
         </div>
     </div>
-</div>
+</div> *@
 <!-- Start Slider -->
 <div id="slides-shop" class="cover-slides">
     <ul class="slides-container">
@@ -188,38 +201,38 @@
             @{
                 foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                            <!-- start prod  -->
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
+                                <!-- start prod  -->
+                                <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                    <div class="products-single-custom fix">
+                                        <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                            <div class="box-img-hover">
+                                                <div class="type-lb">
+                                                    <p class="sale">Sale</p>
+                                                </div>
+                                                <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
                                             </div>
-                                            <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                                        </a>
+                                        <div class="why-text">
+                                            <h4>@item.pName</h4>
+                                            @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
-                                <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod  -->
+                        <!-- end prod  -->
                 }
             }
         </div>
@@ -249,37 +262,37 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                            <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                <div class="products-single-custom fix">
-                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                        <div class="box-img-hover">
-                                            <div class="type-lb">
-                                                <p class="sale">Sale</p>
+                                <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                    <div class="products-single-custom fix">
+                                        <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                            <div class="box-img-hover">
+                                                <div class="type-lb">
+                                                    <p class="sale">Sale</p>
+                                                </div>
+                                                <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
                                             </div>
-                                            <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                        </div>
-                                    </a>
-                                    <div class="why-text">
-                                        <h4>@item.pName</h4>
-                                        @if (item.pDiscount != null)
+                                        </a>
+                                        <div class="why-text">
+                                            <h4>@item.pName</h4>
+                                            @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
-                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod1  -->
+                        <!-- end prod1  -->
                 }
             }
 
@@ -431,8 +444,8 @@
                 }
             });
         });
+        //加入購物車:獲取id---------------------------------------------------------
 
-        //加入購物車:獲取id
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             console.log(productIndexNew);
@@ -445,8 +458,14 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log('Added to Cart:', response.message);
-                    $('#myModal').modal('show'); // 顯示 Modal
+                    if (response.success) {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
                 },
                 error: function (error) {
                     
@@ -465,14 +484,21 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log('Added to Cart:', response.message);
-                    
+                    if (response.success) {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
                 },
                 error: function (error) {
                 }
             });
         });
-        //加入收藏:獲取id
+        //加入收藏:獲取id--------------------------------------------------------
+
         productIndexNew.on('click', '.add-to-wishlist-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             var button = $(this);
@@ -485,11 +511,17 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
+                    if (response.success) {
+                        isFavorited = !isFavorited; // 切換狀態
+                        if (isFavorited) {
+                            button.addClass("favorited");
+                        } else {
+                            button.removeClass("favorited");
+                        }
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -510,18 +542,24 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
+                    if (response.success) {
+                        isFavorited = !isFavorited; // 切換狀態
+                        if (isFavorited) {
+                            button.addClass("favorited");
+                        } else {
+                            button.removeClass("favorited");
+                        }
                     }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
+
                 },
                 error: function (error) {
                 }
             });
         });
-
         //評論區
 
 

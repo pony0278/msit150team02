@@ -15,7 +15,20 @@
     <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 }
+<!--提示訊息-->
+<div class="toast-container position-fixed top-25 start-50 translate-middle">
 
+    <div id="liveToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="toast-header">
+            <img src="..." class="rounded me-2" alt="...">
+            <strong class="me-auto">訊息</strong>
+            <small></small>
+            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">
+        </div>
+    </div>
+</div>
 <!-- Start All Title Box -->
 <div class="all-title-box-picture all-title-box">
     <div class="container">
@@ -345,8 +358,14 @@
             data: { pId: productId, attr: attr, count: count },
                 dataType: 'json',
                 success: function (response) {
-                    console.log('Added to Cart:', response.message);
-                    $('#myModal').modal('show'); // 顯示 Modal
+                    if (response.success) {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
@@ -367,11 +386,17 @@
                 data: { pId: productId},
                 dataType: 'json',
                 success: function (response) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
+                    if (response.success) {
+                        isFavorited = !isFavorited; // 切換狀態
+                        if (isFavorited) {
+                            button.addClass("favorited");
+                        } else {
+                            button.removeClass("favorited");
+                        }
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -393,8 +418,14 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-                    console.log('Added to Cart:', response.message);
-                    $('#myModal').modal('show'); // 顯示 Modal
+                    if (response.success) {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
+                    }
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
@@ -415,12 +446,17 @@
                 data: { pId: productId },
                 dataType: 'json',
                 success: function (response) {
-
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
+                    if (response.success) {
+                        isFavorited = !isFavorited; // 切換狀態
+                        if (isFavorited) {
+                            button.addClass("favorited");
+                        } else {
+                            button.removeClass("favorited");
+                        }
+                    }
+                    else {
+                        $('.toast .toast-body').text(response.message);
+                        $('.toast').toast('show');
                     }
                 },
                 error: function (error) {
