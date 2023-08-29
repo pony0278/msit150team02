@@ -46,7 +46,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                                 {
                                                     return false;
                                                 }
-                                                return parsePublishTime <= currentTime && parsePublishEndTime >= currentTime && p.DisplayOrNot == false;
+                                                return (parsePublishTime <= currentTime && parsePublishEndTime >= currentTime && (p.DisplayOrNot == false || p.DisplayOrNot == null));
                                             })
                                             .OrderByDescending(p => p.PinToTop)
                                             .ThenByDescending(p => p.PublishEndTime)
