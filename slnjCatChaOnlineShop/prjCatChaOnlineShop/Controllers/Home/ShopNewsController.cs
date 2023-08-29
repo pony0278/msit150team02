@@ -16,6 +16,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult NewsContent(int? id)
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             GameShopAnnouncement news = _context.GameShopAnnouncement.FirstOrDefault(x => x.AnnouncementId == id);
             if(id == null)
             {
@@ -31,6 +33,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult News()
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             DateTime currentTime = DateTime.Now;
             var selectAllNews = _context.GameShopAnnouncement.ToList();
             var newsGroupedByType = selectAllNews

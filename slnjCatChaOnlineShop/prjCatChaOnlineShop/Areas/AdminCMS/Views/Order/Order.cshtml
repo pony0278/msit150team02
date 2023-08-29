@@ -245,14 +245,14 @@
                                                 <p id="order_orderId"></p>
                                                 <p id="order_paymentMethod"></p>
                                                 <p id="order_shippment"></p>
-                                                <p id="order_totalPrice"></p>
                                                 <p id="order_lastUpdateTime"></p>
+                                                <p id="order_orderStatus"></p>
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <p id="order_orderCreationDate"></p>
                                                 <p id="order_shippingMethod"></p>
                                                 <p id="order_couponContent"></p>
-                                                <p id="order_orderStatus"></p>
+                                                <p id="order_totalPrice" style="color: #b95756;font-weight: bold;font-size: 18px;"></p>
                                             </div>
                                             <div class="col-12">
                                                 <!--下拉卷軸-->
@@ -437,17 +437,45 @@
                         success: function (data) {
                             console.log(data.data.orderTotal);
 
+                            function formatDateTime(dateTimeString) {
+                                var dateTime = new Date(dateTimeString);
+                                var year = dateTime.getFullYear();
+                                var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                                var day = String(dateTime.getDate()).padStart(2, '0');
+                                var hours = String(dateTime.getHours()).padStart(2, '0');
+                                var minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                                var seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+                                return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                            }
+
+                            function formatDate(date) {
+                                var dateTime = new Date(date);
+                                var year = dateTime.getFullYear();
+                                var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                                var day = String(dateTime.getDate()).padStart(2, '0');
+
+                                return year + '-' + month + '-' + day;
+                            }
+
                             //============訂購人(會員)基本資料
                             $('#order_memberId').text("ID：" + data.data.memberInfo.memberId);
                             $('#order_name').text("姓名：" + data.data.memberInfo.name);
                             $('#order_memberAccount').text("帳號：" + data.data.memberInfo.memberAccount);
                             $('#order_gender').text("性別：" + data.data.memberInfo.gender);
-                            $('#order_birthday').text("生日：" + data.data.memberInfo.birthday);
+
+                            var formattedBirthday = formatDate(data.data.memberInfo.birthday);
+                            $('#order_birthday').text("生日：" + formattedBirthday);
+
                             $('#order_email').text("E-mail：" + data.data.memberInfo.email);
                             $('#order_phoneNumber').text("電話：" + data.data.memberInfo.phoneNumber);
                             $('#order_address').text("地址：" + data.data.memberInfo.address);
-                            $('#order_registrationTime').text("註冊日期：" + data.data.memberInfo.registrationTime);
-                            $('#order_lastLoginTime').text("最後登入：" + data.data.memberInfo.lastLoginTime);
+
+                            var formattedregistration = formatDateTime(data.data.memberInfo.registrationTime);
+                            $('#order_registrationTime').text("註冊日期：" + formattedregistration);
+
+                            var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
+                            $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
                             if (data.data.memberInfo.memberStatus == true) {
                                 $('#order_memberStatus').text("會員狀態：開放");
@@ -482,8 +510,11 @@
                                 $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
                             }
 
-                            $('#order_lastUpdateTime').text("最後更新：" + data.data.orderTotal.lastUpdateTime);
-                            $('#order_orderCreationDate').text("訂單成立日期：" + data.data.orderTotal.orderCreationDate);
+                            var formattedlastUpdate = formatDateTime(data.data.orderTotal.lastUpdateTime);
+                            $('#order_lastUpdateTime').text("最後更新：" + formattedlastUpdate);
+
+                            var formattedorderCreationDate = formatDateTime(data.data.orderTotal.orderCreationDate);
+                            $('#order_orderCreationDate').text("訂單成立日期：" + formattedorderCreationDate);
                             $('#order_orderStatus').text("訂單狀態：" + data.data.orderStatus);
 
                             //===========訂購產品明細
@@ -533,8 +564,15 @@
 
                                 PTContainer.html(tableHTML);
 
-                                // 將總金額填入指定的元素中
-                                $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                                //計算這筆訂單的總金額
+                                if (data.data.shippment != null) {
+                                    var totalPrice_includefreight = totalPrice + data.data.shippment
+                                    // 將總金額填入指定的元素中
+                                    $("#order_totalPrice").text(`總金額：NT＄${totalPrice_includefreight.toLocaleString()} (已含運費)`);
+                                } else {
+                                    $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                                }
+
                             } else {
                                 PTContainer.text("沒有可顯示的產品明細");
                             }

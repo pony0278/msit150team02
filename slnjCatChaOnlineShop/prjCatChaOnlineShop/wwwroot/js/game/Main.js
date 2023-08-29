@@ -52,17 +52,17 @@
         loadName() {
             c.font = "20px fantasy";
             c.fillStyle = "black";
-            c.fillText(`${UserName}`, this.x + 10, this.y);
+            c.fillText(`${UserName}`, userInfoX + 10, userInfoY);
         }
         loadCatCoin() {
             c.font = "25px fantasy";
             c.fillStyle = "black";
-            c.fillText(`${Ccoin}`, this.x + 180, this.y);
+            c.fillText(`${Ccoin}`, this.x + 260, this.y-15);
         }
         loadRuby() {
             c.font = "25px fantasy";
             c.fillStyle = "black";
-            c.fillText(`${Ruby}`, this.x + 300, this.y);
+            c.fillText(`${Ruby}`, this.x + 260, this.y+20);
         }
         load() {
             this.loadName();
@@ -373,15 +373,16 @@
             c.drawImage(this.ccoinImg, this.x, this.y, this.width, this.height);
         }
         drawRuby() {
-            c.drawImage(this.rubyImg, this.x + 120, this.y, this.width, this.height)
+            c.drawImage(this.rubyImg, this.x, this.y+34, this.width, this.height)
+            /*c.drawImage(this.rubyImg, this.x + 120, this.y, this.width, this.height)*/
         }
         load() {
             this.drawCCoin();
             this.drawRuby();
         }
         constructor() {
-            this.x = 164;
-            this.y = userInfoY - 25;
+            this.x = 245;
+            this.y = userInfoY - 40;
             this.width = this.height = 30;
             this.ccoinImg = ccoin;
             this.rubyImg = ruby;

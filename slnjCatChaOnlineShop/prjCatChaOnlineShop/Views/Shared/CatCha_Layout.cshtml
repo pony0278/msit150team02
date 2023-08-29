@@ -82,16 +82,33 @@
                                 <span class="customRule for_header_twoIcon">3</span>
                             </a>
                         </li>
-                        <li class="Login">
-                            <a asp-controller="MemberLogin" asp-action="Login">
-                                <span class="LoginText">登入/註冊</span>
-                            </a>
-                        </li>
-                        <li class="Login">
-                            <a asp-controller="Index" asp-action="Index">
-                                <span class="Logout">登出</span>
-                            </a>
-                        </li>
+                        @{
+                            var userName = ViewBag.UserName as string;
+
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">Hello, @userName</span>
+                                    </a>
+                                </li>
+                                <li class="Logout">
+                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                            <span class="LogoutText">登出</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">登入/註冊</span>
+                                    </a>
+                                </li>
+                            }
+                        }
                     </ul>
                 </div>
 
@@ -108,18 +125,35 @@
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
                         </li>
-                        <li class="Login">
-                            <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                <span class="LoginText">登入/註冊</span>
-                            </a>
-                        </li>
-                        <li class="Logout" style="display: none;">
-                            <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
-                                <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px 15px">
-                                    <span class="LogoutText">登出</span>
-                                </button>
-                            </form>
-                        </li>
+                        
+                        @{
+                           
+
+                            if (!string.IsNullOrEmpty(userName))
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">Hello, @userName</span>
+                                    </a>
+                                </li>
+                                <li class="Logout">
+                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                            <span class="LogoutText">登出</span>
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">登入/註冊</span>
+                                    </a>
+                                </li>
+                            }
+                        }
+                       
                     </ul>
                 </div>
         </nav>
@@ -213,7 +247,7 @@
     <!-- Start copyright  -->
     <div class="footer-copyright">
         <p class="footer-company">
-            All Rights Reserved. &copy; 2023 <a href="#">catCha</a>
+            All Rights Reserved. &copy; 2023 <a asp-area="AdminCMS" asp-controller="CMSHome" asp-action="Login">catCha</a>
         </p>
     </div>
     <!-- End copyright  -->
@@ -232,43 +266,37 @@
 
 @section Scripts{
 <script>
-    //TODO 寫在這邊不行?
-
-        //右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
-        const targetloginTextClass = 'LoginText';
-        const logoutcontainer = 'Logout';
-        const loginLink = document.getElementById('loginLink');
-        const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-        const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
-        //取得使用者名稱API
-        function loginAndGetName() {
-            $.ajax({
-                url: '/api/GetUserName/',
-                contentType: 'application/json',
-                type: 'GET',
-                success: function (data) {
-                    if (data.includes('Hello')) {
-                        targetElements.forEach(element => {
-                            element.textContent = `${data}`;
-                        });
-                        loginLink.href = '/Membership/Membership';
-                        //讓登出按鈕出現
-                        logoutElements.forEach(element => {
-                            element.style.display = 'block';
-                        });
-                    }
-                },
-                error: function () {
-                    console.error('登入失敗');
-                }
-            });
-        }
-        loginAndGetName();//載入頁面時檢查
-
-
-
+  
+        ////右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
+        //const targetloginTextClass = 'LoginText';
+        //const logoutcontainer = 'Logout';
+        //const loginLink = document.getElementById('loginLink');
+        //const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
+        //const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
+        ////取得使用者名稱API
+        //function loginAndGetName() {
+        //    $.ajax({
+        //        url: '/api/GetUserName/',
+        //        contentType: 'application/json',
+        //        type: 'GET',
+        //        success: function (data) {
+        //            if (data.includes('Hello')) {
+        //                targetElements.forEach(element => {
+        //                    element.textContent = `${data}`;
+        //                });
+        //                loginLink.href = '/Membership/Membership';
+        //                //讓登出按鈕出現
+        //                logoutElements.forEach(element => {
+        //                    element.style.display = 'block';
+        //                });
+        //            }
+        //        },
+        //        error: function () {
+        //            console.error('登入失敗');
+        //        }
+        //    });
+        //}
+        //loginAndGetName();//載入頁面時檢查
 </script>
-
-
 
 }

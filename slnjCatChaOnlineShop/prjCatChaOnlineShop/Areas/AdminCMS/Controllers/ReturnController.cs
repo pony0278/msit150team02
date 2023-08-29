@@ -106,8 +106,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
             if (orderReturn != null)
             {
+                //得到資料庫裡所有原因名稱並放到select option裡面
+                var returnReasonSelect = _context.ShopReturnReasonDataTable
+                            .Select(c => c.ReturnReason)
+                            .ToList();
 
-                return Json(new { data = orderReturn });
+                string returnReasonNames = _context.ShopReturnReasonDataTable.FirstOrDefault(s => s.ReturnReasonId == orderReturn.ReturnReasonId)?.ReturnReason; //得到原因名稱
+
+                //得到資料庫裡所有狀態名稱並放到select option裡面
+                var returnStatusSelect = _context.ShopReturnStatusDataTable
+                            .Select(c => c.StatusName)
+                            .ToList();
+
+                string returnStatusNames = _context.ShopReturnStatusDataTable.FirstOrDefault(s => s.ProcessingStatusId == orderReturn.ProcessingStatusId)?.StatusName; //得到原因名稱
+
+                var data = new
+                {
+                    OrderReturn = orderReturn,
+                    ReturnReasonSelect = returnReasonSelect,
+                    ReturnReasonNames = returnReasonNames,
+                    ReturnStatusSelect = returnStatusSelect,
+                    ReturnStatusNames = returnStatusNames,
+                };
+
+                return Json(new { data });
             }
             else
             {
