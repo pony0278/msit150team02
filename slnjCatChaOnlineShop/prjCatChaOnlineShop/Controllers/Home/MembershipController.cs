@@ -391,15 +391,22 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 {
                     comment.MemberId = 4;
                     comment.ProductId = productId;
-                    comment.ReviewContent = HttpContext.Request.Form["commentText"];
                     comment.ReviewTime = DateTime.Now;
                     comment.HideReview = false;
-
-                    double startRatingValue;
-                    if (double.TryParse(HttpContext.Request.Form["startRating"], out startRatingValue))
+                    if (string.IsNullOrWhiteSpace(HttpContext.Request.Form["commentText"]))
                     {
-                        int rating = (int)Math.Floor(startRatingValue);
-                        comment.ProductRating = rating;
+                        comment.ReviewContent = null;
+                    }
+                    else
+                    {
+                        comment.ReviewContent = HttpContext.Request.Form["commentText"];
+                    }
+
+                    decimal startRatingValue;
+                    if (decimal.TryParse(HttpContext.Request.Form["startRating"], out startRatingValue))
+                    {
+                        //int rating = (int)Math.Floor(startRatingValue);
+                        comment.ProductRating = startRatingValue;
                     }
 
 

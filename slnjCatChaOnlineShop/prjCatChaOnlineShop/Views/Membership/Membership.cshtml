@@ -131,7 +131,7 @@
             <section class="my-5">
                 <div class="container">
                     <div class="row">
-                        <!-- cart -->
+                        <!--基本資料-->
                         <div class="col-lg-9 order-2 order-sm-2 order-md-2 order-xs-2">
                             <div class="card border shadow-0">
                                 <div class="m-4">
@@ -189,20 +189,20 @@
                                                                     <option selected>常用地址</option>
                                                                 </select>
                                                             </div>
-                                                            <button type="button" class="btn add-address" id="lookCAButton" 
+                                                            <button type="button" class="btn-sm add-address my-2" id="lookCAButton"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#addressModal">
                                                                 查看已儲存地址
                                                             </button>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn-sm add-address my-2"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#NewAddressModal">
                                                                 新增地址
                                                             </button>
                                                         </div>
                                                     </div>
-
                                                     <!--7-11超商取貨地址-->
+                                                    <!--
                                                     <div class="form-row">
                                                         <div class="col-md-12">
                                                             <label>超商取貨地址</label>
@@ -230,9 +230,9 @@
                                                             <a href="https://emap.pcsc.com.tw/ecmap/default.aspx?eshopparid=899&eshopid=899&eshoppwd=a00013&tempvar=&sid=1&storecategory=3&showtype=1&url=/secure.rakuten.com.tw/checkout/callback" class="btn add-address" role="button">前往網站</a>
                                                         </div>
                                                     </div>
-                                                    <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">
-                                                        送出
-                                                    </button>
+                                                    -->
+                                                    <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">送出</button>
+                                                    <button class="btn-customs btn hvr-hovers mx-2" id="memberInfoDemo" type="button">Demo填入基本資料</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -299,6 +299,7 @@
                                             關閉
                                         </button>
                                         <button type="button" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
+                                        <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
                                     </div>
                                 </div>
                             </div>
@@ -389,8 +390,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- cart -->
                         <!-- 概括summary -->
                         <div class="col-lg-3 order-1 order-sm-1 order-md-1 order-xs-1">
                             <div class="card mb-3 border shadow-0">
@@ -418,7 +417,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- summary -->
                     </div>
                 </div>
             </section>
@@ -432,7 +430,15 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h3 class="font-weight-bold">我的優惠券</h3>
+                                    <!-- 添加 tab 標籤 -->
+                                    <ul class="nav nav-tabs" id="couponTabs" role="tablist">
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link active" id="couponList-tab" data-bs-toggle="tab" href="#couponList" role="tab" aria-controls="couponList" aria-selected="true">優惠券清單</a>
+                                        </li>
+                                        <li class="nav-item" role="presentation">
+                                            <a class="nav-link" id="usageHistory-tab" data-bs-toggle="tab" href="#usageHistory" role="tab" aria-controls="usageHistory" aria-selected="false">使用歷史</a>
+                                        </li>
+                                    </ul>
                                 </div>
                                 <div class="col d-flex justify-content-end">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
@@ -443,23 +449,35 @@
                         </div>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-bordered table-hover" id="couponTable">
-                            <thead class="table-warning  text-center">
-                                <tr>
-                                    <th style="white-space: nowrap;">優惠名稱</th>
-                                    <th style="white-space: nowrap;">適用範圍</th>
-                                    <th style="white-space: nowrap;">使用期限</th>
-                                </tr>
-                            </thead>
-                            <tbody class="text-left">
-                            </tbody>
-                        </table>
+                        <!-- 添加 tab 內容 -->
+                        <div class="tab-content" id="couponTabContent">
+                            <div class="tab-pane fade show active" id="couponList" role="tabpanel" aria-labelledby="couponList-tab">
+                                <!-- 優惠券清單內容 -->
+                                <table class="table table-bordered table-hover" id="couponTable">
+                                    <thead class="table-warning  text-center">
+                                        <tr>
+                                            <th style="white-space: nowrap;">優惠名稱</th>
+                                            <th style="white-space: nowrap;">適用範圍</th>
+                                            <th style="white-space: nowrap;">使用期限</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                        <!-- 優惠券清單內容 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="usageHistory" role="tabpanel" aria-labelledby="usageHistory-tab">
+                                <!-- 使用歷史內容 -->
+                                <!-- 在這裡放使用歷史的內容 -->
+                            </div>
+                        </div>
                     </div>
                     <div class="modal-footer">
                     </div>
                 </div>
             </div>
         </div>
+
 
         <!--彈跳視窗:更換個人照片-->
         <div class="modal fade" id="personalPictureModal">
@@ -860,13 +878,13 @@
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客訴內文 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="3"></textarea>
+                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="3" readonly></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客服回覆 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="3"></textarea>
+                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="3" readonly></textarea> 
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
@@ -1109,6 +1127,20 @@
                         });
                 }
             });
+
+            //Demo鍵:載入基本資料
+            $('#memberInfoDemo').click(function (event) {
+                $('#passwordInput').val("a12345");
+                $('#emailInput').val("seoari@gmail.com");
+                $('#phoneNumberInput').val("0912345678");
+                $('#nameInput').val("徐雅莉");
+            });
+
+            //Demo鍵:載入地址
+            $('#commonAddressSaveDemo').click(function (event) {
+                $('#fillAddressInput').val("台北市信義區信義路五段20號");
+            });
+            
         });
 
         //密碼轉換明示暗示
