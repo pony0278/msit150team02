@@ -26,11 +26,16 @@ namespace prjCatChaOnlineShop.Controllers.Home
             
         }
         public IActionResult ConfrimOrder()
-        { 
+        {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
             return View();
         }
         public IActionResult Checkout() 
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
+
             string loginUser = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
 
@@ -54,15 +59,20 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     cartItems = cartItems ?? new List<CCartItem>(),
                 };
 
+                
                 return View(viewModel);
             }
             return View();
         }
         public IActionResult Cart()
         {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
+
             string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             if (json == null)
             {
+
                 return View();
             }
             else

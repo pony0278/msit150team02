@@ -42,7 +42,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             if (user != null && user.Password.Equals(vm.txtPassword))
             {
                 string Json = JsonSerializer.Serialize(user);
-                HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);
+                HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);//Session-登入狀態紀錄
+                HttpContext.Session.SetString("UserName", user.Name);//Session-當前當入者名稱紀錄
+
+
                 return RedirectToAction("Index", "Index");
             }
             return View();
