@@ -30,12 +30,7 @@ function initialize() {
 
                
                 //載入使用者貓貓資訊
-                //id 1=>gy，id 2=>OG，id3=>BK，id14=>BB
-                //function catExist(id,color) 
-                //{
-                //    if (data[0].gameItemInfo.find(item => item.productId === id))
-                //        return userBagData.catGY = true;
-                //}
+             //TODO 這邊要改判斷抓取的寫法
                 if (data[0].gameItemInfo.find(item => item.productId === 1) &&
                     data[0]["gameItemInfo"][0]["quantityOfInGameItems"] > 0)
                     userBagData.catGY = true;
