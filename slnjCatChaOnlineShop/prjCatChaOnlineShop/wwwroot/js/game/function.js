@@ -9,6 +9,7 @@ let userBagData = {
 }
 const gachaTextCCoin = document.getElementById('gachaTextCCoin')
 const gachaTextRuby = document.getElementById('gachaTextRuby')
+const confirmWin_fillin = document.getElementById('confirmWin-fillin')
 
 //載入(更新)資料庫資訊方法
 function initialize() {
@@ -61,6 +62,51 @@ function initialize() {
         }
     });
 }
+
+
+//大廳更改名字功能
+function changeUserName() {
+
+    alterConfirmWinBTN('送出', checkNameisUsed)
+    confirmWin.style.display = 'block';
+    confirmWin_title.innerHTML = '更改名字'
+    confirmWin_text.innerHTML = `請輸入想更換的腳色名稱<br>(最多輸入七個字)`
+    confirmWin_fillin.style.display = "block"
+
+}
+
+function checkNameisUsed() {
+    const userinput = confirmWin_fillin.value
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/CheckCharacter", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fCharacterName: userinput }),
+        success: function (result) {
+            if (result) {
+                confirmWin_text.innerHTML = `此名字已經有人使用!`
+                console.log("已經有這個名字", result.message);
+                
+            }
+                
+            else {
+                console.log("更改成功", result.message);  
+                alterConfirmWinBTN('確認', closeConfirmWin)
+                confirmWin_text.innerHTML = `更改成功!`
+                initialize(); 
+            }
+               
+        },
+        error: function (error) {
+            console.log("API失敗", error);
+        }
+    });
+}
+
+
+
+
+
 
 //從資料庫消耗牛奶方法，num可以帶正數為增加，負數為消耗
 function updateMilkAmount(num) {
@@ -191,6 +237,7 @@ function alterConfirmWinBTN(text, func) {
 //確認視窗關閉方法
 function closeConfirmWin() {
     confirmWin.style.display = 'none';//關閉確認視窗
+    confirmWin_fillin.style.display = "none"
     initialize();//初始化使用者資料
 }
 function closeConfirmWinForGacha() {
