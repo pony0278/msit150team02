@@ -90,7 +90,7 @@
                                 <option value="" selected disabled>請選擇類別</option>
                                 @foreach (var category in Model.GameProductCategory)
                                 {
-                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                    <option value="@category.CategoryName">@category.CategoryName</option>
                                 }
                             </select>
                         </div>
@@ -138,11 +138,12 @@
         <div class="row align-items-center">
             類別篩選：
             <div class="col d-flex justify-content-between">
-                <select class="form-select" id="payList">
+                <select class="form-select" id="categoryList">
                     <option value="" selected disabled>請選擇類別</option>
+                    <option value="" selected>全部商品</option>
                                 @foreach (var category in Model.GameProductCategory)
                                 {
-                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                        <option value="@category.CategoryName">@category.CategoryName</option>
                                 }
                 </select>
             </div>
@@ -199,7 +200,7 @@
                                                 <option value="" selected disabled>請選擇類別</option>
                                                 @foreach (var category in Model.GameProductCategory)
                                                 {
-                                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                                    <option value="@category.CategoryName">@category.CategoryName</option>
                                                 }
                                             </select>
                                         </div>
@@ -272,7 +273,7 @@
         });
 
         //初始化表格==================================================
-                $('#GProduct-table').DataTable({
+        var table = $('#GProduct-table').DataTable({
                 language: {
                     url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
                 },
@@ -315,7 +316,17 @@
                         }
                     },
                 ],
+             //類別篩選
+            columnDefs: [
+                { targets: 2, searchable: true },  //第三欄，索引2
+            ],
             });
+            //篩選功能=====================
+            $('#categoryList').on('change', function () {
+                var filterOption1 = $(this).val();
+                table.column(2).search(filterOption1).draw();
+            });
+
             //編輯============================================
             $('#GProduct-table').on('click', '.edit-button', function () {
                 let id = $(this).data('id')

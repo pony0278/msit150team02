@@ -73,9 +73,10 @@
             <div class="col d-flex justify-content-between">
                 <select class="form-select" id="CpayList">
                     <option value="" selected disabled>請選擇類別</option>
+                    <option value="" selected>全部商品</option>
                     @foreach (var category in Model.ProductCategories)
                     {
-                        <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                        <option value="@category.CategoryName">@category.CategoryName</option>
                     }
                 </select>
             </div>
@@ -141,7 +142,7 @@
                                 <option selected>請選擇</option>
                                 @foreach (var category in Model.ProductCategories)
                                 {
-                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                    <option value="@category.CategoryName">@category.CategoryName</option>
                                 }
                             </select>
                         </div>
@@ -239,7 +240,7 @@
                                 <option selected>請選擇</option>
                                 @foreach (var category in Model.ProductCategories)
                                 {
-                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                    <option value="@category.CategoryName">@category.CategoryName</option>
                                 }
                             </select>
                         </div>
@@ -326,7 +327,7 @@
         <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
         <script>
-            // 查看json結構
+            // 查看json結構=============================
             $(document).ready(function () {
                 $.ajax({
                     url: '@Url.Action("LoadDatatable", "Product")',
@@ -339,7 +340,7 @@
                     }
                 });
             });
-
+            //圖片
             $(document).on("change", "#image", function () {
                 var files = $(this)[0].files;
                 if (files.length > 3) {
@@ -365,8 +366,7 @@
             });
 
             //初始化表格==================================================
-            $(document).ready(function () {
-                var table = $('#Product-table').DataTable({
+            var table = $('#Product-table').DataTable({
                     responsive: true,
                     "paging": true,
                     "ajax": {
@@ -403,8 +403,7 @@
                 columnDefs: [
                     { targets: 5, searchable: true }
                     //{ targets: 11, searchable: true }
-                ]
-            });
+                ],
 
             // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
             $('#CpayList').on('change', function () {
@@ -446,44 +445,6 @@
                     responsive: true,
                 });
             });
-
-            //刪除按鈕================================
-            $(document).ready(function () {
-                $(document).on("click", ".delete-button", function () {
-                    var productId = $(this).data("id");
-
-                    Swal.fire({
-                        title: '確定要刪除嗎?',
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#3085d6',
-                        cancelButtonColor: '#d33',
-                        confirmButtonText: 'Yes, delete it!'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            var deleteButton = $(this);
-                            $.ajax({
-                                url: "/AdminCMS/Product/Delete",
-                                type: "POST",
-                                data: { id: productId },
-                                success: function (response) {
-                                    if (response.success) {
-                                        console.log("項目已成功刪除");
-                                        deleteButton.closest("tr").remove();
-                                        $('#Product-table').DataTable().ajax.reload();
-                                    } else {
-                                        console.log("刪除項目失敗。");
-                                    }
-                                },
-                                error: function (error) {
-                                    console.log("刪除項目時發生錯誤：", error);
-                                }
-                            });
-                        }
-                    });
-                });
-            });
-
 
             //編輯按鈕==============================================
             $('#Product-table').on('click', '.edit-button', function () {
@@ -706,6 +667,42 @@
                 });
             }
 
+            //刪除按鈕================================
+            $(document).ready(function () {
+                $(document).on("click", ".delete-button", function () {
+                    var productId = $(this).data("id");
+
+                    Swal.fire({
+                        title: '確定要刪除嗎?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Yes, delete it!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            var deleteButton = $(this);
+                            $.ajax({
+                                url: "/AdminCMS/Product/Delete",
+                                type: "POST",
+                                data: { id: productId },
+                                success: function (response) {
+                                    if (response.success) {
+                                        console.log("項目已成功刪除");
+                                        deleteButton.closest("tr").remove();
+                                        $('#Product-table').DataTable().ajax.reload();
+                                    } else {
+                                        console.log("刪除項目失敗。");
+                                    }
+                                },
+                                error: function (error) {
+                                    console.log("刪除項目時發生錯誤：", error);
+                                }
+                            });
+                        }
+                    });
+                });
+            });
 
 
 
