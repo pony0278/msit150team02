@@ -17,7 +17,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
     //[Route("api/[controller]")]
     //[ApiController]
 
-    public class MembershipController : Controller
+    public class MembershipController : SuperController
     {
         private readonly cachaContext _context;
         private readonly ProductService _productService;
@@ -138,7 +138,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //取得帳戶優惠券資料
+        //取得可使用優惠券資料
         public IActionResult GetMemberCouponData()
         {
             try
@@ -170,6 +170,37 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得已失效優惠券資料
+        public IActionResult GetInvalidCouponData()
+        {
+            try
+            {
+                var query = from coupons in _context.ShopMemberCouponData
+                            where coupons.MemberId == 1035 & coupons.CouponStatusId == false
+                            orderby coupons.Coupon.ExpiryDate
+                            select new
+                            {
+                                coupons.Coupon.CouponName,
+                                coupons.Coupon.CouponContent,
+                                coupons.Coupon.ExpiryDate
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
 
         //更新帳戶基本資料到資料庫
         public IActionResult UpdateMemberInfo(ShopMemberInfo member)
