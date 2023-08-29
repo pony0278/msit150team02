@@ -128,7 +128,14 @@ $(document).ready(async function () {
             data: { pId: productId },
             dataType: 'json',
             success: function (response) {
-                console.log('Added to Cart:', response.message);
+                if (response.success) {
+                    $('.toast .toast-body').text(response.message);
+                    $('.toast').toast('show');
+                }
+                else {
+                    $('.toast .toast-body').text(response.message);
+                    $('.toast').toast('show');
+                }
             },
             error: function (error) {
                 console.error('Ajax Error:', error);
@@ -150,11 +157,17 @@ $(document).ready(async function () {
             data: { pId: productId },
             dataType: 'json',
             success: function (response) {
-                isFavorited = !isFavorited; // 切換狀態
-                if (isFavorited) {
-                    button.addClass("favorited");
-                } else {
-                    button.removeClass("favorited");
+                if (response.success) {
+                    isFavorited = !isFavorited; // 切換狀態
+                    if (isFavorited) {
+                        button.addClass("favorited");
+                    } else {
+                        button.removeClass("favorited");
+                    }
+                }
+                else {
+                    $('.toast .toast-body').text(response.message);
+                    $('.toast').toast('show');
                 }
             },
             error: function (error) {

@@ -12,7 +12,7 @@ using System.Text;
 using OpenAI_API;
 using OpenAI_API.Completions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
-
+using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -266,7 +266,19 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = true, message = "Content saved!" });
         }
-
+        [HttpPost]
+        public IActionResult SaveSuppier([FromBody]CSuppiersWrap cSuppiers)
+        {
+            var newSuppiers = new ShopProductSupplier
+            {
+                CompanyName = cSuppiers.CompanyName,
+                ContactPhone = cSuppiers.ContactPhone,
+                CompanyAddress = cSuppiers.CompanyAddress,
+            };
+            _cachaContext.ShopProductSupplier.Add(newSuppiers);
+            _cachaContext.SaveChanges();
+            return Json(new { success = true, message = "Content saved!" });
+        }
 
 
         public IActionResult Product()
