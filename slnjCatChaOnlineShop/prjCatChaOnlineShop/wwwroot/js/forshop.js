@@ -7,16 +7,37 @@ $(document).ready(async function () {
     var showMoreButton = $('#showMore');
     var categoryTitle = $('#categoryTitle')
     var catName = null;
+    var selOrder = $('#selOrder');
+    var selBrand = $('#selBrand');
+    var optionOrder = 0;
+    var optionBrand = '';
+
     //切換類別
     $('.for-ajax').click(function (e) {
         e.preventDefault();
+
         catName = $(this).data("category-name");
         categoryTitle.text(catName)
         displayedItemCount = 0; // 重置已顯示的資料筆數
-        productList.empty();
+        productList.empty();//清空
         selectedValue = parseInt(itemPerPageSelect.val());
         fetchMoreProducts();
     })
+    //複合篩選
+    var btnFilter = $('#filter-submit');
+    btnFilter.on('click', function () {
+
+        productList.empty();//清空
+        displayedItemCount = 0;
+        selectedValue = parseInt(itemPerPageSelect.val());
+
+        optionOrder = parseInt(selOrder.val());//丟入選到選項
+        optionBrand = selBrand.val();//丟入選到選項
+       
+        fetchMoreProducts();
+
+    });
+
     //選擇一次顯示筆數
     itemPerPageSelect.change(async function () {
         displayedItemCount = 0; // 重置已顯示的資料筆數
@@ -26,17 +47,18 @@ $(document).ready(async function () {
     });
     var displayedItemCount = 0; // 已顯示的資料筆數
     var selectedValue = parseInt(itemPerPageSelect.val());
+
     function fetchMoreProducts() {
-        displayedItemCount +=  selectedValue;
+        displayedItemCount += selectedValue;
         $.ajax({
-            url: '/ProductApi/ShopItemPerPage',
+            url: '/ProductApi/MultipleFilter',
             type: 'GET',
-            data: { catName: catName, itemPerPage: displayedItemCount }, // 傳遞顯示的總筆數
+            data: { optionOrder: optionOrder, optionBrand: optionBrand, catName: catName, itemPerPage: displayedItemCount }, // 傳遞顯示的總筆數
             dataType: 'json',
             success: function (data) {
+                //console.log(data)
                 productList.empty();
-                var products = catName !== null ? data[0].pItem : data;
-                console.log(data)
+                var products =data;
                 products.forEach(function (item) {
                     var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
                     var productDiv = $('<div class="products-single fix"></div>');
@@ -83,17 +105,17 @@ $(document).ready(async function () {
                 console.error('Ajax Error:', error);
             }
         });
+
     }
 
     // 初始載入商品
     await fetchMoreProducts();
-
     //載入更多
     showMoreButton.click(async function() {
         await fetchMoreProducts();
     });
 
-
+    //--------------------------功能----------------------
     // 點擊商品時獲取識別ID
     productList.on('click', '.shop-prod-click', function () {
         
@@ -175,40 +197,71 @@ $(document).ready(async function () {
             }
         });
     });
-    //複合篩選
-    var isHot = $('#isHot');
-    var selOrder = $('#selOrder');
-    var selBrand = $('#selOrder');
-    checkHot = 0;
-    optionOrder = parseInt(selOrder.val());
-    optionBrand = parseInt(selBrand.val());
-
-    var btnFilter = $('#filter-submit');
-
-    isHot.on('change', function () {
-        // 判斷 checkbox 是否被選中
-        if ($(this).is(':checked')) {
-            console.log('Checkbox is checked.');
-            checkHot = 1;
-        } else {
-            console.log('Checkbox is not checked.');
-            checkHot = 0;
-        }
-    });
+    ////複合篩選
+    //var btnFilter = $('#filter-submit');  
     
-    btnFilter.on('click', function () {
-        $.ajax({
-        url: '/ProductApi/MultipleFilter',
-        type: 'GET',
-        data: { checkHot: checkHot, optionOrder: optionOrder, optionBrand: optionBrand },
-        dataType: 'json',
-        success: function (data) {
-            
-        },
-        error: function (error) {
-        }
-    });
-    })
+    //btnFilter.on('click', function () {
+    //    var selOrder = $('#selOrder');
+    //    var selBrand = $('#selBrand');
+    //    optionOrder = parseInt(selOrder.val());
+    //    optionBrand = selBrand.val();
+    //    $.ajax({
+    //        url: '/ProductApi/MultipleFilter',
+    //        type: 'GET',
+    //        data: { optionOrder: optionOrder, optionBrand: optionBrand,catName: catName, itemPerPage: displayedItemCount },
+    //        dataType: 'json',
+    //        success: function (data) {
+    //            //console.log(data)
+    //            productList.empty();
+    //            var products =  data;
+    //            products.forEach(function (item) {
+    //                var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
+    //                var productDiv = $('<div class="products-single fix"></div>');
+    //                var boxImgHover = $('<div class="box-img-hover shop-image"></div>');
+    //                /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
+
+    //                var productLink = $(`<a href="/Index/ShopDetail?pId=${item.pId}" data-product-id="${item.pId}" class="shop-prod-click"></a>`);
+    //                var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
+
+    //                productLink.append(productImg);
+    //                //boxImgHover.append(typeLb);
+    //                boxImgHover.append(productLink);
+
+    //                var whyText = $('<div class="why-text"></div>');
+    //                var productName = $(`<h4>${item.pName}</h4>`);
+    //                var productPrice = $('<h5></h5>');
+
+    //                var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
+    //                var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom"><i class="far fa-heart"></i></>`);
+
+    //                whyText.append(productName);
+
+    //                whyText.append(productPrice);
+    //                if (item.pDiscount != null) {
+    //                    productPrice.text('$' + item.p優惠價格);
+    //                    var originalPrice = $(`<del>$ ${item.pPrice}</del>`);
+    //                    whyText.append(originalPrice);
+    //                }
+    //                else {
+    //                    productPrice.text('$' + item.pPrice);
+    //                }
+    //                whyText.append(addToCartLink);
+    //                whyText.append(addToWishlistLink);
+
+    //                productDiv.append(boxImgHover);
+    //                productDiv.append(whyText);
+
+    //                productItemDiv.append(productDiv);
+    //                productList.append(productItemDiv);
+
+    //            });
+    //        },
+    //        error: function (error) {
+    //            console.error('Ajax Error:', error);
+    //        }
+
+    //    });
+    //})
     
 
 });
