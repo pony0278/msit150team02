@@ -348,7 +348,7 @@ async function doCCoinTenDraw() {
 
 
             for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
+                const randomValue = Math.floor(Math.random() * 1000) + 1; // 生成1到1000之間的隨機數
 
                 // 初始化索引和臨時總數
                 let randomIndex = -1;
@@ -376,7 +376,7 @@ async function doCCoinTenDraw() {
             }
 
             // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
+            let maxScaledProbability = 1000; // 初始設為1000，確保每個機率都比它大
             let maxResult = null;
             for (const result of drawResults) {
                 if (result.scaledProbability < maxScaledProbability) {
@@ -416,7 +416,7 @@ async function doRubyTenDraw() {
             console.log(紅利數量);
 
             for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
+                const randomValue = Math.floor(Math.random() * 1000) + 1; // 生成1到1000之間的隨機數
 
                 // 初始化索引和臨時總數
                 let randomIndex = -1;
@@ -444,7 +444,7 @@ async function doRubyTenDraw() {
             }
 
             // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
+            let maxScaledProbability = 1000; // 初始設為1000，確保每個機率都比它大
             let maxResult = null;
             for (const result of drawResults) {
                 if (result.scaledProbability < maxScaledProbability) {
@@ -482,7 +482,7 @@ async function doCcoinSingleDraw() {
             console.log(貓幣數量);
 
             for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
+                const randomValue = Math.floor(Math.random() * 1000) + 1; // 生成1到1000之間的隨機數
 
                 // 初始化索引和臨時總數
                 let randomIndex = -1;
@@ -510,7 +510,7 @@ async function doCcoinSingleDraw() {
             }
 
             // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
+            let maxScaledProbability = 1000; // 初始設為1000，確保每個機率都比它大
             let maxResult = null;
             for (const result of drawResults) {
                 if (result.scaledProbability < maxScaledProbability) {
@@ -548,7 +548,7 @@ async function doRubySingleDraw() {
             console.log(紅利數量);
 
             for (let i = 0; i < numDraws; i++) {
-                const randomValue = Math.floor(Math.random() * 100) + 1; // 生成1到100之間的隨機數
+                const randomValue = Math.floor(Math.random() * 1000) + 1; // 生成1到1000之間的隨機數
 
                 // 初始化索引和臨時總數
                 let randomIndex = -1;
@@ -576,7 +576,7 @@ async function doRubySingleDraw() {
             }
 
             // 計算最高等級的抽獎結果
-            let maxScaledProbability = 100; // 初始設為100，確保每個機率都比它大
+            let maxScaledProbability = 1000; // 初始設為1000，確保每個機率都比它大
             let maxResult = null;
             for (const result of drawResults) {
                 if (result.scaledProbability < maxScaledProbability) {
