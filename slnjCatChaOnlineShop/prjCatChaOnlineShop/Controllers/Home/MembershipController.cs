@@ -32,9 +32,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _productService = productService;
             _httpContextAccessor = httpContextAccessor;
 
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            memberIdForMembership = memberInfo.MemberId;
+            //取得會員id
+            //var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            //var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            //memberIdForMembership = memberInfo.MemberId;
+
+            memberIdForMembership = GetCurrentMemberId();
         }
 
 
@@ -42,10 +45,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-
-            //memberIdForMembership = GetCurrentMemberId();
-
-
+            ViewBag.memberIdForMembership = memberIdForMembership;
 
             return View();
         }
@@ -673,7 +673,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var datas = _context.ShopAppealCategoryData.ToList();
 
-
                 if (datas != null)
                 {
                     return new JsonResult(datas);
@@ -689,18 +688,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-
         //儲存客訴內容到資料庫
         public IActionResult SaveComplaint([Bind("ComplaintTitle,ComplaintContent")] ShopMemberComplaintCase complaint)
         {
             try
             {
-                    var selectedValue = HttpContext.Request.Form["selectedValue"];
+                var selectedValue = HttpContext.Request.Form["selectedValue"];
                 if (int.TryParse(selectedValue, out int categoryId))
                 {
                     complaint.MemberId = memberIdForMembership;
                     complaint.ComplaintCategoryId = categoryId;
-                    complaint.ComplaintStatusId = 1;  // Id = 1是指此案件待處理
+                    complaint.ComplaintStatusId = 1;
                     complaint.CreationTime = DateTime.Now;
 
                     _context.ShopMemberComplaintCase.Add(complaint);
@@ -719,8 +717,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-
-        //找到會員ID
+        //取得會員id的方法
         private int? GetCurrentMemberId()
         {
             var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
@@ -728,7 +725,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 return memberInfo.MemberId;
-
             }
             return null;
         }
