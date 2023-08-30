@@ -53,7 +53,7 @@
                                 {
 
                                     <div class="row gy-3 mb-4" data-cid=" @item.cId">
-                                        <div class="col-lg-5">
+                                        <div class="col-lg-6">
                                             <div class="me-lg-5">
                                                 <div class="d-flex">
                                                     <img src="@item.cImgPath" class="border rounded me-3" style="width: 96px; height: 96px;" />
@@ -76,23 +76,21 @@
                                                                 {
                                                                                     <option value="0">商品</option>
                                                                 }
-                                                                        </select>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
+                                                            </select>
                                                         </div>
                                                     </div>
-                                                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-
-
-                                                            <div class="mt-2">
-                                                                <span>數量</span>
-                                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
-                                                            </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-lg-3 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                                            <div class="mt-2">
+                                                <span>數量</span>
+                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
+                                            </div>
 
                                             <div class="mt-2 ml-5">
                                                 <p class=" mb-0">價格</p>
-                                                <span class="h6">$ @item.c小計</span><br />
+                                                <span class="h6 sub-total-price">$ @item.c小計</span><br />
                                                 <small class="text-muted text-nowrap">$ @item.cPrice</small><small>/份</small>
                                             </div>
                                         </div>
