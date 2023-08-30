@@ -116,10 +116,10 @@
     </div>
 <div class="modal fade" id="addProductModalToggle" aria-hidden="true"
      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="addProductModalToggleLabel">新增商品</h5>
+            <div class="modal-header d-flex">
+                <h5 class="modal-title" id="addProductModalToggleLabel">新增商品</h5><button class="btn-info" id="demoBtn">Demo</button>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -156,12 +156,16 @@
                         <input type="datetime-local" id="offdate" class="form-control" name="offDate">
                     </div>
                     <div class="col-md-6">
-                        <label>尺寸</label>
+                        <label>規格</label>
                         <input type="text" id="size" class="form-control" name="Size">
                     </div>
                     <div class="col-md-6">
                         <label>重量</label>
                         <input type="text" id="weight" class="form-control" name="Weight">
+                    </div>
+                    <div class="col-md-6 productSpecifications">
+                        <label>規格</label>
+                        <input type="text" class="form-control specifications">
                     </div>
                     <div class="col-md-6">
                         <label>折扣</label>
@@ -202,7 +206,7 @@
                         <label>商品描述</label>
                         <textarea id="description" class="form-control" name="ProductDescription"></textarea>
                     </div>
-                    <div id="preview"></div>
+                    <div id="preview" class="row mt-3 justify-content-between"></div>
                     <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton" id="submitButton"
                             style="width: 100%;">
                         儲存
@@ -357,9 +361,10 @@
 
 @section Scripts{
     @*引用日期插件*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+@*    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />*@
 
     <script>
         // 查看json結構
@@ -375,20 +380,28 @@
                 }
             });
         });
+        $(document).on("click", '#demoBtn', function () {
+            const name = $('#name').val('好好貓食')
+            const price = $('#price').val(100)
+
+        })
 
         $(document).on("change", "#image", function () {
             var files = $(this)[0].files;
             if (files.length > 3) {
                 alert("您只能上傳最多3張圖片");
                 this.value = "";
-                return
+                return;
             }
+
             var preview = $("#preview");
             preview.empty();
 
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                var img = $("<img>").addClass("img-thumbnail");
+                var img = $(`<img id="item-${file.name}">`).addClass("img-thumbnail w-50");
+                var removeBtn = $('<button class="btn btn-danger removeImgs mt-2">刪除</button>')
+                var imgContainer = $('<div class="col-sm-5 img-container d-inline-flex flex-column align-items-center">').append(img, removeBtn);
                 var reader = new FileReader();
                 reader.onload = (function (aImg) {
                     return function (e) {
@@ -396,9 +409,21 @@
                     };
                 })(img);
                 reader.readAsDataURL(file);
-                preview.append(img);
+                preview.append(imgContainer);
             }
+
+            // 用通用的選擇器而不是特定於每個檔案名的選擇器。
+            $(document).on("click", ".removeImgs", function () {
+                $(this).parent().remove();  // 移除該圖片的父容器（即 imgContainer）
+            });
+
+            // 在這裡初始化 SortableJS
+            var sortable = new Sortable(preview[0], {
+                sort: true,
+                animation: 150,
+            });
         });
+
 
         //初始化表格==================================================
         $(document).ready(function () {

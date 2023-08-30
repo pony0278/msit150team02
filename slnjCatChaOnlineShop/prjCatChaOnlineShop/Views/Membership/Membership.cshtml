@@ -1084,10 +1084,11 @@
                         row.insertCell().textContent = item.couponContent;
 
                         //將日期格式化為 "yyyy-mm-dd"
-                        var formattedDate = new Date(item.expiryDate).toISOString().split('T')[0];
+                        var formattedDate = new Date(item.expiryDate).toLocaleDateString();
                         var dateCell = row.insertCell();
                         dateCell.textContent = formattedDate;
                         dateCell.style.whiteSpace = 'nowrap';
+
 
                     });
                 });
@@ -1657,11 +1658,13 @@
             var productId = document.querySelector('#productSelect').value;
             var commentText = document.querySelector('#commentTextarea').value;
             var startRating = document.querySelector('#startRating').value;
+            var orderIdSpan = document.getElementById('orderIdSpan').textContent;
 
             const formData = new FormData(document.querySelector('#commentForm'));
             formData.append("commentText", commentText);
             formData.append("productId", productId);
             formData.append("startRating", startRating);
+            formData.append("orderIdSpan", orderIdSpan);
 
             fetch('@Url.Content("/Membership/SaveComment")', {
                 body: formData,

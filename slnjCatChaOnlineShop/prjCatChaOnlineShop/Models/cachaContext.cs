@@ -763,6 +763,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ExpiryDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Expiry Date");
+            entity.Property(e => e.SpecialOffer).HasColumnType("decimal(18, 3)");
             entity.Property(e => e.TotalQuantity).HasColumnName("Total Quantity");
         });
 

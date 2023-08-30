@@ -38,6 +38,17 @@ namespace prjCatChaOnlineShop.Services.Function
             return items;
 
         }
+        public List<CCategoryItem> getCatProductForEachPage(string? catName, int itemPerPage)
+        {
+            List<CCategoryItem> categoryItems = new List<CCategoryItem>();
+            var items = getProductByCategoryName(catName).Take(itemPerPage);
+            var name = items.FirstOrDefault().pCategoryName;
+            CCategoryItem c = new CCategoryItem();
+            c.pItem = items.ToList();
+            c.categoryName = name;
+            categoryItems.Add(c);
+            return categoryItems;
+        }
         public CProductItem getProductById(int? id)
         {
             var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()

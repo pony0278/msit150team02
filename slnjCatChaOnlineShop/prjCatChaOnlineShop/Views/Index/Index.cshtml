@@ -198,38 +198,38 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                                <!-- start prod  -->
-                                <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                    <div class="products-single-custom fix">
-                                        <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                            <div class="box-img-hover">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                            </div>
-                                        </a>
-                                        <div class="why-text">
-                                            <h4>@item.pName</h4>
-                                            @if (item.pDiscount != null)
+                    <!-- start prod  -->
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
-                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                </div>
+                                <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                    <i class="far fa-heart"></i>
+                                </a>
                             </div>
                         </div>
-                        <!-- end prod  -->
+                    </div>
+                    <!-- end prod  -->
                 }
             }
         </div>
