@@ -21,19 +21,31 @@ namespace prjCatChaOnlineShop.Controllers.Home
     {
         private readonly cachaContext _context;
         private readonly ProductService _productService;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private int? memberIdForMembership = null;
 
 
         //建構子先載入資料
-        public MembershipController(cachaContext context, ProductService productService)
+        public MembershipController(cachaContext context, IHttpContextAccessor httpContextAccessor, ProductService productService)
         {
             _context = context;
             _productService = productService;
+            _httpContextAccessor = httpContextAccessor;
+
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            memberIdForMembership = memberInfo.MemberId;
         }
+
 
         public IActionResult Membership()
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+
+            //memberIdForMembership = GetCurrentMemberId();
+
+
 
             return View();
         }
@@ -43,9 +55,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //取得帳戶基本資料
         public IActionResult GetMemberInfo()
         {
+
             try
             {
-                var datas = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == 1035);
+                var datas = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == memberIdForMembership);
 
                 if (datas != null)
                 {
@@ -69,7 +82,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from address in _context.ShopCommonAddressData
-                            where address.MemberId == 1
+                            where address.MemberId == memberIdForMembership
                             orderby address.AddressId descending
                             select new
                             {
@@ -101,7 +114,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 ShopCommonAddressData address = new ShopCommonAddressData();
 
-                address.MemberId = 1;
+                address.MemberId = memberIdForMembership;
                 address.RecipientAddress = commonAddress;
 
 
@@ -147,7 +160,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == 1035 & coupons.CouponStatusId == true
+                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == true
                             orderby coupons.Coupon.ExpiryDate
                             select new
                             {
@@ -179,7 +192,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == 1035 & coupons.CouponStatusId == false
+                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == false
                             orderby coupons.Coupon.ExpiryDate
                             select new
                             {
@@ -210,7 +223,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             try
             {
-                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 1035);
+                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
 
                 memberToUpdate.Name = member.Name;
                 memberToUpdate.Password = member.Password;
@@ -268,7 +281,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var query = from order in _context.ShopOrderTotalTable
                             orderby order.OrderCreationDate descending
-                            where order.MemberId == 1035
+                            where order.MemberId == memberIdForMembership
                             select new
                             {
                                 order.OrderId,
@@ -421,12 +434,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var productIdValue = HttpContext.Request.Form["productId"];
+
                 if (int.TryParse(productIdValue, out int productId))
                 {
-                    comment.MemberId = 4;
+                    comment.MemberId = memberIdForMembership;
                     comment.ProductId = productId;
                     comment.ReviewTime = DateTime.Now;
                     comment.HideReview = false;
+
                     if (string.IsNullOrWhiteSpace(HttpContext.Request.Form["commentText"]))
                     {
                         comment.ReviewContent = null;
@@ -439,8 +454,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     decimal startRatingValue;
                     if (decimal.TryParse(HttpContext.Request.Form["startRating"], out startRatingValue))
                     {
-                        //int rating = (int)Math.Floor(startRatingValue);
                         comment.ProductRating = startRatingValue;
+                    }
+
+                    int orderIdValue;
+                    if (int.TryParse(HttpContext.Request.Form["orderIdSpan"], out orderIdValue))
+                    {
+                        comment.OrderId = orderIdValue;
                     }
 
 
@@ -471,7 +491,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var datas = from p in _context.ShopReturnDataTable
                             join q in _context.ShopOrderTotalTable on p.OrderId equals q.OrderId
                             orderby p.ReturnDate descending
-                            where q.MemberId == 1035
+                            where q.MemberId == memberIdForMembership
                             select new
                             {
                                 p.OrderId,
@@ -506,7 +526,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var datas = from p in _context.ShopFavoriteDataTable
-                            where p.MemberId == 1033
+                            where p.MemberId == memberIdForMembership
                             orderby p.CreationDate descending
                             select new
                             {
@@ -617,7 +637,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var datas = await _context.ShopMemberComplaintCase
                     .AsNoTracking()
                     .OrderByDescending(p => p.CreationTime)
-                    .Where(p => p.MemberId == 1)
+                    .Where(p => p.MemberId == memberIdForMembership)
                     .Select(p => new
                     {
                         p.ComplaintCaseId,
@@ -678,7 +698,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     var selectedValue = HttpContext.Request.Form["selectedValue"];
                 if (int.TryParse(selectedValue, out int categoryId))
                 {
-                    complaint.MemberId = 1;
+                    complaint.MemberId = memberIdForMembership;
                     complaint.ComplaintCategoryId = categoryId;
                     complaint.ComplaintStatusId = 1;  // Id = 1是指此案件待處理
                     complaint.CreationTime = DateTime.Now;
@@ -698,6 +718,21 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Content("新增失敗：" + ex.Message);
             }
         }
+
+
+        //找到會員ID
+        private int? GetCurrentMemberId()
+        {
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            if (memberInfoJson != null)
+            {
+                var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                return memberInfo.MemberId;
+
+            }
+            return null;
+        }
+
     }
 
 }
