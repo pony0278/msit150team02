@@ -314,7 +314,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         var existingCoupon = _context.ShopMemberCouponData
                             .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.CouponId == gachaResult.couponId);
 
-                        if (existingCoupon == null)
+                        if (existingCoupon != null)
                         {
                             var dbCouponModel = new ShopMemberCouponData
                             {
