@@ -160,6 +160,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
+                            join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
+                            where coupons.MemberId == memberIdForMembership 
+                            & coupons.CouponStatusId == false & q.Usable == true & q.ExpiryDate >= DateTime.UtcNow
+                            orderby coupons.Coupon.ExpiryDate
+                            select new
+                            {
+                                coupons.Coupon.CouponName,
+                                coupons.Coupon.CouponContent,
+                                coupons.Coupon.ExpiryDate
+                            };
+
+                /*
+                var query = from coupons in _context.ShopMemberCouponData
                             where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == true
                             orderby coupons.Coupon.ExpiryDate
                             select new
@@ -168,6 +181,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.CouponContent,
                                 coupons.Coupon.ExpiryDate
                             };
+                */
 
                 var datas = query.ToList();
 
@@ -192,7 +206,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == false
+                            join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
+                            where coupons.MemberId == memberIdForMembership & (coupons.CouponStatusId == true  
+                            || q.ExpiryDate < DateTime.UtcNow || q.Usable == false)
                             orderby coupons.Coupon.ExpiryDate
                             select new
                             {
