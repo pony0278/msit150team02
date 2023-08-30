@@ -380,9 +380,9 @@ del{
 }
 /*-----------------------------顯示更多按鈕-----------------------------*/
 .shop-content-right{
-  display: flex;
-  justify-content: center;
-  align-items: end;
+  /*display: flex;*/
+  /*justify-content: center;
+  align-items: end;*/
   height: auto;
 }
 

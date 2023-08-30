@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Newtonsoft.Json.Linq;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
@@ -213,16 +215,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
         {
+            var allItems = _productService.getProductItems().Take(itemPerPage);
+
             if (catName != null)//有選category才會傳入catName
             {
-                List<CCategoryItem> categoryItems = _productService.getCatProductForEachPage(catName, itemPerPage);
-                return Json(categoryItems);
+                allItems = _productService.getProductByCategoryName(catName).Take(itemPerPage);
+                
             }
-            else
-            {
-                var allItems = _productService.getProductItems().Take(itemPerPage);
-                return Json(allItems);
-            }
+            return Json(allItems);
             //if (itemPerPage>=allItems.Count())
             //{
             //    if (catName != null)//有選category才會傳入catName
@@ -237,42 +237,51 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //    }
             //}
         }
-        //public IActionResult MultipleFilter( int checkHot, int optionOrder, int optionBrand)
-        //{
-        //    var prods = _productService.getProductItems();
-        //    for (int hot = 0; hot < 2; hot++) 
-        //    {
-        //        if(checkHot == 1)
-        //        {
-        //            prods = prods.OrderBy(item=>item.p剩餘庫存).ToList();
-        //        }
-        //        for (int order = 0; order < 5; order++)
-        //        {
-        //            switch (order)
-        //            {
-        //                case 0:
-        //                    break;
-        //                case 1:
-        //                    prods = prods.OrderByDescending(item => item.p上架時間).ToList();
-        //                    break;
-        //                case 2:
-        //                    prods = prods.OrderBy(item => item.p上架時間).ToList();
-        //                    break;
-        //                case 3:
-        //                    prods = prods.OrderBy(item => item.).ToList();
-        //                    break;
-        //                case 4:
-        //                    break;
-        //            }
-
-        //            for (int brand = 0; brand < 5; brand++)
-        //            {
-
-        //            }
-        //        }
-        //    }
+        public IActionResult MultipleFilter(int optionOrder, string? optionBrand, string? catName, int itemPerPage)
+        {
+            var prods = _productService.getProductItems().Take(itemPerPage);
+            if (catName != null)
+            {
+                prods= _productService.getProductByCategoryName(catName).Take(itemPerPage);
+            }
             
-        //}
+            switch (optionOrder)
+            {
+                // 商品排序
+                case 0:
+                break;
+                //熱賣程度:高到低
+                case 1:
+                    prods = prods.OrderBy(item => item.p剩餘庫存).ToList();
+                    break;
+                //熱賣程度:低到高
+                case 2:
+                    prods = prods.OrderByDescending(item => item.p剩餘庫存).ToList();
+                    break;
+                //上架時間:新到舊
+                case 3:
+                    prods = prods.OrderByDescending(item => item.p上架時間).ToList();
+                    break;
+                //上架時間:舊到新
+                case 4:
+                    prods = prods.OrderBy(item => item.p上架時間).ToList();
+                    break;
+                //價格:高至低
+                case 5:
+                    prods = prods.OrderByDescending(item => _productService.priceFinal(item.pPrice, item.p優惠價格)).ToList();
+                    break;
+                //價格:低至高
+                case 6:
+                    prods = prods.OrderBy(item => _productService.priceFinal(item.pPrice, item.p優惠價格)).ToList();
+                    break;
+            }
+            if (optionBrand != null)
+            {
+                prods=prods.Where(p => p.pName.Contains(optionBrand)).ToList();
+            }
+            return Json(prods);
+            
+        }
 
         public IActionResult GetDetails(int? pId)
         {

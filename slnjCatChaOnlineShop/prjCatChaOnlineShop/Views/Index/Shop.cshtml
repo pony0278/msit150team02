@@ -71,33 +71,31 @@
                 <div class="right-product-box">
                     <div class="d-flex text-center align-items-center flex-wrap justify-content-between mb-4">
                         <h3>篩選 <i class="fa-solid fa-grip-lines-vertical"></i></h3>
-                        <div class=" shop-filter-select pt-1">
-                            <label class="switch pt-1">
-                                <input id="isHot" type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                            <span>最熱銷</span>
-                        </div>
+                        
                         <div class="shop-filter-select ">
                             <select id="selOrder" class="form-select form-select-md" aria-label="排序方式">
                                 <option value="0" selected>商品排序</option>
-                                <option value="1">上架時間:新到舊</option>
-                                <option value="2">上架時間:舊到新</option>
-                                <option value="3">價格:高至低</option>
-                                <option value="4">價格:低至高</option>
+                                <option value="1">熱賣程度:高到低</option>
+                                <option value="2">熱賣程度:低到高</option>
+                                <option value="3">上架時間:新到舊</option>
+                                <option value="4">上架時間:舊到新</option>
+                                <option value="5">價格:高至低</option>
+                                <option value="6">價格:低至高</option>
                             </select>
                         </div>
+
+
                         <div class="shop-filter-select  ">
                             <select id="selBrand" class="form-select form-select-md" aria-label="品牌篩選">
                                 <option value="0" selected>以品牌篩選</option>
-                                <option value="1">貓抓嚴選</option>
-                                <option value="2">貓貓01</option>
-                                <option value="3">好貓貓</option>
-                                <option value="4">壞貓貓</option>
+                                @foreach(var p in Model.DistinctBy(p=>p.pBrandName).OrderBy(p=>p.pBrandName))
+                                {
+                                    <option value="@p.pBrandName">@p.pBrandName</option>
+                                }
                             </select>
                         </div>
                         <div class="filter-btn">
-                            <button id="filter-submit" class="btn hvr-hover item-d" type="submit">篩選</button>
+                            <button id="filter-submit" class="btn hvr-hover item-d" type="button">篩選</button>
                         </div>
                     </div>
                     <div class="d-flex text-center align-items-center justify-content-between">

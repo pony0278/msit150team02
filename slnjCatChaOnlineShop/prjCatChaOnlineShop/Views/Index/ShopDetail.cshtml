@@ -108,9 +108,14 @@
                     
                     <p class="available-stock">
                         @if (Model.selectedProduct.p剩餘庫存 != 0)
-                        { 
-                            <i class="fa-solid fa-circle-check fa-xs"></i>
+                        {
+                            <i class="fa-solid fa-circle-check fa-sm" style="color:#55AA00"></i>
                             <span>尚有庫存</span>
+                        }
+                        else
+                        {
+                            <i class="fa-solid fa-circle-xmark fa-sm" style="color:red"></i>
+                            <span>缺貨中</span>
                         }
                     </p>
                     <p>
