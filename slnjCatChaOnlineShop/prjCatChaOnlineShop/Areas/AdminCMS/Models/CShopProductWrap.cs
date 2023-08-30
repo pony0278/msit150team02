@@ -31,5 +31,9 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
         public int? ProductImageIDforFrontCover { get;set; }
 
         public int? deletedProductImageID { get; set; }
+        public List<string>? productSpecification { get; set; }
+        public List<int>? productSpecificationID { get; set; }
+        public int? productSpecificationIDforEdit { get; set; }
+        public string ProductSpecificationName { get; set; }
     }
 }
