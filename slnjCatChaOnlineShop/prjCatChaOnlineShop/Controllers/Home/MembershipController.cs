@@ -87,7 +87,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             select new
                             {
                                 address.AddressId,
-                                address.RecipientAddress
+                                address.RecipientAddress,
+                                address.RecipientName
                             };
 
                 var datas = query.ToList();
@@ -108,15 +109,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         //新增常用地址資料:多個參數版
-        public IActionResult CreateCommonAddress()
+        public IActionResult CreateCommonAddress(ShopCommonAddressData commonAddress)
         {
             try
             {
+
                 ShopCommonAddressData address = new ShopCommonAddressData();
 
                 address.MemberId = memberIdForMembership;
-                //address.RecipientAddress = commonAddress;
-
+                address.RecipientName = commonAddress.RecipientName;
+                address.RecipientPhone = commonAddress.RecipientPhone;
+                address.RecipientAddress = commonAddress.RecipientAddress;
 
                 _context.ShopCommonAddressData.Add(address);
                 _context.SaveChanges();
@@ -129,7 +132,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //新增常用地址資料:一個參數版
+        //新增常用地址資料:單個參數版
+        /*
         public IActionResult CreateCommonAddress(string commonAddress)
         {
             try
@@ -150,6 +154,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Content(ex.Message);
             }
         }
+        */
 
         //刪除常用地址資料
         public IActionResult DeleteCommonAddress(int addressid)
@@ -183,9 +188,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var query = from coupons in _context.ShopMemberCouponData
                             join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
-                            where coupons.MemberId == memberIdForMembership 
+                            where coupons.MemberId == memberIdForMembership
                             & coupons.CouponStatusId == false & q.Usable == true & q.ExpiryDate >= DateTime.UtcNow
-                            orderby coupons.Coupon.ExpiryDate
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -193,23 +198,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.ExpiryDate
                             };
 
-                /*
-                var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == true
-                            orderby coupons.Coupon.ExpiryDate
-                            select new
-                            {
-                                coupons.Coupon.CouponName,
-                                coupons.Coupon.CouponContent,
-                                coupons.Coupon.ExpiryDate
-                            };
-                */
+                var groupedData = query.GroupBy(item => new { item.CouponName, item.CouponContent, item.ExpiryDate })
+                                       .Select(group => new
+                                       {
+                                           CouponName = group.Key.CouponName,
+                                           CouponContent = group.Key.CouponContent,
+                                           ExpiryDate = group.Key.ExpiryDate,
+                                           Count = group.Count() 
+                                       })
+                                       .ToList();
 
-                var datas = query.ToList();
-
-                if (datas != null)
+                if (groupedData != null)
                 {
-                    return new JsonResult(datas);
+                    return new JsonResult(groupedData);
                 }
                 else
                 {
@@ -231,7 +232,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
                             where coupons.MemberId == memberIdForMembership & (coupons.CouponStatusId == true  
                             || q.ExpiryDate < DateTime.UtcNow || q.Usable == false)
-                            orderby coupons.Coupon.ExpiryDate
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -239,11 +240,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.ExpiryDate
                             };
 
-                var datas = query.ToList();
+                var groupedData = query.GroupBy(item => new { item.CouponName, item.CouponContent, item.ExpiryDate })
+                                       .Select(group => new
+                                       {
+                                           CouponName = group.Key.CouponName,
+                                           CouponContent = group.Key.CouponContent,
+                                           ExpiryDate = group.Key.ExpiryDate,
+                                           Count = group.Count()
+                                       })
+                                       .ToList();
 
-                if (datas != null)
+                if (groupedData != null)
                 {
-                    return new JsonResult(datas);
+                    return new JsonResult(groupedData);
                 }
                 else
                 {

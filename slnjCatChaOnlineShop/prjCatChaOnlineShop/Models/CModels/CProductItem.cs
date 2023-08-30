@@ -5,15 +5,24 @@ namespace prjCatChaOnlineShop.Models.CModels
     public class CProductItem
     {
         public ShopProductTotal? pItems { get; set; }
-        public int pId 
+        public int pId
         {
-            get {return pItems.ProductId; }
+            get { return pItems.ProductId; }
             set { pItems.ProductId = value; }
         }
         public string? pName
         {
             get { return pItems.ProductName; }
             set { pItems.ProductName = value; }
+        }
+        public string? pBrandName
+        {
+            get {
+                string input = pName;
+                string[] parts = input.Split('|'); // 分割字符串
+                string result = parts[0].Trim(); // 取得分割後的第一部分並去除首尾空格
+                string brandName = result;
+                return brandName; }
         }
         public decimal? pDiscount
         {

@@ -140,6 +140,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             else
             {            
                 List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+                decimal total = (decimal)cart.Sum(item => item.c小計);
+                ViewBag.totalPrice= total; //把初始的小計金額傳到cart頁面
                 return View(cart);
             }
         }
@@ -171,8 +173,16 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                     // 更新Session中的購物車內容
                     _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(cart));
+                    
+                    decimal total = (decimal)cart.Sum(item => item.c小計);
 
-                    return Ok("商品已從購物車刪除");
+                    //創建一個匿名對象，包含商品以從購物車刪除的消息以及更新後的總金額
+                    var response = new
+                    {
+                        Message = "商品已從購物車删除",
+                        Total = total
+                    };
+                    return new JsonResult(response);
                 }
                 else
                 {
@@ -185,24 +195,25 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        ////商品小計
+        ////計算商品小計
         //[HttpGet]
-        //public IActionResult GetCartTotalPrice()
+        //public IActionResult getCartPrice()
         //{
-        //    //從session中找購物車的所有商品
-        //    string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-        //    List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-
-        //    //計算小計金額
         //    decimal totalPrice = 0;
+        //    // 從 Session 中獲取購物車內容
+        //    string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+        //    // 反序列化 Session 中的購物車內容
+        //    List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
         //    if (cart != null)
         //    {
-        //        totalPrice = (decimal)cart.Sum(item => item.c數量 * item.c小計);
+        //        //商品小計
+        //        totalPrice = (decimal)cart.Sum(item => item.c數量 * item.cPrice);
         //    }
-
         //    //將小計金額轉為Json格式返回
         //    return Json(new { totalPrice });
         //}
+
+
 
 
     }

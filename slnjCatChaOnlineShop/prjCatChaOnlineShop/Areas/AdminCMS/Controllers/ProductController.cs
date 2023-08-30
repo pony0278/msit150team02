@@ -81,21 +81,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { data });
         }
 
-        //刪除
-        public IActionResult Delete(int? id)
-        {
-            if (id != null)
-            {
-                ShopProductTotal cShopproduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == id);
-                if (cShopproduct != null)
-                {
-                    _cachaContext.ShopProductTotal.Remove(cShopproduct);
-                    _cachaContext.SaveChanges();
-                    return Json(new { success = true });
-                }
-            }
-            return Json(new { success = false });
-        }
+
 
 
         //編輯
@@ -109,6 +95,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             ShopProductTotal cShopProductTotal = _cachaContext.ShopProductTotal
                                                 .Include(x => x.Supplier)
                                                 .Include(x => x.ShopProductImageTable)
+                                                .Include(x=>x.ShopProductSpecification)
                                                 .FirstOrDefault(p => p.ProductId == id);
             if (cShopProductTotal == null)
             {
@@ -138,6 +125,26 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     return BadRequest("圖片上傳錯誤.");
                 }
             }
+            //var replaceSpecification = _cachaContext.ShopProductSpecification
+            //                .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
+            //                .ToList();
+
+            //var targetSpecification = replaceSpecification.FirstOrDefault(x => x.Id == cShopproduct.productSpecificationIDforEdit);
+
+            //if (targetSpecification != null)
+            //{
+            //    targetSpecification.Specification = cShopproduct.ProductSpecificationName ?? targetSpecification.Specification; // null check
+            //    _cachaContext.Update(targetSpecification);
+            //    try
+            //    {
+            //        await _cachaContext.SaveChangesAsync();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        return BadRequest("儲存錯誤");
+            //    }
+            //}
+
             var insertImgList = _cachaContext.ShopProductImageTable
                                 .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.ProductImageID.Contains(x.ProductImageId))
                                 .ToList();
@@ -241,7 +248,28 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             };
             _cachaContext.ShopProductTotal.Add(NewProduct);
             await _cachaContext.SaveChangesAsync();
-
+            List<string> productsSpecification = new List<string>();
+            if(cShopProduct.productSpecification !=null && cShopProduct.productSpecification.Count > 0)
+            {
+                for(var i = 0; i< cShopProduct.productSpecification.Count; i++)
+                {
+                    try
+                    {
+                        var addSpecifcation = cShopProduct.productSpecification[i];
+                        var newproductSpecification = new ShopProductSpecification
+                        {
+                            ProductId = NewProduct.ProductId,
+                            Specification = addSpecifcation
+                        };
+                        _cachaContext.ShopProductSpecification.Add(newproductSpecification);
+                    }
+                    catch 
+                    {
+                        return BadRequest("商品細項儲存錯誤");
+                    }
+                }
+                await _cachaContext.SaveChangesAsync();
+            }
             List<string> imageUrls = new List<string>();
             if (cShopProduct.ProductPhotos != null && cShopProduct.ProductPhotos.Count > 0)
             {
@@ -362,5 +390,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Ok(new { success = true, message = "Content saved!" });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> editorSpecificationID([FromBody] CShopProductWrap cShopproduct)
+        {
+            var replaceSpecification = _cachaContext.ShopProductSpecification
+                            .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
+                            .ToList();
+
+            var targetSpecification = replaceSpecification.FirstOrDefault(x => x.Id == cShopproduct.productSpecificationIDforEdit);
+
+            if (targetSpecification != null)
+            {
+                targetSpecification.Specification = cShopproduct.ProductSpecificationName ?? targetSpecification.Specification; // null check
+                _cachaContext.Update(targetSpecification);
+                try
+                {
+                    await _cachaContext.SaveChangesAsync();
+                    return Ok("更新成功");
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest("儲存錯誤");
+                }
+            }
+            return NotFound("沒有找到對應的規格");
+        }
     }
 }

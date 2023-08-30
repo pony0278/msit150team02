@@ -248,83 +248,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!--彈跳視窗: 查看已儲存宅配地址-->
-                        <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">常用地址一覽</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-12">
-                                            <ol>
-                                                <li>
-                                                    <input type="text" value="地址一號">
-                                                    <span class="minus-address">
-                                                        <i class="fa-solid fa-circle-minus"></i>
-                                                    </span>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <!--
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                        -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 新增宅配地址-->
-                        <div class="modal fade" id="NewAddressModal" tabindex="-1"
-                             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content ">
-                                    <form id="NewAddressForm">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增宅配地址</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            <div class="col-md-9">
-                                                <ol>
-                                                    <li>
-                                                        <div class="my-2">
-                                                            <label>收件人</label>
-                                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" required>
-                                                        </div>
-                                                        <div class="my-2">
-                                                            <label>聯絡電話</label>
-                                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" required>
-                                                        </div>
-                                                        <div class="my-2">
-                                                            <label>收件地址</label>
-                                                            <input type="text" value="" id="fillAddressInput" class="form-control" required>
-                                                        </div>
-                                                    </li>
-                                                </ol>
-                                            </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary"
-                                                    data-bs-dismiss="modal">
-                                                關閉
-                                            </button>
-                                            <button type="submit" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
-                                            <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
                         <!--彈跳視窗: 查看已儲存超商取貨地址-->
                         <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
                              aria-hidden="true">
@@ -475,6 +398,7 @@
                                             <th style="white-space: nowrap;">優惠名稱</th>
                                             <th style="white-space: nowrap;">適用範圍</th>
                                             <th style="white-space: nowrap;">使用期限</th>
+                                            <th style="white-space: nowrap;">剩餘張數</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-left">
@@ -488,6 +412,7 @@
                                         <tr>
                                             <th style="white-space: nowrap;">優惠名稱</th>
                                             <th style="white-space: nowrap;">適用範圍</th>
+                                            <th style="white-space: nowrap;">張數</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-left">
@@ -533,6 +458,85 @@
                             <img id="uploadImagePreview" src='@Url.Content("~/images/toy.png")' alt="" style="max-width: 200px; max-height: 200px;">
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗: 查看已儲存宅配地址-->
+        <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">常用地址一覽</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <ol>
+                                <li>
+                                    <input type="text" value="地址一號">
+                                    <span class="minus-address">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            關閉
+                        </button>
+                        <!--
+                        <button type="button" class="btn btn-primary">儲存</button>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗: 新增宅配地址-->
+        <div class="modal fade" id="NewAddressModal" tabindex="-1"
+             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content ">
+                    <form id="newAddressForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增宅配地址</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-9">
+                                <ol>
+                                    <li>
+                                        <div class="my-2">
+                                            <label>收件人</label>
+                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" name="RecipientName" required>
+                                        </div>
+                                        <div class="my-2">
+                                            <label>聯絡電話</label>
+                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" name="RecipientPhone" required>
+                                        </div>
+                                        <div class="my-2">
+                                            <label>收件地址</label>
+                                            <input type="text" value="" id="fillAddressInput" class="form-control" name="RecipientAddress" required>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                關閉
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
+                            <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -1112,7 +1116,7 @@
                         dateCell.textContent = formattedDate;
                         dateCell.style.whiteSpace = 'nowrap';
 
-
+                        row.insertCell().textContent = item.count;
                     });
                 });
 
@@ -1128,6 +1132,7 @@
                         var row = tbody.insertRow();
                         row.insertCell().textContent = item.couponName;
                         row.insertCell().textContent = item.couponContent;
+                        row.insertCell().textContent = item.count;
                     });
                 });
             });
@@ -1143,26 +1148,28 @@
                 event.preventDefault();
 
                 // 取得表單元素
-                const form = document.querySelector('#NewAddressForm');
+                const form = document.querySelector('#newAddressForm');
                 // 檢查表單的驗證狀態
                 if (form.checkValidity()) {
+                    const formData = new FormData(form);
                     fetch('@Url.Content("/Membership/CreateCommonAddress")', {
                         body: formData,
                         method: 'POST'
                     })
                         .then(response => {
-                            if (response.ok) {
-                                $('#summonName').text(`會員：${$('#nameInput').val()}`);
-                                return response.text();
-                            } else {
-                                throw new Error('連線有誤，請向客服人員聯繫');
-                            }
-                        })
-                        .then(data => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '修改成功',
-                            });
+                            setTimeout(() => {
+                                $('#fillRecipientNameInput').val('');
+                                $('#fillRecipientPhoneInput').val('');
+                                $('#fillAddressInput').val('');
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    confirmButtonText: '關閉',
+                                });
+                                GetCommonAddress();
+                                lookCAButton();
+                            }, 300);
                         })
                         .catch(error => {
                             Swal.fire({
@@ -1173,7 +1180,6 @@
                         });
                 }
                 else{
-                    // 若表單驗證不通過，顯示相關提示
                     form.reportValidity();
                 }
                 /*
@@ -1255,7 +1261,7 @@
 
                     var inputElement = document.createElement('input');
                     inputElement.type = 'text';
-                    inputElement.value = item.recipientAddress;
+                    inputElement.value = item.recipientName + " / " + item.recipientAddress;
                     inputElement.className = 'form-control ';
 
                     var spanDiv = document.createElement('div');
