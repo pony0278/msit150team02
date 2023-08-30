@@ -162,6 +162,8 @@
                         <option value="開放">開放</option>
                         <option value="凍結">凍結</option>
                     </select>
+
+                    <button id="selectAllBtn">全選</button>
                 </div>
                 <!--表格-->
                 <table id="member-table" class="table table-striped nowrap" style="width:100%">
@@ -682,7 +684,30 @@
         });
 
 
+
         var selectedEmails = []; // 儲存選中email的陣列
+
+        // 全選按鈕的點擊事件處理
+        $('#selectAllBtn').on('click', function () {
+            var $checkboxes = $('.row-checkbox'); // 所有的checkbox元素
+            var isCheckedAll = $checkboxes.not(':checked').length === 0; // 是否已經全選
+
+            if (isCheckedAll) {
+                $checkboxes.prop('checked', false); // 取消全選
+                selectedEmails = []; // 清空選中email的陣列
+            } else {
+                $checkboxes.prop('checked', true); // 全部打勾
+                selectedEmails = []; // 清空選中email的陣列
+                $checkboxes.each(function () {
+                    var emailValue = $(this).data('email');
+                    selectedEmails.push(emailValue); // 將所有email值加入陣列中
+                });
+            }
+
+            console.log('Selected emails:', selectedEmails);
+        });
+
+
         // 監聽checkbox變更事件
         $('#member-table tbody').on('change', '.row-checkbox', function () {
             var isChecked = $(this).is(':checked');
