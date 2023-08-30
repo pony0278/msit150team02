@@ -39,7 +39,7 @@ public partial class ShopMemberInfo
 
     public int? FavoriteId { get; set; }
 
-    public int? CheckinDayCount { get; set; }
+    public bool? CheckinDayCount { get; set; }
 
     public int? MyCatNameListId { get; set; }
 
@@ -48,6 +48,8 @@ public partial class ShopMemberInfo
     public bool? MemberStatus { get; set; }
 
     public string MemberImage { get; set; }
+
+    public bool? FreeNameChange { get; set; }
 
     public virtual ICollection<Game1on1MessageData> Game1on1MessageDataReceiver { get; set; } = new List<Game1on1MessageData>();
 
