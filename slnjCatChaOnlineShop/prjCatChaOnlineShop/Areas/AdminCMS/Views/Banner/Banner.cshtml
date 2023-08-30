@@ -78,15 +78,19 @@
 
                                 <div class="form-group">
                                     <label>發佈日期：</label>
-                                <input type="datetime-local" id="create-date" class="form-control" name="PublishDate">
+                                <input type="date" id="create-date" class="form-control" name="PublishDate">
                                 </div>
 
                                 <div class="col-md-12">
                                     <label>圖片：</label>
                             <input type="file" class="form-control" id="create-image" name="Image" accept="image/*" />
                                 </div>
-
-                        <div id="preview-createimage"></div>
+                                <div class=" mb-3 align-items-center mt-3">
+                                    <label>目前圖片：</label>
+                                    <div class="d-flex justify-content-center">
+                                        <img id="preview-createimage" src="" class="w-100 border">
+                                    </div>
+                                </div>
                         <button  class="mt-3 btn btn-primary btn-block" name="submitButton" id="submitButton"
                                 style="width: 100%;">
                             儲存
@@ -153,7 +157,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label>發佈日期</label>
-                                            <input type="datetime-local" class="form-control" id="editor-date" name="PublishDate">
+                                            <input type="date" class="form-control" id="editor-date" name="PublishDate">
                                             </select>
                                         </div>
                                         <div class="col-md-12">
@@ -168,11 +172,8 @@
                                             </div>
                                         </div>
 
-
-                                            <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
-                                                    style="width: 100%;">
-                                            儲存
-                                        </button>
+                                    <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
+                                                    style="width: 100%;">儲存</button>
                                     </div>
                                     <!--內容表單-->
                                 </div>
@@ -192,6 +193,9 @@
     
 
 @section Scripts{
+    <!--Moment.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
     <script>
         //確認JSon資料============================
@@ -213,7 +217,7 @@
             language: {
                 url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
             },
-            "responsive": true,
+            responsive: true,
             "searching": true,
             "processing": true,
             "serverSide": false,
@@ -229,11 +233,20 @@
             "columns": [
                 { "data": "bannerId" },
                 { "data": "banner" },
-                { "data": "publishDate" },
+                {
+                    "data": "publishDate",
+                    "render": function (data) {
+                        // 將日期格式轉換為 JavaScript Date 物件
+                        var date = new Date(data);
+                        // 格式化日期為 yyyy-MM-dd 格式，使用 Moment.js
+                        var formattedDate = moment(date).format("YYYY-MM-DD");
+                        return formattedDate;
+                    }                
+                },
                 {
                     "data": "link",
                     render: function (data, type, row) {
-                        return `<img class="img-thumbnail" src="${data}">`;
+                        return `<img class="img-thumbnail" src="${data}" style="width: 200px; height: 150px;">`;
                     }
                 },
                 {
@@ -257,7 +270,13 @@
                     if (response.success) {
                         $('#editor-id').val(response.data.bannerId);
                         $('#editor-name').val(response.data.banner);
-                        $('#editor-date').val(response.data.publishDate);
+
+                        //日期轉換：use Moment.js
+                        var date = moment(response.data.publishDate);
+                        // 格式化日期為 yyyy-MM-dd 格式
+                        var formattedDate = date.format("YYYY-MM-DD");
+                        $('#editor-date').val(formattedDate);
+
                         $('#previewImage').attr('src', response.data.link)
                         console.log(response.data)
                        
@@ -296,11 +315,10 @@
             var formData = new FormData();
             formData.append("BannerId", id);
             formData.append("Banner", name);
-            formData.append("PublishDate)", date);
+            formData.append("PublishDate", date);
             if (file) {
                 formData.append("Image", file)
             }
-
 
             $.ajax({
                 url: "@Url.Action("EditBanner","Banner" , new { area="AdminCMS" })",
@@ -344,80 +362,80 @@
         });
 
         //新增==================================
+        $(document).ready(function () {
+            // 當選擇圖片時，顯示圖片預覽
+            $('#create-image').on('change', function () {
+                const file = this.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#preview-createimage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    alert('請選擇圖片.');
+                }
+            });
+        });
+
         $('#submitButton').click(function () {
+            $('#preview-createimage').attr('src', '');
             const name = $("#create-name").val();
-            const publishdate = $("#editor-date").val();
+            const publishdate = $("#create-date").val();
             var fileInput = $('#create-image')[0];
             var file = fileInput.files[0];
 
-
-            let formData = new FormData();
+            var formData = new FormData();
             formData.append("Banner", name)
             formData.append("PublishDate", publishdate);
             if (file) {
                 formData.append("Image", file)
             }
-            //圖片
-            $(document).on("change", "#preview-createimage", function () {
-                var files = $(this)[0].files;
-                var preview = $("image");
-                preview.empty();
 
-                for (var i = 0; i < files.length; i++) {
-                    var file = files[i];
-                    var img = $("<img>").addClass("img-thumbnail");
-                    var reader = new FileReader();
-                    reader.onload = (function (aImg) {
-                        return function (e) {
-                            aImg.attr("src", e.target.result);
-                        };
-                    })(img);
-                    reader.readAsDataURL(file);
-                    preview.append(img);
-                }
-            });
-            $.ajax({
-                url: "@Url.Action("CreateBanner","Banner" , new { area="AdminCMS" })",
-                type: 'POST',
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if (response.success) {
-                        showSuccessMessage("新增成功", response.message);
-                        closeModalAndReloadTable();
-                    } else {
-                        showErrorMessage("新增失敗", response.message);
+
+            // 新增-Ajax=============================
+                $.ajax({
+                    url: "@Url.Action("CreateBanner","Banner" , new { area="AdminCMS" })",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            showSuccessMessage("新增成功", response.message);
+                            closeModalAndReloadTable();
+                        } else {
+                            showErrorMessage("新增失敗", response.message);
+                        }
+                    },
+                    error: function (error) {
+                        console.error("AJAX Request Error:", error);
                     }
-                },
-                error: function (error) {
-                    console.error("AJAX Request Error:", error);
+                });
+
+                function showSuccessMessage(title, message) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: title,
+                        text: message
+                    });
+                }
+
+                function showErrorMessage(title, message) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: title,
+                        text: message
+                    });
+                }
+
+                function closeModalAndReloadTable() {
+                    $('#addBannerModalToggle').modal('hide');
+                    $('#Banner-table').DataTable().ajax.reload();
                 }
             });
-
-            function showSuccessMessage(title, message) {
-                Swal.fire({
-                    icon: 'success',
-                    title: title,
-                    text: message
-                });
-            }
-
-            function showErrorMessage(title, message) {
-                Swal.fire({
-                    icon: 'error',
-                    title: title,
-                    text: message
-                });
-            }
-
-            function closeModalAndReloadTable() {
-                $('#addBannerModalToggle').modal('hide');
-                $('#Banner-table').DataTable().ajax.reload();
-            }
-        });
-
-
 
         //刪除================================================
 
@@ -444,14 +462,32 @@
                                     console.log("項目已成功刪除");
                                     deleteButton.closest("tr").remove();
                                     $('#Banner-table').DataTable().ajax.reload();
+                                    showSuccessMessage("刪除成功", response.message);
                                 } else {
                                     console.log("刪除項目失敗。");
+                                    showErrorMessage("刪除失敗", response.message);
                                 }
                             },
                             error: function (error) {
                                 console.log("刪除項目時發生錯誤：", error);
+                                showErrorMessage("刪除時發生錯誤", "請稍後再試。");
                             }
                         });
+                        function showSuccessMessage(title, message) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: title,
+                                text: message
+                            });
+                        }
+
+                        function showErrorMessage(title, message) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: title,
+                                text: message
+                            });
+                        }
                     }
                 });
             });

@@ -88,7 +88,7 @@
 
                         <div class="form-group">
                             <label>到期日：</label>
-                            <input type="datetime-local" class="form-control" id="create-expirydate" name="ExpiryDate">
+                            <input type="date" class="form-control" id="create-expirydate" name="ExpiryDate">
                         </div>
 
                         <div class="form-group">
@@ -178,7 +178,7 @@
                                             </div>
                                             <div class="col-md-6">
                                                 <label>到期日</label>
-                                                <input type="datetime-local" class="form-control" id="edit-expirydate" name="ExpiryDate">
+                                                <input type="date" class="form-control" id="edit-expirydate" name="ExpiryDate">
                                             </div>
                                             <div class="col-md-6">
                                                 <label>總數量：</label>
@@ -265,6 +265,9 @@
 </div>
 
 @section Scripts{
+    <!--Moment.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
     <script>
         //查看Json檔案=========================
         $(document).ready(function () {
@@ -301,7 +304,16 @@
                 { "data": "couponId" },
                 { "data": "couponName" },
                 { "data": "couponContent" },
-                { "data": "expiryDate" },
+                { 
+                    "data": "expiryDate",
+                     "render": function (data) {
+                        // 將日期格式轉換為 JavaScript Date 物件
+                        var date = new Date(data);
+                        // 格式化日期為 yyyy-MM-dd 格式，使用 Moment.js
+                        var formattedDate = moment(date).format("YYYY-MM-DD");
+                        return formattedDate;
+                    }
+                },
                 { "data": "totalQuantity" },
                 { "data": "usable" },
                 {
@@ -327,12 +339,12 @@
                 { targets: 5, searchable: true },  //第6欄，索引5
             ],
         });
-        //篩選功能=====================
+        //篩選功能=======================================
         $('#statusList').on('change', function () {
             var filterOption1 = $(this).val();
             table.column(5).search(filterOption1).draw();
         });
-        //編輯按鈕==============================================
+        //編輯按鈕========================================
         $('#Bonus-table').on('click', '.edit-button', function () {
             let id = $(this).data('id')
             $.ajax({
@@ -343,7 +355,14 @@
                         $('#edit-id').val(response.data.couponId);
                         $('#edit-name').val(response.data.couponName);
                         $('#edit-content').val(response.data.couponContent);
-                        $('#edit-expirydate').val(response.data.expiryDate);
+
+                        //日期轉換：use Moment.js
+                        var date = moment(response.data.expiryDate);
+                        // 格式化日期為 yyyy-MM-dd 格式
+                        var formattedDate = date.format("YYYY-MM-DD");
+                        $('#edit-expirydate').val(formattedDate);
+
+
                         $('#edit-quantity').val(response.data.totalQuantity);
                         $('#edit-usable').val(response.data.usable);
                         console.log(response.data)
@@ -452,7 +471,7 @@
             });
         })
 
-        //刪除================================================
+        //刪除==========================================
 
         $(document).ready(function () {
             $(document).on("click", ".delete-button", function () {
@@ -477,14 +496,32 @@
                                     console.log("項目已成功刪除");
                                     deleteButton.closest("tr").remove();
                                     $('#Bonus-table').DataTable().ajax.reload();
+                                    showSuccessMessage("刪除成功", response.message);
                                 } else {
                                     console.log("刪除項目失敗。");
+                                    showErrorMessage("刪除失敗", response.message);
                                 }
                             },
                             error: function (error) {
                                 console.log("刪除項目時發生錯誤：", error);
+                                showErrorMessage("刪除時發生錯誤", "請稍後再試。");
                             }
                         });
+                        function showSuccessMessage(title, message) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: title,
+                                text: message
+                            });
+                        }
+
+                        function showErrorMessage(title, message) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: title,
+                                text: message
+                            });
+                        }
                     }
                 });
             });
@@ -523,7 +560,6 @@
                 });
             });
         });
-
 
     </script>
 }
