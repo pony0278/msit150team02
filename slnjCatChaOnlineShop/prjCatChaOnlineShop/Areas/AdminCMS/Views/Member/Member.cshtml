@@ -813,13 +813,13 @@
             formData.append("ContentImage", file);
 
             $.ajax({
-                url: '@Url.Action("SentNewsLetter", "Member")',
+                url: '@Url.Action("sendTest", "Member")',
                 type: "POST",
                 data: formData,
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    alert("儲存成功!");
+                    alert("發送郵件成功!");
                     window.location.reload();
                 }
             });
