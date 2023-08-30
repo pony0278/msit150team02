@@ -46,7 +46,7 @@
             <!-- cart -->
             <div class="col-lg-9 order-1 order-sm-1 order-md-1 order-xs-1">
                 <div class="card border shadow-0">
-                    <div id="goToDetail" class="m-4" >
+                    <div id="goToDetail" class="m-4">
                         @{
                             if (Model != null)
                                 foreach (var item in Model)
@@ -58,23 +58,23 @@
                                                 <div class="d-flex">
                                                     <img src="@item.cImgPath" class="border rounded me-3" style="width: 96px; height: 96px;" />
                                                     <div class="ml-5 mt-2">
-                                                    
+
                                                         <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })" class="shop-prod-click nav-link">@item.cName</a>
                                                         <div class="">
                                                             <select data-product-id=@item.cId class="sel-attr form-select for-detail-select me-4">
 
-                                                                            @if (item.c子項目 != null && item.c其他子項目!=null)
+                                                                @if (item.c子項目 != null && item.c其他子項目 != null)
                                                                 {
-                                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
+                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
 
                                                                     foreach (var attr in item.c其他子項目)
                                                                     {
-                                                                                        <option value="@attr">@attr</option>
+                                                                        <option value="@attr">@attr</option>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                                    <option value="0">商品</option>
+                                                                    <option value="0">商品</option>
                                                                 }
                                                             </select>
                                                         </div>
@@ -114,34 +114,32 @@
             </div>
             <!-- cart -->
             <!-- summary -->
-            <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
-
-                <div class="card shadow-0 border">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
-                            <p class="mb-2">總價:</p>
-                            <p class="mb-2">$329</p>
+                    <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
+                        <div class="card shadow-0 border">
+                            <div class="card-body">
+                                @*  <div class="d-flex justify-content-between">
+                        <p class="mb-2">總價:</p>
+                        <p class="mb-2">$329</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <p class="mb-2">折扣:</p>
-                            <p class="mb-2 text-success">-$60</p>
+                        <p class="mb-2">折扣:</p>
+                        <p class="mb-2 text-success">-$60</p>
                         </div>
                         <div class="d-flex justify-content-between">
-                            <p class="mb-2">稅額:</p>
-                            <p class="mb-2">$14</p>
-                        </div>
-                        <hr class="for-hr">
-                        <div class="d-flex justify-content-between">
-                            <p class="mb-2">小計:</p>
-                            <p class="mb-2 fw-bold">$283</p>
-                        </div>
-
-                        <div class="mt-3 d-flex justify-content-end">
-                            <a asp-controller="Cart" asp-action="Checkout" class="checkout-btn ml-auto btn hvr-hover"> 前往結帳 </a>
+                        <p class="mb-2">稅額:</p>
+                        <p class="mb-2">$14</p>
+                        </div> *@
+                                <div class="d-flex justify-content-between">
+                                    <p class="mb-2">小計:</p>
+                                    <p id="totalPrice" class="mb-2 fw-bold">$0</p>
+                                </div>
+                                <hr class="for-hr">
+                                <div class="mt-3 d-flex justify-content-end">
+                                    <a asp-controller="Cart" asp-action="Checkout" class="checkout-btn ml-auto btn hvr-hover"> 前往結帳 </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </div>
             <!-- summary -->
         </div>
         <div class="col-lg-4 mt-5 order-1 order-sm-1 order-md-1 order-xs-1">
@@ -207,40 +205,40 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/Cart.js"></script>
-    //sweetalert
+        //sweetalert
     <!--SWEET ALERT-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <
+        <
     <script>
         //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var cartItem = $('.shop-prod-click');
         var inputQuantity = $('.input-quantity');
-        
+
         inputQuantity.on('change', function () {
-        var newValue = $(this).val();// 獲取輸入的新值
+            var newValue = $(this).val();// 獲取輸入的新值
             var rowElement = $(this).closest('.row');
             var selAttrForQuantity = rowElement.find('.sel-attr'); // 選取同一行內的子選項
-        var attr = selAttrForQuantity.val();//獲取選到的商品的子選項
-        var productId = $(this).data('product-id')
-        
-        console.log('New value:', newValue);
-        // 在這裡可以使用 Ajax 將新值傳回後端
-        $.ajax({
-            url: '/ProductApi/CartEditQuantity',
-            type: 'POST',
-            data: { newQuantity: newValue, pId:productId, attr: attr },
-            dataType: 'json',
-            success: function (response) {
-                rowElement.find('.sub-total-price').text('$' + response.message);
-            },
-            error: function (error) {
-                console.error('Ajax Error:', error);
-            }
+            var attr = selAttrForQuantity.val();//獲取選到的商品的子選項
+            var productId = $(this).data('product-id')
+
+            console.log('New value:', newValue);
+            // 在這裡可以使用 Ajax 將新值傳回後端
+            $.ajax({
+                url: '/ProductApi/CartEditQuantity',
+                type: 'POST',
+                data: { newQuantity: newValue, pId: productId, attr: attr },
+                dataType: 'json',
+                success: function (response) {
+                    rowElement.find('.sub-total-price').text('$' + response.message);
+                },
+                error: function (error) {
+                    console.error('Ajax Error:', error);
+                }
+            });
         });
-    });
-        
-        
-    //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
+
+
+        //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
         var selAttr = $('.sel-attr');
         var oldAttr; // 儲存舊值的變數
         // 在點擊下拉選單時更新舊值變數
@@ -295,14 +293,99 @@
             });
         });
 
-    
-        
+        //刪除購物車的商品
+        $('.trashBtn').on('click', function () {
+            const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                    popup: 'custom-size',
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            });
+            var $button = $(this);
+
+            // 觸發 SweetAlert2 對話框
+            swalWithBootstrapButtons.fire({
+                title: '確定要刪除嗎?',
+                text: '刪除就要重新加囉!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: '刪啦',
+                cancelButtonText: '算了',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    //取得該商品id
+                    var pId = $button.data('cid');
+                    console.log(pId);
+                    $.ajax({
+                        type: "POST",
+                        url: '/Cart/DeleteCartItem',
+                        data: { id: pId },
+                        success: function (data) {
+                            //同步更新刪除畫面上的商品
+                            var $itemcontainer = $('[data-cid="' + pId + '"]')
+                            $itemcontainer.remove();
+                            updateTotalPrice();
+                            swalWithBootstrapButtons.fire(
+                                '刪掉囉',
+                                'Your file has been deleted.',
+                                'success'
+                            );
+                        }
+                    })
+                } else if (
+                    result.dismiss === Swal.DismissReason.cancel
+                ) {
+                    swalWithBootstrapButtons.fire(
+                        '取消啦',
+                        'Your imaginary file is safe :)',
+                        'error'
+                    );
+                }
+            });
+        })
+
+        // // 更新小計金額
+        // function updateTotalPrice() {
+        //     fetch('/Cart/GetCartTotalPrice')
+        //         .then(response => response.json())
+        //         .then(data => {
+        //             // 更新頁面上的小計總額
+        //             $('#totalPrice').text('$' + data.totalPrice.toFixed(2));
+        //         })
+        //         .catch(error => {
+        //             console.error('更新小計金額時出錯：', error);
+        //         });
+        // }
 
 
+        //計算和更新小計的金額
+        function updateTotalPrice() {
+            //小計金額
+            var totalPrice = 0;
 
+            // 遍歷每一個購物車商品
+            $('.row[data-cid]').each(function () {
+                var $item = $(this);
+                //商品數量
+                var quantity = parseInt($item.find('.input-quantity').val());
+                //商品小計
+                var price = parseFloat($item.find('.sub-total-price').text().replace('$', ''));
 
+                totalPrice += quantity * price;
+            });
 
+            // 更新頁面上小計總額
+            $('#totalPrice').text('$' + totalPrice.toFixed(2));
+        }
 
+        // 初始化時計算一次小計總額
+        updateTotalPrice();
+
+        // 當購物車數量輸入的值發生變化時，重新計算總額
+        $('.input-quantity').on('input', updateTotalPrice);
     </script>
 }
 

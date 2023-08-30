@@ -185,6 +185,25 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        ////商品小計
+        //[HttpGet]
+        //public IActionResult GetCartTotalPrice()
+        //{
+        //    //從session中找購物車的所有商品
+        //    string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+        //    List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+
+        //    //計算小計金額
+        //    decimal totalPrice = 0;
+        //    if (cart != null)
+        //    {
+        //        totalPrice = (decimal)cart.Sum(item => item.c數量 * item.c小計);
+        //    }
+
+        //    //將小計金額轉為Json格式返回
+        //    return Json(new { totalPrice });
+        //}
+
 
     }
 }
