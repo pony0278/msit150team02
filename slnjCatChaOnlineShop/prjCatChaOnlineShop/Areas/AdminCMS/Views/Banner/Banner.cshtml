@@ -129,6 +129,7 @@
                                     <th>名稱</th>
                                     <th>發佈時間</th>
                                     <th>圖片</th>
+                                    <th>預覽</th>
                                     <th>編輯/刪除</th>
                                 </tr>
                             </thead>
@@ -246,7 +247,13 @@
                 {
                     "data": "link",
                     render: function (data, type, row) {
-                        return `<img class="img-thumbnail" src="${data}" style="width: 200px; height: 150px;">`;
+                        return `<img class="img-thumbnail" src="${data}" style="width: 200px; height: 150px;" >`;
+                    }
+                },
+                {
+                    "data": "bannerId",
+                    "render": function (data, type, row) {
+                        return `<button class="btn btn-secondary" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#">預覽</button>`;
                     }
                 },
                 {
