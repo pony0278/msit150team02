@@ -107,7 +107,29 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //新增常用地址資料
+        //新增常用地址資料:多個參數版
+        public IActionResult CreateCommonAddress()
+        {
+            try
+            {
+                ShopCommonAddressData address = new ShopCommonAddressData();
+
+                address.MemberId = memberIdForMembership;
+                //address.RecipientAddress = commonAddress;
+
+
+                _context.ShopCommonAddressData.Add(address);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //新增常用地址資料:一個參數版
         public IActionResult CreateCommonAddress(string commonAddress)
         {
             try

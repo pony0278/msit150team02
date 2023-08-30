@@ -303,7 +303,7 @@
                                                         </div>
                                                         <div class="my-2">
                                                             <label>聯絡電話</label>
-                                                            <input type="text" value="" id="fillRecipientPhoneInput" class="form-control" required>
+                                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" required>
                                                         </div>
                                                         <div class="my-2">
                                                             <label>收件地址</label>
@@ -424,7 +424,7 @@
                                     </div>
                                     <h1 id="summonName">會員</h1>
                                     <div class="d-flex justify-content-center">
-                                        <span id="coinPointShow">您目前持有點數：0點/0元</span>
+                                        <span id="coinPointShow">您目前持有紅利：0點/0元</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
                                         <span id="catCoinShow">持有貓幣：0</span>
@@ -1033,7 +1033,7 @@
                     $('#addressInput').val(data.address);
 
                     $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有點數:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
                     $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
 
                     var dateParts = data.birthday.split('-');
@@ -1138,7 +1138,7 @@
             //進入頁面時，先呼叫方法載入常用地址的資料
             lookCAButton();
 
-            //儲存常用地址
+            //儲存常用宅配地址
             $('#commonAddressSaveButton').click(function (event) {
                 event.preventDefault();
 
@@ -1146,7 +1146,31 @@
                 const form = document.querySelector('#NewAddressForm');
                 // 檢查表單的驗證狀態
                 if (form.checkValidity()) {
-                
+                    fetch('@Url.Content("/Membership/CreateCommonAddress")', {
+                        body: formData,
+                        method: 'POST'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                $('#summonName').text(`會員：${$('#nameInput').val()}`);
+                                return response.text();
+                            } else {
+                                throw new Error('連線有誤，請向客服人員聯繫');
+                            }
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '修改成功',
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: error.message
+                            });
+                        });
                 }
                 else{
                     // 若表單驗證不通過，顯示相關提示
