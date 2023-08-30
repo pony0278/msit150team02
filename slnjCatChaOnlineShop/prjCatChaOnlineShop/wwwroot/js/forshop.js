@@ -7,27 +7,31 @@ $(document).ready(async function () {
     var showMoreButton = $('#showMore');
     var categoryTitle = $('#categoryTitle')
     var catName = null;
+    //切換類別
     $('.for-ajax').click(function (e) {
         e.preventDefault();
         catName = $(this).data("category-name");
         categoryTitle.text(catName)
+        displayedItemCount = 0; // 重置已顯示的資料筆數
+        productList.empty();
+        selectedValue = parseInt(itemPerPageSelect.val());
         fetchMoreProducts();
     })
+    //選擇一次顯示筆數
     itemPerPageSelect.change(async function () {
         displayedItemCount = 0; // 重置已顯示的資料筆數
         productList.empty();
-        initialItemsToShow = parseInt(itemPerPageSelect.val());
+        selectedValue = parseInt(itemPerPageSelect.val());
         await fetchMoreProducts();
     });
-    //var addto = $('#addto')
     var displayedItemCount = 0; // 已顯示的資料筆數
-    var initialItemsToShow = parseInt(itemPerPageSelect.val());
+    var selectedValue = parseInt(itemPerPageSelect.val());
     function fetchMoreProducts() {
-        var additionalItemsToShow = displayedItemCount + initialItemsToShow;
+        displayedItemCount +=  selectedValue;
         $.ajax({
             url: '/ProductApi/ShopItemPerPage',
             type: 'GET',
-            data: { catName: catName, itemPerPage: additionalItemsToShow }, // 傳遞顯示的總筆數
+            data: { catName: catName, itemPerPage: displayedItemCount }, // 傳遞顯示的總筆數
             dataType: 'json',
             success: function (data) {
                 productList.empty();
@@ -40,7 +44,7 @@ $(document).ready(async function () {
                     /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
 
                     var productLink = $(`<a href="/Index/ShopDetail?pId=${item.pId}" data-product-id="${item.pId}" class="shop-prod-click"></a>`);
-                    var productImg = $(`<img src=${item.p圖片路徑} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
+                    var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
 
                     productLink.append(productImg);
                     //boxImgHover.append(typeLb);
@@ -72,11 +76,8 @@ $(document).ready(async function () {
 
                     productItemDiv.append(productDiv);
                     productList.append(productItemDiv);
+                    
                 });
-
-                displayedItemCount = additionalItemsToShow; // 更新已顯示的資料筆數
-                initialItemsToShow = displayedItemCount; // 更新下一次要顯示的筆數
-
             },
             error: function (error) {
                 console.error('Ajax Error:', error);
@@ -174,5 +175,40 @@ $(document).ready(async function () {
             }
         });
     });
+    //複合篩選
+    var isHot = $('#isHot');
+    var selOrder = $('#selOrder');
+    var selBrand = $('#selOrder');
+    checkHot = 0;
+    optionOrder = parseInt(selOrder.val());
+    optionBrand = parseInt(selBrand.val());
+
+    var btnFilter = $('#filter-submit');
+
+    isHot.on('change', function () {
+        // 判斷 checkbox 是否被選中
+        if ($(this).is(':checked')) {
+            console.log('Checkbox is checked.');
+            checkHot = 1;
+        } else {
+            console.log('Checkbox is not checked.');
+            checkHot = 0;
+        }
+    });
+    
+    btnFilter.on('click', function () {
+        $.ajax({
+        url: '/ProductApi/MultipleFilter',
+        type: 'GET',
+        data: { checkHot: checkHot, optionOrder: optionOrder, optionBrand: optionBrand },
+        dataType: 'json',
+        success: function (data) {
+            
+        },
+        error: function (error) {
+        }
+    });
+    })
+    
 
 });
