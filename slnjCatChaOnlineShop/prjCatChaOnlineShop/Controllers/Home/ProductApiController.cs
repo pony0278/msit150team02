@@ -101,8 +101,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 existingCartItem.c數量 = newQuantity;
                 // 將更新後的購物車列表序列化成 JSON，並存入 Session 變數中
             }
+            //購物車商品小計
+            decimal totalPrice = 0;
+            totalPrice = (decimal)cart.Sum(item => item.c小計);
             SaveCart(cart);
-            return Json(new { success = true,message= existingCartItem.c小計});
+            return Json(new { success = true,message= existingCartItem.c小計, messageTotal = totalPrice });
         }
 
 
@@ -159,10 +162,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
 
                 // 調用簡化方法，傳入產品物件和數量
-                _productService.addCartItem(cart, prodItem, 1);
+                _productService.addCartItem(cart, prodItem, 1); 
                 SaveCart(cart);
-                return Json(new { success = true, message = "已加入購物車!" });
+                return Json(new { success = true, message = "已加入購物車!"});
             }
+
             return Json(new { success = false, message="請先登入!" });
         }
         //在details點擊加入購物車按鈕加入購物車

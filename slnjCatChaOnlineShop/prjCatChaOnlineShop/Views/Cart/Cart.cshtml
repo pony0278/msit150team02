@@ -91,7 +91,7 @@
                                             <div class="mt-2 ml-5">
                                                 <p class=" mb-0">價格</p>
                                                 <span class="h6 sub-total-price">$ @item.c小計</span><br />
-                                                <small class="text-muted text-nowrap">$ @item.cPrice</small><small>/份</small>
+                                                <small class="text-muted text-nowrap item-price">$ @item.cPrice</small><small>/份</small>
                                             </div>
                                         </div>
                                         <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
@@ -114,10 +114,10 @@
             </div>
             <!-- cart -->
             <!-- summary -->
-                    <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
-                        <div class="card shadow-0 border">
-                            <div class="card-body">
-                                @*  <div class="d-flex justify-content-between">
+            <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
+                <div class="card shadow-0 border">
+                    <div class="card-body">
+                        @*  <div class="d-flex justify-content-between">
                         <p class="mb-2">總價:</p>
                         <p class="mb-2">$329</p>
                         </div>
@@ -129,17 +129,18 @@
                         <p class="mb-2">稅額:</p>
                         <p class="mb-2">$14</p>
                         </div> *@
-                                <div class="d-flex justify-content-between">
-                                    <p class="mb-2">小計:</p>
-                                    <p id="totalPrice" class="mb-2 fw-bold">$0</p>
-                                </div>
-                                <hr class="for-hr">
-                                <div class="mt-3 d-flex justify-content-end">
-                                    <a asp-controller="Cart" asp-action="Checkout" class="checkout-btn ml-auto btn hvr-hover"> 前往結帳 </a>
-                                </div>
-                            </div>
+
+                        <div class="d-flex justify-content-between">
+                            <p class="mb-2">小計:</p>
+                            <p id="totalPriceSummary" class="mb-2 fw-bold"> $@ViewBag.totalPrice </p>
+                        </div>
+                        <hr class="for-hr">
+                        <div class="mt-3 d-flex justify-content-end">
+                            <a asp-controller="Cart" asp-action="Checkout" class="checkout-btn ml-auto btn hvr-hover"> 前往結帳 </a>
                         </div>
                     </div>
+                </div>
+            </div>
             <!-- summary -->
         </div>
         <div class="col-lg-4 mt-5 order-1 order-sm-1 order-md-1 order-xs-1">
@@ -205,10 +206,10 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/Cart.js"></script>
-        //sweetalert
+                //sweetalert
     <!--SWEET ALERT-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-        <
+                <
     <script>
         //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var cartItem = $('.shop-prod-click');
@@ -229,7 +230,11 @@
                 data: { newQuantity: newValue, pId: productId, attr: attr },
                 dataType: 'json',
                 success: function (response) {
+                    console.log(response.message)
+                    console.log(response.messageTotal)
                     rowElement.find('.sub-total-price').text('$' + response.message);
+                    //更新因為商品數量變化而改變的小計金額
+                    $('#totalPriceSummary').text('$' + response.messageTotal);
                 },
                 error: function (error) {
                     console.error('Ajax Error:', error);
@@ -323,11 +328,13 @@
                         type: "POST",
                         url: '/Cart/DeleteCartItem',
                         data: { id: pId },
-                        success: function (data) {
+                        success: function (response) {
                             //同步更新刪除畫面上的商品
                             var $itemcontainer = $('[data-cid="' + pId + '"]')
                             $itemcontainer.remove();
-                            updateTotalPrice();
+                            //更新因為商品數量變化而改變的小計金額
+                            $('#totalPriceSummary').text('$' + response.total);
+                            console.log(response);
                             swalWithBootstrapButtons.fire(
                                 '刪掉囉',
                                 'Your file has been deleted.',
@@ -347,45 +354,15 @@
             });
         })
 
-        // // 更新小計金額
-        // function updateTotalPrice() {
-        //     fetch('/Cart/GetCartTotalPrice')
-        //         .then(response => response.json())
-        //         .then(data => {
-        //             // 更新頁面上的小計總額
-        //             $('#totalPrice').text('$' + data.totalPrice.toFixed(2));
-        //         })
-        //         .catch(error => {
-        //             console.error('更新小計金額時出錯：', error);
-        //         });
-        // }
+        //這樣可以在初始化更新小計金額，但用ViewBag就不用在這邊計算(productApi/AddtoCart)
+        
+        // // 獲取購物車的總金額
+        // var initialTotalPrice = @Html.Raw(Json.Serialize(Model.Sum(item => item.c小計)));
+        
+        // // 金總金額更新到畫面上
+        // $('#totalPriceSummary').text('$' + initialTotalPrice.toFixed(2));
 
 
-        //計算和更新小計的金額
-        function updateTotalPrice() {
-            //小計金額
-            var totalPrice = 0;
-
-            // 遍歷每一個購物車商品
-            $('.row[data-cid]').each(function () {
-                var $item = $(this);
-                //商品數量
-                var quantity = parseInt($item.find('.input-quantity').val());
-                //商品小計
-                var price = parseFloat($item.find('.sub-total-price').text().replace('$', ''));
-
-                totalPrice += quantity * price;
-            });
-
-            // 更新頁面上小計總額
-            $('#totalPrice').text('$' + totalPrice.toFixed(2));
-        }
-
-        // 初始化時計算一次小計總額
-        updateTotalPrice();
-
-        // 當購物車數量輸入的值發生變化時，重新計算總額
-        $('.input-quantity').on('input', updateTotalPrice);
     </script>
 }
 

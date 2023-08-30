@@ -12,11 +12,11 @@ namespace prjCatChaOnlineShop.Models.CModels
         public string? c子項目 { get; set; }
         public string? cImgPath { get; set; }
         public int? c數量 { get; set; }
-        public decimal? c小計
+        public int? c小計
         {
             get
             {
-                return cPrice * c數量;
+                return (int?)cPrice * c數量;
             }
 
         }
