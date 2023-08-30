@@ -287,7 +287,7 @@
                              aria-labelledby="NewAddressModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content ">
-                                    <form id="NewAddressForm">
+                                    <form id="newAddressForm">
                                         <div class="modal-header">
                                             <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增宅配地址</h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -299,15 +299,15 @@
                                                     <li>
                                                         <div class="my-2">
                                                             <label>收件人</label>
-                                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" required>
+                                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" name="RecipientName" required>
                                                         </div>
                                                         <div class="my-2">
                                                             <label>聯絡電話</label>
-                                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" required>
+                                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" name="RecipientPhone" required>
                                                         </div>
                                                         <div class="my-2">
                                                             <label>收件地址</label>
-                                                            <input type="text" value="" id="fillAddressInput" class="form-control" required>
+                                                            <input type="text" value="" id="fillAddressInput" class="form-control" name="RecipientAddress" required>
                                                         </div>
                                                     </li>
                                                 </ol>
@@ -475,6 +475,7 @@
                                             <th style="white-space: nowrap;">優惠名稱</th>
                                             <th style="white-space: nowrap;">適用範圍</th>
                                             <th style="white-space: nowrap;">使用期限</th>
+                                            <th style="white-space: nowrap;">張數</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-left">
@@ -1112,7 +1113,7 @@
                         dateCell.textContent = formattedDate;
                         dateCell.style.whiteSpace = 'nowrap';
 
-
+                        row.insertCell().textContent = item.count;
                     });
                 });
 
@@ -1143,9 +1144,10 @@
                 event.preventDefault();
 
                 // 取得表單元素
-                const form = document.querySelector('#NewAddressForm');
+                const form = document.querySelector('#newAddressForm');
                 // 檢查表單的驗證狀態
                 if (form.checkValidity()) {
+                    const formData = new FormData(form);
                     fetch('@Url.Content("/Membership/CreateCommonAddress")', {
                         body: formData,
                         method: 'POST'
