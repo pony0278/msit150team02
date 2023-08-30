@@ -410,7 +410,7 @@ async function doCCoinTenDraw() {
     if (貓幣數量 >= 9000) {
         try {
             const gachaData = await fetchData(); // 取得轉蛋資料
-            const numDraws = 500;
+            const numDraws = 10;
             const drawResults = [];
             const allImages = [];
             const allItemName = [];
