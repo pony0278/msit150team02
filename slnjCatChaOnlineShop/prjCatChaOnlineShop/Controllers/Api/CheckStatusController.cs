@@ -6,39 +6,52 @@ using prjCatChaOnlineShop.Models.CModels;
 using System.Reflection;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-
+using Microsoft.EntityFrameworkCore;
+using OpenAI_API.Moderation;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
-    [Route("api/Api/[controller]")]
-    [ApiController]
-    public class CheckCharacterController : ControllerBase
+
+    //[Route("api/Api/[controller]")]
+    //[ApiController]
+
+
+    public class CheckStatusController : ControllerBase
     {
+
         private readonly cachaContext _context;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public CheckCharacterController(IHttpContextAccessor httpContextAccessor, cachaContext context)
+        public CheckStatusController(IHttpContextAccessor httpContextAccessor, cachaContext context)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
         }
-        public IActionResult CheckCharacterNameExist(CMemberGameInfo p)
+
+
+        [HttpGet]
+        public IActionResult CheckFreeeNameChanged() 
         {
             var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
             var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
             int _memberId = memberInfo.MemberId;
 
-            bool isExist = _context.ShopMemberInfo != null && _context.ShopMemberInfo.Where(c => c.CharacterName == p.fCharacterName).Count() >= 1;
+
+
+            bool? freeNameChangeValue = _context.ShopMemberInfo
+                .Where(c => c.MemberId == _memberId)
+                .Select(c => c.FreeNameChange)
+                .SingleOrDefault();
 
             var db = _context.ShopMemberInfo.FirstOrDefault(c => c.MemberId == _memberId);
-             if (!isExist)
+            if (freeNameChangeValue.HasValue) 
             {
-                db.FreeNameChange = true;
-                db.CharacterName = p.fCharacterName;
-                _context.SaveChanges();
+                //改過名字
+                return new JsonResult(false);
             }
-            return new JsonResult(isExist);
-
+              
+            return new JsonResult(true);
         }
+
 
 
     }

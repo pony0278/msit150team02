@@ -66,25 +66,70 @@ function initialize() {
 
 //大廳更改名字功能
 function changeUserName() {
+    //如果是第一次更改名字就免費
+       //顯示free字樣
 
-    confirmWin_title.innerHTML = '更改名字'
-    confirmWin.style.display = 'block';
-    confirmWin_text.innerHTML = `確定要消耗20000貓幣進行更名?`
+    $.ajax({
+        type: "GET",
+        url: "/CheckStatus/CheckFreeeNameChanged", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        success: function (result) {
+            if (result) {
+                //沒改過
+                console.log("NO");
+   
+                confirmWin_title.innerHTML = '更改名字'
+                confirmWin.style.display = 'block';
+                confirmWin_text.innerHTML = `本次更名免費! `
+                alterConfirmWinBTN('確定', function () {
+                    alterConfirmWinBTN('送出', checkNameisUsedForFree)
+                    confirmWin_text.innerHTML = `請輸入想更換的角色名稱<br>(最多輸入七個字)`
+                    confirmWin_fillin.style.display = "block"
+                })
+            }
+            else {
+                //有改過
+                console.log("YES");
+                confirmWin_title.innerHTML = '更改名字'
+                confirmWin.style.display = 'block';
+                confirmWin_text.innerHTML = `確定要消耗20000貓幣進行更名?`
+                alterConfirmWinBTN('確定', function () {
+                    if (Ccoin < 20000) {
+                        alterConfirmWinBTN('確認', closeConfirmWin)
+                        confirmWin_text.innerHTML = '貓幣不足'
+                        return;
+                    }
+                    alterConfirmWinBTN('送出', checkNameisUsed)
+                    confirmWin_text.innerHTML = `請輸入想更換的角色名稱<br>(最多輸入七個字)`
+                    confirmWin_fillin.style.display = "block"
+                })
+                        }
+                    },
+                    error: function (error) {
+                        console.log("API失敗", error);
+                    }
+          });   
 
 
 
-    alterConfirmWinBTN('確定', function () {
-        if (Ccoin < 20000) {
-            alterConfirmWinBTN('確認', closeConfirmWin)
-            confirmWin_text.innerHTML = '貓幣不足'
-            return;
-        }
-        alterConfirmWinBTN('送出', checkNameisUsed)
-        confirmWin_text.innerHTML = `請輸入想更換的腳色名稱<br>(最多輸入七個字)`
-        confirmWin_fillin.style.display = "block"
-    })
+    //confirmWin_title.innerHTML = '更改名字'
+    //confirmWin.style.display = 'block';
+    //confirmWin_text.innerHTML = `確定要消耗20000貓幣進行更名?`
+
+
+    //alterConfirmWinBTN('確定', function () {
+    //    if (Ccoin < 20000) {
+    //        alterConfirmWinBTN('確認', closeConfirmWin)
+    //        confirmWin_text.innerHTML = '貓幣不足'
+    //        return;
+    //    }
+    //    alterConfirmWinBTN('送出', checkNameisUsed)
+    //    confirmWin_text.innerHTML = `請輸入想更換的角色名稱<br>(最多輸入七個字)`
+    //    confirmWin_fillin.style.display = "block"
+    //})
 }
 
+//付費改名方法
 function checkNameisUsed() {
     const userinput = confirmWin_fillin.value
     $.ajax({
@@ -95,8 +140,7 @@ function checkNameisUsed() {
         success: function (result) {
             if (result) {
                 confirmWin_text.innerHTML = `此名字已經有人使用!`
-                console.log("已經有這個名字", result.message);
-                
+                console.log("已經有這個名字", result.message);               
             }
                 
             else {
@@ -115,7 +159,34 @@ function checkNameisUsed() {
     });
 }
 
+//免費改名方法
+function checkNameisUsedForFree() {
+    const userinput = confirmWin_fillin.value
+    $.ajax({
+        type: "POST",
+        url: "/api/Api/CheckCharacter", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fId: UserID, fCharacterName: userinput }),
+        success: function (result) {
+            if (result) {
+                confirmWin_text.innerHTML = `此名字已經有人使用!`
+                console.log("已經有這個名字", result.message);
+            }
 
+            else {
+                confirmWin_fillin.style.display = "none"
+                console.log("更改成功", result.message);
+                alterConfirmWinBTN('確認', closeConfirmWin)
+                confirmWin_text.innerHTML = `更改成功!`
+                initialize();
+            }
+
+        },
+        error: function (error) {
+            console.log("API失敗", error);
+        }
+    });
+}
 
 
 
