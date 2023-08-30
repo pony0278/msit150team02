@@ -69,6 +69,10 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<MessageTypeData> MessageTypeData { get; set; }
 
+    public virtual DbSet<Newsletter> Newsletter { get; set; }
+
+    public virtual DbSet<NewsletterTemplate> NewsletterTemplate { get; set; }
+
     public virtual DbSet<ShopAppealCategoryData> ShopAppealCategoryData { get; set; }
 
     public virtual DbSet<ShopCaseDataTable> ShopCaseDataTable { get; set; }
@@ -634,6 +638,22 @@ public partial class cachaContext : DbContext
                 .HasColumnName("Message Type");
         });
 
+        modelBuilder.Entity<Newsletter>(entity =>
+        {
+            entity.Property(e => e.NewsletterId).ValueGeneratedNever();
+            entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.NewsletterNavigation).WithOne(p => p.Newsletter)
+                .HasForeignKey<Newsletter>(d => d.NewsletterId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Newsletter_NewsletterTemplate");
+        });
+
+        modelBuilder.Entity<NewsletterTemplate>(entity =>
+        {
+            entity.HasKey(e => e.TemplateId);
+        });
+
         modelBuilder.Entity<ShopAppealCategoryData>(entity =>
         {
             entity.HasKey(e => e.AppealCategoryId).HasName("PK_Shop.申訴類別資料表");
@@ -763,6 +783,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ExpiryDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Expiry Date");
+            entity.Property(e => e.SpecialOffer).HasColumnType("decimal(18, 3)");
             entity.Property(e => e.TotalQuantity).HasColumnName("Total Quantity");
         });
 

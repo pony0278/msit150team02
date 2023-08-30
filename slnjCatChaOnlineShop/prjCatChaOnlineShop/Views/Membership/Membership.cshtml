@@ -179,25 +179,33 @@
                                                                    class="form-control" required />
                                                         </div>
                                                     </div>
-                                                    <!--常用地址-->
+                                                    <!--住址-->
+                                                    <div class="form-row">
+                                                        <div class="col-md-12">
+                                                            <label>住址</label>
+                                                            <input type="text" placeholder="姓名" id="addressInput" name="address"
+                                                                   class="form-control" required="required" />
+                                                        </div>
+                                                    </div>
+                                                    <!--常用宅配地址-->
                                                     <div class="form-row">
                                                         <div class="col-md-12">
                                                             <label>常用宅配地址</label>
                                                             <div class="d-flex align-items-center">
                                                                 <select class="form-select" id="commonAddressSelect"
                                                                         aria-label="Default select example">
-                                                                    <option selected>常用地址</option>
+                                                                    <option selected>常用宅配地址</option>
                                                                 </select>
                                                             </div>
                                                             <button type="button" class="btn-sm add-address my-2" id="lookCAButton"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#addressModal">
-                                                                查看已儲存地址
+                                                                查看已儲存宅配地址
                                                             </button>
                                                             <button type="button" class="btn-sm add-address my-2"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#NewAddressModal">
-                                                                新增地址
+                                                                新增宅配地址
                                                             </button>
                                                         </div>
                                                     </div>
@@ -240,7 +248,7 @@
                                 </div>
                             </div>
                         </div>
-                        <!--彈跳視窗: 查看已儲存地址-->
+                        <!--彈跳視窗: 查看已儲存宅配地址-->
                         <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
                              aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
@@ -274,33 +282,46 @@
                                 </div>
                             </div>
                         </div>
-                        <!--彈跳視窗: 新增地址-->
+                        <!--彈跳視窗: 新增宅配地址-->
                         <div class="modal fade" id="NewAddressModal" tabindex="-1"
                              aria-labelledby="NewAddressModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content ">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增地址</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <input type="text" value="" placeholder="填入地址" id="fillAddressInput" class="form-control">
-                                                </li>
-                                            </ol>
+                                    <form id="NewAddressForm">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增宅配地址</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
-                                        <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
-                                    </div>
+                                        <div class="modal-body">
+                                            <div class="col-md-9">
+                                                <ol>
+                                                    <li>
+                                                        <div class="my-2">
+                                                            <label>收件人</label>
+                                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" required>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <label>聯絡電話</label>
+                                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" required>
+                                                        </div>
+                                                        <div class="my-2">
+                                                            <label>收件地址</label>
+                                                            <input type="text" value="" id="fillAddressInput" class="form-control" required>
+                                                        </div>
+                                                    </li>
+                                                </ol>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                    data-bs-dismiss="modal">
+                                                關閉
+                                            </button>
+                                            <button type="submit" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
+                                            <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -403,7 +424,7 @@
                                     </div>
                                     <h1 id="summonName">會員</h1>
                                     <div class="d-flex justify-content-center">
-                                        <span id="coinPointShow">您目前持有點數：0點/0元</span>
+                                        <span id="coinPointShow">您目前持有紅利：0點/0元</span>
                                     </div>
                                     <div class="d-flex justify-content-center">
                                         <span id="catCoinShow">持有貓幣：0</span>
@@ -501,6 +522,7 @@
                     </div>
                     <div class="modal-body">
                         <form method="post" enctype="multipart/form-data" action="/ImageTest/UploadImageToMemberInfo">
+                            <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                             <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
                             <input type="file" name="image" id="imageInput" accept="image/*" />
                             <button type="submit">上傳圖片</button>
@@ -1008,9 +1030,10 @@
                     $('#phoneNumberInput').val(data.phoneNumber);
                     $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
+                    $('#addressInput').val(data.address);
 
                     $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有點數:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
                     $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
 
                     var dateParts = data.birthday.split('-');
@@ -1084,10 +1107,11 @@
                         row.insertCell().textContent = item.couponContent;
 
                         //將日期格式化為 "yyyy-mm-dd"
-                        var formattedDate = new Date(item.expiryDate).toISOString().split('T')[0];
+                        var formattedDate = new Date(item.expiryDate).toLocaleDateString();
                         var dateCell = row.insertCell();
                         dateCell.textContent = formattedDate;
                         dateCell.style.whiteSpace = 'nowrap';
+
 
                     });
                 });
@@ -1114,11 +1138,46 @@
             //進入頁面時，先呼叫方法載入常用地址的資料
             lookCAButton();
 
-            //儲存常用地址
+            //儲存常用宅配地址
             $('#commonAddressSaveButton').click(function (event) {
+                event.preventDefault();
 
+                // 取得表單元素
+                const form = document.querySelector('#NewAddressForm');
+                // 檢查表單的驗證狀態
+                if (form.checkValidity()) {
+                    fetch('@Url.Content("/Membership/CreateCommonAddress")', {
+                        body: formData,
+                        method: 'POST'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                $('#summonName').text(`會員：${$('#nameInput').val()}`);
+                                return response.text();
+                            } else {
+                                throw new Error('連線有誤，請向客服人員聯繫');
+                            }
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '修改成功',
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: error.message
+                            });
+                        });
+                }
+                else{
+                    // 若表單驗證不通過，顯示相關提示
+                    form.reportValidity();
+                }
+                /*
                 var inputVal = $('#fillAddressInput').val();
-                // cosole.log("1");
                 if (inputVal === null || inputVal.trim() === "" ) {
                     Swal.fire({
                         title: '請填寫有效的地址',
@@ -1144,6 +1203,8 @@
                             console.error('Error:', error);
                         });
                 }
+                */
+
             });
 
             //Demo鍵:載入基本資料
@@ -1154,8 +1215,10 @@
                 $('#nameInput').val("徐雅莉");
             });
 
-            //Demo鍵:載入地址
+            //Demo鍵:載入宅配地址
             $('#commonAddressSaveDemo').click(function (event) {
+                $('#fillRecipientNameInput').val("徐雅莉");
+                $('#fillRecipientPhoneInput').val("0912345678");
                 $('#fillAddressInput').val("台北市信義區信義路五段20號");
             });
             
@@ -1256,7 +1319,7 @@
             });
         }
 
-        //拿取常用地址數據
+        //拿取常用宅配地址數據
         function GetCommonAddress() {                    
             var commonAddressSelectElement = document.getElementById('commonAddressSelect');
             commonAddressSelectElement.innerHTML = '';
@@ -1441,166 +1504,170 @@
             $.getJSON('@Url.Content("~/membership/GetOrders")')
                 .then(function (data) {
                     var tbody = document.querySelector('#orderTable tbody');
-                    $('#shoppingsheet-tab').text(`消費紀錄 (${data.length})`);
 
-                    // 清空表格內容
-                    tbody.innerHTML = '';
+                    if (data.length == 0) {
+                        $('#shoppingsheet-tab').text(`消費紀錄`);
+                    } else {
+                        $('#shoppingsheet-tab').text(`消費紀錄 (${data.length})`);
+                        // 清空表格內容
+                        tbody.innerHTML = '';
 
-                    // 遍歷 JSON 資料並建立表格列
-                    data.forEach(function (item) {
-                        var row = tbody.insertRow();
-                        row.insertCell().textContent = item.orderId;
+                        // 遍歷 JSON 資料並建立表格列
+                        data.forEach(function (item) {
+                            var row = tbody.insertRow();
+                            row.insertCell().textContent = item.orderId;
 
-                        //將日期格式化為 "yyyy-mm-dd"
-                        var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
-                        row.insertCell().textContent = formattedDate;
+                            //將日期格式化為 "yyyy-mm-dd"
+                            var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
+                            row.insertCell().textContent = formattedDate;
 
-                        row.insertCell().textContent = item.recipientName;
-                        row.insertCell().textContent = item.recipientAddress;
-                        row.insertCell().textContent = item.recipientPhone;
-                        row.insertCell().textContent = item.paymentMethodName;
-                        row.insertCell().textContent = item.statusName;
+                            row.insertCell().textContent = item.recipientName;
+                            row.insertCell().textContent = item.recipientAddress;
+                            row.insertCell().textContent = item.recipientPhone;
+                            row.insertCell().textContent = item.paymentMethodName;
+                            row.insertCell().textContent = item.statusName;
 
-                        var buttonContainer = document.createElement('div');
-                        buttonContainer.classList.add('d-flex', 'flex-column');
+                            var buttonContainer = document.createElement('div');
+                            buttonContainer.classList.add('d-flex', 'flex-column');
 
-                        //處理訂單明細的按鈕
-                        var detailButton = document.createElement('button');
-                        detailButton.textContent = '訂單明細';
-                        detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
-                        detailButton.addEventListener('click', function () {
-                            $('#orderDetailModal').modal('show');
+                            //處理訂單明細的按鈕
+                            var detailButton = document.createElement('button');
+                            detailButton.textContent = '訂單明細';
+                            detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+                            detailButton.addEventListener('click', function () {
+                                $('#orderDetailModal').modal('show');
 
-                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
-                                var orderDetailTbody = document.querySelector('#orderDetailTable tbody');
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                    var orderDetailTbody = document.querySelector('#orderDetailTable tbody');
 
-                                // 清空表格內容
-                                orderDetailTbody.innerHTML = '';
+                                    // 清空表格內容
+                                    orderDetailTbody.innerHTML = '';
 
-                                var totalAmount = 0;
-                                data.forEach(function (item) {
-                                    var row = orderDetailTbody.insertRow();
-                                    row.insertCell().textContent = item.productName;
-                                    row.insertCell().textContent = item.productQuantity;
-                                    if (item.size == null) {
-                                        row.insertCell().textContent = "標準型";
-                                    } else {
-                                        row.insertCell().textContent = item.size;
-                                    }
-                                    totalAmount += item.productQuantity * item.productPrice;
+                                    var totalAmount = 0;
+                                    data.forEach(function (item) {
+                                        var row = orderDetailTbody.insertRow();
+                                        row.insertCell().textContent = item.productName;
+                                        row.insertCell().textContent = item.productQuantity;
+                                        if (item.size == null) {
+                                            row.insertCell().textContent = "標準型";
+                                        } else {
+                                            row.insertCell().textContent = item.size;
+                                        }
+                                        totalAmount += item.productQuantity * item.productPrice;
 
-                                    var cell = row.insertCell();
-                                    cell.classList.add('text-center');
+                                        var cell = row.insertCell();
+                                        cell.classList.add('text-center');
 
-                                    var contentDiv = document.createElement('div');
-                                    contentDiv.className = 'd-flex flex-column align-items-center';
+                                        var contentDiv = document.createElement('div');
+                                        contentDiv.className = 'd-flex flex-column align-items-center';
 
-                                    var textDiv = document.createElement('div');
-                                    textDiv.textContent = 'NT$ ' + item.productPrice;
+                                        var textDiv = document.createElement('div');
+                                        textDiv.textContent = 'NT$ ' + item.productPrice;
 
-                                    var spaceDiv = document.createElement('div');
-                                    spaceDiv.style.height = '10px'; // 調整空白距離的高度
+                                        var spaceDiv = document.createElement('div');
+                                        spaceDiv.style.height = '10px'; // 調整空白距離的高度
 
-                                    var buttonDiv = document.createElement('div');
+                                        var buttonDiv = document.createElement('div');
 
-                                    var cartLink = document.createElement('a');
-                                    cartLink.className = 'btn hvr-hover btn-sm';
-                                    var cartIcon = document.createElement('i');
-                                    cartIcon.className = 'fa-solid fa-cart-plus';
-                                    cartLink.appendChild(cartIcon);
-                                    cartLink.addEventListener('click', function () {
-                                        fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
-                                            .then(response => {
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: '加入成功',
+                                        var cartLink = document.createElement('a');
+                                        cartLink.className = 'btn hvr-hover btn-sm';
+                                        var cartIcon = document.createElement('i');
+                                        cartIcon.className = 'fa-solid fa-cart-plus';
+                                        cartLink.appendChild(cartIcon);
+                                        cartLink.addEventListener('click', function () {
+                                            fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                                .then(response => {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: '加入成功',
+                                                    });
+                                                })
+                                                .catch(error => {
                                                 });
-                                            })
-                                            .catch(error => {
-                                            });
+                                        });
+
+                                        buttonDiv.appendChild(cartLink);
+
+                                        contentDiv.appendChild(textDiv);
+                                        contentDiv.appendChild(spaceDiv);
+                                        contentDiv.appendChild(buttonDiv);
+
+                                        cell.appendChild(contentDiv);
+
                                     });
-
-                                    buttonDiv.appendChild(cartLink);
-
-                                    contentDiv.appendChild(textDiv);
-                                    contentDiv.appendChild(spaceDiv);
-                                    contentDiv.appendChild(buttonDiv);
-
-                                    cell.appendChild(contentDiv);
-
+                                    document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                                 });
-                                document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
+
                             });
 
-                        });
+                            buttonContainer.appendChild(detailButton);
 
-                        buttonContainer.appendChild(detailButton);
+                            //處理申請退換貨的按鈕
+                            var applyReturnButton = document.createElement('button');
+                            applyReturnButton.textContent = '申請退換貨';
+                            applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
 
-                        //處理申請退換貨的按鈕
-                        var applyReturnButton = document.createElement('button');
-                        applyReturnButton.textContent = '申請退換貨';
-                        applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+                            applyReturnButton.addEventListener('click', function () {
+                                document.querySelector('#returnSpan').textContent = item.orderId;
+                                $('#returnModal').modal('show');
 
-                        applyReturnButton.addEventListener('click', function () {
-                            document.querySelector('#returnSpan').textContent = item.orderId;
-                            $('#returnModal').modal('show');
+                                var returnProductElement = document.getElementById('returnProductSelect');
+                                returnProductElement.innerHTML = '';
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
 
-                            var returnProductElement = document.getElementById('returnProductSelect');
-                            returnProductElement.innerHTML = '';
-                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                    //拿取退貨理由數據
+                                    var returnReasonElement = document.getElementById('returnReasonSelect');
+                                    returnReasonElement.innerHTML = '';
+                                    $.getJSON('@Url.Content("~/membership/GetReturnReasonCategory")', function (data) {
+                                        data.forEach(function (item) {
+                                            var option = document.createElement('option');
+                                            option.value = item.returnReasonId;
+                                            option.textContent = item.returnReason;
+                                            returnReasonElement.appendChild(option);
+                                        });
+                                    });
 
-                                //拿取退貨理由數據
-                                var returnReasonElement = document.getElementById('returnReasonSelect');
-                                returnReasonElement.innerHTML = '';
-                                $.getJSON('@Url.Content("~/membership/GetReturnReasonCategory")', function (data) {
                                     data.forEach(function (item) {
                                         var option = document.createElement('option');
-                                        option.value = item.returnReasonId;
-                                        option.textContent = item.returnReason;
-                                        returnReasonElement.appendChild(option);
+                                        option.value = item.productId;
+                                        option.textContent = item.productName;
+                                        returnProductElement.appendChild(option);
                                     });
                                 });
 
-                                data.forEach(function (item) {
-                                    var option = document.createElement('option');
-                                    option.value = item.productId;
-                                    option.textContent = item.productName;
-                                    returnProductElement.appendChild(option);
+                            });
+
+                            buttonContainer.appendChild(applyReturnButton);
+
+                            //處理評論的按鈕
+                            var commentButton = document.createElement('button');
+                            commentButton.textContent = '評論';
+                            commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2');
+                            commentButton.addEventListener('click', function () {
+                                document.querySelector('#orderIdSpan').textContent = item.orderId;
+                                $('#commentModal').modal('show');
+
+                                var selectElement = document.getElementById('productSelect');
+                                selectElement.innerHTML = '';
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                    data.forEach(function (item) {
+                                        var option = document.createElement('option');
+                                        option.value = item.productId;
+                                        option.textContent = item.productName;
+                                        selectElement.appendChild(option);
+                                    });
                                 });
                             });
 
+                            buttonContainer.appendChild(commentButton);
+
+                            var buttonCell = row.insertCell();
+                            buttonCell.appendChild(buttonContainer);
                         });
 
-                        buttonContainer.appendChild(applyReturnButton);
+                        initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
 
-                        //處理評論的按鈕
-                        var commentButton = document.createElement('button');
-                        commentButton.textContent = '評論';
-                        commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2');
-                        commentButton.addEventListener('click', function () {
-                            document.querySelector('#orderIdSpan').textContent = item.orderId;
-                            $('#commentModal').modal('show');
-
-                            var selectElement = document.getElementById('productSelect');
-                            selectElement.innerHTML = '';
-                            $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
-                                data.forEach(function (item) {
-                                    var option = document.createElement('option');
-                                    option.value = item.productId;
-                                    option.textContent = item.productName;
-                                    selectElement.appendChild(option);
-                                });
-                            });
-                        });
-
-                        buttonContainer.appendChild(commentButton);
-
-                        var buttonCell = row.insertCell();
-                        buttonCell.appendChild(buttonContainer);
-                    });
-
-                    initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
-
+                    }
                 })
                 .catch(function (error) {
                     console.error('Error:', error);
@@ -1657,11 +1724,13 @@
             var productId = document.querySelector('#productSelect').value;
             var commentText = document.querySelector('#commentTextarea').value;
             var startRating = document.querySelector('#startRating').value;
+            var orderIdSpan = document.getElementById('orderIdSpan').textContent;
 
             const formData = new FormData(document.querySelector('#commentForm'));
             formData.append("commentText", commentText);
             formData.append("productId", productId);
             formData.append("startRating", startRating);
+            formData.append("orderIdSpan", orderIdSpan);
 
             fetch('@Url.Content("/Membership/SaveComment")', {
                 body: formData,
@@ -1755,25 +1824,29 @@
             $.getJSON('@Url.Content("~/membership/GetReturnRecord")')
                 .then(function (data) {
                     var tbody = document.querySelector('#returnRecordTable tbody');
-                    $('#return-tab').text(`退貨紀錄 (${data.length})`);
 
-                    // 清空表格內容
-                    tbody.innerHTML = '';
+                    if (data == null) {
+                        $('#return-tab').text(`退貨紀錄`);
+                    } else {
+                        $('#return-tab').text(`退貨紀錄 (${data.length})`);
 
-                    // 遍歷 JSON 資料並建立表格列
-                    data.forEach(function (item) {
-                        var row = tbody.insertRow();
-                        row.insertCell().textContent = item.orderId;
+                        // 清空表格內容
+                        tbody.innerHTML = '';
 
-                        // 將日期格式化為 "yyyy-mm-dd"
-                        var formattedDate = new Date(item.returnDate).toISOString().split('T')[0];
-                        row.insertCell().textContent = formattedDate;
-                        row.insertCell().textContent = item.returnReason;
-                        row.insertCell().textContent = item.statusName;
-                    });
+                        // 遍歷 JSON 資料並建立表格列
+                        data.forEach(function (item) {
+                            var row = tbody.insertRow();
+                            row.insertCell().textContent = item.orderId;
 
-                    initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
+                            // 將日期格式化為 "yyyy-mm-dd"
+                            var formattedDate = new Date(item.returnDate).toISOString().split('T')[0];
+                            row.insertCell().textContent = formattedDate;
+                            row.insertCell().textContent = item.returnReason;
+                            row.insertCell().textContent = item.statusName;
+                        });
 
+                        initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
+                    }
                 })
                 .catch(function (error) {
                     console.error('Error:', error);
@@ -1798,7 +1871,7 @@
 
                 if ( data == null) {
                     var tbody = document.querySelector('#favoriteRecordTable tbody');
-                    $('#collect-tab').text('收藏紀錄 (0)');
+                    $('#collect-tab').text('收藏紀錄');
                     tbody.innerHTML = '';
                 } else {
                     var tbody = document.querySelector('#favoriteRecordTable tbody');

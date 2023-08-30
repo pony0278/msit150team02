@@ -166,10 +166,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var itemToRemove = cart.FirstOrDefault(item=> item.cId==id);
                 if (itemToRemove != null)
                 {
-                    // 从购物车中删除找到的商品
+                    // 從購物車刪除找到的商品
                     cart.Remove(itemToRemove);
 
-                    // 更新 Session 中的购物车内容
+                    // 更新Session中的購物車內容
                     _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(cart));
 
                     return Ok("商品已從購物車刪除");
@@ -185,18 +185,25 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-
-        ////刪除購物車商品
-        //public IActionResult DeleteCartItem(int? id)
+        ////商品小計
+        //[HttpGet]
+        //public IActionResult GetCartTotalPrice()
         //{
-        //    var memberCartInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-        //    if (memberCartInfoJson != null)
-        //    {
-        //        var memberCartInfo = JsonSerializer.Deserialize<CCartItem>(memberCartInfoJson);
-        //        var trashItem= memberCartInfo.Items
+        //    //從session中找購物車的所有商品
+        //    string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+        //    List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
 
-        //        _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(memberCartInfo));
+        //    //計算小計金額
+        //    decimal totalPrice = 0;
+        //    if (cart != null)
+        //    {
+        //        totalPrice = (decimal)cart.Sum(item => item.c數量 * item.c小計);
         //    }
+
+        //    //將小計金額轉為Json格式返回
+        //    return Json(new { totalPrice });
         //}
+
+
     }
 }

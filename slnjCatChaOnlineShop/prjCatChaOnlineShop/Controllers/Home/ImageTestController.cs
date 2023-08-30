@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -94,11 +95,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             try
             {
-                //會員id需再調整，目前先假定會員編號4
-                var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == 1035);
-
-                memberToUpdate.MemberImage = imageUrl;
-                await _cachaContext.SaveChangesAsync();
+                if (int.TryParse(Request.Form["memberIdForMembership"], out int memberIdForMembership))
+                {
+                    var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
+                    memberToUpdate.MemberImage = imageUrl;
+                    await _cachaContext.SaveChangesAsync();
+                }
 
             }
             catch
