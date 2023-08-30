@@ -12,7 +12,7 @@ async function fetchData() {
         const totalProbability = data.reduce((sum, item) => sum + item.lotteryProbability, 0);
 
         // 計算縮放因子
-        const scalingFactor = totalProbability <= 100 ? 100 / totalProbability : 1;
+        const scalingFactor = totalProbability <= 1000 ? 1000 / totalProbability : 1;
 
         // 創建一個空陣列來儲存處理後的資料
         const processedData = [];

@@ -38,6 +38,17 @@ namespace prjCatChaOnlineShop.Services.Function
             return items;
 
         }
+        public List<CCategoryItem> getCatProductForEachPage(string? catName, int itemPerPage)
+        {
+            List<CCategoryItem> categoryItems = new List<CCategoryItem>();
+            var items = getProductByCategoryName(catName).Take(itemPerPage);
+            var name = items.FirstOrDefault().pCategoryName;
+            CCategoryItem c = new CCategoryItem();
+            c.pItem = items.ToList();
+            c.categoryName = name;
+            categoryItems.Add(c);
+            return categoryItems;
+        }
         public CProductItem getProductById(int? id)
         {
             var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
@@ -92,7 +103,7 @@ namespace prjCatChaOnlineShop.Services.Function
         }
 
 
-        public decimal price(decimal? price, decimal? priceSale)
+        public decimal priceFinal(decimal? price, decimal? priceSale)
         {
             if (priceSale != null)
             {
@@ -117,7 +128,7 @@ namespace prjCatChaOnlineShop.Services.Function
                 CCartItem cartItem = new CCartItem();
                 cartItem.cId = prodItem.pId;
                 cartItem.cName = prodItem.pName;
-                cartItem.cPrice = price(prodItem.pPrice, prodItem.p優惠價格);
+                cartItem.cPrice = priceFinal(prodItem.pPrice, prodItem.p優惠價格);
                 cartItem.cImgPath = prodItem.p圖片路徑.FirstOrDefault();
                 cartItem.c子項目 = prodItem.p子項目.FirstOrDefault();
                 cartItem.c剩餘庫存 = prodItem.p剩餘庫存;
@@ -139,7 +150,7 @@ namespace prjCatChaOnlineShop.Services.Function
                 CCartItem cartItem = new CCartItem();
                 cartItem.cId = prodItem.pId;
                 cartItem.cName = prodItem.pName;
-                cartItem.cPrice = price(prodItem.pPrice, prodItem.p優惠價格);
+                cartItem.cPrice = priceFinal(prodItem.pPrice, prodItem.p優惠價格);
                 cartItem.cImgPath = prodItem.p圖片路徑.FirstOrDefault();
                 cartItem.c子項目 = option;
                 cartItem.c剩餘庫存 = prodItem.p剩餘庫存;

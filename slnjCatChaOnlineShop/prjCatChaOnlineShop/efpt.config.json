@@ -120,6 +120,14 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Newsletter]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewsletterTemplate]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Shop.Appeal Category Data]",
          "ObjectType": 0
       },

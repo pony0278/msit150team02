@@ -69,6 +69,10 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<MessageTypeData> MessageTypeData { get; set; }
 
+    public virtual DbSet<Newsletter> Newsletter { get; set; }
+
+    public virtual DbSet<NewsletterTemplate> NewsletterTemplate { get; set; }
+
     public virtual DbSet<ShopAppealCategoryData> ShopAppealCategoryData { get; set; }
 
     public virtual DbSet<ShopCaseDataTable> ShopCaseDataTable { get; set; }
@@ -632,6 +636,22 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.MessageType)
                 .IsRequired()
                 .HasColumnName("Message Type");
+        });
+
+        modelBuilder.Entity<Newsletter>(entity =>
+        {
+            entity.Property(e => e.NewsletterId).ValueGeneratedOnAdd();
+            entity.Property(e => e.SendDate).HasColumnType("datetime");
+
+            entity.HasOne(d => d.NewsletterNavigation).WithOne(p => p.Newsletter)
+                .HasForeignKey<Newsletter>(d => d.NewsletterId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Newsletter_NewsletterTemplate");
+        });
+
+        modelBuilder.Entity<NewsletterTemplate>(entity =>
+        {
+            entity.HasKey(e => e.TemplateId);
         });
 
         modelBuilder.Entity<ShopAppealCategoryData>(entity =>

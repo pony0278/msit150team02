@@ -32,9 +32,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _productService = productService;
             _httpContextAccessor = httpContextAccessor;
 
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            memberIdForMembership = memberInfo.MemberId;
+            //取得會員id
+            //var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            //var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            //memberIdForMembership = memberInfo.MemberId;
+
+            memberIdForMembership = GetCurrentMemberId();
         }
 
 
@@ -42,10 +45,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-
-            //memberIdForMembership = GetCurrentMemberId();
-
-
+            ViewBag.memberIdForMembership = memberIdForMembership;
 
             return View();
         }
@@ -87,7 +87,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             select new
                             {
                                 address.AddressId,
-                                address.RecipientAddress
+                                address.RecipientAddress,
+                                address.RecipientName
                             };
 
                 var datas = query.ToList();
@@ -107,7 +108,32 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //新增常用地址資料
+        //新增常用地址資料:多個參數版
+        public IActionResult CreateCommonAddress(ShopCommonAddressData commonAddress)
+        {
+            try
+            {
+
+                ShopCommonAddressData address = new ShopCommonAddressData();
+
+                address.MemberId = memberIdForMembership;
+                address.RecipientName = commonAddress.RecipientName;
+                address.RecipientPhone = commonAddress.RecipientPhone;
+                address.RecipientAddress = commonAddress.RecipientAddress;
+
+                _context.ShopCommonAddressData.Add(address);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
+        //新增常用地址資料:單個參數版
+        /*
         public IActionResult CreateCommonAddress(string commonAddress)
         {
             try
@@ -128,6 +154,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return Content(ex.Message);
             }
         }
+        */
 
         //刪除常用地址資料
         public IActionResult DeleteCommonAddress(int addressid)
@@ -160,8 +187,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == true
-                            orderby coupons.Coupon.ExpiryDate
+                            join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
+                            where coupons.MemberId == memberIdForMembership
+                            & coupons.CouponStatusId == false & q.Usable == true & q.ExpiryDate >= DateTime.UtcNow
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -169,11 +198,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.ExpiryDate
                             };
 
-                var datas = query.ToList();
+                var groupedData = query.GroupBy(item => new { item.CouponName, item.CouponContent, item.ExpiryDate })
+                                       .Select(group => new
+                                       {
+                                           CouponName = group.Key.CouponName,
+                                           CouponContent = group.Key.CouponContent,
+                                           ExpiryDate = group.Key.ExpiryDate,
+                                           Count = group.Count() 
+                                       })
+                                       .ToList();
 
-                if (datas != null)
+                if (groupedData != null)
                 {
-                    return new JsonResult(datas);
+                    return new JsonResult(groupedData);
                 }
                 else
                 {
@@ -192,8 +229,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from coupons in _context.ShopMemberCouponData
-                            where coupons.MemberId == memberIdForMembership & coupons.CouponStatusId == false
-                            orderby coupons.Coupon.ExpiryDate
+                            join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
+                            where coupons.MemberId == memberIdForMembership & (coupons.CouponStatusId == true  
+                            || q.ExpiryDate < DateTime.UtcNow || q.Usable == false)
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -201,11 +240,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.ExpiryDate
                             };
 
-                var datas = query.ToList();
+                var groupedData = query.GroupBy(item => new { item.CouponName, item.CouponContent, item.ExpiryDate })
+                                       .Select(group => new
+                                       {
+                                           CouponName = group.Key.CouponName,
+                                           CouponContent = group.Key.CouponContent,
+                                           ExpiryDate = group.Key.ExpiryDate,
+                                           Count = group.Count()
+                                       })
+                                       .ToList();
 
-                if (datas != null)
+                if (groupedData != null)
                 {
-                    return new JsonResult(datas);
+                    return new JsonResult(groupedData);
                 }
                 else
                 {
@@ -673,7 +720,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var datas = _context.ShopAppealCategoryData.ToList();
 
-
                 if (datas != null)
                 {
                     return new JsonResult(datas);
@@ -689,18 +735,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-
         //儲存客訴內容到資料庫
         public IActionResult SaveComplaint([Bind("ComplaintTitle,ComplaintContent")] ShopMemberComplaintCase complaint)
         {
             try
             {
-                    var selectedValue = HttpContext.Request.Form["selectedValue"];
+                var selectedValue = HttpContext.Request.Form["selectedValue"];
                 if (int.TryParse(selectedValue, out int categoryId))
                 {
                     complaint.MemberId = memberIdForMembership;
                     complaint.ComplaintCategoryId = categoryId;
-                    complaint.ComplaintStatusId = 1;  // Id = 1是指此案件待處理
+                    complaint.ComplaintStatusId = 1;
                     complaint.CreationTime = DateTime.Now;
 
                     _context.ShopMemberComplaintCase.Add(complaint);
@@ -719,8 +764,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-
-        //找到會員ID
+        //取得會員id的方法
         private int? GetCurrentMemberId()
         {
             var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
@@ -728,7 +772,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 return memberInfo.MemberId;
-
             }
             return null;
         }

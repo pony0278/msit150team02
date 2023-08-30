@@ -63,7 +63,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     QuantityOfInGameItems = 1,
                     ItemName = "初始褐貓"
                 };
-                var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == memberInfo.MemberId);
+                var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == _memberId);
                 if (db != null&&db.LoyaltyPoints==null)
                 {
                     db.CharacterName = "我愛貓抓抓001";
@@ -314,7 +314,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         var existingCoupon = _context.ShopMemberCouponData
                             .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.CouponId == gachaResult.couponId);
 
-                        if (existingCoupon == null)
+                        if (existingCoupon != null)
                         {
                             var dbCouponModel = new ShopMemberCouponData
                             {

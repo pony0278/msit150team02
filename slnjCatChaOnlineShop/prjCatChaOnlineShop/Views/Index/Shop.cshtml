@@ -43,17 +43,22 @@
         </div>
         <!--增加:End當前分類-->
         <div id="categoryList" class="row">
+            @{
+                int i = 0;
+            
                 @foreach (var item in Model.DistinctBy(item => item.pCategoryId))
                 {
+                    i++;
                     <div class="col-md-2 col-4">
                         <div class="shop-cat-boxs">
                         <a class="for-ajax" href="#" data-category-name="@item.pCategoryName">
-                                <img class="img-fluid" src="@item.pCategoryImg" alt="" />
+                            <img class="img-fluid" src="~/images/category_@{@i}.jpg" alt="" />
                                 <span>@item.pCategoryName</span>
                             </a>
                         </div>
                     </div>
                 }
+            }
         </div>
     </div>
 </div>
@@ -66,33 +71,31 @@
                 <div class="right-product-box">
                     <div class="d-flex text-center align-items-center flex-wrap justify-content-between mb-4">
                         <h3>篩選 <i class="fa-solid fa-grip-lines-vertical"></i></h3>
-                        <div class=" shop-filter-select pt-1">
-                            <label class="switch pt-1">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                            <span>最熱銷</span>
-                        </div>
+                        
                         <div class="shop-filter-select ">
-                            <select class="form-select form-select-md" aria-label="排序方式">
-                                <option selected>商品排序</option>
-                                <option value="2">上架時間:新到舊</option>
-                                <option value="3">上架時間:舊到新</option>
-                                <option value="4">價格:高至低</option>
-                                <option value="4">價格:低至高</option>
+                            <select id="selOrder" class="form-select form-select-md" aria-label="排序方式">
+                                <option value="0" selected>商品排序</option>
+                                <option value="1">熱賣程度:高到低</option>
+                                <option value="2">熱賣程度:低到高</option>
+                                <option value="3">上架時間:新到舊</option>
+                                <option value="4">上架時間:舊到新</option>
+                                <option value="5">價格:高至低</option>
+                                <option value="6">價格:低至高</option>
                             </select>
                         </div>
+
+
                         <div class="shop-filter-select  ">
-                            <select class="form-select form-select-md" aria-label="品牌篩選">
-                                <option selected>以品牌篩選</option>
-                                <option value="2">貓抓嚴選</option>
-                                <option value="3">貓貓01</option>
-                                <option value="4">好貓貓</option>
-                                <option value="4">壞貓貓</option>
+                            <select id="selBrand" class="form-select form-select-md" aria-label="品牌篩選">
+                                <option value="0" selected>以品牌篩選</option>
+                                @foreach(var p in Model.DistinctBy(p=>p.pBrandName).OrderBy(p=>p.pBrandName))
+                                {
+                                    <option value="@p.pBrandName">@p.pBrandName</option>
+                                }
                             </select>
                         </div>
                         <div class="filter-btn">
-                            <button class="btn hvr-hover  item-d" type="submit">篩選</button>
+                            <button id="filter-submit" class="btn hvr-hover item-d" type="button">篩選</button>
                         </div>
                     </div>
                     <div class="d-flex text-center align-items-center justify-content-between">
@@ -152,6 +155,6 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
-    <script src="~/js/forindex.js"></script>
+    <script src="~/js/forshop.js"></script>
 }
 

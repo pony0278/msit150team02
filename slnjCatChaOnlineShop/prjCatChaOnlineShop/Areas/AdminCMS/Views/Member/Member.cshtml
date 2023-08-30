@@ -40,6 +40,16 @@
         paginate_button:hover {
             background-color: unset !important;
         }
+
+        /* 選中行的背景顏色 */
+       .selected-cell {
+            background-color: #2079fd !important; /* 將“blue”替換為您想要的藍色選中行的背景顏色 */
+            color: #fff !important; /* 調整文字顏色以確保可讀性 */
+        }
+
+        .checkbox-css {
+            outline: 2px solid #FFF;
+        }
     </style>
 }
 
@@ -50,9 +60,78 @@
             <h2 class="mt-3">會員管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
+            <button class="btn btn-warning" data-bs-toggle="modal" href="#sentLetterModalToggle" role="button">發送電子報</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" href="#addLetterModalToggle" role="button">電子報上下版新增</button>
             <button class="create_btn" data-bs-toggle="modal" href="#addMemberModalToggle" role="button">新增會員</button>
         </div>
     </div>
+
+    <!---發送電子報 modal-->
+    <div class="modal fade" id="sentLetterModalToggle" aria-hidden="true"
+         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">發送電子報</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="sentTemplateId" value="1" name="TemplateId" />
+
+                    <div class="form-group mb-2">
+                        <label>郵件主旨</label>
+                        <input type="text" class="form-control" id="sentSubject" name="Subject" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label>圖片內容</label>
+                        <input type="file" class="form-control" id="sentContentImage" name="ContentImage" accept="image/*" />
+                    </div>
+
+                    <button id="SentNewsLetter" class="btn btn-danger btn-block" style="width: 100%;">
+                        發送
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!---發送電子報 modal-->
+
+    <!---新增電子報 modal-->
+    <div class="modal fade" id="addLetterModalToggle" aria-hidden="true"
+         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">電子報上下版</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label>header</label>
+                        <input type="file" class="form-control" id="headerImg" name="HeaderImage" accept="image/*" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label>footer</label>
+                        <input type="file" class="form-control" id="footerImg" name="FooterImage" accept="image/*" />
+                    </div>
+
+                    <button id="CreatNewsLetter" class="btn btn-danger btn-block" style="width: 100%;">
+                        儲存
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!---新增電子報 modal-->
 
     <!---新增會員 modal-->
     <div class="modal fade" id="addMemberModalToggle" aria-hidden="true"
@@ -152,12 +231,15 @@
                         <option value="開放">開放</option>
                         <option value="凍結">凍結</option>
                     </select>
+
+                    <button id="selectAllBtn">全選</button>
                 </div>
                 <!--表格-->
                 <table id="member-table" class="table table-striped nowrap" style="width:100%">
                     <thead>
                         <tr>
                             <th></th>
+                            <th>勾選</th>
                             <th>ID</th>
                             <th>姓名</th>
                             <th>帳號</th>
@@ -435,6 +517,10 @@
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
 
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+    @*<script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.min.js"></script>*@
+
     <script>
         let isVaild = ""; //驗證bool
         let isVaild_mail = "";
@@ -591,10 +677,17 @@
             },
             "columns": [
                 {
+                    data: null,
+                    orderable: false, // Disable sorting for this column
+                    render: function (data, type, row, meta) {
+                        return '';
+                    }
+                },
+                {
                     data: null, // Checkbox列
                     orderable: false, // Disable sorting for this column
                     render: function (data, type, row, meta) {
-                        return '<input type="checkbox" class="row-checkbox" data-memberid="' + row.memberId + '">';
+                        return '<input type="checkbox" class="row-checkbox checkbox-css" data-email="' + row.email + '">';
                     }
                 },
                 //這裡要注意json裡面是大寫還是小寫
@@ -630,15 +723,20 @@
                 },
             ],
             columnDefs: [
-                { targets: 7, searchable: true },
+                //{ targets: 7, searchable: true },
                 // { targets: 5, searchable: true }
                 // 其他列...
                 {
+                    targets: 7,
+                    searchable: true,
                     orderable: false,
                     className: 'select-checkbox',
                     targets: 0
                 }
             ],
+            fixedColumns: {
+                left: 2
+            },
             select: {
                 style: 'os',
                 selector: 'td:first-child'
@@ -646,23 +744,110 @@
             "paging": true, //分頁功能
             responsive: true, //RWD
             // "searching": false, //隱藏搜尋框
+            //參考資料https://stackoverflow.com/questions/32629949/show-entries-dropdown-disappear-when-using-export-tools
             dom: 'Bfrtip',
             buttons: [
-                'copy', 'excel', 'print',
+                'pageLength', 'copy', 'csv', 'excel', 'print'
             ],
             "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
         });
 
-        // 選取 "copy" 按鈕的 DOM 元素
-        var copyButton = dataTable.buttons().container().find('.buttons-copy');
 
-        // 添加點擊事件處理函式
-        copyButton.on('click', function () {
-            // 在這裡添加你的點擊事件處理邏輯
-            // 例如，可以在這裡執行特定的操作或顯示提示訊息
-            alert("Copy button clicked!");
+
+        var selectedEmails = []; // 儲存選中email的陣列
+
+        // 全選按鈕的點擊事件處理
+        $('#selectAllBtn').on('click', function () {
+            var $checkboxes = $('.row-checkbox'); // 所有的checkbox元素
+            var isCheckedAll = $checkboxes.not(':checked').length === 0; // 是否已經全選
+
+            if (isCheckedAll) {
+                $checkboxes.prop('checked', false); // 取消全選
+                selectedEmails = []; // 清空選中email的陣列
+            } else {
+                $checkboxes.prop('checked', true); // 全部打勾
+                selectedEmails = []; // 清空選中email的陣列
+                $checkboxes.each(function () {
+                    var emailValue = $(this).data('email');
+                    selectedEmails.push(emailValue); // 將所有email值加入陣列中
+                });
+            }
+
+            console.log('Selected emails:', selectedEmails);
         });
 
+
+        // 監聽checkbox變更事件
+        $('#member-table tbody').on('change', '.row-checkbox', function () {
+            var isChecked = $(this).is(':checked');
+            var $row = $(this).closest('tr');
+            var emailValue = $(this).data('email'); // 使用data-email屬性來取得email的值
+
+            if (isChecked) {
+                $row.addClass('selected-row'); // 添加選中行的背景顏色
+                selectedEmails.push(emailValue); // 將email值加入陣列中
+
+                console.log('Selected emails:', selectedEmails);
+            } else {
+                $row.removeClass('selected-row'); // 移除選中行的背景顏色
+                var index = selectedEmails.indexOf(emailValue);
+                if (index !== -1) {
+                    selectedEmails.splice(index, 1); // 從陣列中移除email值
+
+                    console.log('Selected emails:', selectedEmails);
+                }
+            }
+        });
+
+        //=====================發送電子報
+        $('#SentNewsLetter').on('click', function () {
+            console.log("???");
+            var TemplateId = $('#sentTemplateId').val();
+            var Subject = $('#sentSubject').val();
+            var fileInput = $('#sentContentImage')[0];
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append("TemplateId", TemplateId);
+            formData.append("Subject", Subject);
+            formData.append("ContentImage", file);
+
+            $.ajax({
+                url: '@Url.Action("sendTest", "Member")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert("發送郵件成功!");
+                    window.location.reload();
+                }
+            });
+        });
+
+            //===================新增電子版上下版
+        $('#CreatNewsLetter').on('click', function(){
+            var fileInput1 = $('#headerImg')[0];
+            var fileInput2 = $('#footerImg')[0];
+            var file = fileInput1.files[0];
+            var file2 = fileInput2.files[0];
+
+            var formData = new FormData();
+            formData.append("HeaderImage", file);
+            formData.append("FooterImage", file);
+
+            $.ajax({
+                url: '@Url.Action("editorUploadImage", "Member")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert("儲存成功!");
+                    window.location.reload();
+                }
+            });
+        })
 
         //==================按下「詳細資料」按鈕的點擊事件處理
         $('#member-table').on('click', '.detail_input', function () {

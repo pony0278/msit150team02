@@ -28,9 +28,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult Shop()
         {
+            var items = _productService.getProductItems();
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-            return View(_productService.getProductItems());
+            return View(items);
         }
         public IActionResult Index()
         {
