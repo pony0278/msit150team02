@@ -112,7 +112,7 @@
             set { _info.FavoriteId = value; }
         }
 
-        public int? CheckinDayCount
+        public bool? CheckinDayCount
         {
             get { return _info.CheckinDayCount; }
             set { _info.CheckinDayCount = value; }
