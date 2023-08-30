@@ -60,9 +60,78 @@
             <h2 class="mt-3">會員管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
+            <button class="btn btn-warning" data-bs-toggle="modal" href="#sentLetterModalToggle" role="button">發送電子報</button>
+            <button class="btn btn-danger" data-bs-toggle="modal" href="#addLetterModalToggle" role="button">電子報上下版新增</button>
             <button class="create_btn" data-bs-toggle="modal" href="#addMemberModalToggle" role="button">新增會員</button>
         </div>
     </div>
+
+    <!---發送電子報 modal-->
+    <div class="modal fade" id="sentLetterModalToggle" aria-hidden="true"
+         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">發送電子報</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <input type="hidden" id="sentTemplateId" value="1" name="TemplateId" />
+
+                    <div class="form-group mb-2">
+                        <label>郵件主旨</label>
+                        <input type="text" class="form-control" id="sentSubject" name="Subject" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label>圖片內容</label>
+                        <input type="file" class="form-control" id="sentContentImage" name="ContentImage" accept="image/*" />
+                    </div>
+
+                    <button id="SentNewsLetter" class="btn btn-danger btn-block" style="width: 100%;">
+                        發送
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!---發送電子報 modal-->
+
+    <!---新增電子報 modal-->
+    <div class="modal fade" id="addLetterModalToggle" aria-hidden="true"
+         aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalToggleLabel">電子報上下版</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group mb-2">
+                        <label>header</label>
+                        <input type="file" class="form-control" id="headerImg" name="HeaderImage" accept="image/*" />
+                    </div>
+
+                    <div class="form-group mb-2">
+                        <label>footer</label>
+                        <input type="file" class="form-control" id="footerImg" name="FooterImage" accept="image/*" />
+                    </div>
+
+                    <button id="CreatNewsLetter" class="btn btn-danger btn-block" style="width: 100%;">
+                        儲存
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <!---新增電子報 modal-->
 
     <!---新增會員 modal-->
     <div class="modal fade" id="addMemberModalToggle" aria-hidden="true"
@@ -730,16 +799,55 @@
             }
         });
 
-        // 選取 "copy" 按鈕的 DOM 元素
-        var copyButton = dataTable.buttons().container().find('.buttons-copy');
+        //=====================發送電子報
+        $('#SentNewsLetter').on('click', function () {
+            console.log("???");
+            var TemplateId = $('#sentTemplateId').val();
+            var Subject = $('#sentSubject').val();
+            var fileInput = $('#sentContentImage')[0];
+            var file = fileInput.files[0];
 
-        // 添加點擊事件處理函式
-        copyButton.on('click', function () {
-            // 在這裡添加你的點擊事件處理邏輯
-            // 例如，可以在這裡執行特定的操作或顯示提示訊息
-            alert("Copy button clicked!");
+            var formData = new FormData();
+            formData.append("TemplateId", TemplateId);
+            formData.append("Subject", Subject);
+            formData.append("ContentImage", file);
+
+            $.ajax({
+                url: '@Url.Action("SentNewsLetter", "Member")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert("儲存成功!");
+                    window.location.reload();
+                }
+            });
         });
 
+            //===================新增電子版上下版
+        $('#CreatNewsLetter').on('click', function(){
+            var fileInput1 = $('#headerImg')[0];
+            var fileInput2 = $('#footerImg')[0];
+            var file = fileInput1.files[0];
+            var file2 = fileInput2.files[0];
+
+            var formData = new FormData();
+            formData.append("HeaderImage", file);
+            formData.append("FooterImage", file);
+
+            $.ajax({
+                url: '@Url.Action("editorUploadImage", "Member")',
+                type: "POST",
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    alert("儲存成功!");
+                    window.location.reload();
+                }
+            });
+        })
 
         //==================按下「詳細資料」按鈕的點擊事件處理
         $('#member-table').on('click', '.detail_input', function () {

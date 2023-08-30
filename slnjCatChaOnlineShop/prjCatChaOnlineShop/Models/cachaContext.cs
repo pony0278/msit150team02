@@ -640,7 +640,7 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<Newsletter>(entity =>
         {
-            entity.Property(e => e.NewsletterId).ValueGeneratedNever();
+            entity.Property(e => e.NewsletterId).ValueGeneratedOnAdd();
             entity.Property(e => e.SendDate).HasColumnType("datetime");
 
             entity.HasOne(d => d.NewsletterNavigation).WithOne(p => p.Newsletter)

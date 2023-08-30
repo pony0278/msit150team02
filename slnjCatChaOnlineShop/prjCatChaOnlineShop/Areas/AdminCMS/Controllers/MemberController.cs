@@ -8,6 +8,9 @@ using System.Text.Json.Serialization;
 using System.Text.Json;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
+using Microsoft.Build.Experimental.ProjectCache;
+using prjCatChaOnlineShop.Models.CModels;
+using prjCatChaOnlineShop.Services.Function;
 //using prjCatChaOnlineShop.Areas.AdminCMS.Util;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
@@ -16,9 +19,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
     public class MemberController : Controller
     {
         private readonly cachaContext _context;
-        public MemberController(cachaContext context)
+        private readonly ImageService _imageService;
+        public MemberController(cachaContext context, ImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
 
@@ -190,10 +195,94 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //}
 
 
-        public IActionResult DeleteMemeber()
+        //public IActionResult DeleteMemeber()
+        //{
+        //    return View();
+        //}
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> editorUploadImage([FromForm] CNewsLetterTemplete cAnnounce)
         {
-            return View();
-        }
+            var image1 = cAnnounce.HeaderImage;
+            var image2 = cAnnounce.FooterImage;
 
+            if (image1 == null || image1.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+            if (image2 == null || image2.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+
+            string imageUrl1;
+            string imageUrl2;
+            try
+            {
+                imageUrl1 = await _imageService.UploadImageAsync(image1);
+                imageUrl2 = await _imageService.UploadImageAsync(image2);
+            }
+            catch
+            {
+
+                return BadRequest("Error uploading the image.");
+            }
+            var newAnnounce = new NewsletterTemplate
+            {
+                HeaderImage = imageUrl1,
+                FooterImage = imageUrl2
+            };
+
+            try
+            {
+                _context.NewsletterTemplate.Add(newAnnounce);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Error saving the announcement.");
+            }
+            return Json(new { success = true, message = "Content saved!" });
+        }
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SentNewsLetter([FromForm] CSentNewsLetter cAnnounce)
+        {
+            var image = cAnnounce.ContentImage;
+
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+
+            string imageUrl;
+            try
+            {
+                imageUrl = await _imageService.UploadImageAsync(image);
+            }
+            catch
+            {
+
+                return BadRequest("Error uploading the image.");
+            }
+            var newAnnounce = new Newsletter
+            {
+                TemplateId = cAnnounce.TemplateId,
+                Subject= cAnnounce.Subject,
+                ContentImage = imageUrl,
+                SendDate = DateTime.Now,
+            };
+
+            try
+            {
+                _context.Newsletter.Add(newAnnounce);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Error saving the announcement.");
+            }
+            return Json(new { success = true, message = "Content saved!" });
+        }
     }
 }
