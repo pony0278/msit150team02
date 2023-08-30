@@ -90,7 +90,7 @@
                                     {
                                         <div class="media mb-2 border-bottom">
                                             <div class="media-body">
-                                                <a asp-controller="Index" asp-action="ShopDetail"> @item.cName </a>
+                                                <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
                                                 <div class="small text-muted">
                                                     價格: NT @item.cPrice <span class="mx-2">|</span> 數量:
                                                     <span class="mx-2">|</span> 小計: NT
@@ -111,16 +111,16 @@
             <div class="col-sm-12 col-lg-12 mb-3">
                 <div class="checkout-address">
                     <div class="title-left">
-                        <h3>貓幣折抵</h3>
+                        <h3>紅利折抵</h3>
                     </div>
                     @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
                     {
                         <form class="needs-validation">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="use_CatCoin">
-                                <label class="custom-control-label" for="use_CatCoin">使用1000貓幣折抵NT100</label>
+                                <label class="custom-control-label" for="use_CatCoin">使用1000紅利折抵NT100</label>
                             </div>
-                            <div class="ml-4 mb-2 small">您有 @memberinfo.CatCoinQuantity 個貓幣，單筆訂單最多可折抵10%商品金額</div>
+                            <div class="ml-4 mb-2 small">您有 @memberinfo.LoyaltyPoints 個紅利，單筆訂單最多可折抵10%商品金額</div>
                         </form>
                     }
                 </div>
@@ -793,7 +793,8 @@
                     <!--信用卡付款分頁內容-->
                     <div class="tab-pane fade show active" id="nav-credit" role="tabpanel"
                          aria-labelledby="nav-credit-tab">
-                        <div class="row ">
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
+                        @* <div class="row ">
                             <form class="needs-validation" novalidate>
                                 <div class="row">
                                     <div class="col-md-6 ">
@@ -839,11 +840,11 @@
                                     </div>
                                 </div>
                             </form>
-                        </div>
+                        </div> *@
                     </div>
                     <!--銀行轉帳分頁內容-->
                     <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
-                        <label class="nav-ATM-css">選擇此方式再送出訂單後會得到一組僅供本次交易使用的轉帳帳號，請在期限內匯款完畢，否則此筆交易將取消。</label>
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後會得到一組僅供本次交易使用的轉帳帳號，請在期限內匯款完畢，否則此筆交易將取消。</label>
                         <ul class="nav-ATM-fontSize">
                             <li>以下為範例：</li>
                             <li>轉帳銀行：013國泰世華銀行</li>
@@ -855,8 +856,8 @@
                     <!--貨到付款分頁內容-->
                     <div class="tab-pane fade" id="nav-cashOnDelivery" role="tabpanel"
                          aria-labelledby="nav-cashOnDelivery-tab">
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
                         <ul class="nav-ATM-fontSize">
-                            <li>目前僅供超商取貨可使用「超商取貨付款」</li>
                             <li>單筆訂單金額二萬元以內可使用。</li>
                             <li>為確保順利取件，請填寫正確姓名及手機號碼。</li>
                             <li>商品送達門市時會簡訊通知，送達門市後逾期未前往取貨常溫七天/低溫四天，商品將退回貓抓抓購物。</li>
