@@ -63,32 +63,32 @@
                                                         <div class="">
                                                             <select data-product-id=@item.cId class="sel-attr form-select for-detail-select me-4">
 
-                                                                @if (item.c子項目 != null && item.c其他子項目 != null)
+                                                                            @if (item.c子項目 != null && item.c其他子項目!=null)
                                                                 {
-                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
+                                                                                    <option value="@item.c子項目" selected>@item.c子項目</option>
 
                                                                     foreach (var attr in item.c其他子項目)
                                                                     {
-                                                                        <option value="@attr">@attr</option>
+                                                                                        <option value="@attr">@attr</option>
                                                                     }
                                                                 }
                                                                 else
                                                                 {
-                                                                    <option value="商品">商品</option>
+                                                                                    <option value="0">商品</option>
                                                                 }
-                                                            </select>
+                                                                        </select>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
+                                                    <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
 
 
-                                            <div class="mt-2">
-                                                <span>數量</span>
-                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
-                                            </div>
+                                                            <div class="mt-2">
+                                                                <span>數量</span>
+                                                                <input data-product-id=@item.cId value=@item.c數量 min="1" max=@item.c剩餘庫存 class="form-control me-4 input-quantity" type="number" />
+                                                            </div>
 
                                             <div class="mt-2 ml-5">
                                                 <p class=" mb-0">價格</p>
@@ -217,30 +217,32 @@
         //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var cartItem = $('.shop-prod-click');
         var inputQuantity = $('.input-quantity');
-
+        
         inputQuantity.on('change', function () {
-            var newValue = $(this).val();// 獲取輸入的新值
-            var selAttrForQuantity = $(this).closest('.row').find('.sel-attr'); // 選取同一行內的子選項
-            var attr = selAttrForQuantity.val();//獲取選到的商品的子選項
-            var productId = $(this).data('product-id')
-            console.log('New value:', newValue);
-            // 在這裡可以使用 Ajax 將新值傳回後端
-            $.ajax({
-                url: '/ProductApi/CartEditQuantity',
-                type: 'POST',
-                data: { newQuantity: newValue, pId: productId, attr: attr },
-                dataType: 'json',
-                success: function (response) {
-                    console.log('Quantity updated:', response.message);
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
+        var newValue = $(this).val();// 獲取輸入的新值
+            var rowElement = $(this).closest('.row');
+            var selAttrForQuantity = rowElement.find('.sel-attr'); // 選取同一行內的子選項
+        var attr = selAttrForQuantity.val();//獲取選到的商品的子選項
+        var productId = $(this).data('product-id')
+        
+        console.log('New value:', newValue);
+        // 在這裡可以使用 Ajax 將新值傳回後端
+        $.ajax({
+            url: '/ProductApi/CartEditQuantity',
+            type: 'POST',
+            data: { newQuantity: newValue, pId:productId, attr: attr },
+            dataType: 'json',
+            success: function (response) {
+                rowElement.find('.sub-total-price').text('$' + response.message);
+            },
+            error: function (error) {
+                console.error('Ajax Error:', error);
+            }
         });
-
-
-        //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
+    });
+        
+        
+    //動作:變更購物車內的項目，傳回值，在後端/ProductApi / CartEditQuantity中更新至session
         var selAttr = $('.sel-attr');
         var oldAttr; // 儲存舊值的變數
         // 在點擊下拉選單時更新舊值變數
