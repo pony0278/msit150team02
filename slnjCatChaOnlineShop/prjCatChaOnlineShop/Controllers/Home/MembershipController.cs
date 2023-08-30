@@ -87,7 +87,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             select new
                             {
                                 address.AddressId,
-                                address.RecipientAddress
+                                address.RecipientAddress,
+                                address.RecipientName
                             };
 
                 var datas = query.ToList();
@@ -189,7 +190,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
                             where coupons.MemberId == memberIdForMembership
                             & coupons.CouponStatusId == false & q.Usable == true & q.ExpiryDate >= DateTime.UtcNow
-                            orderby coupons.Coupon.CouponName
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -231,7 +232,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                             join q in _context.ShopCouponTotal on coupons.CouponId equals q.CouponId
                             where coupons.MemberId == memberIdForMembership & (coupons.CouponStatusId == true  
                             || q.ExpiryDate < DateTime.UtcNow || q.Usable == false)
-                            orderby coupons.Coupon.ExpiryDate
+                            orderby q.CouponName
                             select new
                             {
                                 coupons.Coupon.CouponName,
@@ -239,11 +240,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 coupons.Coupon.ExpiryDate
                             };
 
-                var datas = query.ToList();
+                var groupedData = query.GroupBy(item => new { item.CouponName, item.CouponContent, item.ExpiryDate })
+                                       .Select(group => new
+                                       {
+                                           CouponName = group.Key.CouponName,
+                                           CouponContent = group.Key.CouponContent,
+                                           ExpiryDate = group.Key.ExpiryDate,
+                                           Count = group.Count()
+                                       })
+                                       .ToList();
 
-                if (datas != null)
+                if (groupedData != null)
                 {
-                    return new JsonResult(datas);
+                    return new JsonResult(groupedData);
                 }
                 else
                 {
