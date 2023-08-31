@@ -56,7 +56,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var usableAddress = _checkoutService.GetUsableAddresses(memberInfo.MemberId);
                 //購物車
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
-
+                //購物車初始金額
+                decimal total = (decimal)cartItems.Sum(item => item.c小計);
+                ViewBag.totalPrice = total; //把初始的小計金額傳到checkout頁面
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
                 //需填入你的網址
@@ -134,7 +136,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             if (json == null)
             {
-
                 return View();
             }
             else
@@ -146,72 +147,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        // 刪除購物車商品
-        public IActionResult DeleteCartItem(int? id)
-        {
-            // 檢查傳入的 id 是否有效
-            if (id == null)
-            {
-                return BadRequest("無效的商品 ID");
-            }
+       
 
-            // 從 Session 中獲取購物車內容
-            string json = "";
-            List<CCartItem> cart;
-            json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-            // 反序列化 Session 中的購物車內容
-            cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-            if (cart != null)
-            {
-                             
-                // 找到具有相同 ID 的商品
-                var itemToRemove = cart.FirstOrDefault(item=> item.cId==id);
-                if (itemToRemove != null)
-                {
-                    // 從購物車刪除找到的商品
-                    cart.Remove(itemToRemove);
-
-                    // 更新Session中的購物車內容
-                    _httpContextAccessor.HttpContext.Session.SetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST, JsonSerializer.Serialize(cart));
-                    
-                    decimal total = (decimal)cart.Sum(item => item.c小計);
-
-                    //創建一個匿名對象，包含商品以從購物車刪除的消息以及更新後的總金額
-                    var response = new
-                    {
-                        Message = "商品已從購物車删除",
-                        Total = total
-                    };
-                    return new JsonResult(response);
-                }
-                else
-                {
-                    return BadRequest("找不到具有指定 ID 的商品");
-                }
-            }
-            else
-            {
-                return BadRequest("購物車是空的");
-            }
-        }
-
-        ////計算商品小計
-        //[HttpGet]
-        //public IActionResult getCartPrice()
-        //{
-        //    decimal totalPrice = 0;
-        //    // 從 Session 中獲取購物車內容
-        //    string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-        //    // 反序列化 Session 中的購物車內容
-        //    List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-        //    if (cart != null)
-        //    {
-        //        //商品小計
-        //        totalPrice = (decimal)cart.Sum(item => item.c數量 * item.cPrice);
-        //    }
-        //    //將小計金額轉為Json格式返回
-        //    return Json(new { totalPrice });
-        //}
+       
 
 
 

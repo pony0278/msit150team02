@@ -10,6 +10,7 @@
         $('.btn-close').click();
     });
 
+
     // 監聽確定按鈕的點擊事件
     //選擇宅配或郵寄地址將使用者選擇的該地址填至表格裡
     //這個代碼假設選擇的 < input > 元素是位於表格行(<tr>)內部的第一個列(<td>)中。可以根據HTML結構調整find函數中的nth-child選擇器以匹配你的實際結構。
@@ -38,6 +39,36 @@
         // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
+
+
+    // 獲取送貨方式和付款方式的元素
+    // 選取DeliveryMethod_nav-tab選項容器中的所有 <button> 元素。
+    const deliveryMethodButtons = document.querySelectorAll('#DeliveryMethod_nav-tab button');
+    //選擇具有相同name屬性的所有元素：信用卡付款、銀行轉帳和貨到付款。
+    const paymentMethodRadios = document.querySelectorAll('input[name="paymentMethod"]');
+
+    // 監聽送貨方式按鈕的點擊事件
+    deliveryMethodButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            // 獲取當前選擇的送貨方式
+            const selectedDeliveryMethod = button.getAttribute('data-bs-target');
+            // 根據選擇的送貨方式啟用或禁用付款方式選項
+            if (selectedDeliveryMethod === '#nav-homeService' || selectedDeliveryMethod === '#nav-post') {
+                // 如果選擇了宅配到府或郵局配送，則禁用貨到付款選項
+                paymentMethodRadios.forEach(radio => {
+                    if (radio.id === 'nav-cashOnDelivery-tab') {
+                        radio.disabled = true;
+                    }
+                });
+            } else {
+                // 否則啟用所有付款方式選項
+                paymentMethodRadios.forEach(radio => {
+                    radio.disabled = false;
+                });
+            }
+        });
+    });
+
 
     //監聽checkbox變更事件
     //同意退換貨條款的選項為必勾選的項目，若沒有勾選擇無法送出訂單

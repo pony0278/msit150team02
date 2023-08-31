@@ -7,5 +7,6 @@
         public string CouponContent { get; set; }
         public DateTime ExpiryDate { get; set; }
         public bool? Usable { get; set; }
+        public decimal SpecialOffer { get; set; }
     }
 }

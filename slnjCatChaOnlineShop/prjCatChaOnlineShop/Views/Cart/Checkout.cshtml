@@ -82,22 +82,19 @@
                     </div>
                     <div class="rounded p-2 bg-light">
                         @{
-                            if (Model != null)
+                            if (Model != null && Model.cartItems != null)
                             {
-                                if (Model.cartItems != null)
+                                foreach (var item in Model.cartItems)
                                 {
-                                    foreach (var item in Model.cartItems)
-                                    {
-                                        <div class="media mb-2 border-bottom">
-                                            <div class="media-body">
-                                                <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
-                                                <div class="small text-muted">
-                                                    價格: NT @item.cPrice <span class="mx-2">|</span> 數量:
-                                                    <span class="mx-2">|</span> 小計: NT
-                                                </div>
+                                    <div class="media mb-2 border-bottom">
+                                        <div class="media-body">
+                                            <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
+                                            <div class="small text-muted">
+                                                價格: NT @item.cPrice <span class="mx-2">|</span> 數量: @item.c數量
+                                                <span class="mx-2">|</span> 小計: NT @item.c小計
                                             </div>
                                         </div>
-                                    }
+                                    </div>
                                 }
                             }
                         }
@@ -795,51 +792,51 @@
                          aria-labelledby="nav-credit-tab">
                         <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
                         @* <div class="row ">
-                            <form class="needs-validation" novalidate>
-                                <div class="row">
-                                    <div class="col-md-6 ">
-                                        <label for="cc-name">持卡人姓名</label>
-                                        <input type="text" class="form-control" id="cc-name" placeholder="請輸入全名"
-                                               required>
-                                        <div class="invalid-feedback"> 持卡人姓名為必填 </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <label for="cc-number">信用卡號</label>
-                                        <input type="text" class="form-control" id="cc-number"
-                                               placeholder="XXXX-XXXX-XXXX-XXXX" required>
-                                        <div class="invalid-feedback"> 信用卡號為必填 </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 ">
-                                        <label for="cc-expiration">到期日</label>
-                                        <input type="text" class="form-control" id="cc-expiration"
-                                               placeholder="MM/YY" required>
-                                        <div class="invalid-feedback"> 到期日為必填 </div>
-                                    </div>
-                                    <div class="col-md-3 ">
-                                        <label for="cc-expiration">CVV</label>
-                                        <input type="text" class="form-control" id="cc-cvv" placeholder="背面末三碼"
-                                               required>
-                                        <div class="invalid-feedback"> 信用卡檢核碼為必填 </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <div class="payment-icon-mycss payment-icon ">
-                                            <ul>
-                                                <li>
-                                                    <img class="img-fluid" src="~/images/payment-icon/1.png" alt="">
-                                                </li>
-                                                <li>
-                                                    <img class="img-fluid" src="~/images/payment-icon/2.png" alt="">
-                                                </li>
-                                                <li>
-                                                    <img class="img-fluid" src="images/payment-icon/3.png" alt="">
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                        <form class="needs-validation" novalidate>
+                        <div class="row">
+                        <div class="col-md-6 ">
+                        <label for="cc-name">持卡人姓名</label>
+                        <input type="text" class="form-control" id="cc-name" placeholder="請輸入全名"
+                        required>
+                        <div class="invalid-feedback"> 持卡人姓名為必填 </div>
+                        </div>
+                        <div class="col-md-6 ">
+                        <label for="cc-number">信用卡號</label>
+                        <input type="text" class="form-control" id="cc-number"
+                        placeholder="XXXX-XXXX-XXXX-XXXX" required>
+                        <div class="invalid-feedback"> 信用卡號為必填 </div>
+                        </div>
+                        </div>
+                        <div class="row">
+                        <div class="col-md-3 ">
+                        <label for="cc-expiration">到期日</label>
+                        <input type="text" class="form-control" id="cc-expiration"
+                        placeholder="MM/YY" required>
+                        <div class="invalid-feedback"> 到期日為必填 </div>
+                        </div>
+                        <div class="col-md-3 ">
+                        <label for="cc-expiration">CVV</label>
+                        <input type="text" class="form-control" id="cc-cvv" placeholder="背面末三碼"
+                        required>
+                        <div class="invalid-feedback"> 信用卡檢核碼為必填 </div>
+                        </div>
+                        <div class="col-md-6 ">
+                        <div class="payment-icon-mycss payment-icon ">
+                        <ul>
+                        <li>
+                        <img class="img-fluid" src="~/images/payment-icon/1.png" alt="">
+                        </li>
+                        <li>
+                        <img class="img-fluid" src="~/images/payment-icon/2.png" alt="">
+                        </li>
+                        <li>
+                        <img class="img-fluid" src="images/payment-icon/3.png" alt="">
+                        </li>
+                        </ul>
+                        </div>
+                        </div>
+                        </div>
+                        </form>
                         </div> *@
                     </div>
                     <!--銀行轉帳分頁內容-->
@@ -856,7 +853,7 @@
                     <!--貨到付款分頁內容-->
                     <div class="tab-pane fade" id="nav-cashOnDelivery" role="tabpanel"
                          aria-labelledby="nav-cashOnDelivery-tab">
-                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
+                        <label class="nav-ATM-css">目前僅供超商取貨可使用貨到付款的方式</label>
                         <ul class="nav-ATM-fontSize">
                             <li>單筆訂單金額二萬元以內可使用。</li>
                             <li>為確保順利取件，請填寫正確姓名及手機號碼。</li>
@@ -1161,10 +1158,10 @@
                 <div class="order-box">
                     <div class="d-flex">
                         <h4>小計</h4>
-                        <div class="ml-auto font-weight-bold"> NT2969 </div>
+                        <div class="ml-auto font-weight-bold"> NT @ViewBag.totalPrice </div>
                     </div>
                     <div class="d-flex">
-                        <h4>折扣</h4>
+                        <h4>紅利折扣</h4>
                         <div class="ml-auto font-weight-bold"> NT0</div>
                     </div>
                     <hr class="my-1">
@@ -1174,12 +1171,12 @@
                     </div>
                     <div class="d-flex">
                         <h4>運費</h4>
-                        <div class="ml-auto font-weight-bold"> NT60 </div>
+                        <div class="ml-auto font-weight-bold"> NT </div>
                     </div>
                     <hr>
                     <div class="d-flex gr-total">
                         <h5>總計</h5>
-                        <div class="ml-auto h5"> NT3029 </div>
+                        <div class="ml-auto h5"> NT </div>
                     </div>
                     <hr>
                 </div>
@@ -1193,16 +1190,16 @@
                     </button>
                 </div>
                 <div hidden>
-                @if (Model != null)
-                {
-                    @foreach (var key in @Model.keyValuePairs.Keys.ToList())
+                    @if (Model != null)
                     {
-                        @(key) <input type="text" name="@key" value="@Model.keyValuePairs[key]" />
+                        @foreach (var key in @Model.keyValuePairs.Keys.ToList())
+                        {
+                            @(key) <input type="text" name="@key" value="@Model.keyValuePairs[key]" />
 
-                        <br />
+                            <br />
+                        }
+                        @*<button type="submit" id="checkoutBtn">送出</button>*@
                     }
-                    @*<button type="submit" id="checkoutBtn">送出</button>*@
-                }
                 </div>
             </form>
         </div>
@@ -1244,6 +1241,7 @@
     @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="~/js/checkout.js"></script>
+  
     @* <script>
         $(document).ready(function () {
             $("#choose711CVS").click(function () {
