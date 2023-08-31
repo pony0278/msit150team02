@@ -12,6 +12,4 @@ public partial class NewsletterTemplate
     public string HeaderImage { get; set; }
 
     public string FooterImage { get; set; }
-
-    public virtual Newsletter Newsletter { get; set; }
 }

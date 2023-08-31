@@ -88,6 +88,11 @@
                     </div>
 
                     <div class="form-group mb-2">
+                        <label>圖片連結網址</label>
+                        <input type="text" class="form-control" id="sentImgUrl" name="ImageUrl" />
+                    </div>
+
+                    <div class="form-group mb-2">
                         <label>圖片內容</label>
                         <input type="file" class="form-control" id="sentContentImage" name="ContentImage" accept="image/*" />
                     </div>
@@ -809,16 +814,18 @@
             console.log("???");
             var TemplateId = $('#sentTemplateId').val();
             var Subject = $('#sentSubject').val();
+            var ImageUrl = $('#sentImgUrl').val();
             var fileInput = $('#sentContentImage')[0];
             var file = fileInput.files[0];
 
             var formData = new FormData();
             formData.append("TemplateId", TemplateId);
             formData.append("Subject", Subject);
+            formData.append("ImageUrl", ImageUrl);
             formData.append("ContentImage", file);
 
             $.ajax({
-                url: '@Url.Action("sendTest", "Member")',
+                url: '@Url.Action("SentNewsLetter", "Member")',
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -850,6 +857,12 @@
                 success: function (response) {
                     alert("儲存成功!");
                     window.location.reload();
+                },
+                error: function (error, a, b) {
+                    console.log(error);
+                    console.log(a);
+                    console.log(b);
+                    console.log("Error retrieving member details.");
                 }
             });
         })

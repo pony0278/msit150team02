@@ -251,46 +251,47 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = true, message = "Content saved!" });
         }
-        //[HttpPost]
-        //[Consumes("multipart/form-data")]
-        //public async Task<IActionResult> SentNewsLetter([FromForm] CSentNewsLetter cAnnounce)
-        //{
-        //    var image = cAnnounce.ContentImage;
+        [HttpPost]
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> SentNewsLetter([FromForm] CSentNewsLetter cAnnounce)
+        {
+            var image = cAnnounce.ContentImage;
 
-        //    if (image == null || image.Length == 0)
-        //    {
-        //        return BadRequest("No image provided.");
-        //    }
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
 
-        //    string imageUrl;
-        //    try
-        //    {
-        //        imageUrl = await _imageService.UploadImageAsync(image);
-        //    }
-        //    catch
-        //    {
+            string imageUrl;
+            try
+            {
+                imageUrl = await _imageService.UploadImageAsync(image);
+            }
+            catch
+            {
 
-        //        return BadRequest("Error uploading the image.");
-        //    }
-        //    var newAnnounce = new Newsletter
-        //    {
-        //        TemplateId = cAnnounce.TemplateId,
-        //        Subject= cAnnounce.Subject,
-        //        ContentImage = imageUrl,
-        //        SendDate = DateTime.Now,
-        //    };
+                return BadRequest("Error uploading the image.");
+            }
+            var newAnnounce = new Newsletter
+            {
+                TemplateId = cAnnounce.TemplateId,
+                Subject = cAnnounce.Subject,
+                ContentImage = imageUrl,
+                ImageUrl = cAnnounce.ImageUrl,
+                SendDate = DateTime.Now,
+            };
 
-        //    try
-        //    {
-        //        _context.Newsletter.Add(newAnnounce);
-        //        await _context.SaveChangesAsync();
-        //    }
-        //    catch
-        //    {
-        //        return BadRequest("Error saving the announcement.");
-        //    }
-        //    return Json(new { success = true, message = "Content saved!" });
-        //}
+            try
+            {
+                _context.Newsletter.Add(newAnnounce);
+                await _context.SaveChangesAsync();
+            }
+            catch
+            {
+                return BadRequest("Error saving the announcement.");
+            }
+            return Json(new { success = true, message = "Content saved!" });
+        }
         public List<string> GetImageUrlsFromDatabase()
         {
             List<string> imageUrls = _context.Newsletter.Select(template => template.ContentImage).ToList();
@@ -342,53 +343,59 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             // 构建HTML邮件内容，包含图片
             //using (var _context = new Newsletter())
             //{
-                // 从数据库获取Newsletter的ContentImage字段
-                var newsletter = _context.Newsletter.FirstOrDefault();
-                if (newsletter != null)
-                {
-                    string imageUrl = newsletter.ContentImage;
+            // 从数据库获取Newsletter的ContentImage字段
+            var newsletter = _context.Newsletter.FirstOrDefault();
+            var newsletterTemplete = _context.NewsletterTemplate.FirstOrDefault();
+            if (newsletter != null)
+            {
 
-                    // 构建HTML邮件内容，包含图片
-                    string htmlBody = $@"
+                string imgHeader = newsletterTemplete.HeaderImage;
+                string imageUrl = newsletter.ContentImage;
+                string imgFooter = newsletterTemplete.FooterImage;
+
+                // 构建HTML邮件内容，包含图片
+                string htmlBody = $@"
                         <html>
                         <body>
                             <p>这是一封包含图片的邮件：</p>
-                            <img src='{imageUrl}' alt='Image' />
+                            <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
+                            <img src='{imageUrl}' alt='Image' style='max-width: 100%;' />
+                            <img src='{imgFooter}' alt='Image' style='max-width: 100%;' />
                         </body>
                         </html>";
 
-                    // 设置SMTP客户端信息
-                    SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
-                    {
-                        Port = 587,
-                        Credentials = new NetworkCredential(senderEmail, senderPassword),
-                        EnableSsl = true,
-                    };
-
-                    // 创建邮件
-                    MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail)
-                    {
-                        Subject = "测试邮件",
-                        Body = htmlBody,
-                        IsBodyHtml = true
-                    };
-
-                    try
-                    {
-                        // 发送邮件
-                        smtpClient.Send(mailMessage);
-                        Console.WriteLine("邮件发送成功！");
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("邮件发送失败：" + ex.Message);
-                    }
-                }
-                else
+                // 设置SMTP客户端信息
+                SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
                 {
-                    Console.WriteLine("无可用Newsletter数据。");
+                    Port = 587,
+                    Credentials = new NetworkCredential(senderEmail, senderPassword),
+                    EnableSsl = true,
+                };
+
+                // 创建邮件
+                MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail)
+                {
+                    Subject = "测试邮件",
+                    Body = htmlBody,
+                    IsBodyHtml = true
+                };
+
+                try
+                {
+                    // 发送邮件
+                    smtpClient.Send(mailMessage);
+                    Console.WriteLine("邮件发送成功！");
                 }
-                return Json(new { success = true, message = "發送信件成功" });
+                catch (Exception ex)
+                {
+                    Console.WriteLine("邮件发送失败：" + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("无可用Newsletter数据。");
+            }
+            return Json(new { success = true, message = "發送信件成功" });
             //}
         }
 
@@ -434,7 +441,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             //設定(絕對)圖片路徑
             string strImgPath = @"C:\msit150team02\slnjCatChaOnlineShop\prjCatChaOnlineShop\wwwroot\images\" + strImgName;
-        
+
             return strImgPath;
         }
     }
