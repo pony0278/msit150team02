@@ -31,6 +31,8 @@
             transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
         }
     </style>
+
+
 </head>
 
 <body style="background:#F6EBDF">
@@ -61,13 +63,13 @@
                                 <div class="row ">
                                     <div class="mb-2 form-group">
                                         <label for="Name">姓名：</label>
-                                        <input type="text" class="form-control " name="Name"
+                                        <input type="text" class="form-control" id="registerNameText" name="Name"
                                                placeholder="姓名" required>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="Birthday">生日：</label>
                                         <div class="input-group date" id="datepicker">
-                                            <input type="text" class="form-control " name="Birthday" placeholder="請輸入生日" />
+                                            <input type="text" class="form-control " id="registerBirthText" name="Birthday" placeholder="請輸入生日" />
                                             <span class="input-group-append">
                                                 <span class="input-group-text bg-light d-block">
                                                     <i class="fa-solid fa-calendar-days"></i>
@@ -83,17 +85,17 @@
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="PhoneNumber">手機號碼：</label>
-                                        <input type="text" class="form-control memberPhoneNum" name="PhoneNumber"
+                                        <input type="text" class="form-control memberPhoneNum" name="PhoneNumber" id="registerPhoneText"
                                                placeholder="手機號碼" required>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="passwordInput">設定密碼：</label>
-                                        <input type="text" class="form-control memberPassword" name="Password" id="passwordInput"
+                                        <input type="password" class="form-control memberPassword" name="Password" id="passwordInput"
                                                placeholder="請設定6-15位英數字混合密碼,英文需區分大小寫" required>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="passwordCheck">再次確認密碼：</label>
-                                        <input type="text" class="form-control memberPasswordCheck" name="PasswordCheck" id="passwordCheck"
+                                        <input type="password" class="form-control memberPasswordCheck" name="PasswordCheck" id="passwordCheck"
                                                placeholder="請再輸入一次密碼" required>
                                         <div class="invalid-feedback"> 請再輸入一次密碼</div>
                                     </div>
@@ -101,6 +103,9 @@
 
                                 <div class="d-grid gap-2 mt-3">
                                     <button class="mb-3 btn btn-light" id="registerbutton" type="submit">註冊</button>
+                                </div>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="mb-3 btn btn-danger" id="registerdemoBTN" type="submit">DEMO帶入資料</button>
                                 </div>
 
                             </form>
@@ -207,6 +212,8 @@
     <a href="#" id="back-to-top" title="Back to top" style="display: none;">&uarr;</a>
 
     <!-- ALL JS FILES -->
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--引用日期選擇-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
@@ -218,13 +225,15 @@
     <script src="~/js/registerValidate.js"></script>
     <!---->
     <!--選擇生日-->
-    <script>
+    
+       
+    
+
+    <script type="text/javascript">
+
         $(function () {
             $('#datepicker').datepicker();
         });
-    </script>
-
-    <script type="text/javascript">
         var emailAlreadyRegistered = false; // 添加變數以追蹤是否已經註冊
 
         $(document).ready(function () {
@@ -289,15 +298,40 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert("註冊會員成功");
-                        location.href = '@Url.Content("~/MemberLogin/Login")';
+                        //alert("註冊會員成功");
+                        //location.href = '@Url.Content("~/MemberLogin/Login")';
+                        Swal.fire({
+                            icon: 'success',
+                            title: '註冊會員成功',
+                            showConfirmButton: true,
+                        }).then((result) => 
+                        {
+                            if (result.isConfirmed) {
+                                location.href = '@Url.Content("~/MemberLogin/Login")';
+                            } 
+                        });
                     } else {
-                        alert("註冊會員失敗");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '註冊會員失敗',
+                            text: '請稍後再試'
+                        });
+                        //alert("註冊會員失敗");
                     }
                 }).catch(function (error) {
                     console.error(error); // 處理Ajax錯誤
                 });
         }
+
+        //DEMO按鈕
+        $('#registerdemoBTN').click(function () {
+            $('#registerNameText').val("安安");
+            $('#registerBirthText').val("01/01/1999");
+            $('#emailInput').val("lovecat002gmail.com")
+            $('#registerPhoneText').val("1988657812");
+            $('#passwordInput').val("aaa1234");
+            $('#passwordCheck').val("aaa123");
+        });
 
     </script>
 
@@ -305,3 +339,4 @@
 
 </body>
 </html>
+
