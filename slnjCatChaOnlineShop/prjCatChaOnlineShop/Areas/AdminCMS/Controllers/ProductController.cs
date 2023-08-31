@@ -13,6 +13,8 @@ using OpenAI_API;
 using OpenAI_API.Completions;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 using Microsoft.DotNet.Scaffolding.Shared.Messaging;
+using ChatGPT.Net.DTO.ChatGPTUnofficial;
+using OfficeOpenXml;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -395,25 +397,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             try
             {
-                // Fetch existing specifications for the given ProductId
                 var existingSpecifications = await _cachaContext.ShopProductSpecification
                                     .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
                                     .ToListAsync();
 
                 
-                //if (cShopproduct.ProductPhotos != null && cShopproduct.ProductPhotos.Count > 0)
-                //{
-                //    for (int i = 0; i < cShopproduct.ProductPhotos.Count; i++)
-                //    {
-                //        try
-                //        {
-                //            var uploadedImageUrl = await _imageService.UploadImageAsync(cShopproduct.ProductPhotos[i]);
-                //            imageUrls.Add(uploadedImageUrl);
-
-                //            if (i < insertImgList.Count)
-                //            {
-                //                insertImgList[i].ProductPhoto = uploadedImageUrl;
-                //            }
                 List<string> newSpecifications = new List<string>();
                 if (cShopproduct.productSpecification != null && cShopproduct.productSpecification.Count > 0)
                 {
@@ -424,12 +412,12 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                         if (i< existingSpecifications.Count)
                         {
-                            // Update existing specification
+                            
                             existingSpecifications[i].Specification = newSpecification;
                         }
                         else
                         {
-                            // Add new specification
+                            
                             var newSpecEntity = new ShopProductSpecification
                             {
                                 ProductId = cShopproduct.ProductId,
@@ -439,7 +427,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         }
                     }
 
-                    // Save changes to database
                     await _cachaContext.SaveChangesAsync();
                     return Json(new { success = true, Message = "成功修改" });
                 }
@@ -448,10 +435,48 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch (Exception ex)
             {
-                // Log the exception details
                 return BadRequest($"商品細項儲存錯誤: {ex.Message}");
             }
         }
+        public IActionResult UploadExcel()
+        {
+            return View();
+        }
+        [HttpPost]
+        public IActionResult UploadExcel(IFormFile file)
+        {
+            using (var package = new ExcelPackage(file.OpenReadStream()))
+            {
+                var worksheet = package.Workbook.Worksheets[0];  // 讀取第一個工作表
+                var rowCount = worksheet.Dimension.Rows;
 
+                for (int row = 2; row <= rowCount; row++)  // 從第二行開始讀取（假設第一行是標題）
+                {
+                    var categoryName = worksheet.Cells[row, 1].Text;  // 分類名稱在第一列
+                    var productName = worksheet.Cells[row, 2].Text;  // 商品名稱在第二列
+
+                    // 尋找或新增商品分類
+                    var category = _cachaContext.ShopProductCategory
+                                    .FirstOrDefault(c => c.CategoryName == categoryName)
+                                    ?? new ShopProductCategory { CategoryName = categoryName };
+
+                    if (category.ProductCategoryId == 0)  // 新增分類
+                    {
+                       _cachaContext.ShopProductCategory.Add(category);
+                        _cachaContext.SaveChanges();  // 儲存以獲得 Id
+                    }
+
+                    // 新增商品
+                    var product = new ShopProductTotal
+                    {
+                        ProductName = productName,
+                        ProductCategoryId = category.ProductCategoryId
+                    };
+                    _cachaContext.ShopProductTotal.Add(product);
+                }
+                _cachaContext.SaveChanges();  // 儲存所有新增的商品
+            }
+            return Json(new { success = true, Message = "成功修改" });
+        }
     }
 }

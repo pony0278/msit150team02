@@ -55,6 +55,8 @@
     <div class="row align-items-center">
         <div class="col-6">
             <h2 class="mt-3">商城產品管理</h2>
+            <input type="file" id="excel" />
+            <button id="upload">上傳</button>
         </div>
     </div>
     <!---新增產品 modal-->
@@ -993,6 +995,32 @@
                         });
                     }
                 });
+            });
+        });
+
+        //excel
+        $(document).ready(function () {
+            $('#upload').click(function () {
+                var file = document.getElementById("excel").files[0];
+                if (file) {
+                    var formData = new FormData();
+                    formData.append("file", file);
+                    $.ajax({
+                        url: '@Url.Action("UploadExcel" , "Product" , new { area = "AdminCMS"})',
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            alert('上傳成功！');
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            alert('上傳失敗：' + errorThrown);
+                        }
+                    });
+                } else {
+                    alert("請選擇一個檔案。");
+                }
             });
         });
 
