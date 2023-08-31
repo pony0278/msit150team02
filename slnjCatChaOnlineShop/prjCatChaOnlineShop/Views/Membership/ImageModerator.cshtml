@@ -51,33 +51,19 @@
             <!--左邊圖片區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <form method="post" enctype="multipart/form-data" id="imgForm">
-                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" />
-                    <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
-                    <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
-                    <input type="file" name="image" id="imageInput" accept="image/*">
-                    <button type="submit" id="imgChangeUrl">上傳圖片</button>
+                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" style="max-width: 400px; max-height: 400px;" />
+                    <div class="my-3">
+                        <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
+                        <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
+                        <input type="file" name="image" id="imageInput" accept="image/*">
+                        <button type="submit" id="imgChangeUrl">上傳圖片</button>
+                    </div>
                 </form>
-                <!--
-                <div class=" form-group">
-                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" />
-                </div>
-                -->
-                <div class=" form-group">
-                    <label class="form-label">網址:</label>
-                    <input id="imageUrl" type="text" class="form-control" value="https://cdn2.ettoday.net/images/238/238946.jpg" />
-                </div>
-
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <form method="post" enctype="multipart/form-data" action="/ImageTest/UploadImage">
-                    <input type="text" name="AnnouncementContent" />
-                    <input type="file" name="image" />
-                    <button type="submit">Upload</button>
-                </form>
-                <div class=" form-group">
-                    <button class="btn btn-primary" onclick="reviewImage()">上傳</button>
-                </div>
+                <h2>審核結果</h2>
+                <textarea class="form-control" aria-label="With textarea" id="checkResults" rows="8"></textarea>
             </div>
         </div>
 
@@ -106,29 +92,6 @@
     <script src="~/js/custom.js"></script>
 
     <script type="text/javascript">
-        function reviewImage() {
-            //alert("anlyzeImage");
-            $("#imgPreview").attr("src", $("#imageUrl").val());
-            var data = {
-                "DataRepresentation": "URL",
-                "Value": $("#imageUrl").val()
-            };
-            $.ajax({
-                url: "https://msit150team05cm.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessImage/Evaluate",
-                beforeSend: function (xhrObj) {
-                    // Request headers
-                    xhrObj.setRequestHeader("Content-Type", "application/json");
-                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "e909551b7e884bfb83978433a46a2912");
-                },
-                type: "POST",
-                // Request body
-                data: JSON.stringify(data),
-            }).done(function (data) {
-                alert(JSON.stringify(data));
-            }).fail(function (err) {
-                alert(err.statusText);
-            });
-        }
 
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
@@ -144,14 +107,45 @@
                 })
                     .then(response => response.json())
                     .then(data => {
-                        console.log("hi");
-                    });
+                        //取到照片連結了
+                        console.log(data.url);
+
+                        // $("#imgPreview").attr("src", $("#imageUrl").val());
+                        var data = {
+                            "DataRepresentation": "URL",
+                            "Value": data.url
+                        };
+                        $.ajax({
+                            url: "https://msit150team02contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessImage/Evaluate",
+                            beforeSend: function (xhrObj) {
+                                // Request headers
+                                xhrObj.setRequestHeader("Content-Type", "application/json");
+                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "b4fcd4ce931442748ba5e0467bccfd67");
+                            },
+                            type: "POST",
+                            data: JSON.stringify(data),
+                        }).done(function (data) {
+                            // alert(JSON.stringify(data));
+                            // document.getElementById('checkResults').value = JSON.stringify(data);
+                            translateToChinese(JSON.stringify(data))
+                                .then(translatedData => {
+                                    document.getElementById('checkResults').value = translatedData;
+                                })
+                                .catch(error => {
+                                    console.log('Translation error:', error);
+                                });
+                        }).fail(function (err) {
+                            alert(err.statusText);
+                        });
+                    })
                     .catch(error => {
                         console.log("error");
                     });
             });
 
-            //圖片預覽
+
+
+            //圖片預覽功能
             document.getElementById('imageInput').addEventListener('change', function (event) {
                 var previewImage = document.getElementById('imgPreview');
                 var selectedImage = event.target.files[0];
@@ -163,9 +157,43 @@
                     };
                     reader.readAsDataURL(selectedImage);
                 } else {
-                    previewImage.src = '@Url.Content("~/images/toy.png")';
+                    previewImage.src = '@Url.Content("~/images/noimage.jpg")';
                 }
             });
+
         });
+
+        function translateToChinese(text) {
+            const apiKey = 'AIzaSyDjA50x02Nr2jNygjLbdGIa_RPRXuEWEiA';
+            const sourceLang = 'en';
+            const targetLang = 'zh-TW';
+
+            const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=$AIzaSyDjA50x02Nr2jNygjLbdGIa_RPRXuEWEiA`;
+            const data = {
+                q: text,
+                source: sourceLang,
+                target: targetLang
+            };
+
+            return fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.data && result.data.translations && result.data.translations.length > 0) {
+                        return result.data.translations[0].translatedText;
+                    } else {
+                        return text;
+                    }
+                })
+                .catch(error => {
+                    console.error('Translation error:', error);
+                    return text;
+                });
+        }
     </script>
 }

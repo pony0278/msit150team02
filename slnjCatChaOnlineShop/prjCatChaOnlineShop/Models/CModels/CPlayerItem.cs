@@ -8,7 +8,7 @@
 
         public int fProductId { get; set; }
 
-
+        public int fCouponId { get; set; }
 
     }
 }
