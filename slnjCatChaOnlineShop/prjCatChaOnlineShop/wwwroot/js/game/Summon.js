@@ -96,8 +96,10 @@ function showGachaResult(scaledProbability, allImages, allItemName,) {
     // 檢查是否有SS等級的獎項，如果有則設置動畫等級為'SS'
     if (scaledProbability <= 10) {
         animationLevel = 'SS';
-    } else if (scaledProbability <= 20) {
+    } else if (scaledProbability <= 15) {
         animationLevel = 'S';
+    } else if (scaledProbability <= 20) {
+        animationLevel = 'CATS';
     } else {
         animationLevel = 'A';
     }
@@ -107,6 +109,8 @@ function showGachaResult(scaledProbability, allImages, allItemName,) {
         animationContainer.querySelector('.SS').style.display = 'inline';
     } else if (animationLevel === 'S') {
         animationContainer.querySelector('.S').style.display = 'inline';
+    } else if (animationLevel === 'CATS') {
+        animationContainer.querySelector('.CATS').style.display = 'inline';
     } else {
         animationContainer.querySelector('.A').style.display = 'inline';
     }
@@ -169,5 +173,5 @@ function showGachaResult(scaledProbability, allImages, allItemName,) {
         // 將確認按鈕添加到獎項後面
         result.appendChild(confirmButton);
         result.style.display = 'grid';
-    }, 5000); // 5000毫秒等於5秒
+    }, 10000); // 5000毫秒等於5秒
 }

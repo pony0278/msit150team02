@@ -92,11 +92,10 @@
         font-size: 30px;
     }
 
-    .catcha {
-        margin-left: -70px;
-        height: 600px;
-        width: 506px;
-    }
+.catcha {
+    height: 592px;
+    width: 398px;
+}
 
     #CanvasCheckIn {
         position: absolute;
