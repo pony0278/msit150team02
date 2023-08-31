@@ -484,6 +484,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 returnn.ReturnDate = DateTime.Now;
                 returnn.ProcessingStatusId = 1;
                 returnn.ReturnContent = HttpContext.Request.Form["returnTextarea"];
+                returnn.ReturnImage = HttpContext.Request.Form["returnImageInput"];
 
                 if (int.TryParse(HttpContext.Request.Form["orderId"], out int orderId))
                 {

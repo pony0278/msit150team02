@@ -657,6 +657,16 @@
                                     <label>備註(非必填): </label>
                                 </div>
                                 <textarea class="form-control" placeholder="內容" rows="4" id="returnTextarea"></textarea>
+                                <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
+                                <input type="text" name="AnnouncementContent" value="returnPicture" style="display: none;" />
+                                <textarea class="form-control" rows="1" id="hiddenTextarea" style="display: none;"></textarea>
+                                <label for="returnImageInput" class="btn btn-warning btn-sm my-2">
+                                    附上圖片
+                                    <input type="file" name="image" id="returnImageInput" accept="image/*" style="display: none;">
+                                </label>
+                                <div class="text-center">
+                                    <img id="uploadReturnImagePreview" src='' alt="" class="mx-auto" style="max-width: 200px; max-height: 200px;">
+                                </div>
                                 <div class="container">
                                     <div class="row">
                                         <div class="col mt-2">
@@ -1673,6 +1683,7 @@
             var reasonId = document.querySelector('#returnReasonSelect').value;
             var returnNumber = document.querySelector('#returnNumber').value;
             var returnTextarea = document.querySelector('#returnTextarea').value;
+            var returnImageInput = document.getElementById('hiddenTextarea').value;
 
             var returnProductSelectElement = document.getElementById('returnProductSelect');
             var returnProductSelectedValue = returnProductSelectElement.value;
@@ -1686,6 +1697,7 @@
             formData.append("returnNumber", returnNumber);
             formData.append("returnTextarea", returnTextarea);
             formData.append("returnProductSelectedValue", returnProductSelectedValue);
+            formData.append("returnImageInput", returnImageInput);
 
             fetch('@Url.Content("/Membership/SaveReturn")', {
                 body: formData,
@@ -1696,6 +1708,7 @@
                     if (response.ok) {
                         $('#returnTextarea').val('');
                         $('#returnNumber').val('');
+                        //要清空照片
                         loadReturnRecords();
 
                         return response.text();
@@ -1764,6 +1777,40 @@
                 });
         })
 
+        //退貨圖片預覽
+        document.getElementById('returnImageInput').addEventListener('change', function (event) {
+            var previewImage = document.getElementById('uploadReturnImagePreview');
+            var selectedImage = event.target.files[0];
+
+            if (selectedImage) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(selectedImage);
+            } else {
+                previewImage.src = 'https://msit150team02blob.blob.core.windows.net/msit150team02/toy.png';
+            }
+
+            event.preventDefault();
+            // 取得表單元素
+            const form = document.querySelector('#returnForm');
+
+            const formData = new FormData(form);
+            fetch('@Url.Content("/ImageTest/UploadImage")', {
+                body: formData,
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    //取到照片連結了
+                    console.log(data.url);
+                    document.getElementById('hiddenTextarea').value = data.url;
+            })
+            .catch(error => {
+                console.log("error");
+            });
+        });
     </script>
 
     <!--用於dataTables搜尋關鍵字採ajax-->

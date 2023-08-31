@@ -62,8 +62,12 @@
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <h2>審核結果</h2>
+                <h2>圖像審核</h2>
                 <textarea class="form-control" aria-label="With textarea" id="checkResults" rows="8"></textarea>
+                <h2>圖像辨識</h2>
+                <textarea class="form-control" aria-label="With textarea" id="visionResults" rows="8"></textarea>
+                <h2>審核結果</h2>
+                <textarea class="form-control" aria-label="With textarea" id="imageResults" rows="2"></textarea>
             </div>
         </div>
 
@@ -110,39 +114,70 @@
                         //取到照片連結了
                         console.log(data.url);
 
-                        // $("#imgPreview").attr("src", $("#imageUrl").val());
-                        var data = {
-                            "DataRepresentation": "URL",
-                            "Value": data.url
+
+                        // 圖片辨識的地方
+                        var visionParams = {
+                            "visualFeatures": "Adult,Brands,Categories,Color,Description,Faces,ImageType,Adult,Objects,Tags",
+                            "language": "zh",
+                            "model-version": "latest",
                         };
+                        var visionData = {
+                            url: data.url
+                        };
+
+                        // 開始圖片辨識
                         $.ajax({
-                            url: "https://msit150team02contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessImage/Evaluate",
+                            url: "https://msit150team02visionv2.cognitiveservices.azure.com/vision/v3.2/analyze?" + $.param(visionParams),
                             beforeSend: function (xhrObj) {
                                 // Request headers
                                 xhrObj.setRequestHeader("Content-Type", "application/json");
-                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "b4fcd4ce931442748ba5e0467bccfd67");
+                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "8a28a79b86204412a7eea6b22b467f0d");
                             },
                             type: "POST",
-                            data: JSON.stringify(data),
-                        }).done(function (data) {
-                            // alert(JSON.stringify(data));
-                            // document.getElementById('checkResults').value = JSON.stringify(data);
-                            translateToChinese(JSON.stringify(data))
-                                .then(translatedData => {
-                                    document.getElementById('checkResults').value = translatedData;
-                                })
-                                .catch(error => {
-                                    console.log('Translation error:', error);
-                                });
+                            // Request body
+                            data: JSON.stringify(visionData),
+                        }).done(function (visionResult) {
+                            document.getElementById('visionResults').value = JSON.stringify(visionResult);
+                            var text = visionResult['description']['captions'][0]['text'];
+                            var confidence = visionResult['description']['captions'][0]['confidence'];
+                            alert(`內容:${text}, 信心指數:${(confidence * 100).toFixed(2)}%`);
+
+                            // 圖片仲裁的地方
+                            var moderationData = {
+                                "DataRepresentation": "URL",
+                                "Value": data.url
+                            };
+                            $.ajax({
+                                url: "https://msit150team02contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessImage/Evaluate",
+                                beforeSend: function (xhrObj) {
+                                    xhrObj.setRequestHeader("Content-Type", "application/json");
+                                    xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "b4fcd4ce931442748ba5e0467bccfd67");
+                                },
+                                type: "POST",
+                                data: JSON.stringify(moderationData),
+                            }).done(function (moderationResult) {
+                                translateToChinese(JSON.stringify(moderationResult))
+                                    .then(translatedData => {
+                                        document.getElementById('checkResults').value = translatedData;
+                                    })
+                                    .catch(error => {
+                                        console.log('Translation error:', error);
+                                    });
+                            }).fail(function (err) {
+                                alert(err.statusText);
+                            });
                         }).fail(function (err) {
                             alert(err.statusText);
                         });
+
                     })
                     .catch(error => {
                         console.log("error");
                     });
-            });
+                    
 
+                    
+            });
 
 
             //圖片預覽功能
