@@ -129,44 +129,81 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = false });
         }
-    
 
-    [HttpPost]
-    public IActionResult SendCouponToMembers(int? id)
-    {
+
+        [HttpPost]
+        public IActionResult SendCouponToMembers(int? id)
+        {
             // 獲取CouponID=1的優惠券
             ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
 
-        if (coupon == null)
-        {
-            return NotFound();
-        }
-
-       //獲取所有會員
-        List<ShopMemberInfo> members = _cachaContext.ShopMemberInfo.ToList();
-
-        foreach (var member in members)
-        {
-            // 創建會員優惠券資料
-            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+            if (coupon == null)
             {
-                MemberId = member.MemberId,
-                CouponId = coupon.CouponId,
-                CouponStatusId = true //設置為可使用
-            };
+                return NotFound();
+            }
+
+            //獲取所有會員
+            List<ShopMemberInfo> members = _cachaContext.ShopMemberInfo.ToList();
+
+            foreach (var member in members)
+            {
+                // 創建會員優惠券資料
+                ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+                {
+                    MemberId = member.MemberId,
+                    CouponId = coupon.CouponId,
+                    CouponStatusId = true //設置為可使用
+                };
 
                 _cachaContext.ShopMemberCouponData.Add(memberCouponData);
-        }
+            }
 
             _cachaContext.SaveChanges();
 
             return Json(new { success = true });
         }
+
+    
+
+    //發送給單一會員
+    [HttpPost]
+    public IActionResult SendCouponToMembersByID(int? id, int? memberId)
+    {
+        ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            if (memberId == null)
+            {
+                return NotFound();
+            }
+
+
+
+            // 創建會員優惠券資料
+            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+            {
+                MemberId = memberId.Value,
+                CouponId = coupon.CouponId,
+                CouponStatusId = true //設置為可使用
+            };
+
+            _cachaContext.ShopMemberCouponData.Add(memberCouponData);
+            _cachaContext.SaveChanges();
+
+        return Json(new { success = true });
+    }
 }
 
 
 
 }
+
+
+
 
 
 

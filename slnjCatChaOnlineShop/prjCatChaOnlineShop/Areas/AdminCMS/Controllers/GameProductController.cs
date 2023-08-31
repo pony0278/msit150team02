@@ -222,5 +222,39 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { success = false });
         }
 
+    //發送給單一會員
+    [HttpPost]
+    public IActionResult SendCouponToMembersByID(int? id, int? memberId)
+    {
+        ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+
+        if (coupon == null)
+        {
+            return NotFound();
+        }
+
+        if (memberId == null)
+        {
+            return NotFound();
+        }
+
+
+        // 創建會員優惠券資料
+
+        //TODO  寵物儲存資料表?
+
+        //ShopMemberInfo memberInfo = new ShopMemberInfo
+        //{
+        //    MemberId = memberId.Value,
+
+        //};
+
+        //_cachaContext.ShopMemberCouponData.Add(memberCouponData);
+        //_cachaContext.SaveChanges();
+
+        return Json(new { success = true });
     }
+}
+
+
 }
