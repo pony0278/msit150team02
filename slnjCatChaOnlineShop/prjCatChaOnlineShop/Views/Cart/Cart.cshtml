@@ -326,7 +326,7 @@
                     console.log(pId);
                     $.ajax({
                         type: "POST",
-                        url: '/Cart/DeleteCartItem',
+                        url: '/Checkout/DeleteCartItem',
                         data: { id: pId },
                         success: function (response) {
                             //同步更新刪除畫面上的商品

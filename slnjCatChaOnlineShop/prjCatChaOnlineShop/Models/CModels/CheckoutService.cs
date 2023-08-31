@@ -30,8 +30,7 @@ namespace prjCatChaOnlineShop.Models.CModels
 
             return null;
         }
-
-       
+      
 
         public List<CGetUsableCouponModel> GetUsableCoupons(int Id)
         {
@@ -56,8 +55,9 @@ namespace prjCatChaOnlineShop.Models.CModels
                                 CouponContent = ct.CouponContent,
                                 ExpiryDate = (DateTime)ct.ExpiryDate,
                                 Usable = ct.Usable,
+                                SpecialOffer= (decimal)ct.SpecialOffer,
                             })
-                        .Where(ct => ct.Usable == true)
+                        .Where(ct => ct.Usable == true&& ct.ExpiryDate>=DateTime.Now)
                         .ToList();
 
                         return usableCoupons;
@@ -71,7 +71,7 @@ namespace prjCatChaOnlineShop.Models.CModels
         //查詢會員可以使用的常用地址
         public List<CgetUsableAddressModel> GetUsableAddresses(int Id)
         {
-            // 使用 Entity Framework Core 和 LINQ 查詢可用的優惠券
+            // 使用 Entity Framework Core 和 LINQ 查詢可用的地址
             var memberId = GetCurrentMemberId();
             if (memberId != null)
             {
