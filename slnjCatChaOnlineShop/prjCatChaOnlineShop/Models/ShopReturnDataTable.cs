@@ -23,6 +23,8 @@ public partial class ShopReturnDataTable
 
     public string ReturnContent { get; set; }
 
+    public string ReturnImage { get; set; }
+
     public virtual ShopReturnStatusDataTable ProcessingStatus { get; set; }
 
     public virtual ShopReturnReasonDataTable ReturnReason { get; set; }
