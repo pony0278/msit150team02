@@ -1,6 +1,4 @@
-﻿@* @model prjCatChaOnlineShop.Models.ViewModels.CMembershipModel  *@
-
-
+﻿
 @{
     ViewData["Title"] = "Membership";
 }
@@ -82,7 +80,7 @@
             <div class="col-lg-12">
                 <h2>會員中心</h2>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">首頁</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Index" asp-action="Index">首頁</a></li>
                     <li class="breadcrumb-item active">會員中心</li>
                 </ul>
             </div>
@@ -343,6 +341,9 @@
                                         <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
                                                 data-bs-target="#personalPictureModal">
                                             更換個人圖片
+                                        </button>
+                                        <button class="btn btn-warning btn-sm mt-2 mb-3"  id="imageModeratorButton">
+                                            圖片審核
                                         </button>
                                     </div>
                                     <h1 id="summonName">會員</h1>
@@ -1037,7 +1038,7 @@
                     $('#addressInput').val(data.address);
 
                     $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 1000)}元`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 100)}元`);
                     $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
 
                     var dateParts = data.birthday.split('-');
@@ -1182,34 +1183,6 @@
                 else{
                     form.reportValidity();
                 }
-                /*
-                var inputVal = $('#fillAddressInput').val();
-                if (inputVal === null || inputVal.trim() === "" ) {
-                    Swal.fire({
-                        title: '請填寫有效的地址',
-                        showCancelButton: false,
-                        confirmButtonText: '關閉',
-                    });
-                }else{
-                    fetch('@Url.Content("~/membership/CreateCommonAddress?commonAddress=")' + inputVal)
-                        .then(response => 
-                        {
-                            setTimeout(() => {
-                                $('#fillAddressInput').val('');
-                                Swal.fire({
-                                    icon: 'success',
-                                    title: '新增成功',
-                                    confirmButtonText: '關閉',
-                                });
-                                GetCommonAddress();
-                                lookCAButton();
-                            }, 500);
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                }
-                */
 
             });
 
@@ -1343,10 +1316,15 @@
 
     <!--上傳大頭照-->
     <script>
-        //彈出上傳大頭照的視窗
         $(document).ready(function () {
+            //彈出上傳大頭照的視窗
             $('#imagePreview').click(function () {
                 $('#personalPictureModal').modal('show');
+            });
+
+            //導向圖片審核的頁面
+            $('#imageModeratorButton').click(function () {
+                window.location.href = '@Url.Action("ImageModerator", "Membership")';
             });
         });
 
@@ -1501,7 +1479,13 @@
 
             });
             */
-        
+
+           //取得以前的評論資料
+            var commentProductSelectElement = document.getElementById('productSelect');
+            commentProductSelectElement.addEventListener('change', function () {
+                console.log("hi");
+            });
+
             loadOrderRecords()
         });
 
@@ -1687,10 +1671,21 @@
 
             var orderId = document.querySelector('#returnSpan').textContent;
             var reasonId = document.querySelector('#returnReasonSelect').value;
+            var returnNumber = document.querySelector('#returnNumber').value;
+            var returnTextarea = document.querySelector('#returnTextarea').value;
+
+            var returnProductSelectElement = document.getElementById('returnProductSelect');
+            var returnProductSelectedValue = returnProductSelectElement.value;
+            returnProductSelectElement.addEventListener('change', function () {
+                returnProductSelectedValue = returnProductSelectElement.value;
+            });
 
             const formData = new FormData(document.querySelector('#returnForm'));
             formData.append("orderId", orderId);
             formData.append("reasonId", reasonId);
+            formData.append("returnNumber", returnNumber);
+            formData.append("returnTextarea", returnTextarea);
+            formData.append("returnProductSelectedValue", returnProductSelectedValue);
 
             fetch('@Url.Content("/Membership/SaveReturn")', {
                 body: formData,

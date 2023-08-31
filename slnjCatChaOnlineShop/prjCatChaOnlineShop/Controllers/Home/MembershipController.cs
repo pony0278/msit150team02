@@ -32,11 +32,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _productService = productService;
             _httpContextAccessor = httpContextAccessor;
 
-            //取得會員id
-            //var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            //var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            //memberIdForMembership = memberInfo.MemberId;
-
             memberIdForMembership = GetCurrentMemberId();
         }
 
@@ -289,6 +284,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //前往圖片審核的頁面
+        public IActionResult ImageModerator()
+        {
+            return View();
+        }
 
         /*2.消費紀錄*/
 
@@ -421,8 +421,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return new List<CCartItem>();
             }
         }
-        
-
 
         //取得申訴類型放到客服中心的頁面
         public IActionResult GetReturnReasonCategory()
@@ -447,6 +445,37 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得商品的過往評論
+        public IActionResult GetCommentByOrderId(int orderid)
+        {
+
+            try
+            {
+                var query = from comment in _context.ShopProductReviewTable
+                            where comment.OrderId == orderid & comment.ProductId == memberIdForMembership
+                            select new
+                            {
+                                comment.ReviewContent
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    datas = null;
+                    return new JsonResult(datas);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
         //儲存退換貨到資料庫
         public IActionResult SaveReturn(ShopReturnDataTable returnn)
         {
@@ -454,6 +483,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 returnn.ReturnDate = DateTime.Now;
                 returnn.ProcessingStatusId = 1;
+                returnn.ReturnContent = HttpContext.Request.Form["returnTextarea"];
 
                 if (int.TryParse(HttpContext.Request.Form["orderId"], out int orderId))
                 {
@@ -462,6 +492,14 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 if (int.TryParse(HttpContext.Request.Form["reasonId"], out int reasonId))
                 {
                     returnn.ReturnReasonId = reasonId;
+                }
+                if (int.TryParse(HttpContext.Request.Form["returnProductSelectedValue"], out int returnProductSelectedValue))
+                {
+                    returnn.ProductId = returnProductSelectedValue;
+                }
+                if (int.TryParse(HttpContext.Request.Form["returnNumber"], out int returnNumber))
+                {
+                    returnn.ReturnCount = returnNumber;
                 }
 
                 _context.ShopReturnDataTable.Add(returnn);
