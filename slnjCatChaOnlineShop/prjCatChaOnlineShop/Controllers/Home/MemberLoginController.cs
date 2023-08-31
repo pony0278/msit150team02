@@ -144,7 +144,57 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 return View();
             }
         }
+        //修改密碼至資料庫
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public ActionResult DoResetPwd([FromBody] DoResetPwdIn inModel)
+        {
+            DoResetPwdOut outModel = new DoResetPwdOut();
 
+            // 檢查是否有輸入密碼
+            if (string.IsNullOrEmpty(inModel.NewUserPwd))
+            {
+                outModel.ErrMsg = "請輸入新密碼";
+                return Json(outModel);
+            }
+            if (string.IsNullOrEmpty(inModel.CheckUserPwd))
+            {
+                outModel.ErrMsg = "請輸入確認新密碼";
+                return Json(outModel);
+            }
+            if (inModel.NewUserPwd != inModel.CheckUserPwd)
+            {
+                outModel.ErrMsg = "新密碼與確認新密碼不相同";
+                return Json(outModel);
+            }
+
+            // 檢查帳號 Session 是否存在
+            var resetPwdUserId = HttpContext.Session.GetString("ResetPwdUserId");
+            if (string.IsNullOrEmpty(resetPwdUserId))
+            {
+                outModel.ErrMsg = "無修改帳號";
+                return Json(outModel);
+            }
+
+            //取得目前使用者輸入的新密碼
+            string NewPwd = inModel.NewUserPwd;
+
+            //使用cachaContext更新到資料庫
+            var resetMember = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == resetPwdUserId);
+
+            if (resetMember != null)
+            {
+                resetMember.Password = inModel.NewUserPwd;
+                _context.Update(resetMember);
+                _context.SaveChanges();
+                return RedirectToAction("Login");
+            }
+            else
+            {
+                ViewData["ErrorMsg"] = "找不到該會員";
+                return View();
+            }
+        }
         //輸入電子信箱後按下寄送認證碼執行的方法
         [HttpPost]
         //[ValidateAntiForgeryToken]
@@ -315,58 +365,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //    client.Credentials = new NetworkCredential(GoogleID, TempPwd);//寄信帳密 
             //    client.Send(mms); //寄出信件
             //}
-        }
-
-        //修改密碼至資料庫
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public ActionResult DoResetPwd([FromBody] DoResetPwdIn inModel)
-        {
-            DoResetPwdOut outModel = new DoResetPwdOut();
-
-            // 檢查是否有輸入密碼
-            if (string.IsNullOrEmpty(inModel.NewUserPwd))
-            {
-                outModel.ErrMsg = "請輸入新密碼";
-                return Json(outModel);
-            }
-            if (string.IsNullOrEmpty(inModel.CheckUserPwd))
-            {
-                outModel.ErrMsg = "請輸入確認新密碼";
-                return Json(outModel);
-            }
-            if (inModel.NewUserPwd != inModel.CheckUserPwd)
-            {
-                outModel.ErrMsg = "新密碼與確認新密碼不相同";
-                return Json(outModel);
-            }
-
-            // 檢查帳號 Session 是否存在
-            var resetPwdUserId = HttpContext.Session.GetString("ResetPwdUserId");
-            if (string.IsNullOrEmpty(resetPwdUserId))
-            {
-                outModel.ErrMsg = "無修改帳號";
-                return Json(outModel);
-            }
-
-            //取得目前使用者輸入的新密碼
-            string NewPwd = inModel.NewUserPwd;
-
-            //使用cachaContext更新到資料庫
-            var resetMember = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == resetPwdUserId);
-
-            if (resetMember != null)
-            {
-                resetMember.Password = inModel.NewUserPwd;
-                _context.Update(resetMember);
-                _context.SaveChanges();
-                return RedirectToAction("Login");
-            }
-            else
-            {
-                ViewData["ErrorMsg"] = "找不到該會員";
-                return View();
-            }
         }
         #endregion
 
