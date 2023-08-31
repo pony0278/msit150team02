@@ -1,7 +1,7 @@
 //當使用者背包有食物(水 飼料)
-//選擇後，點擊貓兩下
+//選擇後，點擊貓
 //貓頭上冒愛心，食物數量-1
-//隨機獲得貓幣
+//三秒後等使用者看完愛心，隨機獲得獎勵
 
 canvas.addEventListener('click', (event) => {
     const rect = canvas.getBoundingClientRect();
@@ -13,8 +13,10 @@ canvas.addEventListener('click', (event) => {
 
     if (closestCat) {
         feedcat(closestCat, x, y);
-        setTimeout(() => { // 計時器
+        
+        setTimeout(() => { // 計時器，為了讓愛心播放3秒
             closestCat.selected = false;
+
             /* confirmWin.style.display = 'block';*/
         }, 3000);
     }
@@ -45,9 +47,8 @@ function feedcat(cat, x, y) { //餵貓貓的方法
     if (isInBtnRange(cat, x, y)) {
         if (itmMilk.isSelected || itmCan.isSelected)//點擊食物之後點擊貓咪
         {
-
             cat.selected = true;
-            consumeFood()
+             consumeFood()
         }
         return;
     }

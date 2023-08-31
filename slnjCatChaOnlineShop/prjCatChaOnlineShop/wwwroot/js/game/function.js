@@ -321,8 +321,14 @@ function alterConfirmWinBTN(text, func) {
 function closeConfirmWin() {
     confirmWin.style.display = 'none';//關閉確認視窗
     confirmWin_fillin.style.display = "none"
+    alterConfirmWinBTN('確認', closeConfirmWin)
     initialize();//初始化使用者資料
 }
+
+
+
+
+
 function closeConfirmWinForGacha() {
     confirmWin.style.display = 'none';//關閉確認視窗
 }
