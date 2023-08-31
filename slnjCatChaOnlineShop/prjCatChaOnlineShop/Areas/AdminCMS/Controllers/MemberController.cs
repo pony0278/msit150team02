@@ -285,6 +285,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
                 _context.Newsletter.Add(newAnnounce);
                 await _context.SaveChangesAsync();
+
+                // 成功保存数据后，调用发送邮件的 API
+                sendTest(newAnnounce.NewsletterId); // 传递新插入的Newsletter的ID
             }
             catch
             {
@@ -297,69 +300,36 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             List<string> imageUrls = _context.Newsletter.Select(template => template.ContentImage).ToList();
             return imageUrls;
         }
-        public IActionResult sendTest()
+        [HttpPost]
+        public IActionResult sendTest(int newsletterId)
         {
-            //string Account = "rong502njc@gmail.com"; //寄件人mail
-            //string Password = "wdyhdmvdwniptybf"; //應用程式密碼： 如果您的 Gmail 帳號啟用了雙重驗證，您需要使用應用程式密碼而不是您的 Gmail 登錄密碼。您可以在 Google 帳號的安全性設置中建立一個應用程式密碼，然後將它用作您的密碼。
+            string senderEmail = "rong502njc@gmail.com"; //寄件人mail
+            string senderPassword = "wdyhdmvdwniptybf"; //應用程式密碼： 如果您的 Gmail 帳號啟用了雙重驗證，您需要使用應用程式密碼而不是您的 Gmail 登錄密碼。您可以在 Google 帳號的安全性設置中建立一個應用程式密碼，然後將它用作您的密碼。
 
-            //SmtpClient client = new SmtpClient();
-            //client.Host = "smtp.gmail.com";  //設定Server
-            //client.Port = 587;  //設定Port
-            //client.Credentials = new NetworkCredential(Account, Password);  //設定寄件人的帳號密碼
-            //client.EnableSsl = true;  //是否啟用SSL驗證
-
-            //MailMessage mail = new MailMessage();
-            //mail.From = new MailAddress(Account);
-            //mail.To.Add("liang930517@yahoo.com.tw");
-            //mail.Subject = "測試信";
-            //mail.SubjectEncoding = Encoding.UTF8;
-            //mail.IsBodyHtml = true;
-            //mail.Body = "第一行<br> 第二行<br>第三行<br>";
-            //mail.BodyEncoding = Encoding.UTF8;
-
-            ////內容
-            //mailBody(mail);
-
-            //try
-            //{
-            //    client.Send(mail);
-            //}
-            //catch (Exception ex)
-            //{
-            //    throw ex;
-            //}
-            //finally
-            //{
-            //    mail.Dispose();
-            //    client.Dispose();
-            //}
-            // 发送者的Gmail账户信息
-            string senderEmail = "rong502njc@gmail.com";
-            string senderPassword = "wdyhdmvdwniptybf";
-
-            // 接收者的邮箱
+            // 收件人的mail
             string recipientEmail = "liang930517@yahoo.com.tw";
-
-            // 构建HTML邮件内容，包含图片
-            //using (var _context = new Newsletter())
-            //{
-            // 从数据库获取Newsletter的ContentImage字段
+            
             var newsletter = _context.Newsletter.FirstOrDefault();
-            var newsletterTemplete = _context.NewsletterTemplate.FirstOrDefault();
-            if (newsletter != null)
-            {
 
+            var insertedNewsletter = _context.Newsletter.FirstOrDefault(n => n.NewsletterId == newsletterId);
+
+                var newsletterTemplete = _context.NewsletterTemplate.FirstOrDefault();
+
+            if (insertedNewsletter != null)
+            {
+                string mailSubject = insertedNewsletter.Subject;
                 string imgHeader = newsletterTemplete.HeaderImage;
-                string imageUrl = newsletter.ContentImage;
+                string imageSrc = insertedNewsletter.ContentImage;
+                string imageLink = insertedNewsletter.ImageUrl;
                 string imgFooter = newsletterTemplete.FooterImage;
 
-                // 构建HTML邮件内容，包含图片
+                // 構建HTML郵件內容，包含圖片
                 string htmlBody = $@"
                         <html>
                         <body>
-                            <p>这是一封包含图片的邮件：</p>
+                            <p> 此為系統主動發送信函，請勿直接回覆此封信件。</p>
                             <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
-                            <img src='{imageUrl}' alt='Image' style='max-width: 100%;' />
+                            <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
                             <img src='{imgFooter}' alt='Image' style='max-width: 100%;' />
                         </body>
                         </html>";
@@ -375,7 +345,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 // 创建邮件
                 MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail)
                 {
-                    Subject = "测试邮件",
+                    Subject = mailSubject,
                     Body = htmlBody,
                     IsBodyHtml = true
                 };
