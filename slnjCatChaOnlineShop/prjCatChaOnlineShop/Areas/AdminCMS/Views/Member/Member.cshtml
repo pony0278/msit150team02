@@ -88,6 +88,11 @@
                     </div>
 
                     <div class="form-group mb-2">
+                        <label>圖片連結網址</label>
+                        <input type="text" class="form-control" id="sentImgUrl" name="ImageUrl" />
+                    </div>
+
+                    <div class="form-group mb-2">
                         <label>圖片內容</label>
                         <input type="file" class="form-control" id="sentContentImage" name="ContentImage" accept="image/*" />
                     </div>
@@ -785,12 +790,16 @@
             var emailValue = $(this).data('email'); // 使用data-email屬性來取得email的值
 
             if (isChecked) {
-                $row.addClass('selected-row'); // 添加選中行的背景顏色
+                // 遍歷該行的所有單元格並添加選中樣式
+                $row.find('td').addClass('selected-cell');
+
                 selectedEmails.push(emailValue); // 將email值加入陣列中
 
                 console.log('Selected emails:', selectedEmails);
             } else {
-                $row.removeClass('selected-row'); // 移除選中行的背景顏色
+                // 移除該行的所有單元格的選中樣式
+                $row.find('td').removeClass('selected-cell');
+
                 var index = selectedEmails.indexOf(emailValue);
                 if (index !== -1) {
                     selectedEmails.splice(index, 1); // 從陣列中移除email值
@@ -805,16 +814,18 @@
             console.log("???");
             var TemplateId = $('#sentTemplateId').val();
             var Subject = $('#sentSubject').val();
+            var ImageUrl = $('#sentImgUrl').val();
             var fileInput = $('#sentContentImage')[0];
             var file = fileInput.files[0];
 
             var formData = new FormData();
             formData.append("TemplateId", TemplateId);
             formData.append("Subject", Subject);
+            formData.append("ImageUrl", ImageUrl);
             formData.append("ContentImage", file);
 
             $.ajax({
-                url: '@Url.Action("sendTest", "Member")',
+                url: '@Url.Action("SentNewsLetter", "Member")',
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -846,6 +857,12 @@
                 success: function (response) {
                     alert("儲存成功!");
                     window.location.reload();
+                },
+                error: function (error, a, b) {
+                    console.log(error);
+                    console.log(a);
+                    console.log(b);
+                    console.log("Error retrieving member details.");
                 }
             });
         })

@@ -13,5 +13,9 @@
         public int? TotalQuantity { get; set; }
 
         public bool? Usable { get; set; }
+
+        public string Image { get; set; }
+
+        public IFormFile? getImage { get; set; }
     }
 }

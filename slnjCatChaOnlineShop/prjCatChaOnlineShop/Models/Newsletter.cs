@@ -17,5 +17,5 @@ public partial class Newsletter
 
     public DateTime? SendDate { get; set; }
 
-    public virtual NewsletterTemplate NewsletterNavigation { get; set; }
+    public string ImageUrl { get; set; }
 }

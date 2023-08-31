@@ -143,7 +143,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;User ID=msit150team02resoucegroup;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -640,13 +640,7 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<Newsletter>(entity =>
         {
-            entity.Property(e => e.NewsletterId).ValueGeneratedOnAdd();
             entity.Property(e => e.SendDate).HasColumnType("datetime");
-
-            entity.HasOne(d => d.NewsletterNavigation).WithOne(p => p.Newsletter)
-                .HasForeignKey<Newsletter>(d => d.NewsletterId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Newsletter_NewsletterTemplate");
         });
 
         modelBuilder.Entity<NewsletterTemplate>(entity =>
@@ -783,7 +777,6 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.ExpiryDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Expiry Date");
-            entity.Property(e => e.Image).HasColumnName("[Image");
             entity.Property(e => e.SpecialOffer).HasColumnType("decimal(18, 3)");
             entity.Property(e => e.TotalQuantity).HasColumnName("Total Quantity");
         });
