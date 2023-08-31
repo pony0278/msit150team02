@@ -89,11 +89,11 @@ function feedAndGetReward() {//隨機獲得貓幣方法
     const num = Math.floor(Math.random() * 100) + 1
     console.log(num);
     switch (true) {
-        case num <= 2:
-            confirmWin_text.innerHTML = '貓抓抓商城 50元折價券*1'
-            feedCatGetCoupon(19)
+        case num <= 33:
+            confirmWin_text.innerHTML = '貓抓抓商城 九折折價券*1<br>請至會員中心查看'
+            feedCatGetCoupon(15, 4)//九折折價券 GameProductID = 15，couponID = 4
             break;
-        case num <= 10 && num > 2:
+        case num <= 67 && num >34:
             confirmWin_text.innerHTML = '紅利 50'
             updateRuby(50)
             break;

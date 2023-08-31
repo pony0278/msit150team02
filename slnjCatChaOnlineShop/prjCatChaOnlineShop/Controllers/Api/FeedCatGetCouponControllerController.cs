@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
+using System.Text.Json;
+
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -11,38 +14,34 @@ namespace prjCatChaOnlineShop.Controllers.Api
     public class FeedCatGetCouponController: ControllerBase
     {
         private readonly cachaContext _context;
-        public FeedCatGetCouponController(cachaContext context)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public FeedCatGetCouponController(IHttpContextAccessor httpContextAccessor, cachaContext context)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
         }
-
         [HttpPost]
-        public IActionResult updateUserCoupon(CPlayerItem c/*,CShopCouponMemberData cp*/)
+        public IActionResult updateUserCoupon(CPlayerItem c)
         {
-            var data = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == c.fId && p.ProductId == c.fProductId);
-            //var dataInCouponTable = _context.ShopMemberCouponData.FirstOrDefault(p => p.MemberId == c.fId && p.CouponId == cp.fCouponId);
-            if (data != null)//如果使用者之前有這個優惠券了
-            {//TODO 這邊要加入同步寫入shop coupon member data
-                data.MemberId = c.fId;
-                data.ProductId = c.fProductId;
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            int _memberId = memberInfo.MemberId;
+
+            var data = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == _memberId && p.ProductId == c.fProductId);
+           
+            if (data != null)
+            {
                 data.QuantityOfInGameItems ++;
+                var dataInCouponTable = new ShopMemberCouponData 
+                {   MemberId = _memberId,
+                    CouponId = c.fCouponId,
+                    CouponStatusId = false
+                 };
+                _context.ShopMemberCouponData.Add(dataInCouponTable);
                 _context.SaveChanges();
-                //dataInCouponTable.MemberId = c.fId;
-                //dataInCouponTable.CouponId = cp.fCouponId;
-                //dataInCouponTable.CouponStatusId = cp.fCouponStatusId;
+                return Ok(new { message = "已存入優惠券" });
             }
-            
-            //if (data == null)//如果使用者之前沒有優惠券
-            //{
-            //    var modeldata = new GameItemPurchaseRecord
-            //    {
-            //        MemberId = c.fId,
-            //        ProductId = c.fProductId,
-            //        QuantityOfInGameItems = 1,
-            //    };
-            //    _context.GameItemPurchaseRecord.Add(modeldata);
-            //}
-            return Ok(new { message = "數據已成功保存" });
+            return Ok(new { message = "API完成" });
         }
 
     }

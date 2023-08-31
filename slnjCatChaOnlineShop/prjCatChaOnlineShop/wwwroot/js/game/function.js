@@ -259,13 +259,13 @@ function updateRuby(num) {
 }
 
 
-//餵食貓貓得到折價券的方法 //50元折價券 GameProductID = 19，couponID = 7
-function feedCatGetCoupon(num) {
+//餵食貓貓得到折價券的方法 //九折折價券 GameProductID = 15，couponID = 4
+function feedCatGetCoupon(gameproID,couponID) {
     $.ajax({
         type: "POST",
         url: "/api/Api/FeedCatGetCoupon", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fProductId: num }),
+        data: JSON.stringify({ fProductId: gameproID, fCouponId: couponID }),
         success: function (data) {
             initialize();
             console.log("feedCatGetCoupon:資料更新成功", data.message);
