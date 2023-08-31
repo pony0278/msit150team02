@@ -393,27 +393,65 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public async Task<IActionResult> editorSpecificationID([FromBody] CShopProductWrap cShopproduct)
         {
-            var replaceSpecification = _cachaContext.ShopProductSpecification
-                            .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
-                            .ToList();
-
-            var targetSpecification = replaceSpecification.FirstOrDefault(x => x.Id == cShopproduct.productSpecificationIDforEdit);
-
-            if (targetSpecification != null)
+            try
             {
-                targetSpecification.Specification = cShopproduct.ProductSpecificationName ?? targetSpecification.Specification; // null check
-                _cachaContext.Update(targetSpecification);
-                try
+                // Fetch existing specifications for the given ProductId
+                var existingSpecifications = await _cachaContext.ShopProductSpecification
+                                    .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
+                                    .ToListAsync();
+
+                
+                //if (cShopproduct.ProductPhotos != null && cShopproduct.ProductPhotos.Count > 0)
+                //{
+                //    for (int i = 0; i < cShopproduct.ProductPhotos.Count; i++)
+                //    {
+                //        try
+                //        {
+                //            var uploadedImageUrl = await _imageService.UploadImageAsync(cShopproduct.ProductPhotos[i]);
+                //            imageUrls.Add(uploadedImageUrl);
+
+                //            if (i < insertImgList.Count)
+                //            {
+                //                insertImgList[i].ProductPhoto = uploadedImageUrl;
+                //            }
+                List<string> newSpecifications = new List<string>();
+                if (cShopproduct.productSpecification != null && cShopproduct.productSpecification.Count > 0)
                 {
+                    for (var i = 0; i < cShopproduct.productSpecification.Count; i++)
+                    {
+                        var newSpecification = cShopproduct.productSpecification[i];
+                        newSpecifications.Add(newSpecification.ToString());
+
+                        if (i< existingSpecifications.Count)
+                        {
+                            // Update existing specification
+                            existingSpecifications[i].Specification = newSpecification;
+                        }
+                        else
+                        {
+                            // Add new specification
+                            var newSpecEntity = new ShopProductSpecification
+                            {
+                                ProductId = cShopproduct.ProductId,
+                                Specification = newSpecification
+                            };
+                            await _cachaContext.ShopProductSpecification.AddAsync(newSpecEntity);
+                        }
+                    }
+
+                    // Save changes to database
                     await _cachaContext.SaveChangesAsync();
-                    return Ok("更新成功");
+                    return Json(new { success = true, Message = "成功修改" });
                 }
-                catch (Exception ex)
-                {
-                    return BadRequest("儲存錯誤");
-                }
+
+                return BadRequest("未提供商品細項");
             }
-            return NotFound("沒有找到對應的規格");
+            catch (Exception ex)
+            {
+                // Log the exception details
+                return BadRequest($"商品細項儲存錯誤: {ex.Message}");
+            }
         }
+
     }
 }

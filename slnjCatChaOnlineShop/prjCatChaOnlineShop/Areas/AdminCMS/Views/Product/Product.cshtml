@@ -44,6 +44,9 @@
             height: 40px;
         }
 
+        #description{
+            height:400px;
+        }
     </style>
 }
 
@@ -62,7 +65,7 @@
             <div class="dates d-flex flex-column">
                 <span>上架日期</span>
                 <div class="d-flex align-items-center">
-                    <input type="datetime-local" id="releasedate" class="form-control">
+                    <input type="datetime-local" class="form-control">
                 </div>
                 <label>類型篩選</label>
                 <div class="d-flex align-items-center">
@@ -128,7 +131,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label>名稱</label>
-                        <input type="text" id="name" class="form-control" name="ProductName">
+                        <input type="text" id="name" class="form-control" name="ProductName" required>
                     </div>
                     <div class="col-md-6">
                         <label>價格</label>
@@ -136,11 +139,11 @@
                     </div>
                     <div class="col-md-6">
                         <label>剩餘數量</label>
-                        <input type="text" id="remainingquantity" class="form-control" name="RemainingQuantity">
+                        <input type="text" id="remainingquantity" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label>商品類別</label>
-                        <select class="form-control" id="category" name="ProductCategory">
+                        <select class="form-control" id="category" name="ProductCategory" required>
                             <option selected>請選擇</option>
                             @foreach (var category in Model.ProductCategories)
                             {
@@ -150,7 +153,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>上架日期</label>
-                        <input type="datetime-local" id="releasedate" class="form-control" name="ReleaseDate">
+                        <input type="datetime-local" id="releasedate" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label>下架日期</label>
@@ -158,11 +161,11 @@
                     </div>
                     <div class="col-md-6">
                         <label>規格</label>
-                        <input type="text" id="size" class="form-control" name="Size">
+                        <input type="text" id="size" class="form-control" required>
                     </div>
                     <div class="col-md-6">
                         <label>重量</label>
-                        <input type="text" id="weight" class="form-control" name="Weight">
+                        <input type="text" id="weight" class="form-control" required>
                     </div>
                     <div class="col-md-6 d-flex flex-column" id="productSpecifications">
                         <div class="d-flex align-items-center">
@@ -170,7 +173,7 @@
                             <i class="fa-regular fa-square-plus ms-1" id="addproductSpecifications"></i>
                             <i class="fa-regular fa-square-minus ms-1" id="minusproductSpecifications"></i>
                         </div>
-                        <input type="text" class="form-control specifications" id="specifications-0">
+                        <input type="text" class="form-control specifications" id="specifications-0" required>
                     </div>
                     <div class="col-md-6">
                         <label>折扣</label>
@@ -178,7 +181,7 @@
                     </div>
                     <div class="col-md-6">
                         <label>供應商</label>
-                        <select class="form-control" id="supplier">
+                        <select class="form-control" id="supplier" required>
                             <option selected>請選擇</option>
                             @foreach (var suppliers in Model.Suppliers)
                             {
@@ -188,7 +191,7 @@
                     </div>
                     <div class="col-md-12">
                         <label>圖片</label>
-                        <input type="file" class="form-control" id="image" name="ShopProductImageTable" accept="image/*" multiple />
+                        <input type="file" class="form-control" id="image" name="ShopProductImageTable" accept="image/*" multiple required />
                     </div>
                     <div class="col-md-6">
                         <label>是否上首頁</label>
@@ -377,6 +380,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.13.0/Sortable.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     @*    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />*@
 
     <script>
@@ -395,7 +399,15 @@
         });
         $(document).on("click", '#demoBtn', function () {
             const name = $('#name').val('好好貓食')
-            const price = $('#price').val(100)
+            const price = $('#price').val('100')
+            const remain = $('#remainingquantity').val('100')
+            const select = $('#category').val('1')
+            const relesedate = $('#releasedate').val('2023-09-15T13:00');
+            const offdate = $('#offdate').val('2023-09-16T13:00')
+            const size = $('#size').val('30cm*30cm')
+            const weight = $('#weight').val('1kg')
+            const discount = $('#discount').val('0.5')
+            const supplier = $('#supplier').val('1')
 
         })
 
@@ -623,7 +635,7 @@
                             var editproductSpecifications = $("#edit-productSpecifications")
                             const SpecificationID = value.id
                             editSpecificationID.push(SpecificationID)
-                            const editInput = $(`<input type="text" class="form-control specifications" data-attr-id="${value.id}">`)
+                            const editInput = $(`<input type="text" class="form-control edit-specifications" data-attr-id="${value.id}">`)
                             editInput.val(value.specification);
                             editproductSpecifications.append(editInput)
                         })
@@ -687,7 +699,7 @@
         let TypeEditor;
         let productImageId, isChecked;
         let lastUsedInputID = null;
-        let specificValue = null
+
         $('#editor-category').on('change', function () {
             TypeEditor = parseInt($(this).val(), 10);
         })
@@ -701,15 +713,19 @@
             isChecked = $(this).is(':checked');
             console.log(productImageId);
         });
-        $("#edit-productSpecifications").on("input", ".specifications", function () {
-            lastUsedInputID = $(this).data("attr-id")
-            console.log("Last used input ID:", lastUsedInputID);
-            specificValue = $(`#edit-productSpecifications input.specifications[data-attr-id="${lastUsedInputID}"]`).val();
-            console.log("最后使用的 input 的值是：", specificValue);
-        });
+        // $("#edit-productSpecifications").on("input", ".specifications", function () {
+        //     lastUsedInputID = $(this).data("attr-id")
+        //     console.log("Last used input ID:", lastUsedInputID);
+        //     specificValue = $(`#edit-productSpecifications input.specifications[data-attr-id="${lastUsedInputID}"]`).val();
+        //     for(let i = 0 ; i<)
+        //     console.log("最后使用的 input 的值是：", specificValue);
+        // });
+
 
         //儲存按鈕==============================
         $('#submitButton-edior').click(function () {
+            let specificationsArray = []
+            let specificationsArrayID = []
             var id = $('#editor-id').val();
             var name = $('#editor-name').val()
             var description = $('#editor-description').val()
@@ -727,10 +743,22 @@
             console.log(editSpecificationID)
             var fileInput = $('#editor-image')[0];
             var file = fileInput.files;
-            var productId = id;
-            var productSpecificationID = editSpecificationID
-            var productSpecificationIDforEdit = lastUsedInputID;
-            var productSpecificationName = specificValue;
+            $("#edit-productSpecifications input.edit-specifications").each(function () {
+                specificationsArray.push($(this).val());
+                specificationsArrayID.push($(this).data('attr-id'))
+                console.log(specificationsArray)
+                console.log(specificationsArrayID)
+            });
+            let filteredSpecificationsArrayID = specificationsArrayID.filter(item => item !== undefined);
+            const cShopproduct = {
+                ProductId: id,
+                productSpecificationID: filteredSpecificationsArrayID,
+                productSpecification: specificationsArray
+            }
+            // var productId = id;
+            // var productSpecificationID = editSpecificationID
+            // var productSpecificationIDforEdit = lastUsedInputID;
+            // var productSpecificationName = specificValue;
 
             var formData = new FormData();
             formData.append("ProductId", id);
@@ -755,37 +783,43 @@
                 }
             }
             formData.append("PushToShop", pinToShop)
-
-            $.ajax({
-                url: "@Url.Action("EditShopProducts","Product" , new { area="AdminCMS" })",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    if(response.success){
-                        $.ajax({
-                            url: "/AdminCMS/Product/editorSpecificationID",  
-                            type: "POST",
-                            data: JSON.stringify({
-                                ProductId: productId,
-                                productSpecificationID: productSpecificationID,
-                                productSpecificationIDforEdit: productSpecificationIDforEdit,
-                                ProductSpecificationName: productSpecificationName
-                            }),
-                            contentType: "application/json",
-                            success: function (response) {
-                                console.log("幹")
-                            },
-                            error: function (xhr, status, error) {
-                                alert("儲存失敗: " + error);
+            Swal.fire({
+                title: '確定要新增產品嗎?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: '新增',
+                denyButtonText: `不新增`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "@Url.Action("EditShopProducts","Product" , new { area="AdminCMS" })",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            if (response.success) {
+                                $.ajax({
+                                    url: "/AdminCMS/Product/editorSpecificationID",
+                                    type: "POST",
+                                    data: JSON.stringify(cShopproduct),
+                                    contentType: "application/json",
+                                    success: function (response) {
+                                    },
+                                    error: function (xhr, status, error) {
+                                        alert("儲存失敗: " + error);
+                                    }
+                                });
                             }
-                        });
-                    }
-                    alert("儲存成功!");
-                    window.location.reload();
+                            swal.fire("成功", "成功修改產品", "success");
+                            window.location.reload();
+                        }
+                    });
+                } else if (result.isDenied) {
+                    Swal.fire('未修改產品', '', 'info')
                 }
-            });
+            })
+
         });
         $(document).on("click", "#submitButton", function () {
             const name = $("#name").val();
@@ -799,10 +833,9 @@
             const supplier = $("#supplier").val();
             const pinToShop = $("#pinToShop").is(":checked")
             const description = $("#description").val()
-            var productSpecifications = $("#productSpecifications input.specifications"); 
+            var productSpecifications = $("#productSpecifications input.specifications");
             var fileInput = $('#image')[0];
             var file = fileInput.files;
-
             let formData = new FormData();
             formData.append("ProductName", name)
             formData.append("Productdescription", description);
@@ -810,6 +843,7 @@
             formData.append("ReleaseDate", releasedate);
             formData.append("Size", size);
             formData.append("Weight", weight);
+            formData.append("RemainingQuantity", remainingquantity)
             formData.append("SupplierId", supplier);
             formData.append("OffDay", offdate)
             formData.append("Discount", discount)
@@ -820,18 +854,41 @@
                     formData.append("ProductPhotos", file[i])
                 }
             }
+            var allFilled = true;
             productSpecifications.each(function (index, element) {
-                formData.append("productSpecification", $(element).val())
-            })
-            $.ajax({
-                url: "@Url.Action("CreateProduct" , "Product" , new { area="AdminCMS" })",
-                type: "POST",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: function (response) {
-                    alert("儲存成功!");
-                    window.location.reload();
+                var value = $(element).val();
+                if (value === null || value === "") {
+                    Swal.fire("錯誤", "產品細項不可為空", "error");
+                    allFilled = false;
+                    return false;
+                } else {
+                    formData.append("productSpecification", value);
+                }
+            });
+            if (allFilled !== true) {
+                return
+            }
+            Swal.fire({
+                title: '確定要新增產品嗎?',
+                showDenyButton: true,
+                showCancelButton: true,
+                confirmButtonText: '新增',
+                denyButtonText: `不新增`,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: "@Url.Action("CreateProduct" , "Product" , new { area="AdminCMS" })",
+                        type: "POST",
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (response) {
+                            swal.fire("成功", "成功新增產品", "success");
+                            window.location.reload();
+                        }
+                    })
+                } else if (result.isDenied) {
+                    Swal.fire('未新增產品', '', 'info')
                 }
             })
         })
