@@ -80,10 +80,16 @@
                                 <input type="date" id="create-date" class="form-control" name="PublishDate">
                                 </div>
 
+                                <div class="form-group">
+                                    <label>連結</label>
+                                <input type="text" class="form-control" id="create-topage" name="ToPage">
+                                </div>
+
                                 <div class="col-md-12">
                                     <label>圖片：</label>
-                            <input type="file" class="form-control" id="create-image" name="Image" accept="image/*" />
+                                    <input type="file" class="form-control" id="create-image" name="Image" accept="image/*" />
                                 </div>
+
                                 <div class=" mb-3 align-items-center mt-3">
                                     <label>目前圖片：</label>
                                     <div class="d-flex justify-content-center">
@@ -127,7 +133,9 @@
                                     <th>名稱</th>
                                     <th>發佈時間</th>
                                     <th>圖片</th>
+                                    <th>連結</th>
                                     <th>編輯/刪除</th>
+                                    <th>顯示</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -156,8 +164,13 @@
                                         <div class="form-group">
                                             <label>發佈日期</label>
                                             <input type="date" class="form-control" id="editor-date" name="PublishDate">
-                                            </select>
                                         </div>
+
+                                        <div class="form-group">
+                                            <label>連結</label>
+                                            <input type="text" class="form-control" id="editor-topage" name="ToPage">
+                                        </div>
+
                                         <div class="form-group">
                                             <label>圖片</label>
                                             <input type="file" class="form-control" id="editor-img" name="Image" accept="image/*">
@@ -247,15 +260,26 @@
                         return `<img class="img-thumbnail" src="${data}" style="width: 200px; height: 150px;" >`;
                     }
                 },
+                { "data": "toPage" },
                 {
                     "data": "bannerId",
                     "render": function (data, type, row) {
                         var deleteUrl = '@Url.Action("Delete", "Banner", new { area = "AdminCMS", id = "bannerId" })';
                         deleteUrl = deleteUrl.replace('bannerId', row.bannerId);
                         return `<button class="edit-button" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#EditBannerModalToggle"><i class="fas fa-edit"></i></button> |
-                                                                                                                                                <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`
+                                                                                                                                                        <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`
                     }
-                }
+                    },
+                   {
+                    "data": "display",
+                    "render": function (data, type, row) {
+                        var isChecked = data === true ? 'checked' : '';
+                        return `<div class="form-check form-switch">
+                                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" ${isChecked}>
+                                </div>`;
+                    }
+                },
+                
             ]
         });
         //編輯按鈕==============================================
@@ -276,6 +300,7 @@
                         $('#editor-date').val(formattedDate);
 
                         $('#previewImage').attr('src', response.data.link)
+                        $('#editor-topage').val(response.data.toPage);
                         console.log(response.data)
                        
                     } else {

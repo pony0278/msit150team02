@@ -42,7 +42,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 Banner=x.Banner,
                 BannerId=x.BannerId,
                 PublishDate=x.PublishDate,
-                Link=x.Link
+                Link=x.Link,
+                ToPage=x.ToPage,
+                Display=x.Display
             }).ToList();
             return Json(new { data });
 
