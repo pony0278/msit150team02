@@ -170,14 +170,16 @@
                                                             <div class="coupon-intro  text-center">
                                                                 <!--刪除MyCss.css 123行，增加160行hover-->
                                                                 <div class="coupon-status align-middle text-center">
-                                                                    <button type="button" class="btn useCouponBtn" data-coupon-code="@coupon.CouponName">使用</button>
+                                                                    <button type="button" class="btn useCouponBtn"
+                                                                        data-coupon-code="@coupon.CouponName" 
+                                                                        data-coupon-specialoffer="@coupon.SpecialOffer">使用</button>
                                                                 </div>
                                                             </div>
                                                             <div class="coupon-middle flex-container flex-1">
                                                                 <div class="middle-left flex-1">
                                                                     <span class="coupon-tag">
                                                                         限用1次
-                                                                    </span>&ensp;<span class="coupon-name" name="couponName"> @coupon.CouponName </span>
+                                                                    </span>&ensp;<span class="coupon-name" name="couponName"> @coupon.CouponName  </span>
                                                                     <div class="coupon-description">
                                                                         @coupon.CouponContent
                                                                     </div>
@@ -1158,7 +1160,7 @@
                 <div class="order-box">
                     <div class="d-flex">
                         <h4>小計</h4>
-                        <div class="ml-auto font-weight-bold"> NT @ViewBag.totalPrice </div>
+                        <div class="ml-auto font-weight-bold" id="subtotal"> NT @ViewBag.totalPrice </div>
                     </div>
                     <div class="d-flex">
                         <h4>紅利折扣</h4>
@@ -1167,7 +1169,7 @@
                     <hr class="my-1">
                     <div class="d-flex">
                         <h4>優惠券折扣</h4>
-                        <div class="ml-auto font-weight-bold"> NT0 </div>
+                        <div class="ml-auto font-weight-bold" id="couponBonus"> NT0 </div>
                     </div>
                     <div class="d-flex">
                         <h4>運費</h4>
@@ -1176,7 +1178,7 @@
                     <hr>
                     <div class="d-flex gr-total">
                         <h5>總計</h5>
-                        <div class="ml-auto h5"> NT </div>
+                        <div class="ml-auto h5" id="AllTotalPrice"> NT </div>
                     </div>
                     <hr>
                 </div>

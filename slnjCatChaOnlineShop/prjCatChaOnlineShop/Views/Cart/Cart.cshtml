@@ -326,7 +326,7 @@
                     console.log(pId);
                     $.ajax({
                         type: "POST",
-                        url: '/Checkout/DeleteCartItem',
+                        url: '/Cart/DeleteCartItem',
                         data: { id: pId },
                         success: function (response) {
                             //同步更新刪除畫面上的商品
@@ -354,13 +354,13 @@
             });
         })
 
-        //這樣可以在初始化更新小計金額，但用ViewBag就不用在這邊計算(productApi/AddtoCart)
-        
-        // // 獲取購物車的總金額
-        // var initialTotalPrice = @Html.Raw(Json.Serialize(Model.Sum(item => item.c小計)));
-        
-        // // 金總金額更新到畫面上
-        // $('#totalPriceSummary').text('$' + initialTotalPrice.toFixed(2));
+                //這樣可以在初始化更新小計金額，但用ViewBag就不用在這邊計算(productApi/AddtoCart)
+
+                // // 獲取購物車的總金額
+                /* var initialTotalPrice = */@*Html.Raw(Json.Serialize(Model.Sum(item => item.c小計)));*@
+
+                // // 金總金額更新到畫面上
+                // $('#totalPriceSummary').text('$' + initialTotalPrice.toFixed(2));
 
 
     </script>
