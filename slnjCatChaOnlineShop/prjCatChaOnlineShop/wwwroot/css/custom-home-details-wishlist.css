@@ -982,13 +982,7 @@ nav.navbar.bootsnav ul.nav li > a:hover {
 #sp-products{
     background-color: #DE9E4F;
 }
-.add-to-wishlist-coustom.favorited {
+.favorited {
     background-color: #000;
-    position: absolute;
-    cursor: pointer;
-    border: none;
-    color: #ffffff;
-    padding: 1px 10px;
-    height: 30px;
-    right: 10px;
+    
 }

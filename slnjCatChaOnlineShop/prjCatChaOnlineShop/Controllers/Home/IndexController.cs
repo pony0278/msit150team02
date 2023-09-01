@@ -4,6 +4,8 @@ using Microsoft.CodeAnalysis;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Services.Function;
+using System.Collections.Generic;
+using System.Security.Cryptography;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjCatChaOnlineShop.Controllers.Home
@@ -23,21 +25,25 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             var details = _productService.getDetailsById(pId);
+
             return View(details);
         }
 
         public IActionResult Shop()
         {
             var items = _productService.getProductItems();
+
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.ProductCount= items.Count();
             return View(items);
         }
         public IActionResult Index()
         {
+            var items = _productService.getProductItems();
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-            return View(_productService.getProductItems());
+            return View(items);
         }
         [HttpGet]
         public IActionResult CountDownProduct()
