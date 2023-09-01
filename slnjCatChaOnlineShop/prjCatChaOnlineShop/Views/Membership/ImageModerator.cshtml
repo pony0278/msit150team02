@@ -156,13 +156,15 @@
                                 type: "POST",
                                 data: JSON.stringify(moderationData),
                             }).done(function (moderationResult) {
-                                translateToChinese(JSON.stringify(moderationResult))
-                                    .then(translatedData => {
-                                        document.getElementById('checkResults').value = translatedData;
-                                    })
-                                    .catch(error => {
-                                        console.log('Translation error:', error);
-                                    });
+
+                                // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
+                                // 數據1 ： 成人內容
+                                var Category1 = moderationResult['Classification']['Category1']['Score'];
+                                // // 數據2 ： 性暗示
+                                var Category2 = moderationResult['Classification']['Category2']['Score'];
+                                // // 數據3 ： 冒犯性
+                                var Category3 = moderationResult['Classification']['Category3']['Score'];
+
                             }).fail(function (err) {
                                 alert(err.statusText);
                             });
