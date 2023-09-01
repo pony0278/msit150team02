@@ -8,6 +8,44 @@
     <link href="~/css/game/gameinstructions.css" rel="stylesheet" />
     <link href="~/css/game/gachabutton.css" rel="stylesheet" />
     <link href="~/css/game/confirmWin.css" rel="stylesheet" />
+    <style>
+        #sidebar {
+            width: 250px;
+            height: 700px;
+            position: fixed;
+            top: 150px;
+            right: -250px;
+            background: #de9e4f;
+            color: white;
+        }
+
+        .sidebarInside {
+            position: absolute;
+            right: 8px;
+            width: 230px;
+            height: 600px;
+            background: white;
+            border-radius: 10px;
+        }
+
+        .toggle {
+            position: absolute;
+            top: 20%;
+            left: -30px;
+            background: #de9e4f;
+            width: 30px;
+            height: 160px;
+            border-radius: 10px 0 0 10px;
+        }
+
+        #toggleSidebar {
+            position: absolute;
+            border: 0px;
+            background: transparent;
+            bottom: 0;
+            color: white;
+        }
+    </style>
 }
 
 <!-- Start 遊戲畫面 -->
@@ -137,6 +175,15 @@
 
 <button type="submit" id="testDBlogin"style="display:none">測試資料庫登入</button>
 
+
+<div id="sidebar">
+    <h2>聊天室</h2>
+    <div class="sidebarInside"></div>
+    <div class="toggle">
+        <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
+    </div>
+</div>
+
 <!-- End 遊戲畫面 -->
 <!-- 遊戲相關js -->
 @section Scripts{
@@ -158,6 +205,10 @@
 
     <!--排行榜測試資料-->
     <script>
+        $('#toggleSidebar').click(function () {
+            var right = $('#sidebar').css('right') === '0px' ? '-250px' : '0px';
+            $('#sidebar').animate({ right: right });
+        });
         const rank = {
             "排名": [
                 { "name": "N/A", "排名": "N/A", "分數": "N/A" },
