@@ -243,35 +243,37 @@
             $("#emailInput").blur(function () {
                 var email = $(this).val();
                 if (email != "")
-                validateEmail(email);
-            });
-
-            // 表單驗證
-            $("#registerForm").validate({
-                errorClass: "error-message-color",
-                submitHandler: function (form) {
-                    if (!emailAlreadyRegistered) { // 檢查是否已經註冊
-                        event.preventDefault(); // 防止預設行為的發生
-                        const formData = new FormData(form);
-                        registerMember(formData);
-                    }
-                },
-                errorPlacement: function (error, element) {
-                    element.closest('.form-group').append(error);
-                },
-                rules: {
-                    // 可以加上特殊的規則
-                    PasswordCheck: {
-                        equalTo: "#passwordInput"
-                    }
-                },
-                messages: {
-                    PasswordCheck: {
-                        equalTo: "密碼不相符，請再重新輸入一次"
-                    }
-                }
+                    validateEmail(email);
             });
         });
+
+       
+        // 表單驗證
+        $("#registerForm").validate({
+            errorClass: "error-message-color",
+            submitHandler: function (form) {
+                if (!emailAlreadyRegistered) { // 檢查是否已經註冊
+                    event.preventDefault(); // 防止預設行為的發生
+                    const formData = new FormData(form);
+                    registerMember(formData);
+                }
+            },
+            errorPlacement: function (error, element) {
+                element.closest('.form-group').append(error);
+            },
+            rules: {
+                // 可以加上特殊的規則
+                PasswordCheck: {
+                    equalTo: "#passwordInput"
+                }
+            },
+            messages: {
+                PasswordCheck: {
+                    equalTo: "密碼不相符，請再重新輸入一次"
+                }
+            }
+        });
+                
 
         // 驗證電子信箱是否存在的函數
         function validateEmail(email) {
@@ -342,7 +344,7 @@
 
 
             
-            if (emailAlreadyRegistered){
+            if (!emailAlreadyRegistered){
                 // 使用 Ajax 傳送至後端
                 $.ajax({
                     url: '@Url.Action("SendMailToken", "MemberLogin")',
@@ -372,7 +374,7 @@
         $('#registerdemoBTN').click(function () {
             $('#registerNameText').val("安安");
             $('#registerBirthText').val("01/01/1999");
-            $('#emailInput').val("lovecat002@gmail.com")
+            $('#emailInput').val("ocarina51006@gmail.com")
             $('#registerPhoneText').val("0988657812");
             $('#passwordInput').val("aaa1234");
             $('#passwordCheck').val("aaa123");

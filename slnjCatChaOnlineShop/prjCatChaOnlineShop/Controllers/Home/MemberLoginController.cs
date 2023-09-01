@@ -61,7 +61,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult RegisterMember(ShopMemberInfo registerModel)
         {
-
+            registerModel.EmailVerified = false;
+            registerModel.RegistrationTime = DateTime.Now;
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 
