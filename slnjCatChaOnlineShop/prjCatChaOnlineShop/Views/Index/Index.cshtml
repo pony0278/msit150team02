@@ -76,25 +76,7 @@
         </div>
     </div>
 </div>
-@* <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Modal Title</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <!-- 在這裡添加您想要顯示的內容 -->
-                商品已成功加入購物車！
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">關閉</button>
-            </div>
-        </div>
-    </div>
-</div> *@
+
 <!-- Start Slider -->
 <div id="slides-shop" class="cover-slides">
     <ul class="slides-container">
@@ -259,37 +241,37 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                                <div class="col-lg-3 col-md-6 special-grid best-seller">
-                                    <div class="products-single-custom fix">
-                                        <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                            <div class="box-img-hover">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                            </div>
-                                        </a>
-                                        <div class="why-text">
-                                            <h4>@item.pName</h4>
-                                            @if (item.pDiscount != null)
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
+                                    </div>
+                                    <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
-                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                </div>
+                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                    <i class="far fa-heart"></i>
+                                </a>
                             </div>
                         </div>
-                        <!-- end prod1  -->
+                    </div>
+                    <!-- end prod1  -->
                 }
             }
 
@@ -510,12 +492,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        isFavorited = !isFavorited; // 切換狀態
-                        if (isFavorited) {
-                            button.addClass("favorited");
-                        } else {
-                            button.removeClass("favorited");
-                        }
+                        
                     }
                     else {
                         $('#live-toast .toast-body').text(response.message);
@@ -541,12 +518,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        isFavorited = !isFavorited; // 切換狀態
-                        if (isFavorited) {
-                            button.addClass("favorited");
-                        } else {
-                            button.removeClass("favorited");
-                        }
+                        
                     }
                     else {
                         $('#live-toast .toast-body').text(response.message);

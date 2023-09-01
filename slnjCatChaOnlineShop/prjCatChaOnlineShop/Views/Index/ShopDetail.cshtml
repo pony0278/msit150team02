@@ -392,12 +392,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        isFavorited = !isFavorited; // 切換狀態
-                        if (isFavorited) {
-                            button.addClass("favorited");
-                        } else {
-                            button.removeClass("favorited");
-                        }
+                        
                     }
                     else {
                         $('.toast .toast-body').text(response.message);
@@ -452,12 +447,7 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        isFavorited = !isFavorited; // 切換狀態
-                        if (isFavorited) {
-                            button.addClass("favorited");
-                        } else {
-                            button.removeClass("favorited");
-                        }
+                       
                     }
                     else {
                         $('.toast .toast-body').text(response.message);
