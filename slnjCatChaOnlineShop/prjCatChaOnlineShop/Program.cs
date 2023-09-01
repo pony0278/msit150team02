@@ -56,7 +56,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.MapHub<ChatHub>("/chathub");
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
@@ -68,7 +67,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=CMSHome}/{action=Login}/{id?}");
-
+    endpoints.MapHub<ChatHub>("/chatHub");
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Index}/{action=Index}/{id?}");
