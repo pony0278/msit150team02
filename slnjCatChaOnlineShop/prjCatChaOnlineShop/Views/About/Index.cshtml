@@ -14,8 +14,11 @@
 @section Scripts{
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
     <script>
+        const userName = '@ViewBag.UserName'
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub")
+            .withUrl("/chathub", {
+                accessTokenFactory: () => userName
+            })
             .build();
 
         // 收到消息後更新 UI
@@ -32,14 +35,12 @@
 
         // 發送消息
         function sendMessage(user, message) {
-            const users = "username"; // 這裡可以從登入信息中獲取
+            const users = userName; // 這裡可以從登入信息中獲取
             const messageInput = document.getElementById("messageInput");
             const inputMessage = messageInput.value;
 
             connection.invoke("SendMessage", users, inputMessage).catch(err => console.error(err));
         }
-
-
     </script>
 
 }
