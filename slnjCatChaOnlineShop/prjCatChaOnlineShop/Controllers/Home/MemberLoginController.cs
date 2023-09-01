@@ -65,8 +65,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 
-            return RedirectToAction("Login");
 
+            return RedirectToAction("Login");
         }
         //驗證信箱是否存在
         [HttpPost]
