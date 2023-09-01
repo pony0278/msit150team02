@@ -18,7 +18,17 @@
         z-index:99;
     }
 
-    #Probability {
+#btnProBability {
+    position: absolute;
+    width: 16px;
+    height: 24px;
+    margin-top: -438px;
+    margin-left: 20px;
+    background-image: url(/images/game/Icon_Question.png);
+    background-size: contain;
+    background-position: center;
+}
+#Probability {
     border: 4px solid black;
     position: absolute;
     margin-left: 850px;
