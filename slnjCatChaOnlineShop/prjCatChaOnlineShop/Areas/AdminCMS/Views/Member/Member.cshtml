@@ -34,22 +34,37 @@
         }
 
         /*         #member-table_filter {
-                            display: inline-block;
-                            margin-bottom: 10px;
-                        } */
+                                    display: inline-block;
+                                    margin-bottom: 10px;
+                                } */
 
         paginate_button:hover {
             background-color: unset !important;
         }
 
         /* 選中行的背景顏色 */
-       .selected-cell {
+        .selected-cell {
             background-color: #2079fd !important; /* 將“blue”替換為您想要的藍色選中行的背景顏色 */
             color: #fff !important; /* 調整文字顏色以確保可讀性 */
         }
 
         .checkbox-css {
             outline: 2px solid #FFF;
+        }
+
+        .sentLetterModalToggleDiv {
+            height: 200px;
+            overflow: auto;
+            border: 1px solid #aaa;
+            padding: 5px;
+        }
+
+        .email_addCss {
+            background-color: #8261e5;
+            color: #FFF;
+            border-radius: 15px;
+            padding: 7px;
+            line-height: 40px;
         }
     </style>
 }
@@ -61,7 +76,7 @@
             <h2 class="mt-3">會員管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
-            <button class="btn btn-warning" data-bs-toggle="modal" href="#sentLetterModalToggle" role="button">發送電子報</button>
+            <button class="btn btn-warning" data-bs-toggle="modal" href="#sentLetterModalToggle" id="NewsLetterModalBtn" role="button">發送電子報</button>
             <button class="btn btn-danger" data-bs-toggle="modal" href="#addLetterModalToggle" role="button">電子報上下版新增</button>
             <button class="create_btn" data-bs-toggle="modal" href="#addMemberModalToggle" role="button">新增會員</button>
         </div>
@@ -81,6 +96,20 @@
                 <div class="modal-body">
 
                     <input type="hidden" id="sentTemplateId" value="1" name="TemplateId" />
+
+                    <div class="form-group mb-2">
+                        <label>會員郵件列表</label>
+                        <div class="sentLetterModalToggleDiv" id="sentMailAddress">
+                            @*<p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>
+                            <p>123@gmail.com</p>*@
+                        </div>
+                    </div>
 
                     <div class="form-group mb-2">
                         <label>郵件主旨</label>
@@ -106,7 +135,6 @@
         </div>
     </div>
     <!---發送電子報 modal-->
-
     <!---新增電子報 modal-->
     <div class="modal fade" id="addLetterModalToggle" aria-hidden="true"
          aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -138,7 +166,6 @@
         </div>
     </div>
     <!---新增電子報 modal-->
-
     <!---新增會員 modal-->
     <div class="modal fade" id="addMemberModalToggle" aria-hidden="true"
          aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -217,6 +244,14 @@
                         </select>
                     </div>
 
+                    <div class="form-group mb-3">
+                        <label>是否訂閱電子報：</label>
+                        <select class="form-control" id="CreatMemberSubscribe" name="Subscribe">
+                            <option value="true">是</option>
+                            <option value="false">否</option>
+                        </select>
+                    </div>
+
                     <button id="CreatMember" class="btn btn-danger btn-block" style="width: 100%;">
                         儲存
                     </button>
@@ -238,7 +273,10 @@
                         <option value="凍結">凍結</option>
                     </select>
 
-                    <button id="selectAllBtn">全選</button>
+                    <div>
+                        <input type="checkbox" id="select-all" />
+                        <label for="select-all">全選</label>
+                    </div>
                 </div>
                 <!--表格-->
                 <table id="member-table" class="table table-striped nowrap" style="width:100%">
@@ -254,6 +292,7 @@
                             <th>電話</th>
                             <th>地址</th>
                             <th>狀態</th>
+                            <th>訂閱</th>
                             <th>詳細資料</th>
                             <th>編輯</th>
                         </tr>
@@ -294,7 +333,7 @@
                             data-bs-target="#member-edit-nav-contact" type="button"
                             role="tab">
                             常用地址
-                            </button> *@
+                            </button> 
                             @*                                         <button class="nav-link" id="nav-contact2-tab"
                             data-bs-toggle="tab"
                             data-bs-target="#member-edit-nav-paper" type="button"
@@ -543,6 +582,17 @@
             });
             //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
 
+            //==========沒有勾選會員時阻止bootsrap5 modal 彈出視窗
+            $('#sentLetterModalToggle').on('show.bs.modal', function (e) {
+                if (selectedEmails == "") {
+                    e.preventDefault();
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請先勾選要發送的會員',
+                    });
+                }
+            });
+
             //==========禁止使用者選擇生日為未來日期
             // 獲取現在日期
             var currentDate = new Date();
@@ -570,8 +620,6 @@
                     $('#CreatMemberPassword').attr('type', 'password');
                 }
             });
-
-
         });
 
 
@@ -688,10 +736,13 @@
                     }
                 },
                 {
-                    data: null, // Checkbox列
-                    orderable: false, // Disable sorting for this column
+                    data: 'subscribe',
                     render: function (data, type, row, meta) {
-                        return '<input type="checkbox" class="row-checkbox checkbox-css" data-email="' + row.email + '">';
+                        if (data) {
+                            return '<input type="checkbox" class="row-checkbox checkbox-css" data-email="' + row.email + '">';
+                        } else {
+                            return '';
+                        }
                     }
                 },
                 //這裡要注意json裡面是大寫還是小寫
@@ -709,6 +760,16 @@
                             return '<span class="badge rounded-pill bg-success fs-6">開放</span>';
                         } else {
                             return '<span class="badge rounded-pill bg-danger fs-6">凍結</span>';
+                        }
+                    }
+                },
+                {
+                    data: 'subscribe',
+                    render: function (data, type, row, meta) {
+                        if (data) {
+                            return '<span class="badge rounded-pill bg-success fs-6">是</span>';
+                        } else {
+                            return '<span class="badge rounded-pill bg-danger fs-6">否</span>';
                         }
                     }
                 },
@@ -735,7 +796,7 @@
                     searchable: true,
                     orderable: false,
                     className: 'select-checkbox',
-                    targets: 0
+                    targets: 0,
                 }
             ],
             fixedColumns: {
@@ -753,32 +814,35 @@
             buttons: [
                 'pageLength', 'copy', 'csv', 'excel', 'print'
             ],
-            "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
+            "order": [[2, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
         });
-
 
 
         var selectedEmails = []; // 儲存選中email的陣列
 
-        // 全選按鈕的點擊事件處理
-        $('#selectAllBtn').on('click', function () {
-            var $checkboxes = $('.row-checkbox'); // 所有的checkbox元素
-            var isCheckedAll = $checkboxes.not(':checked').length === 0; // 是否已經全選
+        //==========Datatable全選功能（參考資料https://juejin.cn/s/select%20all%20checkbox%20jquery%20datatable%20pagination）
+        $('#select-all').click(function () {
+            $(':checkbox', dataTable.rows().nodes()).prop('checked', this.checked);
 
-            if (isCheckedAll) {
-                $checkboxes.prop('checked', false); // 取消全選
-                selectedEmails = []; // 清空選中email的陣列
-            } else {
-                $checkboxes.prop('checked', true); // 全部打勾
-                selectedEmails = []; // 清空選中email的陣列
-                $checkboxes.each(function () {
-                    var emailValue = $(this).data('email');
-                    selectedEmails.push(emailValue); // 將所有email值加入陣列中
-                });
-            }
+            var checkboxRows = $(':checkbox:checked', dataTable.rows().nodes()).closest('tr');
+            checkboxRows.find('td').addClass('selected-cell');
 
-            console.log('Selected emails:', selectedEmails);
+            var nonCheckboxRows = $(':checkbox:not(:checked)', dataTable.rows().nodes()).closest('tr');
+            nonCheckboxRows.find('td').removeClass('selected-cell');
+
+            selectedEmails = []; // 清空之前存的選取 email 值
+
+            // 遍歷每個選中的複選框
+            $(':checkbox:checked', dataTable.rows().nodes()).each(function () {
+                $(this).addClass('selected-cell');
+                var email = $(this).data('email'); //獲取 data - email 屬性的值
+                selectedEmails.push(email); // 將 email 值添加到陣列中
+            });
+            console.log(selectedEmails);
         });
+
+
+        
 
 
         // 監聽checkbox變更事件
@@ -807,9 +871,30 @@
             }
         });
 
-        //=====================發送電子報
+        //=====================打開發送電子報modal按鈕
+        $('#NewsLetterModalBtn').on('click', function () {
+            //將郵件地址加上美化CSS
+            var formattedEmails = selectedEmails.map(function (email) {
+                return '<span class="email_addCss">' + email + '</span>';
+            });
+
+            var formattedEmailsString = formattedEmails.join(', ');
+            $('#sentMailAddress').html(formattedEmailsString);
+        })
+
+        //=====================按下發送按鈕
         $('#SentNewsLetter').on('click', function () {
-            console.log("???");
+
+            Swal.fire({
+                title: '請稍等...',
+                text: '程式執行中...請不要關閉此視窗',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                onBeforeOpen: () => {
+                    Swal.showLoading();
+                }
+            });
+
             var TemplateId = $('#sentTemplateId').val();
             var Subject = $('#sentSubject').val();
             var ImageUrl = $('#sentImgUrl').val();
@@ -822,6 +907,10 @@
             formData.append("ImageUrl", ImageUrl);
             formData.append("ContentImage", file);
 
+            // Convert selectedEmails array to a comma-separated string
+            var recipientEmails = selectedEmails.join(",");
+            formData.append("RecipientEmails", recipientEmails);
+
             $.ajax({
                 url: '@Url.Action("SentNewsLetter", "Member")',
                 type: "POST",
@@ -829,14 +918,22 @@
                 processData: false,
                 contentType: false,
                 success: function (response) {
-                    alert("發送郵件成功!");
-                    window.location.reload();
+                    // 關閉 loading 視窗
+                    Swal.close();
+
+                    Swal.fire({
+                        icon: 'success',
+                        title: '已成功發送郵件!',
+                    }).then(function () {
+                        window.location.reload();
+                    });
+
                 }
             });
         });
 
-            //===================新增電子版上下版
-        $('#CreatNewsLetter').on('click', function(){
+        //===================新增電子版上下版
+        $('#CreatNewsLetter').on('click', function () {
             var fileInput1 = $('#headerImg')[0];
             var fileInput2 = $('#footerImg')[0];
             var file = fileInput1.files[0];
@@ -944,12 +1041,12 @@
                             var addressNumber = i + 1; //計算幾筆資料的數字
 
                             itemDiv.innerHTML = `
-                                                                                                                                                                                                            <h5><b>常用地址－${addressNumber}</b></h5>
-                                                                                                                                                                                                            <p>收件人姓名: ${item.recipientName}</p>
-                                                                                                                                                                                                            <p>連絡電話: ${item.recipientPhone}</p>
-                                                                                                                                                                                                            <p>收件地址: ${item.recipientAddress}</p>
-                                                                                                                                                                                                    <hr>
-                                                                                                                                                                                                `;
+                                                                                                                                                                                                                    <h5><b>常用地址－${addressNumber}</b></h5>
+                                                                                                                                                                                                                    <p>收件人姓名: ${item.recipientName}</p>
+                                                                                                                                                                                                                    <p>連絡電話: ${item.recipientPhone}</p>
+                                                                                                                                                                                                                    <p>收件地址: ${item.recipientAddress}</p>
+                                                                                                                                                                                                            <hr>
+                                                                                                                                                                                                        `;
                             CAContainer.append(itemDiv);
                         }
                     } else {
@@ -978,13 +1075,13 @@
                             }
 
                             itemDiv.innerHTML = `
-                                                                                                                                                                                                                    <h5><b>優惠券第${couponNumber}張</b></h5>
-                                                                                                                                                                                                                            <p>優惠券ID: ${item.couponId}</p>
-                                                                                                                                                                                                                                    <p>優惠券內容: ${item.coupon.couponContent}</p>
-                                                                                                                                                                                                                                                    <p>有效日期: ${formattedExpiryDate}</p>
-                                                                                                                                                                                                                            <p>優惠券狀態: ${item.couponStatusId}</p>
-                                                                                                                                                                                                    <hr>
-                                                                                                                                                                                                `;
+                                                                                                                                                                                                                            <h5><b>優惠券第${couponNumber}張</b></h5>
+                                                                                                                                                                                                                                    <p>優惠券ID: ${item.couponId}</p>
+                                                                                                                                                                                                                                            <p>優惠券內容: ${item.coupon.couponContent}</p>
+                                                                                                                                                                                                                                                            <p>有效日期: ${formattedExpiryDate}</p>
+                                                                                                                                                                                                                                    <p>優惠券狀態: ${item.couponStatusId}</p>
+                                                                                                                                                                                                            <hr>
+                                                                                                                                                                                                        `;
                             couponContainer.append(itemDiv);
                         }
                     } else {
@@ -1193,6 +1290,7 @@
             var PhoneNumber = $('#CreatPhoneNumber').val();
             var Address = $('#CreatAddress').val();
             var MemberStatus = $('#CreatMemberStatus').val();
+            var Subscribe = $('#CreatMemberSubscribe').val();
 
             CheckDuplicateAccount();
             checkMail();
@@ -1228,6 +1326,7 @@
                 PhoneNumber: PhoneNumber,
                 Address: Address,
                 MemberStatus: MemberStatus,
+                Subscribe: Subscribe,
                 RegistrationTime: formattedDateTime
             };
 

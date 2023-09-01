@@ -18,6 +18,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using static System.Net.Mime.MediaTypeNames;
 using System.Net.Mime;
 using System.Drawing;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 //using prjCatChaOnlineShop.Areas.AdminCMS.Util;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
@@ -253,13 +254,18 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
-        public async Task<IActionResult> SentNewsLetter([FromForm] CSentNewsLetter cAnnounce)
+        public async Task<IActionResult> SentNewsLetter([FromForm] CSentNewsLetter cAnnounce, [FromForm] string[] recipientEmails)
         {
             var image = cAnnounce.ContentImage;
 
             if (image == null || image.Length == 0)
             {
                 return BadRequest("No image provided.");
+            }
+
+            if (recipientEmails == null || recipientEmails.Length == 0)
+            {
+                return BadRequest("No recipient email provided.");
             }
 
             string imageUrl;
@@ -269,25 +275,27 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-
                 return BadRequest("Error uploading the image.");
             }
-            var newAnnounce = new Newsletter
-            {
-                TemplateId = cAnnounce.TemplateId,
-                Subject = cAnnounce.Subject,
-                ContentImage = imageUrl,
-                ImageUrl = cAnnounce.ImageUrl,
-                SendDate = DateTime.Now,
-            };
-
             try
             {
-                _context.Newsletter.Add(newAnnounce);
-                await _context.SaveChangesAsync();
+                foreach (string recipientEmail in recipientEmails)
+                {
+                    var newAnnounce = new Newsletter
+                    {
+                        TemplateId = cAnnounce.TemplateId,
+                        Subject = cAnnounce.Subject,
+                        ContentImage = imageUrl,
+                        ImageUrl = cAnnounce.ImageUrl,
+                        SendDate = DateTime.Now,
+                    };
 
-                // 成功保存数据后，调用发送邮件的 API
-                sendTest(newAnnounce.NewsletterId); // 传递新插入的Newsletter的ID
+                    _context.Newsletter.Add(newAnnounce);
+                    await _context.SaveChangesAsync();
+
+                    // 成功保存數據後，調用發送郵件的 API
+                    sendTest(newAnnounce.NewsletterId, recipientEmail); // 傳遞新插入的Newsletter的ID和收件人郵箱
+                }
             }
             catch
             {
@@ -301,19 +309,19 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return imageUrls;
         }
         [HttpPost]
-        public IActionResult sendTest(int newsletterId)
+        public IActionResult sendTest(int newsletterId, string recipientEmailAddress)
         {
             string senderEmail = "rong502njc@gmail.com"; //寄件人mail
             string senderPassword = "wdyhdmvdwniptybf"; //應用程式密碼： 如果您的 Gmail 帳號啟用了雙重驗證，您需要使用應用程式密碼而不是您的 Gmail 登錄密碼。您可以在 Google 帳號的安全性設置中建立一個應用程式密碼，然後將它用作您的密碼。
 
             // 收件人的mail
-            string recipientEmail = "liang930517@yahoo.com.tw";
-            
+            string recipientEmail = recipientEmailAddress;
+
             var newsletter = _context.Newsletter.FirstOrDefault();
 
             var insertedNewsletter = _context.Newsletter.FirstOrDefault(n => n.NewsletterId == newsletterId);
 
-                var newsletterTemplete = _context.NewsletterTemplate.FirstOrDefault();
+            var newsletterTemplete = _context.NewsletterTemplate.FirstOrDefault();
 
             if (insertedNewsletter != null)
             {
@@ -325,16 +333,36 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                 // 構建HTML郵件內容，包含圖片
                 string htmlBody = $@"
-                        <html>
-                        <body>
-                            <p> 此為系統主動發送信函，請勿直接回覆此封信件。</p>
-                            <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
-                            <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
-                            <img src='{imgFooter}' alt='Image' style='max-width: 100%;' />
-                        </body>
-                        </html>";
+    <html>
+    <body>
+        <table align='center' cellspacing='0' cellpadding='0' width='80%'>
+            <tr>
+                <td style='padding: 0 2rem;'>
+                </td>
+                <td style='text-align: center;'>
+                    <p style='font-size: 14px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
+                    <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
+                    <div>
+                        <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
+                    </div>
+                        <a href='{imageLink}'><button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button></a>
+                    <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
+                    <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
+                        <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
+                        <p>106 台北市大安區復興南路一段 390 號 2 樓 © All Rights Reserved. © 2023 catCha Taiwan</p>
+                    </div>
+                </td>
+                <td style = 'padding: 0 2rem;' >
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>";
 
-                // 设置SMTP客户端信息
+                // 設置發件人的名稱和郵箱地址
+                MailAddress fromAddress = new MailAddress(senderEmail, "catCha 貓抓抓"); // 後面的參數是想要顯示的姓名
+
+                // 設置SMTP客户端信息
                 SmtpClient smtpClient = new SmtpClient("smtp.gmail.com")
                 {
                     Port = 587,
@@ -342,9 +370,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     EnableSsl = true,
                 };
 
-                // 创建邮件
+                // 創建郵件
                 MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail)
                 {
+                    From = fromAddress, // 設置發件人
                     Subject = mailSubject,
                     Body = htmlBody,
                     IsBodyHtml = true
@@ -352,7 +381,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                 try
                 {
-                    // 发送邮件
+                    // 發送郵件
                     smtpClient.Send(mailMessage);
                     Console.WriteLine("邮件发送成功！");
                 }
@@ -366,53 +395,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 Console.WriteLine("无可用Newsletter数据。");
             }
             return Json(new { success = true, message = "發送信件成功" });
-            //}
-        }
-
-        public void mailBody(MailMessage mail)
-        {
-            string palinBody = "【XXXX】";
-            AlternateView plainView = AlternateView.CreateAlternateViewFromString(
-                     palinBody, null, "text/plain");
-
-            string htmlBody = "<p> 此為系統主動發送信函，請勿直接回覆此封信件。</p> ";
-
-            // 获取从数据库中获取的图片网址列表
-            List<string> imageUrls = GetImageUrlsFromDatabase();
-
-            foreach (string imageUrl in imageUrls)
-            {
-                htmlBody += $"<img alt=\"\" hspace=0 src=\"cid:{imageUrl}\" align=baseline border=0 >";
-            }
-
-            htmlBody += "<img alt=\"\" hspace=0 src=\"cid:sale-info\" align=baseline border=0 >";
-
-            AlternateView htmlView =
-                    AlternateView.CreateAlternateViewFromString(htmlBody, null, "text/html");
-            imgResource(htmlView, "sale-info.jpg", "image/jpg");
-
-
-            // add the views
-            mail.AlternateViews.Add(plainView);
-            mail.AlternateViews.Add(htmlView);
-        }
-
-        public void imgResource(AlternateView htmlView, string imgName, string imgType)
-        {
-            // create image resource from image path using LinkedResource class..   
-            LinkedResource imageResource = new LinkedResource(getImgPath(imgName), imgType);
-            string[] imgArr = imgName.Split('.');
-            imageResource.ContentId = imgArr[0];
-            imageResource.TransferEncoding = TransferEncoding.Base64;
-            htmlView.LinkedResources.Add(imageResource);
-        }
-
-        private string getImgPath(string strImgName)
-        {
-            //設定(絕對)圖片路徑
-            string strImgPath = @"C:\msit150team02\slnjCatChaOnlineShop\prjCatChaOnlineShop\wwwroot\images\" + strImgName;
-
-            return strImgPath;
         }
     }
 }

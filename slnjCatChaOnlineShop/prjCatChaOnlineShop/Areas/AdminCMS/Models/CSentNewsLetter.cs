@@ -4,7 +4,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 {
     public class CSentNewsLetter
     {
-        private Newsletter _newsletter = null;
+        private Newsletter _newsletter;
         public Newsletter NewsLetter
         {
             get { return _newsletter; }
