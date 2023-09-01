@@ -347,6 +347,8 @@ function startGame() {
     selectedCatName = null //開始遊戲之後把選擇的貓貓清空
     resetRunGame(); //重設小遊戲設定
     pagesControl(Canvasrungame);//開啟小遊戲畫面
+    showRank();
+    loadRankData();
     showPage('a'); //說明視窗下次開啟時從第一頁開始
     alterConfirmWinBTN('確認', closeConfirmWin)//變更確認視窗按鈕內容
 }

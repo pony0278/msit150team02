@@ -32,7 +32,10 @@ function pagesControl(blockpage)//參數blockpage填入當前需要顯示的畫�
   }
   blockpage.style.display = "block"
 }
+function showRank() {
+    CanvasRank.style.display = "block";
 
+}
 //==========================
 
 

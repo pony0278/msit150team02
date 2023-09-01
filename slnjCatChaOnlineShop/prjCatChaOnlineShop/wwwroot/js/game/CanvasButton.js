@@ -181,8 +181,6 @@ canvas.addEventListener('click', (event) => {
     }
 
     if (isInBtnRange(editNameBTN, x, y)) { //更改名字
-       
-        
         changeUserName()
     }
 
@@ -202,6 +200,8 @@ canvas.addEventListener('click', (event) => {
     if (isInBtnRange(rankBTN, x, y)) { //Rank
         pagesControl(CanvasRank);
         Canvaslobby.style.display = "block"
+
+
         //載入資料庫排行榜資料
         loadRankData();
         return;
