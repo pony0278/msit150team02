@@ -14,6 +14,7 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="author" content="" />
+    @model IEnumerable<prjCatChaOnlineShop.Models.CModels.CProductItem>
 
     <!-- Site Icons -->
     <link rel="shortcut icon" href="~/images/fac.ico" type="image/x-icon" />
@@ -56,18 +57,23 @@
                             <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">所有商品</a>
                             <ul class="dropdown-menu">
                                 <li><a asp-controller="Index" asp-action="Shop">商品</a></li>
-                                <li><a href="shop.html">商品</a></li>
-                                <li><a href="shop.html">商品</a></li>
-                                <li><a href="shop.html">商品</a></li>
-                                <li><a href="shop.html">商品</a></li>
-                                <li><a href="shop.html">商品</a></li>
+                                @foreach (var item in Model.DistinctBy(p => p.pCategoryId))
+                                {
+                                    <li>
+                                        <a class="for-ajax" href="#" data-category-name="@item.pCategoryName">
+                                            <span>@item.pCategoryName</span>
+                                        </a>
+                                    </li>
+
+                                }
+
                             </ul>
                         </li>
                         <li class="nav-item"><a class="nav-link" asp-controller="ShopNews" asp-action="News">最新消息</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="About" asp-action="About">關於我們</a></li>
                         <li class="nav-item"><a class="nav-link" asp-controller="Membership" asp-action="Membership">會員中心</a></li>
                         <!-- Mobile view .attr-nav -->
-                       
+
                     </ul>
                     <ul class="d-flex d-lg-none justify-content-evenly">
                         <li class="heart">
@@ -125,9 +131,9 @@
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
                         </li>
-                        
+
                         @{
-                           
+
 
                             if (!string.IsNullOrEmpty(userName))
                             {
@@ -153,9 +159,10 @@
                                 </li>
                             }
                         }
-                       
+
                     </ul>
                 </div>
+            </div>
         </nav>
     </header>
     @RenderBody()
@@ -251,22 +258,20 @@
         </p>
     </div>
     <!-- End copyright  -->
-
-
     @await RenderSectionAsync("Scripts",required:false)
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    
-    
+
+
     @await RenderSectionAsync("ScriptsForAfter",required:false)
 
 </body>
 </html>
 
 @section Scripts{
-<script>
-  
+    <script>
+        
         ////右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
         //const targetloginTextClass = 'LoginText';
         //const logoutcontainer = 'Logout';
@@ -297,6 +302,6 @@
         //    });
         //}
         //loginAndGetName();//載入頁面時檢查
-</script>
+    </script>
 
 }

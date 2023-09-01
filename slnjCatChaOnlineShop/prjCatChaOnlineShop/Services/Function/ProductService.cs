@@ -98,11 +98,12 @@ namespace prjCatChaOnlineShop.Services.Function
             return items; 
         }
         
-        public CDetailsViewModel getDetailsById(int? id)
+        public CDetailsViewModel getDetailsById(int? pId)
         {
                 CDetailsViewModel details = new CDetailsViewModel();
-                details.selectedProduct = getProductById(id);
-                details.recommands = getProductByCategoryName(getProductById(id).pCategoryName);
+                details.selectedProduct = getProductById(pId);
+                details.recommands = getProductByCategoryName(getProductById(pId).pCategoryName);
+                details.reviews = getReview(pId);
                 return details;
         }
         public List<string>? getOtherAttr(int? id)
@@ -183,6 +184,36 @@ namespace prjCatChaOnlineShop.Services.Function
 
             return null;
         }
-        
+        public List<CProductReview> getReview(int? pId)
+        {
+
+
+            var data = _context.ShopProductReviewTable
+                        .Where(r => r.ProductId == pId && r.HideReview == false)
+                        .Take(5)
+                        .Select(r => new CProductReview
+                        {
+                            r會員姓名 = r.Member.Name.Length > 2 ?
+                             r.Member.Name.Substring(0, r.Member.Name.Length - 2) + "*" + "*" :
+                             r.Member.Name,
+                            r會員照片 = r.Member.MemberImage,
+                            r內容 = r.ReviewContent,
+                            r評分 = r.ProductRating,
+                            r評分時間 = r.ReviewTime
+                        })
+                        .ToList();
+
+            //var data = (from r in _context.ShopProductReviewTable.AsEnumerable()
+            //           where r.ProductId == pId&& r.HideReview==false
+            //           select new CProductReview
+            //           {
+            //               r會員姓名 = r.Member.Name,
+            //               r會員照片 = r.Member.MemberImage,
+            //               r內容 = r.ReviewContent,
+            //               r評分 = r.ProductRating,
+            //               r評分時間 = r.ReviewTime
+            //           }).Take(5).ToList();
+            return data;
+        }
     }
 }
