@@ -11,5 +11,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             return View();
         }
+        public IActionResult Index()
+        {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;
+            return View();
+        }
     }
 }

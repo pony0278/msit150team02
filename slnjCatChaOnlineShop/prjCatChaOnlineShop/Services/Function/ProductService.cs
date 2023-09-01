@@ -3,10 +3,13 @@ using Microsoft.CodeAnalysis.FlowAnalysis.DataFlow;
 using Microsoft.CodeAnalysis.Options;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text.Json;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace prjCatChaOnlineShop.Services.Function
@@ -14,10 +17,16 @@ namespace prjCatChaOnlineShop.Services.Function
     public class ProductService
     {
         private readonly cachaContext _context;
-
-        public ProductService(cachaContext context)
+        private readonly IWebHostEnvironment _host;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly CheckoutService _checkoutService;
+        public ProductService(cachaContext context, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, CheckoutService checkoutService)
         {
             _context = context;
+            _host = host;
+            _httpContextAccessor = httpContextAccessor;
+            _checkoutService = checkoutService;
+
         }
         public List<CProductItem> getProductItems()
         {
@@ -36,19 +45,19 @@ namespace prjCatChaOnlineShop.Services.Function
 
             List<CProductItem> items = data;
             return items;
+        }
 
-        }
-        public List<CCategoryItem> getCatProductForEachPage(string? catName, int itemPerPage)
-        {
-            List<CCategoryItem> categoryItems = new List<CCategoryItem>();
-            var items = getProductByCategoryName(catName).Take(itemPerPage);
-            var name = items.FirstOrDefault().pCategoryName;
-            CCategoryItem c = new CCategoryItem();
-            c.pItem = items.ToList();
-            c.categoryName = name;
-            categoryItems.Add(c);
-            return categoryItems;
-        }
+        //public List<CCategoryItem> getCatProductForEachPage(string? catName, int itemPerPage)
+        //{
+        //    List<CCategoryItem> categoryItems = new List<CCategoryItem>();
+        //    var items = getProductByCategoryName(catName).Take(itemPerPage);
+        //    var name = items.FirstOrDefault().pCategoryName;
+        //    CCategoryItem c = new CCategoryItem();
+        //    c.pItem = items.ToList();
+        //    c.categoryName = name;
+        //    categoryItems.Add(c);
+        //    return categoryItems;
+        //}
         public CProductItem getProductById(int? id)
         {
             var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
@@ -63,6 +72,8 @@ namespace prjCatChaOnlineShop.Services.Function
                            p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
                            p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
                             pCategoryName = c.CategoryName,
+
+
                         }).FirstOrDefault();
             CProductItem item = data;
             return item;
@@ -81,6 +92,7 @@ namespace prjCatChaOnlineShop.Services.Function
                            p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
                            p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
                             pCategoryName = c.CategoryName,
+
                         }).ToList();
             List<CProductItem> items = data;
             return items; 
@@ -105,7 +117,7 @@ namespace prjCatChaOnlineShop.Services.Function
 
         public decimal priceFinal(decimal? price, decimal? priceSale)
         {
-            if (priceSale != null)
+            if (price!=null&&priceSale != null)
             {
                 return (decimal)priceSale;//特價時的金額
             }
@@ -159,5 +171,18 @@ namespace prjCatChaOnlineShop.Services.Function
                 cart.Add(cartItem);
             }
         }
+        //找到會員ID
+        public int? GetCurrentMemberId()
+        {
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            if (memberInfoJson != null)
+            {
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                return memberInfo.MemberId;
+            }
+
+            return null;
+        }
+        
     }
 }

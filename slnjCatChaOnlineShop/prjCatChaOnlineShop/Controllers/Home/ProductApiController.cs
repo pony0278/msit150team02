@@ -33,35 +33,25 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _checkoutService = checkoutService;
 
         }
+
         public IActionResult Index()
         {
             return View();
         }
-        //找到會員ID
-        private int? GetCurrentMemberId()
-        {
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            if (memberInfoJson != null)
-            {
-                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                return memberInfo.MemberId;
-            }
-
-            return null;
-        }
+        
 
         public IActionResult AddToWishlist(int? pId)
         {
-            if (GetCurrentMemberId() != null)
+            if (_productService.GetCurrentMemberId() != null)
             {
                 var existingItem = (from w in _context.ShopFavoriteDataTable.AsEnumerable()
-                                    where w.MemberId == GetCurrentMemberId() && w.ProductId == pId
-                                    select w).FirstOrDefault();
-
+                                    where w.MemberId == _productService.GetCurrentMemberId() && w.ProductId == pId
+                                    select w).FirstOrDefault();                
                 //判斷是否已加入
-                if (existingItem != null)
+                if (existingItem != null)//移除
                 {
                     _context.ShopFavoriteDataTable.Remove(existingItem);
+                    
                 }
                 else
                 {
@@ -69,16 +59,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     var newItem = new ShopFavoriteDataTable
                     {
 
-                        MemberId = GetCurrentMemberId(),
+                        MemberId = _productService.GetCurrentMemberId(),
                         ProductId = pId,
                         CreationDate = DateTime.Now
                     };
                     _context.ShopFavoriteDataTable.Add(newItem);
+                   
                 }
                 _context.SaveChanges();
-                return Json(new { success = true });
-
+                return Json(new { success = true});
             }
+            //未登入的情況
             return Json(new { success = false, message = "請先登入!" });
         }
 
@@ -156,7 +147,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult AddToCart(int pId)
         {
-            if (GetCurrentMemberId() != null)
+            if (_productService.GetCurrentMemberId() != null)
             {
                 var prodItem = _productService.getProductById(pId);
 
@@ -176,7 +167,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult DetailsAddToCart(int pId, string attr, int count)
         {
 
-            if (GetCurrentMemberId() != null)
+            if (_productService.GetCurrentMemberId() != null)
             {
                 var prodItem = _productService.getProductById(pId);
                 // 接下來進行購物車處理...
@@ -243,12 +234,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult MultipleFilter(int optionOrder, string? optionBrand, string? catName, int itemPerPage)
         {
-            var prods = _productService.getProductItems().Take(itemPerPage);
+            var prods = _productService.getProductItems();
             if (catName != null)
             {
-                prods= _productService.getProductByCategoryName(catName).Take(itemPerPage);
+                prods= _productService.getProductByCategoryName(catName);
             }
-            
+            if (optionBrand != null)
+            {
+                prods = prods.Where(p => p.pName.Contains(optionBrand)).ToList();
+            }
             switch (optionOrder)
             {
                 // 商品排序
@@ -279,11 +273,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     prods = prods.OrderBy(item => _productService.priceFinal(item.pPrice, item.p優惠價格)).ToList();
                     break;
             }
-            if (optionBrand != null)
-            {
-                prods=prods.Where(p => p.pName.Contains(optionBrand)).ToList();
-            }
-            return Json(prods);
+            
+            return Json(prods.Take(itemPerPage));
             
         }
 

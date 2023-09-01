@@ -13,35 +13,37 @@ $(document).ready(async function () {
     var optionBrand = '';
 
     //切換類別
-    $('.for-ajax').click(function (e) {
+    $('.for-ajax').click(async function (e) {
         e.preventDefault();
 
-        catName = $(this).data("category-name");
-        categoryTitle.text(catName)
-        displayedItemCount = 0; // 重置已顯示的資料筆數
+        catName = $(this).data("category-name");//丟進選到的類別名稱
+        categoryTitle.text(catName)//顯示選到的類別
+
         productList.empty();//清空
-        selectedValue = parseInt(itemPerPageSelect.val());
-        fetchMoreProducts();
+        displayedItemCount = 0; //重置目前要顯示的所有筆數
+        selectedValue = parseInt(itemPerPageSelect.val());//一次顯示多少筆
+
+        await fetchMoreProducts();
     })
     //複合篩選
     var btnFilter = $('#filter-submit');
-    btnFilter.on('click', function () {
+    btnFilter.on('click', async function () {
 
-        productList.empty();//清空
-        displayedItemCount = 0;
-        selectedValue = parseInt(itemPerPageSelect.val());
+        productList.empty();//清空商品區
+        displayedItemCount = 0;//重置目前要顯示的所有筆數
+        selectedValue = parseInt(itemPerPageSelect.val());//一次顯示多少筆
 
         optionOrder = parseInt(selOrder.val());//丟入選到選項
         optionBrand = selBrand.val();//丟入選到選項
        
-        fetchMoreProducts();
-
+        await fetchMoreProducts();
     });
 
     //選擇一次顯示筆數
     itemPerPageSelect.change(async function () {
-        displayedItemCount = 0; // 重置已顯示的資料筆數
+
         productList.empty();
+        displayedItemCount = 0; // 重置已顯示的資料筆數
         selectedValue = parseInt(itemPerPageSelect.val());
         await fetchMoreProducts();
     });
@@ -165,8 +167,6 @@ $(document).ready(async function () {
             }
         });
     });
-    // 點擊加入收藏按鈕(用類別去找addtocartaustom抓不到)
-    var isFavorited = false;
     productList.on('click', '.add-to-wishlist-coustom', async function (e) {
         e.preventDefault(); // 阻止<a>標籤的點擊預設行為
         
@@ -181,12 +181,7 @@ $(document).ready(async function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    isFavorited = !isFavorited; // 切換狀態
-                    if (isFavorited) {
-                        button.addClass("favorited");
-                    } else {
-                        button.removeClass("favorited");
-                    }
+                    
                 }
                 else {
                     $('.toast .toast-body').text(response.message);
