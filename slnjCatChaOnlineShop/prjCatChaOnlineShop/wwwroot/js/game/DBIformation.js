@@ -135,7 +135,7 @@ async function fetchDataAndProcess() {
 
             // 設置<p>元素的內容，包括圖片、道具名稱和機率
             pElement.appendChild(imgElement); // 將圖片添加到<p>元素中
-            pElement.innerHTML += ` 道具名稱：${testProbability.productName} 機率：${testProbability.lotteryProbability*100}%`;
+            pElement.innerHTML += ` 道具名稱：${testProbability.productName} 機率：${(testProbability.scaledProbability / 10).toFixed(3) }%`;
 
             // 將<p>元素添加到ItemsProbability容器中
             itemsProbabilityContainer.appendChild(pElement);
