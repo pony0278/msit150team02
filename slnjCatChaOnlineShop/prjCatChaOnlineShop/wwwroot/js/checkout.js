@@ -1,14 +1,33 @@
 ﻿$(document).ready(function () {
+
     //優惠券選擇，當使用者選擇該優惠券時將優惠券名稱填至input標籤裡
     $('.useCouponBtn').on('click', function () {
-        // 獲取按鈕上的優惠券名稱
+        //獲取按鈕上的優惠券名稱
         var couponName = $(this).data('coupon-code');
-        console.log(couponName);
+        //獲取按鈕上的優惠券SpecialOffer
+        var couponSpecialOffer = $(this).data('coupon-specialoffer');
+        console.log("優惠券名稱", couponName);
+        console.log("優惠券折數", couponSpecialOffer);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
+        $.ajax({
+
+            url: '/Coupon/couponDiscount', //TODO:建議要用url.content，不知道怎麼改QQ
+            type: 'POST',
+            data: { SpecialOffer: couponSpecialOffer },
+            success: function (response) {
+                $('#AllTotalPrice').text("NT" + response.totalPrice),
+                    $('#couponBonus').text("NT" + response.couponBonus),
+                    console.log(response);
+            }
+
+        })
+
+
         // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
+
 
 
     // 監聽確定按鈕的點擊事件
