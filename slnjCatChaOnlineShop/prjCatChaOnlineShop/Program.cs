@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddSession(options => {
     // 設定 Session 的過期時間（以分為單位）
@@ -55,10 +56,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
+
 
 
 app.UseEndpoints(endpoints =>
@@ -66,7 +67,7 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=CMSHome}/{action=Login}/{id?}");
-
+    endpoints.MapHub<ChatHub>("/chatHub");
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Index}/{action=Index}/{id?}");

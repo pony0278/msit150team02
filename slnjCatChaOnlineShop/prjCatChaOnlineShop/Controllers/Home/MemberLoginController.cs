@@ -61,12 +61,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult RegisterMember(ShopMemberInfo registerModel)
         {
-
+            registerModel.EmailVerified = false;
+            registerModel.RegistrationTime = DateTime.Now;
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 
-            return RedirectToAction("Login");
 
+            return RedirectToAction("Login");
         }
         //驗證信箱是否存在
         [HttpPost]

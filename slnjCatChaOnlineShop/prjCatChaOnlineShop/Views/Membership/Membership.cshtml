@@ -955,6 +955,7 @@
                         <form id="complaintForm">
                             <div class="col-md-12">
                                 <div class="form-group">
+                                    <h4 class="font-weight-bold">申訴類型</h4>
                                     <select class="form-select" aria-label="Default select example" id="appealCategorySelect">
                                         <option value="" selected>請選擇申訴類型</option>
                                     </select>
@@ -962,20 +963,27 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="ComplaintTitle" name="ComplaintTitle" placeholder="標題"
+                                    <h4 class="font-weight-bold">標題</h4>
+                                    <input type="text" class="form-control" id="ComplaintTitle" name="ComplaintTitle"
                                            required data-error="請輸入您的標題">
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="ComplaintContent" placeholder="內容" rows="4" name="ComplaintContent"
+                                    <h4 class="font-weight-bold">內容</h4>
+                                    <textarea class="form-control" id="ComplaintContent" rows="4" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
-                                    <div class="help-block with-errors"></div>
+                                </div>
+                                <div class="form-group" id="aiCheck" style="display: none;">
+                                    <h4 class="font-weight-bold">系統審合</h4>
+                                    <textarea class="form-control is-invalid" id="checkComplaint" rows="1"
+                                              data-error="文字判讀"></textarea>
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
-                                    <button class="btn hvr-hover mx-2" id="complaintSubmitDemo" type="button">Demo填入訊息</button>
+                                    <button class="btn hvr-hover mx-2" id="badComplaintSubmitDemo" type="button">Demo訊息1</button>
+                                    <button class="btn hvr-hover mx-2" id="complaintSubmitDemo" type="button">Demo訊息2</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -1708,7 +1716,8 @@
                     if (response.ok) {
                         $('#returnTextarea').val('');
                         $('#returnNumber').val('');
-                        //要清空照片
+                        document.getElementById('uploadReturnImagePreview').src = '';
+
                         loadReturnRecords();
 
                         return response.text();
@@ -2133,6 +2142,13 @@
                 });
             });
 
+            
+            //Demo鍵:載入客訴訊息
+            $('#badComplaintSubmitDemo').click(function (event) {
+                $('#ComplaintTitle').val("商品送錯包裝破損");
+                $('#ComplaintContent').val("為何我於9/1收到的包裹內容物，含有訂單上沒有的商品項目，而且運送過程中疑似發生嚴重碰撞? shit!!");
+            });
+
             //Demo鍵:載入客訴訊息
             $('#complaintSubmitDemo').click(function (event) {
                 $('#ComplaintTitle').val("訂單運送急件處理");
@@ -2166,43 +2182,177 @@
                 } else {
                     event.preventDefault();
 
-                    const formData = new FormData(document.querySelector('#complaintForm'));
-                    formData.append("selectedValue", selectedValue);
+                    var params = {
+                        "autocorrect": true,
+                        "PII": true,
+                        "classify": true,
+                        "language": "eng",
+                    };
+                    $.ajax({
+                        url: "https://msit150team02contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?" + $.param(params),
+                        beforeSend: function (xhrObj) {
+                            xhrObj.setRequestHeader("Content-Type", "text/plain");
+                            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "b4fcd4ce931442748ba5e0467bccfd67");
+                        },
+                        type: "POST",
+                        data: messageValue,
+                    }).done(function (data) {
+                        // alert(JSON.stringify(data));
 
-                    fetch('@Url.Content("/Membership/SaveComplaint")', {
-                        body: formData,
-                        method: 'POST'
+                        // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
+                        // 數據1 ： 成人內容
+                        var Category1 = data['Classification']['Category1']['Score'];
+                        // // 數據2 ： 性暗示
+                        var Category2 = data['Classification']['Category2']['Score'];
+                        // // 數據3 ： 冒犯性
+                        var Category3 = data['Classification']['Category3']['Score'];
 
-                    })
-                        .then(response => {
-                            if (response.ok) {
-                                $('#appealCategorySelect').val('');
-                                $('#ComplaintTitle').val('');
-                                $('#ComplaintContent').val('');
+                        $('#checkComplaint').val(`成人內容：${(Category1 * 100).toFixed(2)}%, 色情內容：${(Category2 * 100).toFixed(2)}%, 冒犯語言：${(Category3 * 100).toFixed(2)}%`);
+                        document.getElementById('aiCheck').style.display = 'block';
 
-                                // loadComplaintRecords();
-
-                                return response.text();
-                            } else {
-                                throw new Error('連線有誤，請向客服人員聯繫');
-                            }
-                        })
-                        .then(data => {
-                            Swal.fire({
-                                icon: 'success',
-                                title: '送出成功',
-                                text: '感謝您來信'
-                            });
-
-                            loadComplaintRecords();
-                        })
-                        .catch(error => {
+                        if (Category1 > 0.6 || Category2 > 0.6 || Category3 > 0.6) {
                             Swal.fire({
                                 icon: 'error',
-                                title: '錯誤',
-                                text: error.message
-                            });
-                        });
+                                title: '系統判讀',
+                                text: `冒犯指數過高：${(Category3 * 100).toFixed(2)}%`
+                            })
+                        } else {
+                            const formData = new FormData(document.querySelector('#complaintForm'));
+                            formData.append("selectedValue", selectedValue);
+
+                            fetch('@Url.Content("/Membership/SaveComplaint")', {
+                                body: formData,
+                                method: 'POST'
+
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        /*
+                                        $('#appealCategorySelect').val('');
+                                        $('#ComplaintTitle').val('');
+                                        $('#ComplaintContent').val('');
+                                        */
+                                        return response.text();
+                                    } else {
+                                        throw new Error('連線有誤，請向客服人員聯繫');
+                                    }
+                                })
+                                .then(data => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '送出成功',
+                                        text: '感謝您來信'
+                                    });
+
+                                    loadComplaintRecords();
+                                })
+                                .catch(error => {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: '錯誤',
+                                        text: error.message
+                                    });
+                                });
+                        }
+
+                    }).fail(function (err) {
+                        // alert(err.statusText);
+                        document.getElementById('aiCheck').style.display = 'block';
+                        $('#checkComplaint').val(err.statusText);
+
+                    });
+                        
+
+                    // 翻譯並進行仲裁
+                    /*
+                    async function translateAndReview() {
+                        const route = "/translate?api-version=3.0&from=zh-Hant&to=en"; // 將繁體中文翻譯成英文
+                        const translateContent = document.getElementById("inputText").value;
+                        const body = [{ text: translateContent }];
+                        const requestBody = JSON.stringify(body);
+
+                        const endpoint = "https://api.cognitive.microsofttranslator.com";
+                        const key = "71b37d7805e94efb96a507c0e44747c9";
+
+                        const headers = {
+                            'Ocp-Apim-Subscription-Key': key,
+                            'Content-Type': 'application/json'
+                        };
+
+                        const requestOptions = {
+                            method: 'POST',
+                            headers: headers,
+                            body: requestBody
+                        };
+
+                        try {
+                            const response = await fetch(endpoint + route, requestOptions);
+                            const data = await response.json();
+                            translatedText = data[0].translations[0].text; // 將翻譯後的文字儲存在全域變數
+
+                            console.log("Input: " + translateContent);
+                            console.log("Translated Output: " + translatedText);
+
+                            reviewText(translatedText); // 翻譯完成文字
+                        } catch (error) {
+                            console.error("An error occurred:", error);
+                        }
+                    }
+                    */
+
+                   //文字仲裁寫成方法
+                   /*
+                    function reviewText() {
+                        const inputContent = document.getElementById("inputTextContent").value;
+                        var params = {
+                            "autocorrect": true,
+                            "PII": true,
+                            "classify": true,
+                            "language": "eng",
+                        };
+                        $.ajax({
+                            url: "https://msit150team04contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?" + $.param(params),
+                            beforeSend: function (xhrObj) {
+                                // Request headers
+                                xhrObj.setRequestHeader("Content-Type", "text/plain");
+                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "52b9f75aaced496eb5fedd064400a63b");
+                            },
+                            type: "POST",
+                            // Request body
+                            data: inputContent, // 使用翻譯後的文字進行仲裁 translatedText
+                        }).done(function (data) {
+                            // alert(JSON.stringify(data));  //可以自行處理仲裁結果
+
+                            // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
+                            // 數據1 ： 成人內容
+                            var Category1 = data['Classification']['Category1']['Score'];
+                            // // 數據2 ： 性暗示
+                            var Category2 = data['Classification']['Category2']['Score'];
+                            // // 數據3 ： 冒犯性
+                            var Category3 = data['Classification']['Category3']['Score'];
+
+                            // alert(`內容:${text}, 信心指數:${(confidence*100).toFixed(2)}%`);
+
+                            if (Category1 > 0.6 || Category2 > 0.6 || Category3 > 0.6) {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '要確定耶! 真的要跟客人這樣說?',
+                                    text: `成人內容：${(Category1 * 100).toFixed(2)}%, 性暗示：${(Category2 * 100).toFixed(2)}%, 冒犯性：${(Category3 * 100).toFixed(2)}%,
+                         部分指數過高，請修正！`
+                                })
+                            } else {
+                                Swal.fire({
+                                    position: 'center',
+                                    icon: 'success',
+                                    title: '訊息已發送',
+                                    showConfirmButton: false,
+                                    timer: 1500
+                                })
+
+                            }
+                        }
+                     }
+                     */
                 }
             });
         });

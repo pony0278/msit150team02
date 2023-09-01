@@ -6,11 +6,11 @@ using System.Text.Json;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
-    public class CheckoutController : Controller
+    public class CartController : Controller
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly cachaContext _context;
-        public CheckoutController(IHttpContextAccessor httpContextAccessor,cachaContext context)
+        public CartController(IHttpContextAccessor httpContextAccessor,cachaContext context)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;

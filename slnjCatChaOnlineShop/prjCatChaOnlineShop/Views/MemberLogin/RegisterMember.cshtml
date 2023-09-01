@@ -81,7 +81,7 @@
                                         <label for="Email">電子信箱：</label>
                                         <input type="email" class="form-control" name="Email" id="emailInput"
                                                placeholder="email" required>
-                                        <div id="emailError" class="error-message-color" style="font-size:15px">此信箱已被註冊過</div>
+                                        <div id="emailError" class="error-message-color" style="font-size:15px; display:none;">此信箱已被註冊過</div>
                                     </div>
                                     <div class="mb-2 form-group">
                                         <label for="PhoneNumber">手機號碼：</label>
@@ -102,7 +102,7 @@
                                 </div>
 
                                 <div class="d-grid gap-2 mt-3">
-                                    <button class="mb-3 btn btn-light" id="registerbutton" type="submit">註冊</button>
+                                    <button class="mb-3 btn btn-light" id="registerbutton" type="submit")">註冊</button>
                                 </div>
                                 <div class="d-grid gap-2 mt-3">
                                     <button class="mb-3 btn btn-danger" id="registerdemoBTN" type="submit">DEMO帶入資料</button>
@@ -230,45 +230,50 @@
     
 
     <script type="text/javascript">
+        
 
+        //日期選擇功能
         $(function () {
             $('#datepicker').datepicker();
         });
-        var emailAlreadyRegistered = false; // 添加變數以追蹤是否已經註冊
+        let emailAlreadyRegistered = false; // 添加變數以追蹤是否已經註冊
 
         $(document).ready(function () {
             // 當輸入完電子信箱點選到其他地方(移開焦點)時執行信箱驗證
             $("#emailInput").blur(function () {
                 var email = $(this).val();
-                validateEmail(email);
-            });
-
-            // 表單驗證
-            $("#registerForm").validate({
-                errorClass: "error-message-color",
-                submitHandler: function (form) {
-                    if (!emailAlreadyRegistered) { // 檢查是否已經註冊
-                        event.preventDefault(); // 防止預設行為的發生
-                        const formData = new FormData(form);
-                        registerMember(formData);
-                    }
-                },
-                errorPlacement: function (error, element) {
-                    element.closest('.form-group').append(error);
-                },
-                rules: {
-                    // 可以加上特殊的規則
-                    PasswordCheck: {
-                        equalTo: "#passwordInput"
-                    }
-                },
-                messages: {
-                    PasswordCheck: {
-                        equalTo: "密碼不相符，請再重新輸入一次"
-                    }
-                }
+                if (email != "")
+                    validateEmail(email);
             });
         });
+
+       
+        // 表單驗證
+        $("#registerForm").validate({
+            errorClass: "error-message-color",
+            submitHandler: function (form) {
+                if (!emailAlreadyRegistered) { // 檢查是否已經註冊
+                    event.preventDefault(); // 防止預設行為的發生
+                    const formData = new FormData(form);
+                    registerMember(formData);
+                }
+            },
+            errorPlacement: function (error, element) {
+                element.closest('.form-group').append(error);
+            },
+            rules: {
+                // 可以加上特殊的規則
+                PasswordCheck: {
+                    equalTo: "#passwordInput"
+                }
+            },
+            messages: {
+                PasswordCheck: {
+                    equalTo: "密碼不相符，請再重新輸入一次"
+                }
+            }
+        });
+                
 
         // 驗證電子信箱是否存在的函數
         function validateEmail(email) {
@@ -292,30 +297,32 @@
 
         // 註冊會員的函數
         function registerMember(formData) {
+            const txtEmail = $('#emailInput').val();
+            const txtPassword = $('#passwordInput').val();
             fetch('@Url.Content("~/MemberLogin/RegisterMember")', {
                 body: formData,
                 method: 'POST'
             })
                 .then(response => {
                     if (response.ok) {
-                        //alert("註冊會員成功");
-                        //location.href = '@Url.Content("~/MemberLogin/Login")';
-                        Swal.fire({
-                            icon: 'success',
-                            title: '註冊會員成功',
-                            showConfirmButton: true,
-                        }).then((result) => 
-                        {
-                            if (result.isConfirmed) {
-                                location.href = '@Url.Content("~/MemberLogin/Login")';
-                            } 
-                        });
-                    } else {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '註冊會員失敗',
-                            text: '請稍後再試'
-                        });
+                        alert("註冊會員成功");
+                        location.href = '@Url.Content("~/MemberLogin/Login")';
+                    //    Swal.fire({
+                    //        icon: 'success',
+                    //        title: '註冊會員成功',
+                    //        showConfirmButton: true,
+                    //    }).then((result) => 
+                    //    {
+                    //        if (result.isConfirmed) {   
+                    //            location.href = '@Url.Content("~/Membership/Membership")';
+                    //        } 
+                    //    });
+                    //} else {
+                    //    Swal.fire({
+                    //        icon: 'error',
+                    //        title: '註冊會員失敗',
+                    //        text: '請稍後再試'
+                    //    });
                         //alert("註冊會員失敗");
                     }
                 }).catch(function (error) {
@@ -323,12 +330,52 @@
                 });
         }
 
+
+        // 這段 JavaScript 用於處理表單提交
+        function SendMailToken() {
+            //var form = document.forms["mailTokenForm"];
+            //var UserID = form.elements.Email.value;
+            const emailInput = $('#emailInput').val();
+            // 組合表單資料
+            var postData = {
+                //MemberID: UserID
+                MemberID: emailInput
+            };
+
+
+            
+            if (!emailAlreadyRegistered){
+                // 使用 Ajax 傳送至後端
+                $.ajax({
+                    url: '@Url.Action("SendMailToken", "MemberLogin")',
+                    method: 'POST',
+                    dataType: "json",
+                    contentType: "application/json",
+                    data: JSON.stringify(postData),
+                    success: function (response) {
+                        if (response.ErrMsg) {
+                            alert(response.ErrMsg);
+                            return false; // 失敗時返回 false
+                        }
+                        alert(response.ResultMsg);
+                        return true; // 成功時返回 true
+                    },
+                    error: function (err) {
+                        $('#ErrorMsg').html(err.responseText);
+                        $('#ErrorAlert').modal('toggle');
+                        return false; // 失敗時返回 false
+                    }
+                });             
+            }
+           
+        }
+
         //DEMO按鈕
         $('#registerdemoBTN').click(function () {
             $('#registerNameText').val("安安");
             $('#registerBirthText').val("01/01/1999");
-            $('#emailInput').val("lovecat002gmail.com")
-            $('#registerPhoneText').val("1988657812");
+            $('#emailInput').val("ocarina51006@gmail.com")
+            $('#registerPhoneText').val("0988657812");
             $('#passwordInput').val("aaa1234");
             $('#passwordCheck').val("aaa123");
         });
