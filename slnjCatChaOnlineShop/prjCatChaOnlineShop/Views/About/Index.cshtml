@@ -1,0 +1,45 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Index</h1>
+<div id="chatWindow">
+    <!-- 聊天消息將顯示在這裡 -->
+</div>
+<input type="text" id="messageInput" placeholder="輸入消息" />
+<button onclick="sendMessage()">發送</button>
+
+
+@section Scripts{
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+
+        // 收到消息後更新 UI
+        connection.on("ReceiveMessage", (user, message) => {
+            const chatWindow = document.getElementById("chatWindow");
+            const newMessage = document.createElement("div");
+
+            newMessage.innerHTML = `<strong>${user}:</strong> ${message}`;
+            chatWindow.appendChild(newMessage);
+        });
+
+        // 開始連接
+        connection.start().catch(err => console.error(err));
+
+        // 發送消息
+        function sendMessage(user, message) {
+            const users = "username"; // 這裡可以從登入信息中獲取
+            const messageInput = document.getElementById("messageInput");
+            const inputMessage = messageInput.value;
+
+            connection.invoke("SendMessage", users, inputMessage).catch(err => console.error(err));
+        }
+
+
+    </script>
+
+}

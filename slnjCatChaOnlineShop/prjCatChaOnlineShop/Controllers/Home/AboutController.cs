@@ -11,5 +11,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             return View();
         }
+        public IActionResult Index()
+        {
+            return View();
+        }
     }
 }

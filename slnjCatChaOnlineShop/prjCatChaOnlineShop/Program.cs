@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddSession(options => {
     // 設定 Session 的過期時間（以分為單位）
@@ -55,10 +56,11 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.MapHub<ChatHub>("/chathub");
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
+
 
 
 app.UseEndpoints(endpoints =>
