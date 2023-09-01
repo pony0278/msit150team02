@@ -13,7 +13,9 @@
     z-index: 9999; 
     background-color: white; 
 }
+#ItemsProbability{
 
+}
 .NyanCat-container {
     animation: runAcross 4s ease-out forwards;
 }
