@@ -130,11 +130,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { success = false });
         }
 
-
+        //發送給所有會員
         [HttpPost]
         public IActionResult SendCouponToMembers(int? id)
         {
-            // 獲取CouponID=1的優惠券
             ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
 
             if (coupon == null)

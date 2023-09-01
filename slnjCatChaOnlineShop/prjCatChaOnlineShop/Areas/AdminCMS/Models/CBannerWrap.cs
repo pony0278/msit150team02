@@ -12,7 +12,8 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
         public DateTime? PublishDate { get; set; }
 
         public string Link { get; set; }
-
+        public string ToPage { get; set; }
+        public bool? Display { get; set; }
         public IFormFile? Image { get; set; }
     }
 }

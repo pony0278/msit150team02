@@ -40,6 +40,11 @@
             width: 200px;
             height: 40px;
         }
+
+        .custom-swal {
+            width: 100%;
+        }
+
 </style>
 }
 
@@ -56,9 +61,18 @@
                             role="button">
                         新增Banner
                     </button>
-                </div>
+            </div>
             </div>
 
+    <div class="row mt-3">
+        <div class="col-6 offset-6 text-end">
+            <button type="button" class="btn btn-secondary" onclick="showPreviewAlert()">
+                預覽首頁
+            </button>
+        </div>
+    </div>
+
+        </div>
             <!---新增Banner modal-->
             <div class="modal fade" id="addBannerModalToggle" aria-hidden="true"
                  aria-labelledby="addBannerModalToggleLabel" tabindex="-1">
@@ -81,8 +95,17 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>連結</label>
+                                    <label>連結：</label>
                                 <input type="text" class="form-control" id="create-topage" name="ToPage">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>是否顯示：</label>
+                                    <select class="form-select" id="create-display" name="Display">
+                                        <option value="" selected disabled>請選擇狀態</option>
+                                        <option value="true">是</option>
+                                        <option value="false">否</option>
+                                    </select>
                                 </div>
 
                                 <div class="col-md-12">
@@ -129,7 +152,7 @@
                 <table id="Banner-table" class="table table-striped nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>編號</th>
                                     <th>名稱</th>
                                     <th>發佈時間</th>
                                     <th>圖片</th>
@@ -154,7 +177,7 @@
                                     <!--內容表單-->
                                     <div class="row">
                                         <div class="form-group">
-                                            <label>ID</label>
+                                            <label>編號</label>
                                             <input type="text" class="form-control" readonly disabled id="editor-id" name="BannerId">
                                         </div>
                                         <div class="form-group">
@@ -182,7 +205,6 @@
                                                 <img id="previewImage" src="" alt="Image Preview" class="w-100 border">
                                             </div>
                                         </div>
-                                    <button type="submit" class="btn btn-secondary" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#">預覽</button>
                                     <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
                                                     style="width: 100%;">儲存</button>
                                     </div>
@@ -275,7 +297,7 @@
                     "render": function (data, type, row) {
                         var isChecked = data === true ? 'checked' : '';
                         return `<div class="form-check form-switch">
-                                  <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" ${isChecked}>
+                                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" ${isChecked}  data-id="${row.bannerId}">
                                 </div>`;
                     }
                 },
@@ -407,12 +429,14 @@
             $('#preview-createimage').attr('src', '');
             const name = $("#create-name").val();
             const publishdate = $("#create-date").val();
+            const display = $('#create-display').val();
             var fileInput = $('#create-image')[0];
             var file = fileInput.files[0];
 
             var formData = new FormData();
             formData.append("Banner", name)
             formData.append("PublishDate", publishdate);
+            formData.append("display", display);
             if (file) {
                 formData.append("Image", file)
             }
@@ -515,6 +539,65 @@
                 });
             });
         });
+
+        //顯示、隱藏按鈕
+        $(document).ready(function () {
+            $('#Banner-table').on('change', '.form-check-input', function () {
+                var isChecked = $(this).prop('checked');
+                var bannerId = $(this).data("id");
+                updateDisplay(isChecked, bannerId);
+            });
+
+            function updateDisplay(isChecked, bannerId) {
+                //檢查載入資料
+                console.log("isChecked:", isChecked);
+                console.log("bannerId:", bannerId);
+                $.ajax({
+                    url: "/AdminCMS/Banner/UpdateDisplay",
+                    type: "POST",
+                    data: { isChecked: isChecked, bannerId: bannerId },
+                    //contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '顯示狀態已更新'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '顯示狀態更新失敗',
+                                text: '已設定為隱藏',
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '發生錯誤',
+                            text: '更新過程中發生錯誤',
+                        });
+                        console.log("發生錯誤：", error);
+                    }
+                });
+            }
+        });
+
+    //預覽首頁Alert
+        function showPreviewAlert() {
+            Swal.fire({
+                title: '首頁預覽',
+                html: '<iframe src="/" width="100%" height="800" frameborder="0"></iframe>',
+                showCloseButton: true,
+                showConfirmButton: false,
+                focusConfirm: false,
+                customClass: {
+                    popup: 'custom-swal', // 自定義的 CSS 類名
+                },
+            });
+        }
+
+
     </script>
 }
 

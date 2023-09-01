@@ -153,6 +153,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 BannerId = cBanner.BannerId,
                 Banner = cBanner.Banner,
                 PublishDate = cBanner.PublishDate,
+                Display=cBanner.Display,
+                ToPage=cBanner.ToPage,
                 Link = imageURL
         };
             try
@@ -185,6 +187,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { success = false });
         }
 
+
+        //顯示、隱藏按鈕
+        [HttpPost]
+        public IActionResult UpdateDisplay(bool isChecked, int bannerId)
+        {
+            try
+            {
+                var banner = _cachaContext.GameShopBanner.FirstOrDefault(b => b.BannerId == bannerId);
+
+                if (banner == null)
+                {
+                    return NotFound();
+                }
+
+                banner.Display = isChecked;
+                _cachaContext.SaveChanges();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest($"錯誤：{ex.Message}");
+            }
+        }
 
 
     }
