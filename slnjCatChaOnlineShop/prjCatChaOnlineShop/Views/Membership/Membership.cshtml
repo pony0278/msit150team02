@@ -346,12 +346,15 @@
                                             圖片審核
                                         </button>
                                     </div>
-                                    <h1 id="summonName">會員</h1>
+                                    <h1 id="summonName" class="font-weight-bold fs-2 my-1">會員</h1>
                                     <div class="d-flex justify-content-center">
-                                        <span id="coinPointShow">您目前持有紅利：0點/0元</span>
+                                        <h3 id="coinPointShow" class="fs-5">您目前持有紅利：0點</h3>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <span id="catCoinShow">持有貓幣：0</span>
+                                        <h3 id="moneyPointShow" class="fs-5"></h3>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h3 id="catCoinShow" class="fs-5">持有貓幣：0</h3>
                                     </div>
                                     <div class="text-center ">
                                         <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal" id="searchCoupon"
@@ -1056,7 +1059,8 @@
                     $('#addressInput').val(data.address);
 
                     $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點/${Math.floor(data.loyaltyPoints / 100)}元`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點`);
+                    $('#moneyPointShow').text(`( ${Math.floor(data.loyaltyPoints / 100)}元 )`);
                     $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
 
                     var dateParts = data.birthday.split('-');
