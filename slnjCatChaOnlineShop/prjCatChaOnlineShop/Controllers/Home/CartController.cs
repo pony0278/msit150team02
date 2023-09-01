@@ -59,6 +59,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 //購物車初始金額
                 decimal total = (decimal)cartItems.Sum(item => item.c小計);
                 ViewBag.totalPrice = total; //把初始的小計金額傳到checkout頁面
+
+
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
                 //需填入你的網址
