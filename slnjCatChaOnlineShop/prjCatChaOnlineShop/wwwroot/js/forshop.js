@@ -16,7 +16,7 @@ $(document).ready(async function () {
     $('.for-ajax').click(async function (e) {
         e.preventDefault();
 
-        catName = $(this).data("category-name");//丟進選到的類別名稱
+        var catName = $(this).data("category-name");//丟進選到的類別名稱
         categoryTitle.text(catName)//顯示選到的類別
 
         productList.empty();//清空
@@ -25,6 +25,7 @@ $(document).ready(async function () {
 
         await fetchMoreProducts();
     })
+
     //複合篩選
     var btnFilter = $('#filter-submit');
     btnFilter.on('click', async function () {
@@ -100,7 +101,6 @@ $(document).ready(async function () {
 
                     productItemDiv.append(productDiv);
                     productList.append(productItemDiv);
-                    
                 });
             },
             error: function (error) {

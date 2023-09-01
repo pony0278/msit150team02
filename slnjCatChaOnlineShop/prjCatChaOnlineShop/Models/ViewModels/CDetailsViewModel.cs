@@ -6,5 +6,6 @@ namespace prjCatChaOnlineShop.Models.ViewModels
     {
         public CProductItem? selectedProduct { get; set; }
         public List<CProductItem>? recommands { get; set; }
+        public List<CProductReview>? reviews { get; set; }
     }
 }
