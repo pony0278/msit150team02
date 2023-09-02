@@ -56,6 +56,9 @@
                 $('#loyaltyPointsBonus').text("- NT" + response.loyaltypoints); // 紅利折扣金額
                 $('#shippingFee').text("+ NT" + response.shippingfee);//運費
                 $('#allTotalPrice').text("NT" + response.finalTotalPrice); // 總金額
+                
+                // 使用jQuery选择器找到TotalAmount输入框，并设置其值
+                /*$('input[name="TotalAmount"]').val(response.finalTotalPrice);*/
             }
         });
     }
@@ -145,7 +148,7 @@
             $('#error-message').text('此為必勾選的項目');
         }
         else {
-            /* e.preventDefault(); *//*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+             /*e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
             let formData = $("#ecpayform").serializeArray();
             var json = {};

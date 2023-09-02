@@ -58,7 +58,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
             //計算最終的總金額
             int finalTotalPrice = ((int)(cartItem.Sum(item => item.c小計) - couponBonus - loyaltyPointsDiscount + shippingfee));
-         
+
+            HttpContext.Session.SetString("FinalTotalPrice", Convert.ToString(finalTotalPrice));
+ 
+            
 
             //創建一個匿名對象，商品更新後的總金額
             var response = new
@@ -66,7 +69,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 loyaltypoints = loyaltyPointsDiscount,
                 couponBonus = couponBonus,
                 shippingfee=shippingfee,
-                finalTotalPrice = finalTotalPrice,
+                finalTotalPrice = Convert.ToString(finalTotalPrice),
             };
             return new JsonResult(response);
 
