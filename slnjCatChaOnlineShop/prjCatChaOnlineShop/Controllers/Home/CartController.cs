@@ -20,23 +20,40 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly IWebHostEnvironment _host;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ProductService _productService;
-        
-        public CartController(cachaContext context,CheckoutService checkoutService ,IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
+
+        public CartController(cachaContext context, CheckoutService checkoutService, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
         {
             _context = context;
             _host = host;
             _httpContextAccessor = httpContextAccessor;
             _productService = productService;
             _checkoutService = checkoutService;
-            
+
         }
-        public IActionResult ConfrimOrder()
+
+        #region 購物車頁面
+        public IActionResult Cart()
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-            return View();
+
+            string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+            if (json == null)
+            {
+                return View();
+            }
+            else
+            {
+                List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
+                decimal total = (decimal)cart.Sum(item => item.c小計);
+                ViewBag.totalPrice = total; //把初始的小計金額傳到cart頁面
+                return View(cart);
+            }
         }
-        public IActionResult Checkout() 
+        #endregion
+
+        #region 填寫結帳資料頁面
+        public IActionResult Checkout()
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
@@ -59,9 +76,26 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 //購物車
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
-                //購物車初始金額
+
+                //建構商品名稱的字串
+                string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
+                
+
+                //結帳頁面-購物車初始小計金額
                 decimal total = (decimal)cartItems.Sum(item => item.c小計);
                 ViewBag.totalPrice = total; //把初始的小計金額傳到checkout頁面
+
+                //結帳頁面-購物車初始運費
+                decimal firstFee = 0;
+                if (total < 2000) 
+                {
+                    firstFee = 60;
+                }
+                ViewBag.firstFee = firstFee; //把初始的初始運費傳到checkout頁面
+
+                //結帳頁面-購物車初始總計
+                decimal firstTotalPrice = total + firstFee;
+                ViewBag.firstTotalPrice = firstTotalPrice;
 
 
                 //創建綠界訂單
@@ -70,12 +104,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var website = $"https://localhost:7218";
                 var order = new Dictionary<string, string>
           {
+
             //綠界需要的參數
             { "MerchantTradeNo",  orderId},
             { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
-            { "TotalAmount",  "100"},
+            { "TotalAmount", "100" },
             { "TradeDesc",  "無"},
-            { "ItemName",  "測試商品"},
+            { "ItemName",  cartItemName},
             { "ExpireDate",  "3"},
             { "CustomField1",  ""},
             { "CustomField2",  ""},
@@ -103,7 +138,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     getCouponPrice = usableBonus ?? new CGetCouponPrice(),
                 };
 
-                
+
                 return View(viewModel);
             }
             return View();
@@ -134,28 +169,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return result.ToString();
         }
-        public IActionResult Cart()
+        #endregion
+
+        #region 確認訂單
+        public IActionResult ConfrimOrder()
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
-
-            string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-            if (json == null)
-            {
-                return View();
-            }
-            else
-            {            
-                List<CCartItem> cart = JsonSerializer.Deserialize<List<CCartItem>>(json);
-                decimal total = (decimal)cart.Sum(item => item.c小計);
-                ViewBag.totalPrice= total; //把初始的小計金額傳到cart頁面
-                return View(cart);
-            }
+            return View();
         }
+        #endregion
 
-       
-
-       
 
 
 

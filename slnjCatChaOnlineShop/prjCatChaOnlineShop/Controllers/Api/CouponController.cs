@@ -18,7 +18,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
             _checkoutService = checkoutService;
         }
 
-
+        //計算使用優惠券或使用紅利的金額
         public IActionResult CalculateDiscounts(bool useLoyaltyPoints, decimal couponSpecialOffer)
         {
             //從Session中獲得購物車的內容
@@ -58,7 +58,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
             //計算最終的總金額
             int finalTotalPrice = ((int)(cartItem.Sum(item => item.c小計) - couponBonus - loyaltyPointsDiscount + shippingfee));
-
+         
 
             //創建一個匿名對象，商品更新後的總金額
             var response = new
