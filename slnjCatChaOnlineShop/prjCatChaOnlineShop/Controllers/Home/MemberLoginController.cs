@@ -39,16 +39,31 @@ namespace prjCatChaOnlineShop.Controllers.Home
             
             ShopMemberInfo user = (new cachaContext()).ShopMemberInfo.FirstOrDefault(
                 t => t.Email.Equals(vm.txtEmail) && t.Password.Equals(vm.txtPassword));
-            if (user != null && user.Password.Equals(vm.txtPassword))
+            if (user != null && user.Password.Equals(vm.txtPassword) && user.EmailVerified==true) //正常登入
             {
                 string Json = JsonSerializer.Serialize(user);
                 HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);//Session-登入狀態紀錄
                 HttpContext.Session.SetString("UserName", user.Name);//Session-當前當入者名稱紀錄
 
 
-                return RedirectToAction("Index", "Index");
+                return Content(user.Name);
             }
+
+            else if (user != null && user.Password.Equals(vm.txtPassword) && user.EmailVerified == false) //未完成信箱驗證
+            {
+                HttpContext.Session.SetString("ErrorMessage", "此帳號未完成信箱驗證");//Session-當前當入者名稱紀錄
+                return RedirectToAction("MemberLogin","Login");
+            }
+
+            else if (user != null && user.Password.Equals(vm.txtPassword) && user.EmailVerified == false) //密碼錯誤
+            {
+                HttpContext.Session.SetString("ErrorMessage", "密碼錯誤");//Session-當前當入者名稱紀錄
+                return RedirectToAction("MemberLogin", "Login");
+            }
+
             return View();
+
+
         }
 
         #endregion    
