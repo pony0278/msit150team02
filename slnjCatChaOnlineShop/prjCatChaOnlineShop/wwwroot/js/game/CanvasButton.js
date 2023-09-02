@@ -112,7 +112,6 @@ CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後
 
     if (isPause == false) { //玩家腳色死亡
         if (isInBtnRange(yesBTN, x, y)) { //玩家選擇是
-            console.log("1")
             CanvasDoubleCheck.style.display = "none" //隱藏詢問視窗
             resetRunGame();//重置遊戲+重新開始遊戲
             return;
@@ -120,6 +119,7 @@ CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後
         if (isInBtnRange(cancelBTN, x, y)) {//玩家選擇否
             CanvasDoubleCheck.style.display = "none"//隱藏詢問視窗
             pagesControl(Canvaslobby); //畫面返回大廳
+            showRank();
             return;
         }
     }
