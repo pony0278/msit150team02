@@ -18,7 +18,7 @@
 <!--提示訊息-->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
 
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="detail-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
             <img src="..." class="rounded me-2" alt="...">
             <strong class="me-auto">訊息</strong>
@@ -386,8 +386,8 @@
         // });
 
         //輸入數量加入購物車
-        $("#addToCartButton").on("click", function (event) {
-            event.preventDefault();
+        $("#addToCartButton").on("click", function (e) {
+            e.preventDefault();
 
             var attr = $("#attr").val();
             var count = $("#count").val();
@@ -416,8 +416,8 @@
             });
         });
         //加入收藏
-        $("#addToWishListButton").on("click", function (event) {
-            event.preventDefault();
+        $("#addToWishListButton").on("click", function (e) {
+            e.preventDefault();
             var button = $(this);
             var productId = $(this).data("product-id");
 
@@ -466,8 +466,8 @@
                         $('.toast').toast('show');
                     }
                     else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('#detail-toast .toast-body').text(response.message);
+                        $('#detail-toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -498,8 +498,8 @@
                         }
                     }
                     else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('#detail-toast .toast-body').text(response.message);
+                        $('#detail-toast').toast('show');
                     }
                 },
                 error: function (error) {
