@@ -8,8 +8,22 @@ const closeinstruction = document.getElementById('closeinstruction');//遊戲說
 const popup = document.getElementById('popup');//開啟跑步遊戲說明視窗
 const allPages = [Canvaslobby, Canvasrungame, CatchaGatCha, CanvasRank]//主要遊戲畫面存放區
 const testlogin = document.getElementById('testlogin');
+const btnProBability = document.getElementById('btnProBability');//轉蛋返回按鈕
+const ProbabilityContainer = document.getElementById("Probability");
 
 
+//開關機率表
+let probabilityTableVisible = false;
+btnProBability.addEventListener("click", () => {
+
+    if (probabilityTableVisible) {
+        ProbabilityContainer.style.display = "none";
+        probabilityTableVisible = false;
+    } else {
+        ProbabilityContainer.style.display = "block";
+        probabilityTableVisible = true;
+    }
+});
 function pagesControl(blockpage)//參數blockpage填入當前需要顯示的畫面，並隱藏其他頁面
 {
   for(const p of allPages)
@@ -18,7 +32,10 @@ function pagesControl(blockpage)//參數blockpage填入當前需要顯示的畫�
   }
   blockpage.style.display = "block"
 }
+function showRank() {
+    CanvasRank.style.display = "block";
 
+}
 //==========================
 
 

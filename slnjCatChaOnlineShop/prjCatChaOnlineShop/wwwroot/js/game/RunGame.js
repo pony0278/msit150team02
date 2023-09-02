@@ -222,6 +222,7 @@
             if (hightestScore <= userScore && userScore !== 0)//如果當前分數>最高分數，則兩個分數同步 
             {
                 updateHighestScore(userScore)
+                loadRankData();
                 /*initialize();*/
                 hightestScore = userScore;
             }

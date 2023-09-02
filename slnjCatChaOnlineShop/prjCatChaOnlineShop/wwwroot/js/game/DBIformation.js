@@ -32,6 +32,7 @@ async function fetchData() {
                 scaledProbability,
                 productCategoryId,
                 couponId,
+                lotteryProbability
             });
         });
         return processedData; // 返回處理後的資料
@@ -81,12 +82,17 @@ async function fetchDBData() {
 
 testDBlogin.addEventListener('click', async function () {
     try {
+
+
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
         const userData = await initialize();
-        gachaData.forEach(testlProbability => {
-            console.log(testlProbability.scaledProbability)
-        })
+        //gachaData.forEach(testlProbability => {
+        //    const pElement = document.createElement("p");
+        //    pElement.textContent = `道具: ${testlProbability.itemName} 機率: ${testlProbability.scaledProbability}%`;
+        //    itemsProbabilityContainer.appendChild(pElement);
+        //    console.log(testlProbability.scaledProbability)
+        //})
         information.forEach(IFM => {
             console.log(
                 'ProductId:', IFM.ProductId,
@@ -113,12 +119,28 @@ testDBlogin.addEventListener('click', async function () {
 
 async function fetchDataAndProcess() {
     try {
+        const itemsProbabilityContainer = document.getElementById("ItemsProbability");
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
         const userData = await initialize();
-        gachaData.forEach(testlProbability => {
-            console.log(testlProbability.scaledProbability)
-        })
+        gachaData.forEach(testProbability => {
+            // 創建一個新的<p>元素
+            const pElement = document.createElement("p");
+
+            // 創建一個新的<img>元素
+            const imgElement = document.createElement("img");
+            imgElement.src = testProbability.productImage;
+            imgElement.width = 48; // 設置寬度為48像素
+            imgElement.height = 48; // 設置高度為48像素
+
+            // 設置<p>元素的內容，包括圖片、道具名稱和機率
+            pElement.appendChild(imgElement); // 將圖片添加到<p>元素中
+            pElement.innerHTML += ` 道具名稱：${testProbability.productName} 機率：${(testProbability.scaledProbability / 10).toFixed(3) }%`;
+
+            // 將<p>元素添加到ItemsProbability容器中
+            itemsProbabilityContainer.appendChild(pElement);
+        });
+
         information.forEach(IFM => {
             console.log(
                 'ProductId:', IFM.ProductId,

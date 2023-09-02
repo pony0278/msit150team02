@@ -18,10 +18,33 @@
         z-index:99;
     }
 
-        .result-container > div:nth-child(1) {
-            grid-row: 2;
-            grid-column: 3;
-        }
+#btnProBability {
+    position: absolute;
+    width: 16px;
+    height: 24px;
+    margin-top: -438px;
+    margin-left: 20px;
+    background-image: url(/images/game/Icon_Question.png);
+    background-size: contain;
+    background-position: center;
+}
+#Probability {
+    border: 4px solid black;
+    position: absolute;
+    margin-left: 850px;
+    height: 600px;
+    width: 406px;
+}
+#ItemsProbability {
+    max-height: 555px;
+    overflow-x: auto;
+    min-width: 400px;
+    overflow-y: auto;
+}
+    .result-container > div:nth-child(1) {
+    grid-row: 2;
+    grid-column: 3;
+    }
 
         .result-container > div:nth-child(8) {
             grid-row: 1;
@@ -107,16 +130,17 @@
         display: none;
     }
 
-    #CanvasRank {
-        padding-top: 76px;
-        position: absolute;
-        text-align: center;
-        justify-content: center;
-        width: 406px; /* 維持canvas的寬度為406px */
-        height: 600px; /* 維持canvas的高度為600px */
-        background-color: rgba(0, 0, 0, 0.5);
-        display: none;
-    }
+#CanvasRank {
+    padding-top: 76px;
+    position: absolute;
+    right: 430px; /*0902追加*/
+    text-align: center;
+    justify-content: center;
+    width: 406px; /* 維持canvas的寬度為406px */
+    height: 600px; /* 維持canvas的高度為600px */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
 
 
     #rank-container {
