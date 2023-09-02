@@ -283,10 +283,30 @@
                     url: '/MemberLogin/Login',
                     type: 'POST', // 使用 POST 方法
                      data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
-                    success: function (name) {
-                    alert(`Hello~${name}歡迎回來`)
-                    window.location.href = '/';
-                    },
+                    success: function (data) {
+                    var userName = data.userName;
+                    var success = data.success;
+                    var exist = data.accountExist;
+                    var mess = data.message;
+                    if (userName && success==true) {
+                        alert(`歡迎回來~ ${userName}`)//登入成功
+                        window.location.href = '/';
+                        return;
+                    }
+                    else if (userName && status == false) {
+                        alert(mess)//未驗證信箱
+                        return;
+                    }
+                    else if (exist==false){
+                        alert(mess)//帳號不存在
+                        return;
+                    }
+                        
+                    else 
+                        alert(mess)//密碼錯誤
+
+
+        },
                     error: function (err) {
                         $('#ErrorMsg').html(err.responseText);
                         $('#ErrorAlert').modal('toggle');
