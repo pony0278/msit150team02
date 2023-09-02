@@ -12,5 +12,7 @@ namespace prjCatChaOnlineShop.Models.ViewModels
         public List<CgetUsableAddressModel> memberUsableAddress { get; set; }
         //創建綠界訂單
         public Dictionary<string, string> keyValuePairs { get; set; }
+        //取得會員目前可折抵之紅利
+        public CGetCouponPrice getCouponPrice { get; set; }
     }
 }

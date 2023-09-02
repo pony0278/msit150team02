@@ -10,23 +10,57 @@
         console.log("優惠券折數", couponSpecialOffer);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
-        $.ajax({
+        // 將優惠券SpecialOffer的值綁定到input標籤上的data-coupon-specialoffer屬性
+        $("#couponCodeInput").data("coupon-specialoffer", couponSpecialOffer);
+        //$.ajax({
 
-            url: '/Coupon/couponDiscount', //TODO:建議要用url.content，不知道怎麼改QQ
-            type: 'POST',
-            data: { SpecialOffer: couponSpecialOffer },
-            success: function (response) {
-                $('#AllTotalPrice').text("NT" + response.totalPrice),
-                    $('#couponBonus').text("NT" + response.couponBonus),
-                    console.log(response);
-            }
-
-        })
-
-
+        //    url: '/Coupon/couponDiscount', //TODO:建議要用url.content
+        //    type: 'POST',
+        //    data: { SpecialOffer: couponSpecialOffer },
+        //    success: function (response) {
+        //        $('#AllTotalPrice').text("NT" + response.totalPrice),
+        //            $('#couponBonus').text("NT" + response.couponBonus),
+        //            console.log(response);
+        //    }
+        //})
+        calculateDiscounts(); // 優惠券計算
         // 模擬使用者操作關閉模態框
         $('.btn-close').click();
     });
+
+    //監聽會員是否勾選使用紅利，當用戶勾選或取消勾選該複選框時，觸發計算優惠券和紅利的函數。
+    $('#useLoyalityPoint').on('change', function () {
+        calculateDiscounts();
+    });
+
+    function calculateDiscounts() {
+        console.log("進入程式")
+        // 檢查使用紅利的複選框是否被選中
+        var useLoyaltyPoints = $('#useLoyalityPoint').is(':checked');
+        console.log("真的要用的",useLoyaltyPoints)
+        // 獲取優惠券 SpecialOffer
+        var couponSpecialOffer = $('#couponCodeInput').data('coupon-specialoffer');
+        console.log("真的要用的",couponSpecialOffer)
+        // 發起 AJAX 請求，傳遞使用紅利和優惠券信息
+        $.ajax({
+            url: '/Coupon/CalculateDiscounts',
+            type: 'POST',
+            data: {
+                useLoyaltyPoints: useLoyaltyPoints,
+                couponSpecialOffer: couponSpecialOffer
+            },
+            success: function (response) {
+                console.log(response)
+                // 更新頁面上的相關信息，例如折扣金額和總金額
+                $('#couponBonus').text("- NT" + response.couponBonus); // 優惠券折扣金額
+                $('#loyaltyPointsBonus').text("- NT" + response.loyaltypoints); // 紅利折扣金額
+                $('#shippingFee').text("+ NT" + response.shippingfee);//運費
+                $('#allTotalPrice').text("NT" + response.finalTotalPrice); // 總金額
+            }
+        });
+    }
+
+
 
 
 
