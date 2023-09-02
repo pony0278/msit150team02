@@ -286,6 +286,7 @@ function updateHighestScore(num) {
         data: JSON.stringify({ fId: UserID, fScore: num }),
         success: function (data) {
             initialize();
+            loadRankData();
             console.log("資料更新成功", data.message);
         },
         error: function (error) {
