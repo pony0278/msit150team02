@@ -165,10 +165,21 @@
                                data-product-id="@Model.selectedProduct.pId">
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
-                            <a href="#" id="addToWishListButton" class="btn hvr-hover"
-                               data-product-id="@Model.selectedProduct.pId">
-                                <i class="fas fa-heart"></i>
-                            </a>
+                            @if (Model.selectedProduct.p是否加入收藏)
+                            {
+                                <a href="#" id="addToWishListButton" class="btn hvr-hover favorited"
+                                   data-product-id="@Model.selectedProduct.pId">
+                                    <i class="fas fa-heart"></i>
+                                </a>
+                            }
+                            else
+                            {
+                                <a href="#" id="addToWishListButton" class="btn hvr-hover"
+                                   data-product-id="@Model.selectedProduct.pId">
+                                    <i class="fas fa-heart"></i>
+                                </a>
+                            }
+                            
                         </div>
                     </div>
                 </div>
@@ -278,9 +289,19 @@
                                         <a href="#" data-product-id=@a.pId type="button" class="cart-btn add-to-cart-coustom">
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
-                                        <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
+                                        @if (a.p是否加入收藏==true)
+                                        {
+                                            <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom favorited">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                        }
+                                        else
+                                        {
+                                            <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                        }
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -329,7 +350,7 @@
                 rating.append('<i class="fa-solid fa-star fa-sm" style="color:#F4CD1E"></i>');
             }
             else if (star == 2) {
-                rating.append('<i class="fa-solid fa-star-half fa-sm" style="color:#F4CD1E"></i>');
+                rating.append('<i class="fas fa-star-half-alt fa-sm" style="color:#F4CD1E"></i>');
             }
             else {
                 rating.append('<i class="fa-solid fa-star fa-sm" style="color: #e0e0e0;"></i>');
@@ -409,7 +430,12 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-
+                        if (response.message == "favorited") {
+                            button.addClass('favorited');
+                        }
+                        else {
+                            button.removeClass('favorited');
+                        }
                     }
                     else {
                         $('.toast .toast-body').text(response.message);
@@ -464,7 +490,12 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-
+                        if (response.message == "favorited") {
+                            button.addClass('favorited');
+                        }
+                        else {
+                            button.removeClass('favorited');
+                        }
                     }
                     else {
                         $('.toast .toast-body').text(response.message);

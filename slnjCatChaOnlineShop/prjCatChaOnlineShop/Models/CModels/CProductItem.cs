@@ -18,11 +18,17 @@ namespace prjCatChaOnlineShop.Models.CModels
         public string? pBrandName
         {
             get {
-                string input = pName;
-                string[] parts = input.Split('|'); // 分割字符串
-                string result = parts[0].Trim(); // 取得分割後的第一部分並去除首尾空格
-                string brandName = result;
-                return brandName; }
+                if (pName.Contains('|'))
+                {
+                    string input = pName;
+                    string[] parts = input.Split('|'); // 分割字符串
+                    string result = parts[0].Trim(); // 取得分割後的第一部分並去除首尾空格
+                    string brandName = result;
+                    return brandName; 
+                }
+                return "無品牌";
+            }
+           
         }
         public decimal? pDiscount
         {
@@ -71,5 +77,6 @@ namespace prjCatChaOnlineShop.Models.CModels
             }
         }
         public List<string?>? p圖片路徑 { get; set; }
+        public bool p是否加入收藏 { get; set; }
     }
 }

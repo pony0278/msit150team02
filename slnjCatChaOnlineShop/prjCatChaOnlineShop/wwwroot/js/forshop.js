@@ -1,12 +1,12 @@
 ﻿
 $(document).ready(async function () {
-
     var itemPerPageSelect = $('#itemPerPageSelect');
     var productList = $('#productList');
 
     var showMoreButton = $('#showMore');
-    var categoryTitle = $('#categoryTitle')
-    var catName = null;
+    var categoryTitle = $('#categoryTitle');
+    var catName =null;
+
     var selOrder = $('#selOrder');
     var selBrand = $('#selBrand');
     var optionOrder = 0;
@@ -16,7 +16,8 @@ $(document).ready(async function () {
     $('.for-ajax').click(async function (e) {
         e.preventDefault();
 
-        var catName = $(this).data("category-name");//丟進選到的類別名稱
+        catName = $(this).data("category-name");//丟進選到的類別名稱
+        console.log(catName);
         categoryTitle.text(catName)//顯示選到的類別
 
         productList.empty();//清空
@@ -80,7 +81,12 @@ $(document).ready(async function () {
                     var productPrice = $('<h5></h5>');
 
                     var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
-                    var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom"><i class="far fa-heart"></i></>`);
+                    if (item.p是否加入收藏 == true) {
+                        var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom favorited"><i class="far fa-heart"></i></>`);
+                    }
+                    else {
+                        var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom"><i class="far fa-heart"></i></>`);
+                    }
 
                     whyText.append(productName);
 
@@ -181,7 +187,12 @@ $(document).ready(async function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    
+                    if (response.message == "favorited") {
+                        button.addClass('favorited');
+                    }
+                    else {
+                        button.removeClass('favorited');
+                    }
                 }
                 else {
                     $('.toast .toast-body').text(response.message);

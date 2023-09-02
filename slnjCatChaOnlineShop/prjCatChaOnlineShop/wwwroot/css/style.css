@@ -873,7 +873,7 @@ ul.cart-list > li.total > .btn:hover {
 }
 /*------------------------------------------------------------------ Slider -------------------------------------------------------------------*/
 .cover-slides {
-    height: 100vh;
+    height: 580px !important;
 }
 
 .slides-navigation a {
