@@ -195,8 +195,8 @@ $(document).ready(async function () {
                     }
                 }
                 else {
-                    $('.toast .toast-body').text(response.message);
-                    $('.toast').toast('show');
+                    $('#shop-toast .toast-body').text(response.message);
+                    $('#shop-toast').toast('show');
                 }
             },
             error: function (error) {

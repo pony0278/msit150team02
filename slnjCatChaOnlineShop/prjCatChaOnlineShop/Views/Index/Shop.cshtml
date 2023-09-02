@@ -23,7 +23,7 @@
 <!--提示訊息-->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
 
-    <div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div id="shop-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="toast-header">
             <img src="..." class="rounded me-2" alt="...">
             <strong class="me-auto">訊息</strong>
@@ -44,15 +44,14 @@
         <!--增加:End當前分類-->
         <div id="categoryList" class="row">
             @{
-                int i = 0;
             
                 @foreach (var item in Model.DistinctBy(item => item.pCategoryId))
                 {
-                    i++;
+                    
                     <div class="col-md-2 col-4">
                         <div class="shop-cat-boxs">
                         <a class="for-ajax" href="#" data-category-name="@item.pCategoryName">
-                            <img class="img-fluid" src="~/images/category_@{@i}.jpg" alt="" />
+                            <img class="img-fluid" src="~/images/category_@{@item.pCategoryName}.jpg" alt="" />
                                 <span>@item.pCategoryName</span>
                             </a>
                         </div>
