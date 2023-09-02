@@ -21,11 +21,16 @@
     <link rel="stylesheet" href="~/css/custom.css">
     <!--myCss-->
     <link rel="stylesheet" href="~/css/myCss.css">
-
+ 
     <style>
         .logo-wrapper:hover {
             transform: scale(1.1); /* 放大 10% */
             transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+        }
+
+        .alert-btn-login {
+            background-color: #DE9E4F !important; /* 自定义按钮颜色 */
+            color: white; /* 按钮文本颜色 */
         }
     </style>
 
@@ -259,7 +264,8 @@
     @*<script src="~/js/myScript.js"></script>*@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
         //DEMO未信箱驗證會員
@@ -281,31 +287,60 @@
                  //發送 AJAX 請求到 API 以驗證登入
                 $.ajax({
                     url: '/MemberLogin/Login',
-                    type: 'POST', // 使用 POST 方法
-                     data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                    type: 'POST', 
+                    data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
                     success: function (data) {
+                        //定義api傳回來的資料
                     var userName = data.userName;
                     var success = data.success;
                     var exist = data.accountExist;
                     var mess = data.message;
+
                     if (userName && success==true) {
-                        alert(`歡迎回來~ ${userName}`)//登入成功
-                        window.location.href = '/';
-                        return;
+                        Swal.fire({
+                            icon: 'success',
+                            title: '歡迎回來',
+                            text: `歡迎回來~ ${userName}`,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        }).then(() => {
+                            window.location.href = '/';
+                        });
                     }
                     else if (userName && status == false) {
-                        alert(mess)//未驗證信箱
-                        return;
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
                     }
                     else if (exist==false){
-                        alert(mess)//帳號不存在
-                        return;
-                    }
-                        
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                    } 
                     else 
-                        alert(mess)//密碼錯誤
-
-
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
         },
                     error: function (err) {
                         $('#ErrorMsg').html(err.responseText);
