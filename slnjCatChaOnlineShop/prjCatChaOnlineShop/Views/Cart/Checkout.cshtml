@@ -110,12 +110,12 @@
                     <div class="title-left">
                         <h3>紅利折抵</h3>
                     </div>
-                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null &&Model!=null)
                     {
                         <form class="needs-validation">
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="use_CatCoin">
-                                <label class="custom-control-label" for="use_CatCoin">使用1000紅利折抵NT100</label>
+                                <input type="checkbox" class="custom-control-input" id="useLoyalityPoint">
+                                <label class="custom-control-label" for="useLoyalityPoint" id="loyalityPointBonus">使用 @Model.getCouponPrice.finalBonus 紅利折抵NT @Model.getCouponPrice.finalPrice</label>
                             </div>
                             <div class="ml-4 mb-2 small">您有 @memberinfo.LoyaltyPoints 個紅利，單筆訂單最多可折抵10%商品金額</div>
                         </form>
@@ -136,7 +136,7 @@
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
-                                       aria-label="請選擇優惠券" aria-describedby="button-addon2" readonly>
+                                       aria-label="請選擇優惠券" aria-describedby="button-addon2" data-coupon-specialoffer readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
                                 <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
                                         data-bs-toggle="modal" data-bs-target="#myCouponBackdrop">
@@ -1162,9 +1162,10 @@
                         <h4>小計</h4>
                         <div class="ml-auto font-weight-bold" id="subtotal"> NT @ViewBag.totalPrice </div>
                     </div>
+                    @if(Model!=null){
                     <div class="d-flex">
                         <h4>紅利折扣</h4>
-                        <div class="ml-auto font-weight-bold"> NT0</div>
+                        <div class="ml-auto font-weight-bold"id="loyaltyPointsBonus"> NT0 </div>
                     </div>
                     <hr class="my-1">
                     <div class="d-flex">
@@ -1173,16 +1174,18 @@
                     </div>
                     <div class="d-flex">
                         <h4>運費</h4>
-                        <div class="ml-auto font-weight-bold"> NT </div>
+                        <div class="ml-auto font-weight-bold" id="shippingFee"> NT0 </div>
                     </div>
                     <hr>
                     <div class="d-flex gr-total">
                         <h5>總計</h5>
-                        <div class="ml-auto h5" id="AllTotalPrice"> NT </div>
+                        <div class="ml-auto h5" id="allTotalPrice"> NT0 </div>
                     </div>
-                    <hr>
+                        <hr>
+                    }
                 </div>
             </div>
+            <!--導至綠界付款的隱藏頁面-->
             <form id="ecpayform" name="form" method="POST" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
                 <!--step2 : 收到後端的值印出來-->
                 <div class=" coupon-box-btn col-12 d-flex shopping-box ">
@@ -1243,7 +1246,8 @@
     @*<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>*@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="~/js/checkout.js"></script>
-  
+   
+
     @* <script>
         $(document).ready(function () {
             $("#choose711CVS").click(function () {

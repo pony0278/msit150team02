@@ -30,7 +30,7 @@ namespace prjCatChaOnlineShop.Models.CModels
 
             return null;
         }
-      
+
 
         public List<CGetUsableCouponModel> GetUsableCoupons(int Id)
         {
@@ -55,9 +55,9 @@ namespace prjCatChaOnlineShop.Models.CModels
                                 CouponContent = ct.CouponContent,
                                 ExpiryDate = (DateTime)ct.ExpiryDate,
                                 Usable = ct.Usable,
-                                SpecialOffer= (decimal)ct.SpecialOffer,
+                                SpecialOffer = (decimal)ct.SpecialOffer,
                             })
-                        .Where(ct => ct.Usable == true&& ct.ExpiryDate>=DateTime.Now)
+                        .Where(ct => ct.Usable == true && ct.ExpiryDate >= DateTime.Now)
                         .ToList();
 
                         return usableCoupons;
@@ -95,6 +95,47 @@ namespace prjCatChaOnlineShop.Models.CModels
             return new List<CgetUsableAddressModel>(); // 如果沒有找到可用地址，返回空列表
         }
 
-       
+        //查詢折抵紅利的金額
+        public CGetCouponPrice GetLoyaltyPoints()
+        {
+           CGetCouponPrice getCouponPrice= new CGetCouponPrice();
+
+
+            //先從session中取得初始的紅利點數
+            string couponjson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.CDictionary.SK_LOINGED_USER);
+            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(couponjson);
+
+            //先從session中找到購物車裡的商品
+            string cartjson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+            var cart = JsonSerializer.Deserialize<List<CCartItem>>(cartjson);
+
+            if (memberInfo != null && cart != null)
+            {
+                //會員初始的紅利點數
+                var loyaltyPoints = memberInfo.LoyaltyPoints;
+                //計算現有的紅利等於多少元
+                var transferPoint = (memberInfo.LoyaltyPoints) / 100;
+                //會員初始的購物車金額
+                var price = cart.Sum(item => item.c小計);
+                //計算購物車初始金額可以折抵多少金額(單筆訂單10%)
+                var tenPercentPrice = price * 0.1;
+                //計算折抵金額等於多少紅利點數
+                var priceToLoalty = tenPercentPrice * 100;
+                
+                //折抵規則
+                if (loyaltyPoints < priceToLoalty)  //如果現有紅利不足以折抵該筆訂單10%，最後可折抵就是以現有紅利為主
+                {
+                    getCouponPrice.finalBonus = (int)loyaltyPoints;
+                    getCouponPrice.finalPrice = (decimal)transferPoint;
+                }
+                else //如果現有紅利足夠折抵該筆訂單10%，最後可折抵以該筆訂單為主
+                {
+                    getCouponPrice.finalBonus = (int)priceToLoalty;
+                    getCouponPrice.finalPrice = (decimal)tenPercentPrice;
+                }
+            }
+            return getCouponPrice;
+
+        }
     }
 }
