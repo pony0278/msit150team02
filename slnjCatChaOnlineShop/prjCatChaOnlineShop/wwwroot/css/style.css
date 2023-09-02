@@ -3051,3 +3051,11 @@ ul.cart-list > li.total > .btn:hover {
     padding: 12px 25px;
     border: none;
 }
+
+#navbar-right-heart {
+    margin-right: 20px !important;
+}
+
+#navbar-right-side-menu {
+    margin-right: 20px !important;
+}

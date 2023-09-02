@@ -78,7 +78,7 @@
                         <!-- Mobile view .attr-nav -->
 
                     </ul>
-                    <ul class="d-flex d-lg-none justify-content-evenly">
+                    <ul class="d-flex d-lg-none justify-content-evenly align-items-center">
                         <li class="heart">
                             <a asp-controller="Membership" asp-action="Membership">
                                 <i class="fa-regular fa-heart"></i>
@@ -122,14 +122,14 @@
                 </div>
 
                 <!-- Desktop view .attr-nav -->
-                <div class="attr-nav d-none d-lg-block">
-                    <ul>
-                        <li class="heart">
+                <div class="d-none d-lg-block">
+                    <ul class="d-flex navbar-top-ul align-items-center">
+                        <li class="heart" id="navbar-right-heart">
                             <a asp-controller="Membership" asp-action="Membership">
                                 <i class="fa-regular fa-heart"></i>
                             </a>
                         </li>
-                        <li class="side-menu">
+                        <li class="side-menu" id="navbar-right-side-menu">
                             <a asp-controller="Cart" asp-action="Cart">
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
