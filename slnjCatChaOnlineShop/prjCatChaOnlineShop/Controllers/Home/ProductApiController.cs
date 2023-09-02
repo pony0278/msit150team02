@@ -51,7 +51,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 if (existingItem != null)//移除
                 {
                     _context.ShopFavoriteDataTable.Remove(existingItem);
-                    
+                    _context.SaveChanges();
+                    return Json(new { success = true,message = "cancel" });
                 }
                 else
                 {
@@ -64,10 +65,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         CreationDate = DateTime.Now
                     };
                     _context.ShopFavoriteDataTable.Add(newItem);
-                   
+                    _context.SaveChanges();
+                    return Json(new { success = true, message="favorited" });
                 }
-                _context.SaveChanges();
-                return Json(new { success = true});
+                
             }
             //未登入的情況
             return Json(new { success = false, message = "請先登入!" });
@@ -208,30 +209,30 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         #endregion
 
-        public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
-        {
-            var allItems = _productService.getProductItems().Take(itemPerPage);
+        //public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
+        //{
+        //    var allItems = _productService.getProductItems().Take(itemPerPage);
 
-            if (catName != null)//有選category才會傳入catName
-            {
-                allItems = _productService.getProductByCategoryName(catName).Take(itemPerPage);
-                
-            }
-            return Json(allItems);
-            //if (itemPerPage>=allItems.Count())
-            //{
-            //    if (catName != null)//有選category才會傳入catName
-            //    {
-            //        List<CCategoryItem> categoryItems = _productService.getCatProductForEachPage(catName, itemPerPage);
-            //        return Json(categoryItems, message = "已經到底囉!");
-            //    }
-            //    else
-            //    {
-            //        var eachPage=allItems.Take(itemPerPage);
-            //        return Json(new { eachPage, message = "已經到底囉!" });
-            //    }
-            //}
-        }
+        //    if (catName != null)//有選category才會傳入catName
+        //    {
+        //        allItems = _productService.getProductByCategoryName(catName).Take(itemPerPage);
+
+        //    }
+        //    return Json(allItems);
+        //    if (itemPerPage >= allItems.Count())
+        //    {
+        //        if (catName != null)//有選category才會傳入catName
+        //        {
+        //            List<CCategoryItem> categoryItems = _productService.getCatProductForEachPage(catName, itemPerPage);
+        //            return Json(categoryItems, message = "已經到底囉!");
+        //        }
+        //        else
+        //        {
+        //            var eachPage = allItems.Take(itemPerPage);
+        //            return Json(new { eachPage, message = "已經到底囉!" });
+        //        }
+        //    }
+        //}
         public IActionResult MultipleFilter(int optionOrder, string? optionBrand, string? catName, int itemPerPage)
         {
             var prods = _productService.getProductItems();
