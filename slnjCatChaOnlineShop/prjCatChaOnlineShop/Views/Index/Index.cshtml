@@ -57,7 +57,54 @@
         }
 
         .checked{
-            color:orange;
+            color: #ffc363;
+            font-size: 35px !important;
+        }
+
+        .countTime {
+            color: #fff;
+            font-family: "Kanit";
+            font-size: 60px;
+            line-height: 1em;
+            margin: 0;
+            text-align: center;
+            top: 50%;
+            transform: translateY(-30%);
+            width: 100%;
+            text-shadow: 0 1px 0 #de9e4f, 0 2px 0 #de9e4f, 0 3px 0 #de9e4f, 0 4px 0 #de9e4f, 0 5px 0 #de9e4f, 0 6px 0 #de9e4f, 0 7px 0 #de9e4f, 0 8px 0 #de9e4f, 0 0 5px rgba(230, 139, 139, .05), 0 -1px 3px rgba(230, 139, 139, .2), 0 9px 9px rgba(230, 139, 139, .3), 0 12px 12px rgba(230, 139, 139, .3), 0 15px 15px rgba(230, 139, 139, .3);
+        }
+
+        .swiper-h3-text {
+            color: #FFF;
+            font-size: 17px;
+            letter-spacing: 1px;
+        }
+
+        .swiper-productName{
+        padding: 10px 15px 10px 10px;
+        background-color: #ff766c;
+        border-top-right-radius: 20px;
+        border-bottom-right-radius: 20px;
+        margin-top: 5px;
+        box-shadow: rgba(17, 17, 26, .3) 2px 2px 3px, rgba(17, 17, 26, 0.1) 4px 4px 8px;
+        }
+
+        .stars-css {
+            padding: 0 40px 0 40px;
+        }
+
+        .productDescription {
+            font-size: 20px;
+            padding: 10px 15px 10px 15px;
+        }
+
+        .fa-quote-left {
+            font-size: 10px;
+            margin-right: 10px;
+        }
+
+        .swiper-member-say {
+            color: #818181;
         }
     </style>
 }
@@ -180,38 +227,38 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                    <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
+                        <!-- start prod  -->
+                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                            <div class="products-single-custom fix">
+                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                    <div class="box-img-hover">
+                                        <div class="type-lb">
+                                            <p class="sale">Sale</p>
+                                        </div>
+                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
                                     </div>
-                                    <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                                </a>
+                                <div class="why-text">
+                                    <h4>@item.pName</h4>
+                                    @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
-                                <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod  -->
+                        <!-- end prod  -->
                 }
             }
         </div>
@@ -241,37 +288,37 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
+                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                            <div class="products-single-custom fix">
+                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                    <div class="box-img-hover">
+                                        <div class="type-lb">
+                                            <p class="sale">Sale</p>
+                                        </div>
+                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
                                     </div>
-                                    <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                                </a>
+                                <div class="why-text">
+                                    <h4>@item.pName</h4>
+                                    @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
-                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                    <i class="far fa-heart"></i>
-                                </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                    </a>
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod1  -->
+                        <!-- end prod1  -->
                 }
             }
 
@@ -746,15 +793,15 @@
                 $.each(response.data, function (index, value) {
                     var reviewsDiv = $('<div class="swiper-slide swiper-slide--one position-relative shadow rounded"></div>')
                     const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
-                    const productName = $('<div class="position-absolute position-absolute top-0 start-0"></div>').append(`<h3 class="bg-warning text-dark ">${value.productName}</h3>`)
-                    let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3"></div>');
+                    const productName = $('<div class="position-absolute position-absolute top-0 start-0 swiper-productName"></div>').append(`<h3 class="p-0 swiper-h3-text">${value.productName}</h3>`)
+                    let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3 stars-css"></div>');
                     if(value.productRating == 5 ){
                         for(let i = 0; i<value.productRating ; i++){
                             stars.append('<span class="fs-1 fa fa-star checked "></span>');
                         }
                     }
-                    const productdescription = $('<div class="d-flex justify-content-around align-self-center"></div>').append(`<blockquote class="fs-2" ><cite><q>${value.productdescription}</q></cite></blockquote>`)
-                    const member = $('<div class="d-flex justify-content-around align-self-center mb-1"></div>').append(`<p>${value.member} <span>這樣說</span></p>`)
+                    const productdescription = $('<div class="d-flex justify-content-center align-self-center productDescription"></div>').append(`<i class="fas fa-quote-left"></i>${value.productdescription}`)
+                    const member = $('<div class="d-flex justify-content-around align-self-center mb-1 swiper-member-say"></div>').append(`<p>from 桃園 ${value.member}</p>`)
                     reviewsDiv.append(img, productName, stars, productdescription, member)
                     swipers.append(reviewsDiv)
                     console.log(response.data)

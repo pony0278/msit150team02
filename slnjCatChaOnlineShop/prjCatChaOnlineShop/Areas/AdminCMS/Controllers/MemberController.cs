@@ -345,11 +345,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     <div>
                         <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
                     </div>
-                        <a href='{imageLink}'><button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button></a>
+                        <a href='{imageLink}'>
+                    <button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button>
+</a>
                     <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
                     <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
                         <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
-                        <p>106 台北市大安區復興南路一段 390 號 2 樓 © All Rights Reserved. © 2023 catCha Taiwan</p>
+                        <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>
                     </div>
                 </td>
                 <td style = 'padding: 0 2rem;' >

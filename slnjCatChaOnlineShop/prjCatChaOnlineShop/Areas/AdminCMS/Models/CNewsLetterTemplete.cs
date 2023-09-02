@@ -4,7 +4,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Models
 {
     public class CNewsLetterTemplete
     {
-        private NewsletterTemplate _newsletter = null;
+        private NewsletterTemplate _newsletter;
         public NewsletterTemplate NewsLetter
         {
             get { return _newsletter; }

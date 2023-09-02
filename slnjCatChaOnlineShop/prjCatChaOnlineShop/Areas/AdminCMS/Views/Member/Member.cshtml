@@ -95,7 +95,7 @@
 
                 <div class="modal-body">
 
-                    <input type="hidden" id="sentTemplateId" value="1" name="TemplateId" />
+                    <input type="hidden" id="sentTemplateId" value="2" name="TemplateId" />
 
                     <div class="form-group mb-2">
                         <label>會員郵件列表</label>
@@ -936,12 +936,12 @@
         $('#CreatNewsLetter').on('click', function () {
             var fileInput1 = $('#headerImg')[0];
             var fileInput2 = $('#footerImg')[0];
-            var file = fileInput1.files[0];
-            var file2 = fileInput2.files[0];
+            var headerFile = fileInput1.files[0];
+            var footerFile = fileInput2.files[0];
 
             var formData = new FormData();
-            formData.append("HeaderImage", file);
-            formData.append("FooterImage", file);
+            formData.append("HeaderImage", headerFile);
+            formData.append("FooterImage", footerFile);
 
             $.ajax({
                 url: '@Url.Action("editorUploadImage", "Member")',
