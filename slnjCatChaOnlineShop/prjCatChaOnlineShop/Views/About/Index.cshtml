@@ -137,7 +137,7 @@
             var right = $('#sidebar').css('right') === '0px' ? '-400px' : '0px';
             $('#sidebar').animate({ right: right });
         });
-        const userName = '@ViewBag.UserName'
+        const userName = 'badUser'
         const connection = new signalR.HubConnectionBuilder()
             .withUrl("/chathub", {
                 accessTokenFactory: () => userName

@@ -108,7 +108,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //綠界需要的參數
             { "MerchantTradeNo",  orderId},
             { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
-            { "TotalAmount", "100" },
+            { "TotalAmount",Convert.ToString(firstTotalPrice)  },
             { "TradeDesc",  "無"},
             { "ItemName",  cartItemName},
             { "ExpireDate",  "3"},
