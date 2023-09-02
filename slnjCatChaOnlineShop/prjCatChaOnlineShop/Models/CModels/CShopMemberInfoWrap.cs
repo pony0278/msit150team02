@@ -132,9 +132,9 @@
 
 
 
-        public virtual ICollection<Game1on1MessageData> Game1on1MessageDataReceiver { get; set; } = new List<Game1on1MessageData>();
+        
 
-        public virtual ICollection<Game1on1MessageData> Game1on1MessageDataSender { get; set; } = new List<Game1on1MessageData>();
+       
 
         public virtual ICollection<GameCoinExchangeRecord> GameCoinExchangeRecord { get; set; } = new List<GameCoinExchangeRecord>();
 

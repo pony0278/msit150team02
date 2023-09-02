@@ -21,11 +21,11 @@ public partial class cachaContext : DbContext
 
     public virtual DbSet<EcpayOrders> EcpayOrders { get; set; }
 
-    public virtual DbSet<Game1on1MessageData> Game1on1MessageData { get; set; }
-
     public virtual DbSet<GameAchievementList> GameAchievementList { get; set; }
 
     public virtual DbSet<GameAchievementRewardList> GameAchievementRewardList { get; set; }
+
+    public virtual DbSet<GameBanUser> GameBanUser { get; set; }
 
     public virtual DbSet<GameCharacterInfo> GameCharacterInfo { get; set; }
 
@@ -44,6 +44,8 @@ public partial class cachaContext : DbContext
     public virtual DbSet<GameMemberTask> GameMemberTask { get; set; }
 
     public virtual DbSet<GameMessageData> GameMessageData { get; set; }
+
+    public virtual DbSet<GameMessageDatas> GameMessageDatas { get; set; }
 
     public virtual DbSet<GamePet> GamePet { get; set; }
 
@@ -180,32 +182,6 @@ public partial class cachaContext : DbContext
                 .HasConstraintName("FK_EcpayOrders_Shop.Order Total Table");
         });
 
-        modelBuilder.Entity<Game1on1MessageData>(entity =>
-        {
-            entity.HasKey(e => e.MessageId).HasName("PK_Game.1on1訊息資料表");
-
-            entity.ToTable("Game.1on1MessageData");
-
-            entity.Property(e => e.MessageId)
-                .ValueGeneratedNever()
-                .HasColumnName("MessageID");
-            entity.Property(e => e.DialogueId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("DialogueID");
-            entity.Property(e => e.GroupId).HasColumnName("Group ID");
-            entity.Property(e => e.ReceiverId).HasColumnName("ReceiverID");
-            entity.Property(e => e.SenderId).HasColumnName("SenderID");
-            entity.Property(e => e.SentTime).HasColumnType("datetime");
-
-            entity.HasOne(d => d.Receiver).WithMany(p => p.Game1on1MessageDataReceiver)
-                .HasForeignKey(d => d.ReceiverId)
-                .HasConstraintName("FK_Game.1on1訊息資料表_Shop.會員資訊1");
-
-            entity.HasOne(d => d.Sender).WithMany(p => p.Game1on1MessageDataSender)
-                .HasForeignKey(d => d.SenderId)
-                .HasConstraintName("FK_Game.1on1訊息資料表_Shop.會員資訊");
-        });
-
         modelBuilder.Entity<GameAchievementList>(entity =>
         {
             entity.HasKey(e => e.AchievementId).HasName("PK_Game.成就總表");
@@ -234,6 +210,18 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.AchievementRewardId).HasColumnName("Achievement Reward ID");
             entity.Property(e => e.AchievementRewardName).HasColumnName("Achievement Reward Name");
+        });
+
+        modelBuilder.Entity<GameBanUser>(entity =>
+        {
+            entity.ToTable("Game.BanUser");
+
+            entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.BannedTime).HasColumnType("datetime");
+            entity.Property(e => e.MemberId).HasColumnName("MemberID");
+            entity.Property(e => e.UnBannedTime)
+                .HasColumnType("datetime")
+                .HasColumnName("unBannedTime");
         });
 
         modelBuilder.Entity<GameCharacterInfo>(entity =>
@@ -413,6 +401,19 @@ public partial class cachaContext : DbContext
                 .HasForeignKey(d => d.MemberBId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Game.訊息資料表_Game.會員B訊息資料表");
+        });
+
+        modelBuilder.Entity<GameMessageDatas>(entity =>
+        {
+            entity.HasKey(e => e.MessageId).HasName("PK_Game.1on1訊息資料表");
+
+            entity.ToTable("Game.MessageDatas");
+
+            entity.Property(e => e.MessageId)
+                .ValueGeneratedNever()
+                .HasColumnName("MessageID");
+            entity.Property(e => e.MemberId).HasColumnName("MemberID");
+            entity.Property(e => e.Timestamp).HasColumnType("datetime");
         });
 
         modelBuilder.Entity<GamePet>(entity =>

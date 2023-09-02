@@ -24,15 +24,15 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Game.1on1MessageData]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Game.Achievement List]",
          "ObjectType": 0
       },
       {
          "Name": "[dbo].[Game.Achievement Reward List]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Game.BanUser]",
          "ObjectType": 0
       },
       {
@@ -69,6 +69,10 @@
       },
       {
          "Name": "[dbo].[Game.Message Data]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Game.MessageDatas]",
          "ObjectType": 0
       },
       {
