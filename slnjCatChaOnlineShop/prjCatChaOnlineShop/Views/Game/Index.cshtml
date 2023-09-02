@@ -11,73 +11,110 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
     <style>
         #sidebar {
-            width: 250px;
-            height: 650px;
-            position: fixed;
-            top: 165px;
-            right: -250px;
-            background: #de9e4f;
-            color: white;
-        }
-        #sidebar h2{
-            color:white;
-            margin-left:10px;
-        }
-        .sidebarInside {
-            position: relative;
-            right: 0;
-            left:10px;
-            width: 230px;
-            height: 600px;
-            background: white;
-            border-radius: 10px;
-            overflow: auto;
-        }
-
-            .sidebarInside > #messageDisplay {
-                position: absolute; 
-                background: orange;
-                bottom: 30px;
-                right:0;
-                max-height: 100%;
-                overflow: auto;
-            }
-        .sendMessage{
             position: absolute;
-            bottom:0;
-            right:0;
-            left:0;
-            display: flex;
+            top: 25%;
+            right: -400px;
         }
 
-        #messageInput{
-            width:100%;
+        #sidebar-inside {
+            position: relative;
         }
+
         .toggle {
             position: absolute;
-            top: 30%;
-            left: -30px;
-            background: #de9e4f;
-            width: 30px;
-            height: 160px;
-            border-radius: 10px 0 0 10px;
-        }
-        #toggleSidebar {
-            position: absolute;
-            border: 0px;
-            background: transparent;
-            bottom: 0;
-            color: white;
+            top: 25%;
+            right: 100%;
+            z-index: 999;
         }
 
-        #sendBtn{
-            background: orange;
-            border:0.5px solid orange;
+            .toggle button {
+                border: 0.5px solid orange;
+                border-radius: 10px 0 0 10px;
+                background-color: #4CAF50;
+                color: whitesmoke;
+            }
+
+        .chat-container {
+            position: relative;
+            width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 9999;
+            background-color: whitesmoke;
+            opacity: 1;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-header h2{
             color:white;
         }
 
-        #sendBtn:hover{
-                background:green;
+        .chat-messages {
+            position: relative;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column-reverse;
+            z-index: 999;
+        }
+
+        .message {
+            padding: 5px;
+            margin: 5px 0;
+            z-index: 999;
+        }
+
+        .username {
+            font-weight: bold;
+            z-index: 999;
+        }
+
+        .chat-input {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+            .chat-input input {
+                width: 80%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                z-index: 999;
+            }
+
+            .chat-input button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                background-color: #4CAF50;
+                color: white;
+                z-index: 999;
+            }
+
+        .message.own-message {
+            text-align: right;
+            color:orange;
+            border-radius: 10px;
+            margin: 5px;
+            font-weight:900;
+        }
+
+        .message.other-message {
+            text-align: left;
+            color: #f1f1f1;
+            border-radius: 10px;
+            margin: 5px;
         }
     </style>
 }
@@ -217,21 +254,23 @@
 
 
 <div id="sidebar">
-    <h2>聊天室</h2>
-    <div class="sidebarInside">
-        <div id="messageDisplay">
+    <div id="sidebar-inside">
+        <div class="toggle">
+            <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
         </div>
-        <div class="sendMessage">
-            <input type="text" id="messageInput" placeholder="輸入訊息" />
-            <button id="sendBtn" onclick="sendMessage()">
-                <span class="material-symbols-outlined">
-                    send
-                </span>
-            </button>
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>聊天室</h2>
+            </div>
+
+            <div class="chat-messages" id="chatWindow">
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="輸入訊息" />
+                <button onclick="sendMessage()">發送</button>
+            </div>
         </div>
-    </div>
-    <div class="toggle">
-        <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
     </div>
 </div>
 
@@ -258,7 +297,7 @@
     <!--排行榜測試資料-->
     <script>
         $('#toggleSidebar').click(function () {
-            var right = $('#sidebar').css('right') === '0px' ? '-250px' : '0px';
+            var right = $('#sidebar').css('right') === '0px' ? '-400px' : '0px';
             $('#sidebar').animate({ right: right });
         });
         const userName = '@ViewBag.UserName'
@@ -271,12 +310,17 @@
             console.log(userName);
             })
         // 收到消息後更新 UI
-        connection.on("ReceiveMessage", (user, message) => {
-            const chatWindow = $('#messageDisplay');
-            const newMessage = $('<div></div>').html(`<span class="text-end"><strong>${user}:</strong> ${message}</span>`);
+            connection.on("ReceiveMessage", (user, message) => {
+                const chatWindow = $("#chatWindow");
+                const userClass = (user === userName) ? "own-message" : "other-message";
 
-            chatWindow.append(newMessage);
-        });
+                const newMessage = $(`<div class="message ${userClass}">
+                                    <span class="username"><strong>${user}:</strong></span> ${message}
+                                  </div>`);
+
+                chatWindow.prepend(newMessage);
+            });
+
 
 
         // 開始連接
