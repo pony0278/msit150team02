@@ -8,42 +8,76 @@
     <link href="~/css/game/gameinstructions.css" rel="stylesheet" />
     <link href="~/css/game/gachabutton.css" rel="stylesheet" />
     <link href="~/css/game/confirmWin.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
     <style>
         #sidebar {
             width: 250px;
-            height: 700px;
+            height: 650px;
             position: fixed;
-            top: 150px;
+            top: 165px;
             right: -250px;
             background: #de9e4f;
             color: white;
         }
-
+        #sidebar h2{
+            color:white;
+            margin-left:10px;
+        }
         .sidebarInside {
-            position: absolute;
-            right: 8px;
+            position: relative;
+            right: 0;
+            left:10px;
             width: 230px;
             height: 600px;
             background: white;
             border-radius: 10px;
+            overflow: auto;
         }
 
+            .sidebarInside > #messageDisplay {
+                position: absolute; 
+                background: orange;
+                bottom: 30px;
+                right:0;
+                max-height: 100%;
+                overflow: auto;
+            }
+        .sendMessage{
+            position: absolute;
+            bottom:0;
+            right:0;
+            left:0;
+            display: flex;
+        }
+
+        #messageInput{
+            width:100%;
+        }
         .toggle {
             position: absolute;
-            top: 20%;
+            top: 30%;
             left: -30px;
             background: #de9e4f;
             width: 30px;
             height: 160px;
             border-radius: 10px 0 0 10px;
         }
-
         #toggleSidebar {
             position: absolute;
             border: 0px;
             background: transparent;
             bottom: 0;
             color: white;
+        }
+
+        #sendBtn{
+            background: orange;
+            border:0.5px solid orange;
+            color:white;
+        }
+
+        #sendBtn:hover{
+                background:green;
         }
     </style>
 }
@@ -65,7 +99,7 @@
                 <img class="catcha S" src="../images/game/gacha/S.gif" style="display: none;">
                 <img class="catcha A" src="../images/game/gacha/A.gif" style="display: none;">
             </div>
-           
+
             <div id="summon-buttons">
                 @*返回大廳按鈕*@
                 <button id="commonbackBTN"></button>
@@ -78,11 +112,11 @@
                     <button id="RubySingleDrow"></button>
                     <button id="RubyTenDrows"></button>
                 </div>
-                
+
             </div>
             <div id="result" class="result-container"></div>
             @* 使用者貓幣紅利顯示*@
-           
+
         </div>
         <!-- End 轉蛋 -->
         <!-- Start 小遊戲說明提示 -->
@@ -126,41 +160,40 @@
                 <div id="confirmWin-text">
                     N/A
                 </div>
-                <input id="confirmWin-fillin" maxlength="7" type="text"  style="display:none;" />
+                <input id="confirmWin-fillin" maxlength="7" type="text" style="display:none;" />
             </div>
             <button id="confirmWinBTN" onclick="closeConfirmWin()">確認</button>
         </div>
-   
-    <!-- End 獲得物品確認視窗 -->
-    <!-- Start Canvas遊戲畫布 -->
-    <div id="CanvasRank">
-        <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
-        <div id="rank-container">
-            <div id="rankpage-title">小遊戲排行榜</div>
-            <table id="emTable" class="table table-striped">
-                <thead>
-                    <tr>
-                        <th style="width: 60px;">排名</th>
-                        <th>玩家名稱</th>
-                        <th>分數</th>
-                    </tr>
-                </thead>
-                <tbody>
-                
-                </tbody>
-            </table>
+
+        <!-- End 獲得物品確認視窗 -->
+        <!-- Start Canvas遊戲畫布 -->
+        <div id="CanvasRank">
+            <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
+            <div id="rank-container">
+                <div id="rankpage-title">小遊戲排行榜</div>
+                <table id="emTable" class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th style="width: 60px;">排名</th>
+                            <th>玩家名稱</th>
+                            <th>分數</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-    <canvas id="CanvasCheckIn"></canvas>
-    <canvas id="Canvasrungame"></canvas>
-    <canvas id="CanvasGatcha"></canvas>
-    <canvas id="CanvasStore"></canvas>
-    <canvas id="CanvasSummonResult"></canvas>
-    <canvas id="CanvasDoubleCheck"></canvas>
+        <canvas id="CanvasCheckIn"></canvas>
+        <canvas id="Canvasrungame"></canvas>
+        <canvas id="CanvasGatcha"></canvas>
+        <canvas id="CanvasStore"></canvas>
+        <canvas id="CanvasSummonResult"></canvas>
+        <canvas id="CanvasDoubleCheck"></canvas>
     </div>
     <!-- End Canvas遊戲畫布 -->
 </div>
-<div id="userMemberidlogin" style="display: none";>
+<div id="userMemberidlogin" style="display: none" ;>
     <label for="memberId">請輸入memberId: </label>
     <input type="text" id="memberId" name="memberId" pattern="[0-9]*"><br><br>
     <input type="submit" id="memberIdLogin" value="Submit">
@@ -173,12 +206,23 @@
     <button id="registerButton">註冊</button>
 </div>
 
-<button type="submit" id="testDBlogin"style="display:none">測試資料庫登入</button>
+<button type="submit" id="testDBlogin" style="display:none">測試資料庫登入</button>
 
 
 <div id="sidebar">
     <h2>聊天室</h2>
-    <div class="sidebarInside"></div>
+    <div class="sidebarInside">
+        <div id="messageDisplay">
+        </div>
+        <div class="sendMessage">
+            <input type="text" id="messageInput" placeholder="輸入訊息" />
+            <button id="sendBtn" onclick="sendMessage()">
+                <span class="material-symbols-outlined">
+                    send
+                </span>
+            </button>
+        </div>
+    </div>
     <div class="toggle">
         <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
     </div>
@@ -188,6 +232,7 @@
 <!-- 遊戲相關js -->
 @section Scripts{
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
     <script src="~/js/game/DBIformation.js"></script>
     <script src="~/js/game/GameLogin.js"></script>
     <script src="~/js/game/Main.js"></script>
@@ -209,6 +254,37 @@
             var right = $('#sidebar').css('right') === '0px' ? '-250px' : '0px';
             $('#sidebar').animate({ right: right });
         });
+        const userName = '@ViewBag.UserName'
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub", {
+                accessTokenFactory: () => userName
+            })
+            .build();
+            $(document).ready(function(){
+            console.log(userName);
+            })
+        // 收到消息後更新 UI
+        connection.on("ReceiveMessage", (user, message) => {
+            const chatWindow = $('#messageDisplay');
+            const newMessage = $('<div></div>').html(`<span class="text-end"><strong>${user}:</strong> ${message}</span>`);
+
+            chatWindow.append(newMessage);
+        });
+
+
+        // 開始連接
+        connection.start().catch(err => console.error(err));
+
+        // 發送消息
+        function sendMessage(user, message) {
+            const userNameFromSession = userName; 
+            const messageInput = $("#messageInput");
+            const inputMessage = messageInput.val();  
+            console.log(message);  
+            console.log(inputMessage);  
+
+            connection.invoke("SendMessage", userNameFromSession, inputMessage).catch(err => console.error(err));
+        }
         const rank = {
             "排名": [
                 { "name": "N/A", "排名": "N/A", "分數": "N/A" },

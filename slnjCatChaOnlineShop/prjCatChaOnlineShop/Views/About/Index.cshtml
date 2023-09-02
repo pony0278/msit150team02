@@ -12,6 +12,7 @@
 
 
 @section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
     <script>
         const userName = '@ViewBag.UserName'
@@ -20,7 +21,9 @@
                 accessTokenFactory: () => userName
             })
             .build();
-
+                        $(document).ready(function(){
+            console.log(userName);
+            })
         // 收到消息後更新 UI
         connection.on("ReceiveMessage", (user, message) => {
             const chatWindow = document.getElementById("chatWindow");
@@ -38,7 +41,8 @@
             const users = userName; // 這裡可以從登入信息中獲取
             const messageInput = document.getElementById("messageInput");
             const inputMessage = messageInput.value;
-
+                            console.log(message)
+                    console.log(inputMessage)
             connection.invoke("SendMessage", users, inputMessage).catch(err => console.error(err));
         }
     </script>
