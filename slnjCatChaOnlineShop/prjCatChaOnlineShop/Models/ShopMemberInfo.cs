@@ -55,6 +55,12 @@ public partial class ShopMemberInfo
 
     public bool? EmailVerified { get; set; }
 
+    public bool? IsBanned { get; set; }
+
+    public DateTime? BannedTime { get; set; }
+
+    public DateTime? UnBannedTime { get; set; }
+
     public virtual ICollection<GameCoinExchangeRecord> GameCoinExchangeRecord { get; set; } = new List<GameCoinExchangeRecord>();
 
     public virtual ICollection<GameFriendData> GameFriendDataFriend { get; set; } = new List<GameFriendData>();

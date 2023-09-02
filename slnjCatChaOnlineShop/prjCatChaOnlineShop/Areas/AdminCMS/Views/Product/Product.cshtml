@@ -786,11 +786,11 @@
             }
             formData.append("PushToShop", pinToShop)
             Swal.fire({
-                title: '確定要新增產品嗎?',
+                title: '確定要修改產品嗎?',
                 showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: '新增',
-                denyButtonText: `不新增`,
+                confirmButtonText: '是',
+                denyButtonText: `否`,
             }).then((result) => {
                 if (result.isConfirmed) {
                     $.ajax({

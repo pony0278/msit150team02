@@ -218,6 +218,7 @@ public partial class cachaContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BannedTime).HasColumnType("datetime");
+            entity.Property(e => e.IsBanned).HasColumnName("isBanned");
             entity.Property(e => e.MemberId).HasColumnName("MemberID");
             entity.Property(e => e.UnBannedTime)
                 .HasColumnType("datetime")
@@ -871,6 +872,7 @@ public partial class cachaContext : DbContext
             entity.ToTable("Shop.Member Info");
 
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
+            entity.Property(e => e.BannedTime).HasColumnType("datetime");
             entity.Property(e => e.Birthday).HasColumnType("date");
             entity.Property(e => e.CatCoinQuantity).HasColumnName("Cat Coin Quantity");
             entity.Property(e => e.CharacterName)
@@ -878,6 +880,7 @@ public partial class cachaContext : DbContext
                 .HasColumnName("Character Name");
             entity.Property(e => e.FavoriteId).HasColumnName("Favorite ID");
             entity.Property(e => e.Gender).HasMaxLength(50);
+            entity.Property(e => e.IsBanned).HasColumnName("isBanned");
             entity.Property(e => e.LastLoginTime)
                 .HasColumnType("datetime")
                 .HasColumnName("Last Login Time");
@@ -894,6 +897,9 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.RegistrationTime)
                 .HasColumnType("datetime")
                 .HasColumnName("Registration Time");
+            entity.Property(e => e.UnBannedTime)
+                .HasColumnType("datetime")
+                .HasColumnName("unBannedTime");
 
             entity.HasOne(d => d.Level).WithMany(p => p.ShopMemberInfo)
                 .HasForeignKey(d => d.LevelId)

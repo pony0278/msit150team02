@@ -29,5 +29,8 @@
         public int? RunGameHighestScore { get; set; }
 
         public bool? MemberStatus { get; set; }
+
+        public bool? isBanned { get; set; }
+        public DateTime unBannedTime { get; set; }
     }
 }

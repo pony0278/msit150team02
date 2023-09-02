@@ -2,17 +2,43 @@
 using System.Threading.Tasks;
 using prjCatChaOnlineShop.Models.ViewModels;
 using System.Collections.Concurrent;
+using prjCatChaOnlineShop.Models;
+using System.Linq;
 
 namespace prjCatChaOnlineShop.Services.Function
 {
     public class ChatHub : Hub
     {
+        private readonly cachaContext _cachaContext;
+
+        public ChatHub (cachaContext cachaContext)
+        {
+            _cachaContext = cachaContext;
+        }
+
         private static ConcurrentDictionary<string, string> Users = new ConcurrentDictionary<string, string>();
+
+        public List<BannedUsers> BannedID()
+        {
+            var data = _cachaContext.ShopMemberInfo
+                        .Where(x => x.IsBanned == true)
+                        .Select(x => new BannedUsers
+                        {
+                            Name = x.Name,
+                            
+                        })
+                        .ToList();
+            return data;
+        }
+
         public async Task SendMessage(string user, string message)
         {
-            // 查詢數據庫以確定該用戶是否被禁言
-            bool isBanned = (user == "badUser");
+            // 解碼可能包含HTML實體的用戶名
+            string decodedStr = System.Net.WebUtility.HtmlDecode(user);
 
+            // 查詢數據庫以確定該用戶是否被禁言
+            var bannedUsers = BannedID();
+            bool isBanned = bannedUsers.Any(x => x.Name == decodedStr);
 
             if (!isBanned)
             {
@@ -25,18 +51,11 @@ namespace prjCatChaOnlineShop.Services.Function
                 await Clients.Caller.SendAsync("ReceiveMessage", "系統", "您已違反社群發言規則，您30分鐘內禁止發言");
             }
         }
-        public override async Task OnConnectedAsync()
-        {
-            string username = Context.GetHttpContext().Request.Query["username"];
-            Users.TryAdd(Context.ConnectionId, username);
-            await base.OnConnectedAsync();
-        }
-        public override async Task OnDisconnectedAsync(Exception exception)
-        {
-            string username;
-            Users.TryRemove(Context.ConnectionId, out username);
 
-            await base.OnDisconnectedAsync(exception);
+        public async Task<string> SetUserName(string userName)
+        {
+            // 做一些異步操作，例如資料庫存儲等。
+            return userName;
         }
     }
 }

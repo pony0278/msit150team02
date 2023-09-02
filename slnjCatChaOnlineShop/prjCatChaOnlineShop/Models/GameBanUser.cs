@@ -14,4 +14,6 @@ public partial class GameBanUser
     public DateTime? BannedTime { get; set; }
 
     public DateTime? UnBannedTime { get; set; }
+
+    public bool? IsBanned { get; set; }
 }

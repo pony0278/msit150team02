@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
     <style>
         #sidebar {
-            position: absolute;
+            position: fixed;
             top: 25%;
             right: -400px;
         }
@@ -104,7 +104,7 @@
 
         .message.own-message {
             text-align: right;
-            color:orange;
+            color:purple;
             border-radius: 10px;
             margin: 5px;
             font-weight:900;
@@ -112,7 +112,7 @@
 
         .message.other-message {
             text-align: left;
-            color: #f1f1f1;
+            color: orange;
             border-radius: 10px;
             margin: 5px;
         }
@@ -301,10 +301,9 @@
             $('#sidebar').animate({ right: right });
         });
         const userName = '@ViewBag.UserName'
+
         const connection = new signalR.HubConnectionBuilder()
-            .withUrl("/chathub", {
-                accessTokenFactory: () => userName
-            })
+            .withUrl("/chathub")
             .build();
             $(document).ready(function(){
             console.log(userName);
@@ -324,7 +323,11 @@
 
 
         // 開始連接
-        connection.start().catch(err => console.error(err));
+        connection.start().then(function () {
+            connection.invoke("SetUserName", userName);
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
 
         // 發送消息
         function sendMessage(user, message) {
