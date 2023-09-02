@@ -34,6 +34,7 @@
 		inherit_height_from: '.cover-slides',
 		play: 5000,
 		animation: 'fade',
+		height:600,
 	});
 
 	$(".cover-slides ul li").append("<div class='overlay-background'></div>");

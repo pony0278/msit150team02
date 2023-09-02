@@ -36,17 +36,30 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult Login(CLoginModel vm)
         {
-            
-            ShopMemberInfo user = (new cachaContext()).ShopMemberInfo.FirstOrDefault(
-                t => t.Email.Equals(vm.txtEmail) && t.Password.Equals(vm.txtPassword));
-            if (user != null && user.Password.Equals(vm.txtPassword))
+            ShopMemberInfo existUser = (new cachaContext()).ShopMemberInfo.FirstOrDefault(
+               t => t.Email.Equals(vm.txtEmail));
+
+            if (existUser == null)  //帳號不存在 => 此帳號未註冊
             {
-                string Json = JsonSerializer.Serialize(user);
-                HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, Json);//Session-登入狀態紀錄
-                HttpContext.Session.SetString("UserName", user.Name);//Session-當前當入者名稱紀錄
-
-
-                return RedirectToAction("Index", "Index");
+                return Json(new { Message = "帳號不存在，請進行註冊", Success = false, acountExist = false });
+            }
+            //帳號存在
+            if (existUser.EmailVerified == false)// 是否驗證過email? 
+            {
+                return Json(new { Message = "帳號未完成信箱驗證，請重新註冊", Success = false, accountExist = true }); //否 => 帳號未經email驗證，請重新註冊
+            }
+            
+            if (existUser.EmailVerified == true)//是=>繼續驗證密碼
+            {
+                if (existUser.Password == vm.txtPassword) 
+                {
+                    string json = JsonSerializer.Serialize(existUser);
+                    HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
+                    HttpContext.Session.SetString("UserName", existUser.Name);//Session-當前當入者名稱紀錄
+                    return Json(new { UserName = existUser.Name, Success = true, accountExist = true });//密碼正確=>登入 => 歡迎...
+                }
+                else
+                    return Json(new { Message = "密碼錯誤，請重新嘗試", Success = true, accountExist = true });//密碼錯誤=>密碼錯誤，請重新嘗試
             }
             return View();
         }

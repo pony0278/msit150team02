@@ -1194,10 +1194,30 @@
                         送出訂單
                     </button>
                 </div>
-                <div hidden>
+                <div >
                     @if (Model != null)
                     {
-                        @foreach (var key in @Model.keyValuePairs.Keys.ToList())
+                        <input type="text" name="MerchantTradeNo" value="@Model.keyValuePairs["MerchantTradeNo"]" />
+                        <input type="text" name="MerchantTradeDate" value="@Model.keyValuePairs["MerchantTradeDate"]" />
+                        <input type="text" name="TotalAmount" value="@Model.keyValuePairs["TotalAmount"]" />
+                        <input type="text" name="TradeDesc" value="@Model.keyValuePairs["TradeDesc"]" />
+                        <input type="text" name="ItemName" value="@Model.keyValuePairs["ItemName"]" />
+                        <input type="text" name="ExpireDate" value="@Model.keyValuePairs["ExpireDate"]" />
+                        <input type="text" name="CustomField1" value="@Model.keyValuePairs["CustomField1"]" />
+                        <input type="text" name="CustomField2" value="@Model.keyValuePairs["CustomField2"]" />
+                        <input type="text" name="CustomField3" value="@Model.keyValuePairs["CustomField3"]" />
+                        <input type="text" name="CustomField4" value="@Model.keyValuePairs["CustomField4"]" />
+                        <input type="text" name="ReturnURL" value="@Model.keyValuePairs["ReturnURL"]" />
+                        <input type="text" name="OrderResultURL" value="@Model.keyValuePairs["OrderResultURL"]" />
+                        <input type="text" name="PaymentInfoURL" value="@Model.keyValuePairs["PaymentInfoURL"]" />
+                        <input type="text" name="ClientRedirectURL" value="@Model.keyValuePairs["ClientRedirectURL"]" />
+                        <input type="text" name="MerchantID" value="@Model.keyValuePairs["MerchantID"]" />
+                        <input type="text" name="IgnorePayment" value="@Model.keyValuePairs["IgnorePayment"]" />
+                        <input type="text" name="PaymentType" value="@Model.keyValuePairs["PaymentType"]" />
+                        <input type="text" name="ChoosePayment" value="@Model.keyValuePairs["ChoosePayment"]" />
+                        <input type="text" name="EncryptType" value="@Model.keyValuePairs["EncryptType"]" />
+                        <input type="text" name="CheckMacValue" value="@Model.keyValuePairs["CheckMacValue"]" />
+                       @* @foreach (var key in @Model.keyValuePairs.Keys.ToList())
                         {
                             @(key) <input type="text" name="@key" value="@Model.keyValuePairs[key]" />
 
