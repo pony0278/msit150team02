@@ -181,8 +181,13 @@
                                                     <div class="form-row">
                                                         <div class="col-md-12">
                                                             <label>住址</label>
-                                                            <input type="text" placeholder="姓名" id="addressInput" name="address"
-                                                                   class="form-control" required="required" />
+                                                            <div class="input-group">
+                                                                <input type="text" placeholder="姓名" id="addressInput" name="address"
+                                                                       class="form-control" required="required" />
+                                                                <div class="input-group-append">
+                                                                    <button class="btn  btn-warning mx-2 btn-sm fs-5" type="button" data-bs-toggle="modal" data-bs-target="#mapModal">+</button>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <!--常用宅配地址-->
@@ -541,6 +546,26 @@
                             <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗:查看googlemap-->
+        <div class="modal fade" id="mapModal">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-between">
+                        <div>
+                            <input id="locationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
+                            <button onclick="searchLocation()">搜尋</button>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="map" style="height: 400px;"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
                 </div>
             </div>
         </div>
@@ -1040,7 +1065,8 @@
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
     <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
-
+    <!--用於Maps JavaScript API，有api需替換-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
 
     <!--1.載入時，導入基本資料-->
     <script>
@@ -1367,6 +1393,85 @@
         });
     </script>
 
+    <!--google地圖-->
+    <script>
+        // 初始化地圖
+        var map;
+        var geocoder;
+
+        function initMap() {
+            // 創建地圖
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 25.040862, lng: 121.563904 }, // 台北市政府坐標
+                zoom: 15,
+            });
+
+            // 初始化地理編碼器
+            geocoder = new google.maps.Geocoder();
+
+            // 在地圖上定位
+            var address = "Taipei City Hall, 1 Shifu Road, Xinyi District, Taipei City, Taiwan 110204"; 
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status === "OK") {
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                        title: "Your Location",
+                    });
+
+                    // 在地圖上添加點擊事件監聽器
+                    map.addListener("click", function (event) {
+                        // 獲取點擊位置的坐標
+                        var clickedLat = event.latLng.lat();
+                        var clickedLng = event.latLng.lng();
+
+                        // 創建新的地理位置對象以便反向地理編碼
+                        var clickedLocation = new google.maps.LatLng(clickedLat, clickedLng);
+
+                        // 使用反向地理編碼獲取點擊位置的地址
+                        geocoder.geocode({ location: clickedLocation }, function (results, status) {
+                            if (status === "OK" && results[0]) {
+                                var clickedAddress = results[0].formatted_address;
+                                console.log("使用者點擊的地址：", clickedAddress);
+                                $('#addressInput').val(clickedAddress);
+                            } else {
+                                console.log("無法獲取地址：" + status);
+                            }
+                        });
+                    });
+                } else {
+                    alert("Geocode was not successful for the following reason: " + status);
+                }
+            });
+        }
+
+        // 使用者點擊搜尋按鈕時調用此函數
+        function searchLocation() {
+            var locationInput = document.getElementById("locationInput");
+            var location = locationInput.value;
+
+            if (location) {
+                // 使用地理編碼器獲取位置的坐標
+                geocoder.geocode({ address: location }, function (results, status) {
+                    if (status === "OK" && results[0]) {
+                        var clickedLocation = results[0].geometry.location;
+                        map.setCenter(clickedLocation);
+
+                        // 在地圖上添加標記以標示位置
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: clickedLocation,
+                            title: location,
+                        });
+                    } else {
+                        alert("無法找到位置：" + status);
+                    }
+                });
+            }
+        }
+    </script>
+
     <!--2.載入時，導入消費紀錄-->
     <script>
 
@@ -1685,7 +1790,6 @@
                     console.error('Error:', error);
                 });
         }
-
 
         //送出退換貨
         document.getElementById('returnForm').addEventListener('submit', function (event) {

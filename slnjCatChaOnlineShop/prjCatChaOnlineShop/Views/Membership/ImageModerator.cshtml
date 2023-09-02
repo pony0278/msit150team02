@@ -59,15 +59,25 @@
                         <button type="submit" id="imgChangeUrl">上傳圖片</button>
                     </div>
                 </form>
+                <div >
+                    <h2>審核結果</h2>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="imageResults" rows="2"></textarea>
+                </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <h2>圖像審核</h2>
-                <textarea class="form-control" aria-label="With textarea" id="checkResults" rows="8"></textarea>
-                <h2>圖像辨識</h2>
-                <textarea class="form-control" aria-label="With textarea" id="visionResults" rows="8"></textarea>
-                <h2>審核結果</h2>
-                <textarea class="form-control" aria-label="With textarea" id="imageResults" rows="2"></textarea>
+                <div>
+                    <h2>圖像審核</h2>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="checkResults" rows="3"></textarea>
+                </div>
+                <div class="my-4">
+                    <h2>圖像描述</h2>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2"></textarea>
+                </div>
+                <div class="my-4">
+                    <h2>圖像識別</h2>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="visionResults" rows="7"></textarea>
+                </div>
             </div>
         </div>
 
@@ -137,11 +147,29 @@
                             // Request body
                             data: JSON.stringify(visionData),
                         }).done(function (visionResult) {
-                            document.getElementById('visionResults').value = JSON.stringify(visionResult);
+
                             var text = visionResult['description']['captions'][0]['text'];
                             var confidence = visionResult['description']['captions'][0]['confidence'];
-                            alert(`內容:${text}, 信心指數:${(confidence * 100).toFixed(2)}%`);
+                            var descriptionText = `內容:${text}\n準確度:${(confidence * 100).toFixed(2)}%`;
 
+
+                            console.log("\n顏色：");
+                            console.log(visionResult.color.dominantColorForeground);   //前景主顏色
+                            console.log(visionResult.color.dominantColorBackground);  //背景主顏色
+                            console.log(visionResult.color.dominantColors);  //主顏色
+
+                            console.log("\n所有標籤：");
+                            var tagText = "";
+                            visionResult.tags.forEach(function (tag) {
+                                tagText += tag.name + " / ";
+                            });
+
+                            var visionText = "分類: " + visionResult.categories[0].name + "\n" +
+                            "特點: " + tagText  + "\n" +
+                                "構成主色: " + visionResult.color.dominantColors + "\n" +
+                                "尺寸: 高度 " + visionResult.metadata.height * 0.04 + "公分 、 寬度 " + visionResult.metadata.width * 0.04 + "公分\n" +
+                                "檔案類型: " + visionResult.metadata.format + "檔";
+                            
                             // 圖片仲裁的地方
                             var moderationData = {
                                 "DataRepresentation": "URL",
@@ -157,13 +185,27 @@
                                 data: JSON.stringify(moderationData),
                             }).done(function (moderationResult) {
 
-                                // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
-                                // 數據1 ： 成人內容
-                                var Category1 = moderationResult['Classification']['Category1']['Score'];
-                                // // 數據2 ： 性暗示
-                                var Category2 = moderationResult['Classification']['Category2']['Score'];
-                                // // 數據3 ： 冒犯性
-                                var Category3 = moderationResult['Classification']['Category3']['Score'];
+                                var Category1 = moderationResult['AdultClassificationScore'];
+                                var Category2 = moderationResult['RacyClassificationScore'];
+                                var Category3 = visionResult.adult.goreScore;
+
+                                var isImageAdultClassified = moderationResult['IsImageAdultClassified'] ? '是' : '非';
+                                var isImageRacyClassified = moderationResult['IsImageRacyClassified'] ? '是' : '非';
+                                var isGoryContent = visionResult.adult.isGoryContent ? '是' : '非';
+
+                                /*
+                                console.log("成人冒犯指數: " + (Category1 * 10000).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容");
+                                console.log("種族冒犯指數: " + (Category2 * 10000).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視");
+                                document.getElementById('checkResults').value = JSON.stringify(moderationResult);
+                                */
+
+                                var checkText = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容\n" +
+                                    "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視\n" +
+                                    "露骨暴力指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面\n";
+
+                                document.getElementById('checkResults').value = checkText;
+                                document.getElementById('visionResults').value = visionText;
+                                document.getElementById('descriptionResults').value = descriptionText;
 
                             }).fail(function (err) {
                                 alert(err.statusText);
