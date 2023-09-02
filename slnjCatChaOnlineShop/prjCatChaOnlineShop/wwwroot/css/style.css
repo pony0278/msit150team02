@@ -3059,3 +3059,25 @@ ul.cart-list > li.total > .btn:hover {
 #navbar-right-side-menu {
     margin-right: 20px !important;
 }
+
+/* 改變網頁的scrollbar */
+/*資料來源https://stackoverflow.com/questions/18871519/how-to-customize-scroll-bars-with-html-and-css*/
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.8);*/
+    -webkit-border-radius: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #666;
+    -webkit-box-shadow: inset 0 0 6px rgba(222,158,79,0.5);
+}
