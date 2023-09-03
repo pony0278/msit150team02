@@ -31,12 +31,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
         [HttpGet]
         public IActionResult CheckFreeeNameChanged() 
         {
+            try { 
             var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
             var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
             int _memberId = memberInfo.MemberId;
-
-
-
             bool? freeNameChangeValue = _context.ShopMemberInfo
                 .Where(c => c.MemberId == _memberId)
                 .Select(c => c.FreeNameChange)
@@ -50,6 +48,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
               
             return new JsonResult(true);
+            }
+            catch (Exception ex)
+            {
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
+            }
         }
 
 

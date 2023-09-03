@@ -23,25 +23,34 @@ namespace prjCatChaOnlineShop.Controllers.Api
         [HttpPost]
         public IActionResult updateUserCoupon(CPlayerItem c)
         {
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            int _memberId = memberInfo.MemberId;
-
-            var data = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == _memberId && p.ProductId == c.fProductId);
-           
-            if (data != null)
+            try
             {
-                data.QuantityOfInGameItems ++;
-                var dataInCouponTable = new ShopMemberCouponData 
-                {   MemberId = _memberId,
-                    CouponId = c.fCouponId,
-                    CouponStatusId = false
-                 };
-                _context.ShopMemberCouponData.Add(dataInCouponTable);
-                _context.SaveChanges();
-                return Ok(new { message = "已存入優惠券" });
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
+
+                var data = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == _memberId && p.ProductId == c.fProductId);
+
+                if (data != null)
+                {
+                    data.QuantityOfInGameItems++;
+                    var dataInCouponTable = new ShopMemberCouponData
+                    {
+                        MemberId = _memberId,
+                        CouponId = c.fCouponId,
+                        CouponStatusId = false
+                    };
+                    _context.ShopMemberCouponData.Add(dataInCouponTable);
+                    _context.SaveChanges();
+                    return Ok(new { message = "已存入優惠券" });
+                }
+                return Ok(new { message = "API完成" });
             }
-            return Ok(new { message = "API完成" });
+            catch (Exception ex)
+            {
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
+            }
         }
 
     }

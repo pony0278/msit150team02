@@ -18,13 +18,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly cachaContext _context;
 
-
-       //public TestDBLoginController(cachaContext context)
-       // {
-       //     _context = context;
-
-       // }
-
         public TestDBLoginController(IHttpContextAccessor httpContextAccessor, cachaContext context)
         {
             _httpContextAccessor = httpContextAccessor;
@@ -35,125 +28,134 @@ namespace prjCatChaOnlineShop.Controllers.Api
         [HttpGet("玩家資訊數據")]
         public IActionResult 玩家資訊數據()
         {
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            int _memberId= memberInfo.MemberId;
-
-            // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
-            if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _memberId))
+            try
             {
-                var gameProductTotalRecords = _context.GameProductTotal.ToList();
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
 
-                var defaultitems = _context.GameItemPurchaseRecord;
-
-                foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                // 判斷是否存在 MemberId，如果不存在，可以創建一個預設的 GameItemPurchaseRecord
+                if (!_context.GameItemPurchaseRecord.Any(g => g.MemberId == _memberId))
                 {
-                    var defaultItem = new GameItemPurchaseRecord
+                    var gameProductTotalRecords = _context.GameProductTotal.ToList();
+
+                    var defaultitems = _context.GameItemPurchaseRecord;
+
+                    foreach (var gameProductTotalRecord in gameProductTotalRecords)
                     {
-                        MemberId = _memberId,
-                        ProductId = gameProductTotalRecord.ProductId,
-                        QuantityOfInGameItems = 0,
-                        ItemName = gameProductTotalRecord.ProductName
-                    };
-                }
-                var defaultI = new GameItemPurchaseRecord
-                {
-                    MemberId = _memberId,
-                    ProductId = 22,
-                    QuantityOfInGameItems = 1,
-                    ItemName = "初始褐貓"
-                };
-                var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == _memberId);
-                if (db != null&&db.LoyaltyPoints==null)
-                {
-                    db.CharacterName = "我愛貓抓抓001";
-                    db.CatCoinQuantity = 10000;
-                    db.RunGameHighestScore= 0;
-                    db.LoyaltyPoints = 0;
-                }
-                else if (db != null&& db.LoyaltyPoints != null) {
-                    db.CharacterName = "我愛貓抓抓001";
-                    db.CatCoinQuantity = 10000;
-                    db.RunGameHighestScore = 0;
-                };
-                _context.GameItemPurchaseRecord.Add(defaultI);
-                _context.SaveChanges();
-            }
-            else
-            {
-                var gameProductTotalRecords = _context.GameProductTotal.ToList();
-                var existingProductIds = new HashSet<int>();
-
-                foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _memberId))
-                {
-                    existingProductIds.Add((int)existingRecord.ProductId);
-                }
-
-                var missingProductIds = new List<int>();
-
-                foreach (var gameProductTotalRecord in gameProductTotalRecords)
-                {
-                    if (!existingProductIds.Contains(gameProductTotalRecord.ProductId))
-                    {
-                        missingProductIds.Add(gameProductTotalRecord.ProductId);
+                        var defaultItem = new GameItemPurchaseRecord
+                        {
+                            MemberId = _memberId,
+                            ProductId = gameProductTotalRecord.ProductId,
+                            QuantityOfInGameItems = 0,
+                            ItemName = gameProductTotalRecord.ProductName
+                        };
                     }
-                }
-
-                foreach (var missingProductId in missingProductIds)
-                {
-                    var defaultItem = new GameItemPurchaseRecord
+                    var defaultI = new GameItemPurchaseRecord
                     {
                         MemberId = _memberId,
-                        ProductId = missingProductId,
-                        QuantityOfInGameItems = 0,
-                        ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
+                        ProductId = 22,
+                        QuantityOfInGameItems = 1,
+                        ItemName = "初始褐貓"
                     };
-                    _context.GameItemPurchaseRecord.Add(defaultItem);
-                }
-                _context.SaveChanges();
-            }
-
-            // 執行查詢
-            var datas = (from p in _context.ShopMemberInfo
-                         join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
-                         where p.MemberId == _memberId
-                         select new
-                         {
-                             p.MemberId,
-                             p.CharacterName,
-                             p.CatCoinQuantity,
-                             p.LoyaltyPoints,
-                             p.RunGameHighestScore,
-                             i.ProductId,
-                             i.QuantityOfInGameItems,
-                             i.ItemName
-                         })
-                         .Distinct()
-                         .ToList();
-
-            // 在這裡繼續處理結果，將集合中的元素合併
-            // ...
-
-            if (datas.Any())
-            {
-                // 在這裡繼續處理結果，將集合中的元素合併
-                var mergedData = datas
-                    .GroupBy(d => new { d.MemberId, d.CharacterName, d.CatCoinQuantity, d.LoyaltyPoints, d.RunGameHighestScore })
-                    .Select(group => new
+                    var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == _memberId);
+                    if (db != null && db.LoyaltyPoints == null)
                     {
-                        group.Key.MemberId,
-                        group.Key.CharacterName,
-                        group.Key.CatCoinQuantity,
-                        group.Key.LoyaltyPoints,
-                        group.Key.RunGameHighestScore,
-                        GameItemInfo = group.Select(g => new { g.ProductId, g.QuantityOfInGameItems, g.ItemName })
-                    })
-                    .ToList();
-                return new JsonResult(mergedData);
+                        db.CharacterName = "我愛貓抓抓001";
+                        db.CatCoinQuantity = 10000;
+                        db.RunGameHighestScore = 0;
+                        db.LoyaltyPoints = 0;
+                    }
+                    else if (db != null && db.LoyaltyPoints != null)
+                    {
+                        db.CharacterName = "我愛貓抓抓001";
+                        db.CatCoinQuantity = 10000;
+                        db.RunGameHighestScore = 0;
+                    };
+                    _context.GameItemPurchaseRecord.Add(defaultI);
+                    _context.SaveChanges();
+                }
+                else
+                {
+                    var gameProductTotalRecords = _context.GameProductTotal.ToList();
+                    var existingProductIds = new HashSet<int>();
+
+                    foreach (var existingRecord in _context.GameItemPurchaseRecord.Where(g => g.MemberId == _memberId))
+                    {
+                        existingProductIds.Add((int)existingRecord.ProductId);
+                    }
+
+                    var missingProductIds = new List<int>();
+
+                    foreach (var gameProductTotalRecord in gameProductTotalRecords)
+                    {
+                        if (!existingProductIds.Contains(gameProductTotalRecord.ProductId))
+                        {
+                            missingProductIds.Add(gameProductTotalRecord.ProductId);
+                        }
+                    }
+
+                    foreach (var missingProductId in missingProductIds)
+                    {
+                        var defaultItem = new GameItemPurchaseRecord
+                        {
+                            MemberId = _memberId,
+                            ProductId = missingProductId,
+                            QuantityOfInGameItems = 0,
+                            ItemName = gameProductTotalRecords.FirstOrDefault(g => g.ProductId == missingProductId)?.ProductName
+                        };
+                        _context.GameItemPurchaseRecord.Add(defaultItem);
+                    }
+                    _context.SaveChanges();
+                }
+
+                // 執行查詢
+                var datas = (from p in _context.ShopMemberInfo
+                             join i in _context.GameItemPurchaseRecord on p.MemberId equals i.MemberId
+                             where p.MemberId == _memberId
+                             select new
+                             {
+                                 p.MemberId,
+                                 p.CharacterName,
+                                 p.CatCoinQuantity,
+                                 p.LoyaltyPoints,
+                                 p.RunGameHighestScore,
+                                 i.ProductId,
+                                 i.QuantityOfInGameItems,
+                                 i.ItemName
+                             })
+                             .Distinct()
+                             .ToList();
+
+                // 在這裡繼續處理結果，將集合中的元素合併
+                // ...
+
+                if (datas.Any())
+                {
+                    // 在這裡繼續處理結果，將集合中的元素合併
+                    var mergedData = datas
+                        .GroupBy(d => new { d.MemberId, d.CharacterName, d.CatCoinQuantity, d.LoyaltyPoints, d.RunGameHighestScore })
+                        .Select(group => new
+                        {
+                            group.Key.MemberId,
+                            group.Key.CharacterName,
+                            group.Key.CatCoinQuantity,
+                            group.Key.LoyaltyPoints,
+                            group.Key.RunGameHighestScore,
+                            GameItemInfo = group.Select(g => new { g.ProductId, g.QuantityOfInGameItems, g.ItemName })
+                        })
+                        .ToList();
+                    return new JsonResult(mergedData);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound();
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
             }
         }
         //[HttpPost("玩家登入數據")]

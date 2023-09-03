@@ -18,24 +18,33 @@ namespace prjCatChaOnlineShop.Controllers.Api
         //http://localhost:5090/Api/Api/gameapi
         public IActionResult 轉蛋數據()
         {
-            var datas = from p in _context.GameProductTotal
-                        where p.LotteryProbability != null && p.ProductCategoryId != 2 && p.ProductImage != null
-                        select new
-                        {
-                            p.ProductName,
-                            p.ProductId,
-                            p.ProductCategoryId,
-                            p.LotteryProbability,
-                            p.ProductImage,
-                            p.CouponId
-                        };
-            if (datas.Any())
+
+            try
             {
-                return new JsonResult(datas);
+                var datas = from p in _context.GameProductTotal
+                            where p.LotteryProbability != null && p.ProductCategoryId != 2 && p.ProductImage != null
+                            select new
+                            {
+                                p.ProductName,
+                                p.ProductId,
+                                p.ProductCategoryId,
+                                p.LotteryProbability,
+                                p.ProductImage,
+                                p.CouponId
+                            };
+                if (datas.Any())
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
-            else
+            catch (Exception ex)
             {
-                return NotFound();
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
             }
         }
 

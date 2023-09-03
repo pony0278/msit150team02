@@ -21,29 +21,37 @@ namespace prjCatChaOnlineShop.Controllers.Api
             _context = context;
         }
 
-       
+
         [HttpPost]
         public IActionResult updateUserBackpack(CPlayerItem nID)
         {
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-            int _memberId = memberInfo.MemberId;
-
-
-            var dbMilkConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 7);
-            if (dbMilkConut != null)
+            try
             {
-                dbMilkConut.QuantityOfInGameItems += nID.fMilkCount;
-                _context.SaveChanges();
-            }
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
 
-            var dbCanConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 8);
-            if (dbCanConut != null)
-            {
-                dbCanConut.QuantityOfInGameItems += nID.fCanCount;
-                _context.SaveChanges();
+
+                var dbMilkConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 7);
+                if (dbMilkConut != null)
+                {
+                    dbMilkConut.QuantityOfInGameItems += nID.fMilkCount;
+                    _context.SaveChanges();
+                }
+
+                var dbCanConut = _context.GameItemPurchaseRecord.FirstOrDefault(p => p.MemberId == memberInfo.MemberId && p.ProductId == 8);
+                if (dbCanConut != null)
+                {
+                    dbCanConut.QuantityOfInGameItems += nID.fCanCount;
+                    _context.SaveChanges();
+                }
+                return Ok(new { message = "數據已成功保存" });
             }
-            return Ok(new { message = "數據已成功保存" });
+            catch (Exception ex)
+            {
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
+            }
         }
 
 

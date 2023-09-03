@@ -18,30 +18,44 @@ namespace prjCatChaOnlineShop.Controllers.Api
         [HttpPost("玩家登入數據")]
         public IActionResult 玩家登入數據([FromBody] GameReturnGachaDataModel rgm)
         {
-
-            var player = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == rgm.MemberId);
-            if (player != null)
+            try
             {
-                // 找到玩家
-                return Ok(new { message = "找到這個玩家" });
+                var player = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == rgm.MemberId);
+                if (player != null)
+                {
+                    // 找到玩家
+                    return Ok(new { message = "找到這個玩家" });
+                }
+                else
+                {
+                    // 玩家不存在，返回自定義錯誤訊息
+                    return Ok(new { message = "沒有此玩家" });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                // 玩家不存在，返回自定義錯誤訊息
-                return Ok(new { message = "沒有此玩家" });
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
             }
         }
         [HttpPost("玩家註冊數據")]
         public IActionResult 玩家註冊數據([FromBody] GameReturnGachaDataModel rgm)
         {
-            var user註冊 = new ShopMemberInfo()
+            try
             {
-                CharacterName = rgm.CharacterName
-            };
-            _context.ShopMemberInfo.Add(user註冊);
-            _context.SaveChanges();
-            return Ok(new { message = "註冊成功" });
-
+                var user註冊 = new ShopMemberInfo()
+                {
+                    CharacterName = rgm.CharacterName
+                };
+                _context.ShopMemberInfo.Add(user註冊);
+                _context.SaveChanges();
+                return Ok(new { message = "註冊成功" });
+            }
+            catch (Exception ex)
+            {
+                // 處理異常情況
+                return StatusCode(500, "發生錯誤：" + ex.Message);
+            }
         }
     }
 }
