@@ -10,6 +10,7 @@ using System.Text;
 using static prjCatChaOnlineShop.Models.ViewModels.CForgetPwdModel;
 using Google.Apis.Auth;
 using prjCatChaOnlineShop.Models.CModels;
+using System.Reflection;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -18,9 +19,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //將 _context 注入控制器，可以在控制器的操作方法中使用 _context 來執行資料庫查詢和操作
         private readonly cachaContext _context;
         private readonly IConfiguration _configuration;
-        
-        public MemberLoginController(cachaContext context, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+
+        public MemberLoginController(cachaContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
+            _httpContextAccessor = httpContextAccessor;
             _context = context;
             _configuration = configuration;
         }
@@ -56,7 +59,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     string json = JsonSerializer.Serialize(existUser);
                     HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
                     HttpContext.Session.SetString("UserName", existUser.Name);//Session-當前當入者名稱紀錄
+
+                    //記錄完Session之後，馬上紀錄登入時間
+                    var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                    var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                    int _memberId = memberInfo.MemberId;
+                    var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == memberInfo.MemberId);
+                    if (db != null)
+                    {
+                        db.LastLoginTime = DateTime.Now;
+                        _context.SaveChanges();
+                    }
                     return Json(new { UserName = existUser.Name, Success = true, accountExist = true });//密碼正確=>登入 => 歡迎...
+                    
                 }
                 else
                     return Json(new { Message = "密碼錯誤，請重新嘗試", Success = true, accountExist = true });//密碼錯誤=>密碼錯誤，請重新嘗試
@@ -75,7 +90,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult RegisterMember(ShopMemberInfo registerModel)
         {
             registerModel.EmailVerified = false;
+            registerModel.CheckinDayCount = false;
             registerModel.RegistrationTime = DateTime.Now;
+         
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 

@@ -294,7 +294,7 @@ function updateHighestScore(num) {
         type: "POST",
         url: "/api/Api/UpdateGameData", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fScore: num }),
+        data: JSON.stringify({ fId: UserID, fRunGameHighestScore: num }),
         success: function (data) {
             initialize();
             loadRankData();
