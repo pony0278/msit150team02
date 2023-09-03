@@ -17,5 +17,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             ViewBag.UserName = userName;
             return View();
         }
+        public IActionResult B()
+        {
+            return View();
+        }
     }
 }

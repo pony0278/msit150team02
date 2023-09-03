@@ -68,6 +68,7 @@ app.UseEndpoints(endpoints =>
     name: "areas",
     pattern: "{area:exists}/{controller=CMSHome}/{action=Login}/{id?}");
     endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<OneToOneHub>("/OneToOneHub");
     endpoints.MapControllerRoute(
         name: "default",
         pattern: "{controller=Index}/{action=Index}/{id?}");
