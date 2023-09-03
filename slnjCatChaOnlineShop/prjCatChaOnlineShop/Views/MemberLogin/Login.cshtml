@@ -105,7 +105,7 @@
                                 <div class="mt-2 text-center">
                                     <a>或用其他社群登入</a>
                                 </div>
-                                <div class="mt-3 text-center justify-content-center d-flex">
+                                <div class="mt-3 text-center justify-content-center d-flex" >
                                     <div id="g_id_onload"
                                          data-client_id="572000494003-padpmen83rqinfo8tjq6d5tu653d69m2.apps.googleusercontent.com"
                                          data-login_uri="https://localhost:7218/MemberLogin/ValidGoogleLogin"
@@ -118,19 +118,8 @@
                                          data-text="sign_in_with"
                                          data-shape="rectangular"
                                          data-logo_alignment="left">
-                                    </div>
-                                   @* <a href="#" style="margin:15px">
-                                        <span><img src="~/images/CatCha/facebook_icon.png"></span>
-                                    </a>
-                                    <a href="#" style="margin:15px">
-                                        <span><img src="~/images/CatCha/google.png"></span>
-                                    </a>
-                                    <a href="#" style="margin:15px">
-                                        <span> <img src="~/images/CatCha/twitter.png"></span>
-                                    </a>*@
-                                </div>
-                                
-                           @* }*@
+                                    </div>                                 
+                                </div>                                 
                         </div>
                     </div>
                 </div>
@@ -262,6 +251,7 @@
     <script src="~/js/custom.js"></script>
     <!--nav導覽與頁籤使用-->
     @*<script src="~/js/myScript.js"></script>*@
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <!--SWEET ALERT-->
@@ -275,8 +265,11 @@
             $('#txtPassword').val("aa1234");
         });
 
+        const divElement = document.getElementById('g_id_onload');
 
-
+        divElement.addEventListener('click', function () {
+            alert('Div被点击了！');
+        });
 
         //新版登入
         
