@@ -145,7 +145,7 @@ public partial class cachaContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 #warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;Persist Security Info=True;User ID=msit150team02resoucegroup;Password=catcha!123");
+        => optionsBuilder.UseSqlServer("Data Source=msit150team02resoucegroup.database.windows.net;Initial Catalog=msit150team02resoucegroup;User ID=msit150team02resoucegroup;Password=catcha!123");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -369,19 +369,23 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<GameMemberTask>(entity =>
         {
-            entity.HasKey(e => e.TaskId).HasName("PK_Game.會員任務");
+            entity
+                .HasNoKey()
+                .ToTable("Game.Member Task");
 
-            entity.ToTable("Game.Member Task");
-
-            entity.Property(e => e.TaskId).HasColumnName("Task ID");
             entity.Property(e => e.CompleteDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Complete Date");
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
+            entity.Property(e => e.TaskId).HasColumnName("Task ID");
 
-            entity.HasOne(d => d.Member).WithMany(p => p.GameMemberTask)
+            entity.HasOne(d => d.Member).WithMany()
                 .HasForeignKey(d => d.MemberId)
                 .HasConstraintName("FK_Game.會員任務_Shop.會員資訊");
+
+            entity.HasOne(d => d.Task).WithMany()
+                .HasForeignKey(d => d.TaskId)
+                .HasConstraintName("FK_Game.Member Task_Game.Task List");
         });
 
         modelBuilder.Entity<GameMessageData>(entity =>
@@ -596,34 +600,25 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<GameTaskList>(entity =>
         {
-            entity.HasKey(e => e.TaskName).HasName("PK_Game.任務總表_1");
+            entity.HasKey(e => e.TaskId);
 
             entity.ToTable("Game.Task List");
 
+            entity.Property(e => e.TaskId).HasColumnName("Task ID");
+            entity.Property(e => e.TaskConditionId).HasColumnName("Task Condition ID");
+            entity.Property(e => e.TaskDescription)
+                .HasMaxLength(50)
+                .HasColumnName("Task Description");
             entity.Property(e => e.TaskName)
                 .HasMaxLength(50)
                 .HasColumnName("Task Name");
-            entity.Property(e => e.TaskConditionId).HasColumnName("Task Condition ID");
-            entity.Property(e => e.TaskDescription)
-                .IsRequired()
-                .HasMaxLength(50)
-                .HasColumnName("Task Description");
-            entity.Property(e => e.TaskId)
-                .ValueGeneratedOnAdd()
-                .HasColumnName("Task ID");
             entity.Property(e => e.TaskReward)
                 .HasColumnType("numeric(18, 0)")
                 .HasColumnName("Task Reward");
 
             entity.HasOne(d => d.TaskCondition).WithMany(p => p.GameTaskList)
                 .HasForeignKey(d => d.TaskConditionId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Game.任務總表_Game.任務條件資料表");
-
-            entity.HasOne(d => d.Task).WithMany(p => p.GameTaskList)
-                .HasForeignKey(d => d.TaskId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK_Game.任務總表_Game.會員任務");
         });
 
         modelBuilder.Entity<MessageTypeData>(entity =>

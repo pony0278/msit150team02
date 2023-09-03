@@ -13,11 +13,9 @@ public partial class GameTaskList
 
     public string TaskDescription { get; set; }
 
-    public decimal TaskReward { get; set; }
+    public decimal? TaskReward { get; set; }
 
-    public int TaskConditionId { get; set; }
-
-    public virtual GameMemberTask Task { get; set; }
+    public int? TaskConditionId { get; set; }
 
     public virtual GameTaskConditionData TaskCondition { get; set; }
 }
