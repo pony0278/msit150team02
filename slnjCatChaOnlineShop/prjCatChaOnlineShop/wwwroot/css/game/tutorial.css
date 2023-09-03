@@ -1,0 +1,20 @@
+﻿.tutorial-pagination {
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dot {
+    width: 20px;
+    height: 20px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 5px; /* 调整圆点之间的间距 */
+    cursor: pointer;
+}
+
+    .dot.active {
+        background-color: #007bff; /* 当前页的颜色 */
+    }
+
