@@ -141,13 +141,13 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>帳號</label>
+                                                            <label class="fs-5">帳號</label>
                                                             <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
                                                                    class="form-control" readonly />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="d-flex justify-content-between">
-                                                                <label>密碼</label>
+                                                                <label class="fs-5">密碼</label>
                                                                 <div class="text-right">
                                                                     <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
                                                                 </div>
@@ -158,31 +158,31 @@
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>姓名</label>
+                                                            <label class="fs-5">姓名</label>
                                                             <input type="text" placeholder="姓名" id="nameInput" name="Name"
                                                                    class="form-control" required="required" />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label>生日</label>
+                                                            <label class="fs-5">生日</label>
                                                             <input type="date" class="form-control" id="birthdayInput" name="Birthday" required />
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>電子信箱</label>
+                                                            <label class="fs-5">電子信箱</label>
                                                             <input type="email" class="form-control" id="emailInput" name="Email"
                                                                    placeholder="電子信箱" required />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label>手機號碼</label>
+                                                            <label class="fs-5">手機號碼</label>
                                                             <input type="tel" pattern="^\d{10}$" placeholder="手機號碼" id="phoneNumberInput" name="PhoneNumber"
                                                                    class="form-control" required />
                                                         </div>
                                                     </div>
                                                     <!--住址-->
-                                                    <div class="form-row">
+                                                    <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label>住址</label>
+                                                            <label class="fs-5">住址</label>
                                                             <div class="input-group">
                                                                 <input type="text" placeholder="姓名" id="addressInput" name="address"
                                                                        class="form-control" required="required" />
@@ -193,9 +193,9 @@
                                                         </div>
                                                     </div>
                                                     <!--常用宅配地址-->
-                                                    <div class="form-row">
+                                                    <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label>常用宅配地址</label>
+                                                            <label class="fs-5">常用宅配地址</label>
                                                             <div class="d-flex align-items-center">
                                                                 <select class="form-select" id="commonAddressSelect"
                                                                         aria-label="Default select example">
@@ -215,36 +215,25 @@
                                                         </div>
                                                     </div>
                                                     <!--7-11超商取貨地址-->
-                                                    <!--
-                                                    <div class="form-row">
+                                                    <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label>超商取貨地址</label>
-                                                            <div class="d-flex align-items-center">
-                                                                <select class="form-select"
-                                                                        aria-label="Default select example">
-                                                                    <option selected>取貨地址1號</option>
-                                                                    <option value="1">取貨地址2號</option>
-                                                                    <option value="2">取貨地址3號</option>
-                                                                    <option value="3">取貨地址4號</option>
-                                                                </select>
+                                                            <label class="fs-5">超商取貨地址</label>
+                                                            <div class="d-flex align-items-start">
+                                                                <input type="text" placeholder="請填入門市店名" id="storename" name="storename" class="form-control" value="@ViewBag.storename" />
+                                                                <div class="col-7">
+                                                                    <input type="text" placeholder="請填入門市地址" id="storeaddress" name="storeaddress" class="form-control" value="@ViewBag.storeaddress" />
+                                                                </div>
+                                                                <button class="btn btn-warning  btn-sm fs-5" type="button" id="SelectShop">+</button>
                                                             </div>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn-sm add-address my-2"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#MarketaddressModal">
                                                                 查看已儲存地址
                                                             </button>
-                                                            <button type="button" class="btn add-address"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#NewMarketAddressModal">
-                                                                新增超商取貨地址
-                                                            </button>
-                                                            <a href="https://emap.pcsc.com.tw/" class="btn add-address" role="button">前往網站</a>
-                                                            <a href="https://emap.pcsc.com.tw/ecmap/default.aspx" class="btn add-address" role="button">前往網站</a>
-                                                            <a href="https://emap.pcsc.com.tw/ecmap/default.aspx?eshopparid=899&eshopid=899&eshoppwd=a00013&tempvar=&sid=1&storecategory=3&showtype=1&url=/secure.rakuten.com.tw/checkout/callback" class="btn add-address" role="button">前往網站</a>
+                                                            <button type="button" class="btn-sm add-address my-2" id="addNewMarket">新增超商門市</button>
                                                         </div>
                                                     </div>
-                                                    -->
-                                                    <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">送出</button>
+                                                    <button class="btn-customs btn hvr-hovers" id="memberInfoButton" type="submit">送出</button>
                                                     <button class="btn-customs btn hvr-hovers mx-2" id="memberInfoDemo" type="button">Demo填入基本資料</button>
                                                 </form>
                                             </div>
@@ -2619,6 +2608,18 @@
                 town2Select.appendChild(option);
             });
         });
+
+    </script>
+
+    <script>
+        //----選擇門市按鈕------
+        $('#SelectShop').on('click', function(){
+            // window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/SlectShop";
+            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
+            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/SlectShop", "_blank");
+            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/membership", "_blank");
+
+        })
 
     </script>
 }
