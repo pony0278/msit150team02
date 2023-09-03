@@ -584,9 +584,40 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ViewData["Msg"] += "Email:" + payload.Email + "<br>";
                 ViewData["Msg"] += "Name:" + payload.Name + "<br>";
                 ViewData["Msg"] += "Picture:" + payload.Picture;
+
+                //如果Email不在資料庫裡就建一個
+                using (var dbcontext = new cachaContext()) 
+                {
+
+                    var existingMember = dbcontext.ShopMemberInfo.FirstOrDefault(mem=>mem.Email==payload.Email);
+                    if (existingMember == null)
+                    {
+                        var newMember = new ShopMemberInfo
+                        {
+                            Email = payload.Email,
+                            Name = payload.Name,
+
+                        };
+                        dbcontext.ShopMemberInfo.Add(newMember);
+                        dbcontext.SaveChanges();
+                        string json = JsonSerializer.Serialize(newMember);
+                        HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
+                        HttpContext.Session.SetString("UserName",newMember.Name);//Session-當前當入者名稱紀錄
+                        string userName = HttpContext.Session.GetString("UserName");
+                        ViewBag.UserName = userName;//把使用者名字傳給_Layout
+                    }
+                    else
+                    {
+                        string json = JsonSerializer.Serialize(existingMember);
+                        HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
+                        HttpContext.Session.SetString("UserName", existingMember.Name);//Session-當前當入者名稱紀錄
+                        string userName = HttpContext.Session.GetString("UserName");
+                        ViewBag.UserName = userName;//把使用者名字傳給_Layout
+                    }
+                }
             }
 
-            return View();
+            return RedirectToAction("Index","Index");
         }
 
         //串接Google登入的api
