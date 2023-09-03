@@ -6,10 +6,12 @@
         var couponName = $(this).data('coupon-code');
         //獲取按鈕上的優惠券SpecialOffer
         var couponSpecialOffer = $(this).data('coupon-specialoffer');
+        var usecouponid = $(this).data('coupon-id');
         console.log("優惠券名稱", couponName);
         console.log("優惠券折數", couponSpecialOffer);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
+        $("#CouponId").text(usecouponid);
         // 將優惠券SpecialOffer的值綁定到input標籤上的data-coupon-specialoffer屬性
         $("#couponCodeInput").data("coupon-specialoffer", couponSpecialOffer);
         //$.ajax({
@@ -37,10 +39,10 @@
         console.log("進入程式")
         // 檢查使用紅利的複選框是否被選中
         var useLoyaltyPoints = $('#useLoyalityPoint').is(':checked');
-        console.log("真的要用的",useLoyaltyPoints)
+        console.log("真的要用的", useLoyaltyPoints)
         // 獲取優惠券 SpecialOffer
         var couponSpecialOffer = $('#couponCodeInput').data('coupon-specialoffer');
-        console.log("真的要用的",couponSpecialOffer)
+        console.log("真的要用的", couponSpecialOffer)
         // 發起 AJAX 請求，傳遞使用紅利和優惠券信息
         $.ajax({
             url: '/Coupon/CalculateDiscounts',
@@ -56,7 +58,7 @@
                 $('#loyaltyPointsBonus').text("- NT" + response.loyaltypoints); // 紅利折扣金額
                 $('#shippingFee').text("+ NT" + response.shippingfee);//運費
                 $('#allTotalPrice').text("NT" + response.finalTotalPrice); // 總金額
-                
+
                 // 使用jQuery选择器找到TotalAmount输入框，并设置其值
                 /*$('input[name="TotalAmount"]').val(response.finalTotalPrice);*/
             }
@@ -148,7 +150,7 @@
             $('#error-message').text('此為必勾選的項目');
         }
         else {
-             e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+           /* e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
             let formData = $("#ecpayform").serializeArray();
             var json = {};
@@ -164,11 +166,35 @@
                 data: JSON.stringify(json),
                 success: function (res) {
                     console.log(res);
+
+                    var memberId = $("#MemberId").text();
+                    var couponId = $("#CouponId").text();
+                    console.log("會員ID", memberId)
+                    console.log("會員優惠券", couponId)
+                    $.ajax({
+                        type: 'POST',
+                        url: '/CheckOut/AddNewOrder',
+                        data:
+                        {
+                            MemberId: memberId,
+                            CouponId: couponId,
+                        },
+                        success: function (res) {
+                            // 處理成功回應
+                        },
+                        error: function (err) {
+                            // 處理錯誤回應
+                        },
+                    });
+
+
                     ///*成功後執行跳轉*/
                     /* window.location.href = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';*/
                 },
                 error: function (err) { console.log(err); },
             });
+           
+
         }
         //else {
         //    let formData = $("#checkForm").serializeArray();

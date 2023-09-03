@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Experimental.ProjectCache;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
@@ -13,6 +14,7 @@ using System.Web;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
+   
     public class CartController : Controller
     {
         private readonly cachaContext _context;
@@ -21,6 +23,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly ProductService _productService;
 
+        #region 注入服務
         public CartController(cachaContext context, CheckoutService checkoutService, IWebHostEnvironment host, IHttpContextAccessor httpContextAccessor, ProductService productService)
         {
             _context = context;
@@ -30,6 +33,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _checkoutService = checkoutService;
 
         }
+        #endregion
 
         #region 購物車頁面
         public IActionResult Cart()
@@ -79,7 +83,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 //建構商品名稱的字串
                 string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
-                
+
 
                 //結帳頁面-購物車初始小計金額
                 decimal total = (decimal)cartItems.Sum(item => item.c小計);
@@ -87,7 +91,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 //結帳頁面-購物車初始運費
                 decimal firstFee = 0;
-                if (total < 2000) 
+                if (total < 2000)
                 {
                     firstFee = 60;
                 }
@@ -180,19 +184,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         #endregion
 
-        public IActionResult AddNewOrder([FromForm] CAddorderViewModel addOrder) 
-        {
-        ShopOrderTotalTable neworder= new ShopOrderTotalTable();
-            neworder.MemberId=addOrder.MemberId;
-            neworder.OrderCreationDate=DateTime.Now;
-            neworder.PaymentMethodId = 2;
-            neworder.PaymentMethodId = 2;
-            neworder.CouponId = addOrder.CouponId;
-            _context.Add(neworder);
-            _context.SaveChanges();
-            return View();
         
-        }
 
 
 

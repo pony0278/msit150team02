@@ -112,6 +112,7 @@
                     </div>
                     @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null &&Model!=null)
                     {
+                        <div id="MemberId"> @memberinfo.MemberId </div>
                         <form class="needs-validation">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="useLoyalityPoint">
@@ -135,6 +136,7 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
+                                <div id="CouponId"></div>
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
                                        aria-label="請選擇優惠券" aria-describedby="button-addon2" data-coupon-specialoffer readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
@@ -171,6 +173,7 @@
                                                                 <!--刪除MyCss.css 123行，增加160行hover-->
                                                                 <div class="coupon-status align-middle text-center">
                                                                     <button type="button" class="btn useCouponBtn"
+                                                                        data-coupon-id="@coupon.CouponID"
                                                                         data-coupon-code="@coupon.CouponName" 
                                                                         data-coupon-specialoffer="@coupon.SpecialOffer">使用</button>
                                                                 </div>
