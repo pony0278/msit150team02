@@ -180,7 +180,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         #endregion
 
-
+        public IActionResult AddNewOrder([FromForm] CAddorderViewModel addOrder) 
+        {
+        ShopOrderTotalTable neworder= new ShopOrderTotalTable();
+            neworder.MemberId=addOrder.MemberId;
+            neworder.OrderCreationDate=DateTime.Now;
+            neworder.PaymentMethodId = 2;
+            neworder.PaymentMethodId = 2;
+            neworder.CouponId = addOrder.CouponId;
+            _context.Add(neworder);
+            _context.SaveChanges();
+            return View();
+        
+        }
 
 
 
