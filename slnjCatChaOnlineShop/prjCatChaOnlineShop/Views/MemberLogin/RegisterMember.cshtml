@@ -30,6 +30,11 @@
             transform: scale(1.1); /* 放大 10% */
             transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
         }
+
+        .alert-btn-login {
+            background-color: #DE9E4F !important; 
+            color: white; 
+        }
     </style>
 
 
@@ -102,7 +107,10 @@
                                 </div>
 
                                 <div class="d-grid gap-2 mt-3">
-                                    <button class="mb-3 btn btn-light" id="registerbutton" type="submit")">註冊</button>
+                                    <button class="mb-3 btn btn-light" id="registerbutton" type="submit" onclick="SendMailToken()">註冊</button>
+                                </div>
+                                <div class="d-grid gap-2 mt-3">
+                                    <button class="mb-3 btn btn-light" style="display:none;" id="getVerifiedAgain" type="submit" onclick="SendMailToken()">未收到驗證信嗎?</button>
                                 </div>
                                 <div class="d-grid gap-2 mt-3">
                                     <button class="mb-3 btn btn-danger" id="registerdemoBTN" type="submit">DEMO帶入資料</button>
@@ -305,25 +313,16 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        alert("註冊會員成功");
-                        location.href = '@Url.Content("~/MemberLogin/Login")';
-                    //    Swal.fire({
-                    //        icon: 'success',
-                    //        title: '註冊會員成功',
-                    //        showConfirmButton: true,
-                    //    }).then((result) => 
-                    //    {
-                    //        if (result.isConfirmed) {   
-                    //            location.href = '@Url.Content("~/Membership/Membership")';
-                    //        } 
-                    //    });
-                    //} else {
-                    //    Swal.fire({
-                    //        icon: 'error',
-                    //        title: '註冊會員失敗',
-                    //        text: '請稍後再試'
-                    //    });
-                        //alert("註冊會員失敗");
+                        Swal.fire({
+                            icon: 'success',
+                            title: '成功送出!',
+                            text: '請至Email驗證身分以完成註冊',
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                        $('#getVerifiedAgain').css("display", "block")//開啟未收到驗證信按鈕
                     }
                 }).catch(function (error) {
                     console.error(error); // 處理Ajax錯誤
@@ -333,31 +332,26 @@
 
         // 這段 JavaScript 用於處理表單提交
         function SendMailToken() {
-            //var form = document.forms["mailTokenForm"];
-            //var UserID = form.elements.Email.value;
+
+            // 紀錄使用者填寫的email，傳給後端用於寄送驗證信
             const emailInput = $('#emailInput').val();
-            // 組合表單資料
             var postData = {
-                //MemberID: UserID
                 MemberID: emailInput
             };
 
-
-            
             if (!emailAlreadyRegistered){
-                // 使用 Ajax 傳送至後端
                 $.ajax({
-                    url: '@Url.Action("SendMailToken", "MemberLogin")',
+                    url: '@Url.Action("SendMailTokenForRegister", "MemberLogin")',
                     method: 'POST',
                     dataType: "json",
                     contentType: "application/json",
                     data: JSON.stringify(postData),
                     success: function (response) {
                         if (response.ErrMsg) {
-                            alert(response.ErrMsg);
+                            const formData = new FormData(form);
+                            registerMember(formData)
                             return false; // 失敗時返回 false
                         }
-                        alert(response.ResultMsg);
                         return true; // 成功時返回 true
                     },
                     error: function (err) {
