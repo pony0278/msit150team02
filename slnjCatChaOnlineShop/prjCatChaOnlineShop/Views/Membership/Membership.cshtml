@@ -63,6 +63,7 @@
         .test {
             position: relative;
         }
+
     </style>
 
 
@@ -73,6 +74,7 @@
     <!--用於密碼的眼睛圖案-->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
 }
+
 
 <div class="all-title-box all-title-box-picture">
     <div class="container">
@@ -2085,7 +2087,24 @@
                         imgCell.appendChild(imgContainer);
                         
                         row.insertCell().textContent = item.productName;
-                        row.insertCell().textContent = item.remainingQuantity;
+
+                        var randomNumber = Math.floor(Math.random() * 10) + 1;
+                        if (randomNumber > 7) {
+                            row.insertCell().textContent = randomNumber;
+                        } else if (randomNumber > 4) {
+                            var cell = row.insertCell();
+                            var span = document.createElement("span");
+                            span.textContent = randomNumber;
+                            span.style.color = "#EA7500";
+                            cell.appendChild(span);
+                        } else {
+                            var cell = row.insertCell();
+                            var span = document.createElement("span");
+                            span.textContent = randomNumber;
+                            span.style.color = "red";
+                            span.style.fontWeight = "bold";
+                            cell.appendChild(span);
+                        }
                         row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
 
                         var cartCell = row.insertCell();
@@ -2371,42 +2390,7 @@
                     });
                         
 
-                    // 翻譯並進行仲裁
-                    /*
-                    async function translateAndReview() {
-                        const route = "/translate?api-version=3.0&from=zh-Hant&to=en"; // 將繁體中文翻譯成英文
-                        const translateContent = document.getElementById("inputText").value;
-                        const body = [{ text: translateContent }];
-                        const requestBody = JSON.stringify(body);
 
-                        const endpoint = "https://api.cognitive.microsofttranslator.com";
-                        const key = "71b37d7805e94efb96a507c0e44747c9";
-
-                        const headers = {
-                            'Ocp-Apim-Subscription-Key': key,
-                            'Content-Type': 'application/json'
-                        };
-
-                        const requestOptions = {
-                            method: 'POST',
-                            headers: headers,
-                            body: requestBody
-                        };
-
-                        try {
-                            const response = await fetch(endpoint + route, requestOptions);
-                            const data = await response.json();
-                            translatedText = data[0].translations[0].text; // 將翻譯後的文字儲存在全域變數
-
-                            console.log("Input: " + translateContent);
-                            console.log("Translated Output: " + translatedText);
-
-                            reviewText(translatedText); // 翻譯完成文字
-                        } catch (error) {
-                            console.error("An error occurred:", error);
-                        }
-                    }
-                    */
 
                    //文字仲裁寫成方法
                    /*

@@ -242,6 +242,7 @@
 
         });
 
+        //小c
         function translateToChinese(text) {
             const apiKey = 'AIzaSyDjA50x02Nr2jNygjLbdGIa_RPRXuEWEiA';
             const sourceLang = 'en';
@@ -273,6 +274,48 @@
                     console.error('Translation error:', error);
                     return text;
                 });
+        }
+
+
+        translateAndReview("Hello");
+        // 翻譯:英文轉成中文
+        async function translateAndReview(text) {
+            const route = "/translate?api-version=3.0&from=en&to=zh-Hant"; // 將繁體中文翻譯成英文
+            const translateContent = text;
+            const body = [{ text: translateContent }];
+            const requestBody = JSON.stringify(body);
+
+            const endpoint = "https://api.cognitive.microsofttranslator.com";
+            const key = "4292ef86d9a842cca23fadb0bed54d15";
+
+            const headers = {
+                'Ocp-Apim-Subscription-Key': key,
+                'Content-Type': 'application/json'
+            };
+
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: requestBody
+            };
+
+            try {
+                const response = await fetch(`${endpoint}${route}`, requestOptions);
+                const data = await response.json();
+
+                // 從 API 響應中獲取翻譯後的文本
+                const translatedText = data[0].translations[0].text;
+
+                // 在這裡可以處理翻譯後的文本，例如進行評論等
+
+                console.log("翻譯後的文本:", translatedText);
+                return translatedText;
+            } catch (error) {
+                console.error("發生錯誤:", error);
+                return null;
+            }
+        
+
         }
     </script>
 }
