@@ -11,6 +11,8 @@ using prjCatChaOnlineShop.Services.Function;
 using System.Security.Cryptography;
 using System.Text.Json;
 using prjCatChaOnlineShop.Controllers.Home;
+using Newtonsoft.Json.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -38,9 +40,16 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult Membership()
         {
+            //傳遞會員資料
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             ViewBag.memberIdForMembership = memberIdForMembership;
+
+            //傳遞取貨超商信息
+            var storename = TempData["storename"];
+            var storeaddress = TempData["storeaddress"];
+            ViewBag.storename = storename;
+            ViewBag.storeaddress = storeaddress;
 
             return View();
         }
@@ -174,6 +183,34 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 return null;
             }
+        }
+
+        //新增取貨超商資料
+        public IActionResult AddNewMarket()
+        { /*
+            try
+            {
+               [FromBody] JObject requestData
+                //string storename = requestData.GetValue("storename")?.ToString();
+                //string storeaddress = requestData.GetValue("storeaddress")?.ToString();
+
+
+                ShopCommonshopName commonShop = new ShopCommonshopName();
+                commonShop.ShopName = HttpContext.Request.Form["storename"];
+                commonShop.CityName = storeaddress.Substring(0, 3);
+                commonShop.DiscitcName = storeaddress.Substring(3);
+
+                _context.ShopCommonshopName.Add(commonShop);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+                
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }*/
+            return View();
         }
 
         //取得可使用優惠券資料
@@ -815,6 +852,27 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return null;
         }
 
+
+
     }
 
+    //用於取得超商api信息
+    public class ConvenienceStoreController : Controller
+    {
+        public IActionResult SlectShop(IFormCollection ShopDetail)
+        {
+
+            //var storeid = ShopDetail["storeid"];
+            string storename = ShopDetail["storename"];
+            string storeaddress = ShopDetail["storeaddress"];
+
+            TempData["storename"] = storename;
+            TempData["storeaddress"] = storeaddress;
+
+            //return Content(storeid + "/" + storename + "/" + storeaddress);
+            //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
+            return RedirectToAction("membership", "membership", null);
+
+        }
+    }
 }
