@@ -168,7 +168,7 @@
 <div class="box-add-products position-relative">
     <div class="container padding-custom">
         <div class="home-title text-center">
-            <h1>貓寵補給站</h1><div class="review"></div><button id="only">123</button>
+            <h1>貓寵補給站</h1><div class="review"></div>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-3 col-md-3 col-sm-6 div-center-custom">
@@ -359,7 +359,17 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
+<div>
+    <div>用户名称：<label id="userName"></label>(<label id="conId"></label>)</div>
 
+    <div style="width:25%;border:1px solid #ff0000">
+        <div>在线用户列表</div>
+        <ul id="users"></ul>
+    </div>
+    <div id="userBox">
+    </div>
+</div>
+</div>
 
 
 <!-- 結束評論輪播 -->
@@ -832,11 +842,12 @@
             var users = JSON.parse(data);
             var userList = document.getElementById("users");
             userList.innerHTML = "";
-            users.forEach(function (user) {
+            if (users.length > 0) {
+                var user = users[0];
                 var userHtml = document.createElement("li");
                 userHtml.innerHTML = '用户名: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
                 userList.appendChild(userHtml);
-            });
+            }
         });
 
         connection.on("showId", function (data) {
