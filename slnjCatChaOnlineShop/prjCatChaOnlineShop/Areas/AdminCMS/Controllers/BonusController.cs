@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Experimental.ProjectCache;
+using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
@@ -162,25 +163,27 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return Json(new { success = true });
         }
 
-    
 
-    //發送給單一會員
-    [HttpPost]
-    public IActionResult SendCouponToMembersByID(int? id, int? memberId)
-    {
-        ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+
+        //發送給單一會員
+        [HttpPost]
+        public IActionResult SendCouponToMembersByID(int? id, int? memberId)
+        {
+
+            var member = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberId);
+
+            if (member == null)
+            {
+                return Json(new { success = false, message = "會員不存在" });
+            }
+
+
+            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
 
             if (coupon == null)
             {
-                return NotFound();
+                return Json(new { success = false, message = "優惠券不存在" });
             }
-
-            if (memberId == null)
-            {
-                return NotFound();
-            }
-
-
 
             // 創建會員優惠券資料
             ShopMemberCouponData memberCouponData = new ShopMemberCouponData
@@ -193,16 +196,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             _cachaContext.ShopMemberCouponData.Add(memberCouponData);
             _cachaContext.SaveChanges();
 
-        return Json(new { success = true });
+            return Json(new { success = true });
+        }
+
     }
 }
-
-
-
-}
-
-
-
 
 
 
