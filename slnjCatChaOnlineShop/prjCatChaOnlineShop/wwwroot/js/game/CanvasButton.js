@@ -173,18 +173,24 @@ canvas.addEventListener('click', (event) => {
     //主功能按鈕
 
     if (isInBtnRange(helpBTN, x, y)) { //遊戲說明
-        //alterConfirmWinBTN('轉蛋', con)
-        //confirmWin.style.display = 'block';
-        //confirmWin_title.innerHTML = '進行轉蛋'
-        //confirmWin_text.innerHTML = '即將消耗 9000 貓幣進行十連抽'
+        tutorial.style.display = "block"
+        return;
+  
+    }
+
+    if (isInBtnRange(dailyMissionBTN, x, y)) { //每日任務
+        
+        Mission.style.display = "block"
         return;
     }
+
 
     if (isInBtnRange(editNameBTN, x, y)) { //更改名字
         changeUserName()
     }
+  
 
-
+    
 
     if (isInBtnRange(gotoRunGame, x, y)) { //小遊戲
         popup.style.display = "block"

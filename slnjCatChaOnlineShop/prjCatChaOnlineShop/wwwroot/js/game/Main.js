@@ -24,7 +24,8 @@
     const rankBTNimg = new Image();
     const gotoGachaimg = new Image();
     const gotoRunGameimg = new Image();
-    const editNameimg = new Image();
+const editNameimg = new Image();
+const dailyMissionBTNimg = new Image();
 
     const kittenDefault = new Image();
     const kittenBK = new Image();
@@ -65,10 +66,14 @@
             c.fillStyle = "black";
             c.fillText(`${Ruby}`, this.x + 260, this.y+20);
         }
+
+
+
         load() {
             this.loadName();
             this.loadCatCoin();
             this.loadRuby();
+
         }
         constructor() {
             this.x = userInfoX;
@@ -416,10 +421,11 @@
         }
     }
     //左側按鈕
-    const helpBTN = new mainpageButton(20, 70, 30, 40, helpBTNimg);
-    const gotoRunGame = new mainpageButton(12, 140, 50, 50, gotoRunGameimg);
-    const rankBTN = new mainpageButton(15, 210, 40, 40, rankBTNimg);
-    const gotoGacha = new mainpageButton(15, 280, 40, 40, gotoGachaimg);
+const helpBTN = new mainpageButton(20, 70, 30, 40, helpBTNimg);
+const dailyMissionBTN = new mainpageButton(15, 140, 40, 40, dailyMissionBTNimg);
+    const gotoRunGame = new mainpageButton(12, 200, 50, 50, gotoRunGameimg);
+    const rankBTN = new mainpageButton(15, 270, 40, 40, rankBTNimg);
+    const gotoGacha = new mainpageButton(15, 340, 40, 40, gotoGachaimg);
     const editNameBTN = new mainpageButton(167, 20, 40, 40, editNameimg);
 
 
@@ -459,6 +465,7 @@
         rankBTN.load();
         gotoGacha.load();
         editNameBTN.load();
+        dailyMissionBTN.load();
 
     }
     animate();

@@ -142,19 +142,31 @@
     display: none;
 }
 
+#Mission {
+    padding-top: 76px;
+    position: absolute;
+    text-align: center;
+    justify-content: center;
+    width: 406px; /* 維持canvas的寬度為406px */
+    height: 600px; /* 維持canvas的高度為600px */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
 
-    #rank-container {
-        font-family: 微軟正黑體;
-        height: 450px;
-        overflow-y: auto;
-        padding: 5px;
-        align-items: center;
-        display: flex;
-        flex-direction: column;
-        background: white;
-        margin: 10px;
-        table-layout: fixed;
-    }
+
+
+#rank-container {
+    font-family: 微軟正黑體;
+    height: 450px;
+    overflow-y: auto;
+    padding: 5px;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    background: white;
+    margin: 10px;
+    table-layout: fixed;
+}
 
     #rankpage-title {
         font-family: 微軟正黑體;
@@ -169,14 +181,67 @@
         height: 38px;
     }
 
-    #Canvasrungame {
-        text-align: center;
-        position: relative;
-        justify-content: center;
-        width: 406px; /* 維持canvas的寬度為406px */
-        height: 600px; /* 維持canvas的高度為600px */
-        display: none;
+#mission-container {
+    font-family: 微軟正黑體;
+    height: 450px;
+    overflow-y: auto;
+    padding: 5px;
+    align-items: center;
+    display: flex;
+
+    flex-direction: column;
+    /*background: white;*/
+    margin: 10px;
+    table-layout: fixed;
+}
+
+#missionpage-title {
+    font-family: 微軟正黑體;
+    font-size: 22px;
+    position: absolute;
+    top: 4%;
+    color: floralwhite;
+    background-image: url('/images/game/rankTitleBack.png');
+    background-size: cover; /* 設定背景圖片覆蓋整個按鈕 */
+    background-position: center; /* 設定背景圖片居中對齊 */
+    width: 170px;
+    height: 38px;
+}
+
+
+#msTable {
+
+    border-collapse: separate; 
+    border-spacing: 0 10px;
+    width: 90%; 
+}
+
+   
+
+    #msTable td {
+        border: 1px solid transparent; /* 透明边框 */
+        padding: 10px; /* 内边距，可以根据需要调整 */
     }
+
+#tutorial {
+    position: absolute;
+    text-align: center;
+    justify-content: center;
+    width: 406px; /* 維持canvas的寬度為406px */
+    height: 600px; /* 維持canvas的高度為600px */
+    background-color: rgba(0, 0, 0, 0.5);
+    display: none;
+}
+
+
+#Canvasrungame {
+    text-align: center;
+    position: relative;
+    justify-content: center;
+    width: 406px; /* 維持canvas的寬度為406px */
+    height: 600px; /* 維持canvas的高度為600px */
+    display: none;
+}
 
     #CanvasGatcha {
         text-align: center;

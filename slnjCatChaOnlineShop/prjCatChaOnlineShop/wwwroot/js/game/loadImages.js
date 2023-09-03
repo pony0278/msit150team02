@@ -7,6 +7,7 @@ bagbk.src = '../../images/game/Inventory_Bar.png';
 bagItem1.src = '../../images/game/Inventory_select.png';
 helpBTNimg.src = '../../images/game/Icon_Question.png';
 rankBTNimg.src = '../../images/game/Icon_Stats.png';
+dailyMissionBTNimg.src = '../../images/game/Icon_Award.png';
 gotoGachaimg.src = '../../images/game/gachaIcon.png';
 gotoRunGameimg.src = '../../images/game/runGameIcon.png';
 heart.src = '../../images/game/thought_bubble.png'
