@@ -56,7 +56,7 @@
             background-image: none;
         }
 
-        .checked{
+        .checked {
             color: #ffc363;
             font-size: 35px !important;
         }
@@ -80,13 +80,13 @@
             letter-spacing: 1px;
         }
 
-        .swiper-productName{
-        padding: 10px 15px 10px 10px;
-        background-color: #ff766c;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        margin-top: 5px;
-        box-shadow: rgba(17, 17, 26, .3) 2px 2px 3px, rgba(17, 17, 26, 0.1) 4px 4px 8px;
+        .swiper-productName {
+            padding: 10px 15px 10px 10px;
+            background-color: #ff766c;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-top: 5px;
+            box-shadow: rgba(17, 17, 26, .3) 2px 2px 3px, rgba(17, 17, 26, 0.1) 4px 4px 8px;
         }
 
         .stars-css {
@@ -168,7 +168,7 @@
 <div class="box-add-products position-relative">
     <div class="container padding-custom">
         <div class="home-title text-center">
-            <h1>貓寵補給站</h1><div class="review"></div>
+            <h1>貓寵補給站</h1><div class="review"></div><button id="only">123</button>
         </div>
         <div class="row justify-content-center">
             <div class="col-lg-3 col-md-3 col-sm-6 div-center-custom">
@@ -249,25 +249,25 @@
                                 {
                                         <h5>$ @item.pPrice</h5>
                                 }
-                                <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                @if (item.p是否加入收藏)
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                        <i class="far fa-heart"></i>
+                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
                                     </a>
+                                    @if (item.p是否加入收藏)
+                                {
+                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                            <i class="far fa-heart"></i>
+                                        </a>
                                 }
                                 else
                                 {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
+                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                            <i class="far fa-heart"></i>
+                                        </a>
                                 }
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod  -->
+                        <!-- end prod  -->
                 }
             }
         </div>
@@ -318,27 +318,27 @@
                                 {
                                         <h5>$ @item.pPrice</h5>
                                 }
-                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-
-                                @if (item.p是否加入收藏)
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                        <i class="far fa-heart"></i>
+                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                        <i class="fa-solid fa-cart-plus"></i>
                                     </a>
+
+                                    @if (item.p是否加入收藏)
+                                {
+                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                            <i class="far fa-heart"></i>
+                                        </a>
                                 }
                                 else
                                 {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
+                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                            <i class="far fa-heart"></i>
+                                        </a>
                                 }
 
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- end prod1  -->
+                        <!-- end prod1  -->
                 }
             }
 
@@ -367,6 +367,7 @@
 <div class="body-font-style" id="go-to-game" title="進入遊戲">
     <a asp-controller="Game" asp-action="Index">貓貓大進擊<i class="fa-solid fa-gamepad"></i></a>
 </div>
+
 <div id="body">
     <div id="chat-circle" class="btn btn-raised">
         <div id="chat-overlay"></div>
@@ -375,26 +376,22 @@
 
     <div class="chat-box">
         <div class="chat-box-header">
-            ChatBot
+            即時客服
             <span class="chat-box-toggle"><i class="material-icons">X</i></span>
         </div>
         <div class="chat-box-body">
             <div class="chat-box-overlay">
             </div>
-            <div class="chat-logs">
-            </div><!--chat-log -->
+            <div class="chat-logs" id="chating">
+            </div>
         </div>
         <div class="chat-input">
-            <form>
-                <input type="text" id="chat-input" placeholder="Send a message..." />
-                <button type="submit" class="chat-submit" id="chat-submit"><i class="material-icons">send</i></button>
-            </form>
+            <input type="text" id="chat-input" placeholder="輸入訊息" />
+            <button class="chat-submit" id="chat-submit" onclick="SendMessageToPrivateChat()"><i class="material-icons">送出</i></button>
         </div>
     </div>
-
-
-
 </div>
+
 <!-- end 側邊 -->
 <!-- 小動畫-->
 <div id="fullScreenContainer">
@@ -434,7 +431,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.1/js/bootstrap.min.js"></script>
     <script src="~/js/rating.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
     <!-- ALL PLUGINS -->
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
@@ -611,105 +608,6 @@
 
 
 
-        $(function () {
-            var INDEX = 0;
-            $("#chat-submit").click(function (e) {
-                e.preventDefault();
-                var msg = $("#chat-input").val();
-                if (msg.trim() == '') {
-                    return false;
-                }
-                generate_message(msg, 'self');
-                var buttons = [
-                    {
-                        name: 'Existing User',
-                        value: 'existing'
-                    },
-                    {
-                        name: 'New User',
-                        value: 'new'
-                    }
-                ];
-                setTimeout(function () {
-                    generate_message(msg, 'user');
-                }, 1000)
-
-            })
-
-            function generate_message(msg, type) {
-                INDEX++;
-                var str = "";
-                str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
-                str += "          <span class=\"msg-avatar\">";
-                str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
-                str += "          <\/span>";
-                str += "          <div class=\"cm-msg-text\">";
-                str += msg;
-                str += "          <\/div>";
-                str += "        <\/div>";
-                $(".chat-logs").append(str);
-                $("#cm-msg-" + INDEX).hide().fadeIn(300);
-                if (type == 'self') {
-                    $("#chat-input").val('');
-                }
-                $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
-            }
-
-            function generate_button_message(msg, buttons) {
-                /* Buttons should be object array
-                  [
-                    {
-                      name: 'Existing User',
-                      value: 'existing'
-                    },
-                    {
-                      name: 'New User',
-                      value: 'new'
-                    }
-                  ]
-                */
-                INDEX++;
-                var btn_obj = buttons.map(function (button) {
-                    return "              <li class=\"button\"><a href=\"javascript:;\" class=\"btn btn-primary chat-btn\" chat-value=\"" + button.value + "\">" + button.name + "<\/a><\/li>";
-                }).join('');
-                var str = "";
-                str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg user\">";
-                str += "          <span class=\"msg-avatar\">";
-                str += "            <img src=\"https:\/\/image.crisp.im\/avatar\/operator\/196af8cc-f6ad-4ef7-afd1-c45d5231387c\/240\/?1483361727745\">";
-                str += "          <\/span>";
-                str += "          <div class=\"cm-msg-text\">";
-                str += msg;
-                str += "          <\/div>";
-                str += "          <div class=\"cm-msg-button\">";
-                str += "            <ul>";
-                str += btn_obj;
-                str += "            <\/ul>";
-                str += "          <\/div>";
-                str += "        <\/div>";
-                $(".chat-logs").append(str);
-                $("#cm-msg-" + INDEX).hide().fadeIn(300);
-                $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
-                $("#chat-input").attr("disabled", true);
-            }
-
-            $(document).delegate(".chat-btn", "click", function () {
-                var value = $(this).attr("chat-value");
-                var name = $(this).html();
-                $("#chat-input").attr("disabled", false);
-                generate_message(name, 'self');
-            })
-
-            $("#chat-circle").click(function () {
-                $("#chat-circle").toggle('scale');
-                $(".chat-box").toggle('scale');
-            })
-
-            $(".chat-box-toggle").click(function () {
-                $("#chat-circle").toggle('scale');
-                $(".chat-box").toggle('scale');
-            })
-
-        })
         //小動畫
         const fullScreenContainer = document.getElementById('fullScreenContainer');
         document.getElementById("go-to-game").addEventListener("click", function (event) {
@@ -781,7 +679,8 @@
                 }, 40);
             }
         });
-        //小動畫結束
+
+
 
         //抓主打商品
         $(document).ready(function () {
@@ -825,8 +724,8 @@
                     const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
                     const productName = $('<div class="position-absolute position-absolute top-0 start-0 swiper-productName"></div>').append(`<h3 class="p-0 swiper-h3-text">${value.productName}</h3>`)
                     let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3 stars-css"></div>');
-                    if(value.productRating == 5 ){
-                        for(let i = 0; i<value.productRating ; i++){
+                    if (value.productRating == 5) {
+                        for (let i = 0; i < value.productRating; i++) {
                             stars.append('<span class="fs-1 fa fa-star checked "></span>');
                         }
                     }
@@ -892,7 +791,88 @@
                 });
             }, 1000);
         }
+        //客服
 
+        $('body').on('click', '#chat-circle', function () {
+            $('#chat-circle').hide();
+            $('.chat-box').show();
+            connection.start().then(function () {
+                var userName = prompt('请输入您的名称', '');
+                document.getElementById("userName").textContent = userName;
+                connection.invoke("GetName", userName);
+            }).catch(function (err) {
+                return console.error(err.toString());
+            });
+        });
+        $('body').on('click', '.chat-box-toggle', function () {
+            $('.chat-box').hide();
+            $('#chat-circle').show();
+        });
+        var clients = [];
+
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/OneToOneHub")
+            .build();
+        connection.on("showMessage", function (message) {
+            alert(message);
+        });
+
+        connection.on("addMessage", function (message, connectionId) {
+            if (clients.indexOf(connectionId) === -1) {
+                showWin(connectionId);
+            }
+
+            var messageList = document.getElementById("messages" + connectionId);
+            var newMessage = document.createElement("li");
+            newMessage.textContent = message;
+            messageList.appendChild(newMessage);
+        });
+
+        connection.on("GetUsers", function (data) {
+            var users = JSON.parse(data);
+            var userList = document.getElementById("users");
+            userList.innerHTML = "";
+            users.forEach(function (user) {
+                var userHtml = document.createElement("li");
+                userHtml.innerHTML = '用户名: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
+                userList.appendChild(userHtml);
+            });
+        });
+
+        connection.on("showId", function (data) {
+            document.getElementById("conId").textContent = data;
+            clients.push(data);
+        });
+
+
+
+
+        function userChat(obj) {
+            var connectionId = $(obj).attr('connectionId');
+            showWin(connectionId);
+        }
+
+        function showWin(connectionId) {
+            clients.push(connectionId);
+            var html = '<div style="float:left;margin-top:5px;margin-right: 5px;margin-bottom: 5px;border:1px solid #ff0000" id="' + connectionId + '" connectionId="' + connectionId + '">' + connectionId + '"的房间聊天记录如下:<button onclick="exitChat(this)">退出</button><ul id="messages' + connectionId + '"></ul><input type="text" /> <button onclick="sendMessage(this)">发送</button></div>';
+            $("#userBox").append(html);
+        }
+
+        function exitChat(btnObj) {
+            $(btnObj).parent().remove();
+            connection.invoke("ExitChat", connectionId); // 修改為使用invoke
+        }
+
+        //发送消息
+        function sendMessage(data) {
+            var message = $(data).prev().val();
+            var userObj = $(data).parent();
+            var username = $("#userName").html();
+            message = username + ":" + message;
+            var targetConnectionId = $(userObj).attr("connectionId");
+            connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
+            $(data).prev().val("");
+        }
 
     </script>
 

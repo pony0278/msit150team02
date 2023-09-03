@@ -337,7 +337,10 @@
             console.log(message);  
             console.log(inputMessage);  
 
-            connection.invoke("SendMessage", userNameFromSession, inputMessage).catch(err => console.error(err));
+            connection.invoke("SendMessage", userNameFromSession, inputMessage)
+            .then(() => {
+                    messageInput.value = ""
+            }).catch(err => console.error(err));
         }
         const rank = {
             "排名": [
