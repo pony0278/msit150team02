@@ -11,6 +11,8 @@ using prjCatChaOnlineShop.Services.Function;
 using System.Security.Cryptography;
 using System.Text.Json;
 using prjCatChaOnlineShop.Controllers.Home;
+using Newtonsoft.Json.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -181,6 +183,34 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 return null;
             }
+        }
+
+        //新增取貨超商資料
+        public IActionResult AddNewMarket()
+        { /*
+            try
+            {
+               [FromBody] JObject requestData
+                //string storename = requestData.GetValue("storename")?.ToString();
+                //string storeaddress = requestData.GetValue("storeaddress")?.ToString();
+
+
+                ShopCommonshopName commonShop = new ShopCommonshopName();
+                commonShop.ShopName = HttpContext.Request.Form["storename"];
+                commonShop.CityName = storeaddress.Substring(0, 3);
+                commonShop.DiscitcName = storeaddress.Substring(3);
+
+                _context.ShopCommonshopName.Add(commonShop);
+                _context.SaveChanges();
+
+                return Content("新增成功");
+                
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }*/
+            return View();
         }
 
         //取得可使用優惠券資料

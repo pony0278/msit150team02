@@ -230,7 +230,7 @@
                                                                     data-bs-target="#MarketaddressModal">
                                                                 查看已儲存地址
                                                             </button>
-                                                            <button type="button" class="btn-sm add-address my-2" id="addNewMarket">新增超商門市</button>
+                                                            <button type="submit" class="btn-sm add-address my-2" id="addNewMarket">新增超商門市</button>
                                                         </div>
                                                     </div>
                                                     <button class="btn-customs btn hvr-hovers" id="memberInfoButton" type="submit">送出</button>
@@ -1225,6 +1225,57 @@
 
             });
 
+            //儲存超商門市
+            $('#addNewMarket').click(function (event) {
+                event.preventDefault();
+
+
+                var storename = document.querySelector('#storename').value;
+                var storeaddress = document.querySelector('#storeaddress').value;
+
+                if (!storename || storename.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請填入門市店名',
+                    });
+                    event.preventDefault();
+                } else if (!storeaddress || storeaddress.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請填入門市地址',
+                    });
+                    event.preventDefault();
+                } else {
+                    /*
+                    fetch('/membership/AddNewMarket', {
+                        method: 'POST', // 使用 POST 方法
+                        headers: {
+                            'Content-Type': 'application/json' // 設置請求標頭
+                        },
+                        body: JSON.stringify({ // 要傳遞的資料
+                            storename: storename,
+                            storeaddress: storeaddress
+                        })
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            // 在這裡處理從控制器返回的回應（如果有的話）
+                            console.log(data);
+                        })
+                        .catch(error => {
+                            console.error('There was a problem with the fetch operation:', error);
+                        });
+                    */
+                }
+
+
+            });
+            
             //Demo鍵:載入基本資料
             $('#memberInfoDemo').click(function (event) {
                 $('#passwordInput').val("a12345");
@@ -1351,6 +1402,13 @@
                 });
             });
         }
+
+        //選擇門市按鈕
+        $('#SelectShop').on('click', function () {
+            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
+            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop", "_blank");
+        })
+
     </script>
 
     <!--上傳大頭照-->
@@ -2510,116 +2568,4 @@
     </script>
 
 
-    <!--導入7-11超商的script，之後可以做address.cshtml導入老師的script.js-->
-    <script>
-        const countySelect = document.getElementById('countySelect');
-        const townSelect = document.getElementById('townSelect');
-
-        // 假設 countyData 是一個包含縣市和鄉鎮資料的物件陣列
-        const countyData = [
-            {
-                county: '台北市',
-                towns: ['中正區', '大同區', '中山區', '松山區', '大安區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '新北市',
-                towns: ['板橋區', '三重區', '新莊區', '永和區', '中和區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '基隆市',
-                towns: ['中正區', '七堵區', '暖暖區', '仁愛區', '安樂區']
-            },
-            {
-                county: '澎湖縣',
-                towns: ['馬公市', '湖西鄉', '白沙鄉', '西嶼鄉', '望安鄉', /* ... */]
-            }
-            // 其他縣市的資料...
-        ];
-
-        // 初始化縣市選單
-        countyData.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.county;
-            option.textContent = item.county;
-            countySelect.appendChild(option);
-        });
-
-        // 當縣市選項改變時，動態生成鄉鎮選單
-        countySelect.addEventListener('change', () => {
-            const selectedCounty = countySelect.value;
-            const selectedData = countyData.find(item => item.county === selectedCounty);
-
-            townSelect.innerHTML = ''; // 清空鄉鎮選單
-
-            selectedData.towns.forEach(town => {
-                const option = document.createElement('option');
-                option.value = town;
-                option.textContent = town;
-                townSelect.appendChild(option);
-            });
-        });
-
-    </script>
-    <!--導入全家超商的script，之後可以做address.cshtml導入老師的script.js-->
-    <script>
-        const county2Select = document.getElementById('county2Select');
-        const town2Select = document.getElementById('town2Select');
-
-        // 假設 countyData 是一個包含縣市和鄉鎮資料的物件陣列
-        const county2Data = [
-            {
-                county: '台北市',
-                towns: ['中正區', '大同區', '中山區', '松山區', '大安區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '新北市',
-                towns: ['板橋區', '三重區', '新莊區', '永和區', '中和區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '基隆市',
-                towns: ['中正區', '七堵區', '暖暖區', '仁愛區', '安樂區']
-            },
-            {
-                county: '澎湖縣',
-                towns: ['馬公市', '湖西鄉', '白沙鄉', '西嶼鄉', '望安鄉', /* ... */]
-            }
-            // 其他縣市的資料...
-        ];
-
-        // 初始化縣市選單
-        county2Data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.county;
-            option.textContent = item.county;
-            county2Select.appendChild(option);
-        });
-
-        // 當縣市選項改變時，動態生成鄉鎮選單
-        county2Select.addEventListener('change', () => {
-            const selected2County = county2Select.value;
-            const selected2Data = county2Data.find(item => item.county === selected2County);
-
-            town2Select.innerHTML = ''; // 清空鄉鎮選單
-
-            selected2Data.towns.forEach(town => {
-                const option = document.createElement('option');
-                option.value = town;
-                option.textContent = town;
-                town2Select.appendChild(option);
-            });
-        });
-
-    </script>
-
-    <script>
-        //----選擇門市按鈕------
-        $('#SelectShop').on('click', function(){
-            // window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/SlectShop";
-            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
-            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/SlectShop", "_blank");
-            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/membership/membership", "_blank");
-
-        })
-
-    </script>
-}
+    }
