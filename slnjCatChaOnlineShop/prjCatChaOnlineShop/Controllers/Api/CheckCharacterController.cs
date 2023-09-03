@@ -34,6 +34,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
             {
                 db.FreeNameChange = true;
                 db.CharacterName = p.fCharacterName;
+                db.RunGameHighestScore = p.fRunGameHighestScore;
                 _context.SaveChanges();
             }
             return new JsonResult(isExist);

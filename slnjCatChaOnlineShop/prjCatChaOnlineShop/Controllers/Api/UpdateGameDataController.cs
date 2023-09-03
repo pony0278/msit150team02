@@ -35,7 +35,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     db.CatCoinQuantity += nID.fCCoin;
                     db.LoyaltyPoints += nID.fRuby;
-                    db.RunGameHighestScore = nID.fScore;
+                    db.RunGameHighestScore = nID.fRunGameHighestScore;
                     _context.SaveChanges();
                 }
                 return Ok(new { message = "數據已成功保存" });

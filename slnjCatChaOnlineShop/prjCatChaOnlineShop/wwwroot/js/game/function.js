@@ -132,11 +132,15 @@ function changeUserName() {
 //付費改名方法
 function checkNameisUsed() {
     const userinput = confirmWin_fillin.value
+    if (userinput == "") {
+        confirmWin_text.innerHTML = `名字不可為空白`
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/api/Api/CheckCharacter", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fCharacterName: userinput }),
+        data: JSON.stringify({ fId: UserID, fCharacterName: userinput, fRunGameHighestScore :hightestScore}),
         success: function (result) {
             if (result) {
                 confirmWin_text.innerHTML = `此名字已經有人使用!`
@@ -149,6 +153,7 @@ function checkNameisUsed() {
                 alterConfirmWinBTN('確認', closeConfirmWin)
                 updateCCoint(-20000)
                 confirmWin_text.innerHTML = `更改成功!`
+                loadRankData();
                 initialize(); 
             }
                
@@ -162,11 +167,16 @@ function checkNameisUsed() {
 //免費改名方法
 function checkNameisUsedForFree() {
     const userinput = confirmWin_fillin.value
+
+    if (userinput == "") {
+        confirmWin_text.innerHTML = `名字不可為空白`
+        return;
+    }
     $.ajax({
         type: "POST",
         url: "/api/Api/CheckCharacter", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fCharacterName: userinput }),
+        data: JSON.stringify({ fId: UserID, fCharacterName: userinput, fRunGameHighestScore: hightestScore }),
         success: function (result) {
             if (result) {
                 confirmWin_text.innerHTML = `此名字已經有人使用!`
@@ -178,6 +188,7 @@ function checkNameisUsedForFree() {
                 console.log("更改成功", result.message);
                 alterConfirmWinBTN('確認', closeConfirmWin)
                 confirmWin_text.innerHTML = `更改成功!`
+                loadRankData();
                 initialize();
             }
 
@@ -197,7 +208,7 @@ function updateMilkAmount(num) {
         type: "POST",
         url: "/api/Api/UpdateLobbyBackpack", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fMilkCount: num }),
+        data: JSON.stringify({ fId: UserID, fMilkCount: num, fRunGameHighestScore: hightestScore }),
         success: function (data) {
             initialize();
             console.log("資料更新成功", data.message);
@@ -213,7 +224,7 @@ function updateCanAmount(num) {
         type: "POST",
         url: "/api/Api/UpdateLobbyBackpack", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fCanCount: num }),
+        data: JSON.stringify({ fId: UserID, fCanCount: num, fRunGameHighestScore: hightestScore }),
         success: function (data) {
             initialize();
             console.log("資料更新成功", data.message);
@@ -230,7 +241,7 @@ function updateCCoint(num) {
         type: "POST",
         url: "/api/Api/UpdateGameData", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fCCoin: num }),
+        data: JSON.stringify({ fId: UserID, fCCoin: num, fRunGameHighestScore: hightestScore }),
         success: function (data) {
             initialize();
             console.log("updateCCoint:資料更新成功", data.message);
@@ -247,7 +258,7 @@ function updateRuby(num) {
         type: "POST",
         url: "/api/Api/UpdateGameData", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fId: UserID, fRuby: num }),
+        data: JSON.stringify({ fId: UserID, fRuby: num, fRunGameHighestScore: hightestScore }),
         success: function (data) {
             initialize();
             console.log("updateRuby:資料更新成功", data.message);
