@@ -17,5 +17,7 @@ public partial class GameTaskList
 
     public int? TaskConditionId { get; set; }
 
+    public virtual ICollection<GameMemberTask> GameMemberTask { get; set; } = new List<GameMemberTask>();
+
     public virtual GameTaskConditionData TaskCondition { get; set; }
 }

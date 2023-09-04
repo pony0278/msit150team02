@@ -40,6 +40,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
 
             string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             if (json == null)
@@ -61,6 +62,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
 
             string loginUser = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
@@ -180,6 +182,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
+
             return View();
         }
         #endregion

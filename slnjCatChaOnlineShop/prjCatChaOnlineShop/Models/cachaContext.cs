@@ -369,21 +369,22 @@ public partial class cachaContext : DbContext
 
         modelBuilder.Entity<GameMemberTask>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("Game.Member Task");
+            entity.HasKey(e => e.MemberTaskId);
 
+            entity.ToTable("Game.Member Task");
+
+            entity.Property(e => e.MemberTaskId).HasColumnName("MemberTask ID");
             entity.Property(e => e.CompleteDate)
                 .HasColumnType("datetime")
                 .HasColumnName("Complete Date");
             entity.Property(e => e.MemberId).HasColumnName("Member ID");
             entity.Property(e => e.TaskId).HasColumnName("Task ID");
 
-            entity.HasOne(d => d.Member).WithMany()
+            entity.HasOne(d => d.Member).WithMany(p => p.GameMemberTask)
                 .HasForeignKey(d => d.MemberId)
                 .HasConstraintName("FK_Game.會員任務_Shop.會員資訊");
 
-            entity.HasOne(d => d.Task).WithMany()
+            entity.HasOne(d => d.Task).WithMany(p => p.GameMemberTask)
                 .HasForeignKey(d => d.TaskId)
                 .HasConstraintName("FK_Game.Member Task_Game.Task List");
         });
