@@ -43,7 +43,6 @@ namespace prjCatChaOnlineShop.Services.Function
             })
             .ToList();
 
-
             List<CProductItem> items = data;
             return items;
         }
