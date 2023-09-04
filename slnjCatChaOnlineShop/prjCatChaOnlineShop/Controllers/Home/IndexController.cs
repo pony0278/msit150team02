@@ -24,6 +24,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories=_productService.getAllCategories();//把類別傳給_Layout
             var details = _productService.getDetailsById(pId);
 
             return View(details);
@@ -36,6 +37,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             ViewBag.ProductCount= items.Count();
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
+            ViewBag.CategoryName = Request.Query["categoryName"];
             return View(items);
         }
         public IActionResult Index()
@@ -43,6 +46,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             var items = _productService.getProductItems();
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View(items);
         }
         [HttpGet]
