@@ -730,88 +730,70 @@
                 });
             });
         });
-
-        // 全選按鈕
-        var selectedids = [];
-        $('#selectAllBtn').on('click', function () {
-            var $checkboxes = $('.row-checkbox');
-            var isCheckedAll = $checkboxes.not(':checked').length === 0;
-
-            if (isCheckedAll) {
-                $checkboxes.prop('checked', false);
-                selectedids = [];
-            } else {
-                $checkboxes.prop('checked', true);
-                selectedids = [];
-                $checkboxes.each(function () {
-                    var idValue = $(this).data('id'); // 修正这里
-                    selectedids.push(idValue);
-                });
-            }
-
-            console.log('選擇的商品id:', selectedids);
-        });
-        //單選按鈕
-        $('#GProduct-table tbody').on('change', '.row-checkbox', function () {
-            var isChecked = $(this).is(':checked');
-            var $row = $(this).closest('tr');
-            var idValue = $(this).data('id');
-            if (isChecked) {
-                $row.find('td').addClass('selected-cell');
-                selectedids.push(idValue);
-                console.log('選擇的商品id:', selectedids);
-            } else {
-                $row.find('td').removeClass('selected-cell');
-                var index = selectedids.indexOf(idValue);
-                if (index !== -1) {
-                    selectedids.splice(index, 1);
-                    console.log('選擇的商品id:', selectedids);
-                }
-            }
-        });
-
-        //發送至會員
+        //發送商品至會員==============================================
         $(document).ready(function () {
+            var selectedids = [];
             var selectedProductId = null;
 
-            $('#GProduct-table tbody').on('change', '.row-checkbox', function () {
-                var isChecked = $(this).is(':checked');
-                var $row = $(this).closest('tr');
-                selectedProductId = isChecked ? $row.data('id') : null;
-            });
+            // 全選及單選按鈕的點擊事件
+            $(document).ready(function () {
+                var selectedids = [];
+                var selectedProductId = null;
 
-            $('#sendtoMemberModalBtn').on('click', function () {
-                if (selectedProductId !== null) {
-                    $("#sent-memberID").val(selectedProductId);
-                    $('#sendtoMember').modal('show');
-                }
-            });
+                $('#selectAllBtn, #GProduct-table tbody').on('change', '.row-checkbox', function () {
+                    var isChecked = $(this).is(':checked');
+                    var $row = $(this).closest('tr');
+                    var idValue = $(this).data('id');
 
-            $('#btnSend').on('click', function () {
-                var memberId = $("#sent-memberID").val();
-                console.log('memberId:', memberId);
-                console.log('selectedProductId:', selectedProductId);
-
-                if (selectedProductId !== null && memberId !== "") {
-                    $.ajax({
-                        url: "/AdminCMS/GameProduct/SendProductToMemberByID",
-                        type: "POST",
-                        data: { id: selectedProductId, memberId: memberId },
-                        success: function (response) {
-                            if (response.success) {
-                                console.log("發送成功");
-                                $('#sendtoMember').modal('hide');
-                            } else {
-                                console.log("發送失败");
-                            }
-                        },
-                        error: function (error) {
-                            console.log("發生錯誤：", error);
+                    if (isChecked) {
+                        $row.find('td').addClass('selected-cell');
+                        selectedids.push(idValue);
+                    } else {
+                        $row.find('td').removeClass('selected-cell');
+                        var index = selectedids.indexOf(idValue);
+                        if (index !== -1) {
+                            selectedids.splice(index, 1);
                         }
-                    });
-                }
+                    }
+
+                    selectedProductId = isChecked ? idValue : null;
+                    console.log('選擇的商品id:', selectedids);
+                });
+
+                // 发送按钮点击事件
+                $('#btnSend').on('click', function () {
+                    var memberId = $("#sent-memberID").val();
+                    console.log('memberId:', memberId);
+                    console.log('selectedProductId:', selectedProductId);
+
+                    if (selectedProductId !== null && memberId !== "") {
+                        $.ajax({
+                            url: "/AdminCMS/GameProduct/SendProductToMemberByID",
+                            type: "POST",
+                            data: { id: selectedProductId, memberId: memberId },
+                            success: function (response) {
+                                if (response.success) {
+                                    console.log("發送成功");
+                                    $('#sendtoMember').modal('hide');
+                                } else {
+                                    console.log("發送失败");
+                                }
+                            },
+                            error: function (error) {
+                                console.log("發生錯誤：", error);
+                            }
+                        });
+                    }
+                });
+
+                // 補發遊戲商品按钮点击事件
+                $('#sendtoMemberModalBtn').on('click', function () {
+                    if (selectedProductId !== null) {
+                        $("#sent-memberID").val(selectedProductId);
+                        $('#sendtoMember').modal('show');
+                    }
+                });
             });
         });
-        
     </script>
 }

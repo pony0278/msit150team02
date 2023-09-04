@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Experimental.ProjectCache;
 using Microsoft.EntityFrameworkCore;
+using NETCore.MailKit.Core;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
@@ -11,9 +12,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
     public class BonusController : Controller
     {
         private readonly cachaContext _cachaContext;
+        //private readonly IEmailService _emailService; // 注入 Email 服務
         public BonusController(cachaContext cachaContext)
         {
             _cachaContext = cachaContext;
+            //_emailService = emailService;
         }
 
         public IActionResult Bonus()
@@ -198,6 +201,34 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
             return Json(new { success = true });
         }
+
+
+        [HttpPost]
+        public IActionResult SendNotify(int? id)
+        {
+            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+
+            if (coupon == null)
+            {
+                return NotFound();
+            }
+
+            // 獲取符合條件的會員
+            var membersToSendNotification = _cachaContext.ShopMemberCouponData
+                .Where(data => data.CouponId == coupon.CouponId && data.CouponStatusId.GetValueOrDefault())
+                .Select(data => data.MemberId)
+                .ToList();
+
+            foreach (var memberId in membersToSendNotification)
+            {
+                // 呼叫 Email 服務來發送通知信 TODO
+                //_emailService.SendEmail(memberId, "優惠券到期提醒", emailContent);
+            }
+
+            return Json(new { success = true });
+        }
+
+
 
     }
 }
