@@ -7,6 +7,8 @@ namespace prjCatChaOnlineShop.Models;
 
 public partial class GameMemberTask
 {
+    public int MemberTaskId { get; set; }
+
     public int? MemberId { get; set; }
 
     public int? TaskId { get; set; }
