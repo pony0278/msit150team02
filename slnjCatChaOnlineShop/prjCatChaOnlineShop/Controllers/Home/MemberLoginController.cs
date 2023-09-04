@@ -92,7 +92,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             registerModel.EmailVerified = false;
             registerModel.CheckinDayCount = false;
             registerModel.RegistrationTime = DateTime.Now;
-         
+            registerModel.CatCoinQuantity = 0;
+            registerModel.LoyaltyPoints = 0;
+
+
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 
