@@ -13,6 +13,7 @@ using System.Text.Json;
 using prjCatChaOnlineShop.Controllers.Home;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography.X509Certificates;
+using prjCatChaOnlineShop.Models.ViewModels;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -113,6 +114,40 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
+        //取得常用地址資料
+        public IActionResult GetCommonShop()
+        {
+            try
+            {
+                var query = from shop in _context.ShopCommonShop
+                            join  shopName in _context.ShopCommonshopName on shop.CommShopId equals shopName.ShopId
+                            where shop.MemberId == memberIdForMembership
+                            orderby shop.Id descending
+                            select new
+                            {
+                                shop.Id,
+                                shopName.ShopName,
+                                shopName.CityName,
+                                shopName.DiscitcName,
+                            };
+
+                var datas = query.ToList();
+
+                if (datas != null)
+                {
+                    return new JsonResult(datas);
+                }
+                else
+                {
+                    return NotFound();
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
+        }
+
         //新增常用地址資料:多個參數版
         public IActionResult CreateCommonAddress(ShopCommonAddressData commonAddress)
         {
@@ -186,22 +221,59 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //新增取貨超商資料
-        public IActionResult AddNewMarket()
-        { /*
+        //刪除常用地址資料
+        public IActionResult DeleteCommonShop(int shopId)
+        {
             try
             {
-               [FromBody] JObject requestData
-                //string storename = requestData.GetValue("storename")?.ToString();
-                //string storeaddress = requestData.GetValue("storeaddress")?.ToString();
+                var shopData = _context.ShopCommonShop.FirstOrDefault(f => f.Id == shopId);
+                if (shopData != null)
+                {
+                    _context.ShopCommonShop.Remove(shopData);
+                    _context.SaveChanges();
 
 
+                    return new JsonResult(shopData);
+                }
+                else
+                {
+                    return Content("找不到要刪除的店家");
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        //新增取貨超商資料
+        public IActionResult AddNewMarket([FromBody] ShopCommonShopModel model)
+        {
+
+            try
+            {
+                // 創建 ShopCommonShop 對象
+                ShopCommonShop CommonShop = new ShopCommonShop();
+                CommonShop.MemberId = memberIdForMembership;
+
+                // 創建 ShopCommonshopName 對象
                 ShopCommonshopName commonShop = new ShopCommonshopName();
-                commonShop.ShopName = HttpContext.Request.Form["storename"];
-                commonShop.CityName = storeaddress.Substring(0, 3);
-                commonShop.DiscitcName = storeaddress.Substring(3);
+                commonShop.ShopName = model.storename;
+                commonShop.CityName = model.storeaddress.Substring(0, 3);
+                commonShop.DiscitcName = model.storeaddress.Substring(3);
 
+                // 向 ShopCommonshopName 表中添加 commonShop
                 _context.ShopCommonshopName.Add(commonShop);
+                _context.SaveChanges(); // 儲存以獲得識別規格的值
+
+                // 獲取 commonShop 的識別規格值
+                int commonShopId = commonShop.ShopId;
+
+                // 將識別規格值賦值給 CommonShop 的 ID 屬性
+                CommonShop.CommShopId = commonShopId;
+
+                // 向 CommonShop 表中添加 CommonShop
+                _context.ShopCommonShop.Add(CommonShop);
                 _context.SaveChanges();
 
                 return Content("新增成功");
@@ -210,8 +282,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             catch (Exception ex)
             {
                 return Content(ex.Message);
-            }*/
-            return View();
+            }
+
         }
 
         //取得可使用優惠券資料
@@ -874,6 +946,22 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
             return RedirectToAction("membership", "membership", null);
 
+        }
+
+        public IActionResult SlectOtherShop(IFormCollection ShopDetail)
+        {
+
+            //var storeid = ShopDetail["storeid"];
+            //string storename = ShopDetail["storename"];
+            //string storeaddress = ShopDetail["storeaddress"];
+
+            //TempData["storename"] = storename;
+            //TempData["storeaddress"] = storeaddress;
+
+            //return Content(storeid + "/" + storename + "/" + storeaddress);
+            //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
+            //return RedirectToAction("membership", "membership", null);
+            return Content("hi");
         }
     }
 }

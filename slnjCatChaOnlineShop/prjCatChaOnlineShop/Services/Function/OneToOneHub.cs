@@ -19,7 +19,7 @@ namespace prjCatChaOnlineShop.Services.Function
     public class OneToOneHub : Hub
     {
         public static List<User> users = new List<User>();
-        public static string AdminName = "管理员";
+        public static string AdminName = "客服人員";
 
         public async Task SendMessage(string connectionId, string message)
         {
