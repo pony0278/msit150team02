@@ -621,20 +621,29 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                         int _memberId = memberInfo.MemberId;
 
-                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務 
-                        if (availibaleTask != null)
+
+                        //更新每日任務
+                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
+                        var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
+
+                        if (taskIdList != null)
                         {
-                            foreach (int TId in availibaleTask.Select(task => task.TaskId))
+                            foreach (var taskId in taskIdList)
                             {
-                                var newTask = new GameMemberTask//把所有啟用任務加進去
+                                var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
+
+                                if (existingRecord == null)
                                 {
-                                    MemberId = _memberId,
-                                    TaskId = TId
-                                };
-                                _context.GameMemberTask.Add(newTask);
+                                    var newTask = new GameMemberTask//把所有啟用任務加進去
+                                    {
+                                        MemberId = _memberId,
+                                        TaskId = taskId
+                                    };
+                                    _context.GameMemberTask.Add(newTask);
+                                }
                             }
-                            _context.SaveChanges();
                         }
+                        _context.SaveChanges();
 
                     }
                     else
@@ -650,20 +659,28 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                         int _memberId = memberInfo.MemberId;
 
-                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務 
-                        if (availibaleTask != null)
+                        //更新每日任務
+                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
+                        var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
+
+                        if (taskIdList != null)
                         {
-                            foreach (int TId in availibaleTask.Select(task => task.TaskId))
+                            foreach (var taskId in taskIdList)
                             {
-                                var newTask = new GameMemberTask//把所有啟用任務加進去
+                                var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
+
+                                if (existingRecord == null)
                                 {
-                                    MemberId = _memberId,
-                                    TaskId = TId
-                                };
-                                _context.GameMemberTask.Add(newTask);
+                                    var newTask = new GameMemberTask//把所有啟用任務加進去
+                                    {
+                                        MemberId = _memberId,
+                                        TaskId = taskId
+                                    };
+                                    _context.GameMemberTask.Add(newTask);
+                                }
                             }
-                            _context.SaveChanges();
                         }
+                        _context.SaveChanges();
 
                     }
                 }
