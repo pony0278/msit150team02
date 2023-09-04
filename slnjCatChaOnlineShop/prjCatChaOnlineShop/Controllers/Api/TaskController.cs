@@ -27,12 +27,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
         {
             return View();
         }
-      
 
-       
+
+        //登入時如果會員都沒有紀錄的話，就每一個任務都新增一欄
         public IActionResult Create(CMemberGameInfo c)
         {
-            //登入時如果會員都沒有紀錄的話，就每一個任務都新增一欄
+           
             try
             {
                 var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
@@ -55,6 +55,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         {
                             var newTask = new GameMemberTask//把所有啟用任務加進去
                             {
+                                TaskProgress = 0,
                                 MemberId = _memberId,
                                 TaskId = taskId
                             };
@@ -73,9 +74,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-
- 
-
         //載入任務
         public IActionResult LoadTask(CMemberTask c)
         {
@@ -83,14 +81,16 @@ namespace prjCatChaOnlineShop.Controllers.Api
             {//選出目前啟用的任務
                 var availibaleTask = (from p in _context.GameTaskList
                             .Where(x => x.TaskConditionId == 1)
-                             orderby p.TaskId descending
+                                      join i in _context.GameMemberTask on p.TaskId equals i.TaskId
+                                      orderby p.TaskId descending
                              select new
                              {
+                                 p.TaskId,
                                  p.TaskName,
                                  p.TaskReward,
-                                 p.TaskRequireTime
+                                 p.TaskRequireTime,
+                                 i.TaskProgress
                              }).ToList();
-
                 if (availibaleTask.Any())
                 {
 
@@ -108,7 +108,6 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
 
         //更新任務狀態
-
         public IActionResult UpdteTask(int taskId) 
         {
         
@@ -122,6 +121,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
                 if( teargetTask != null)
                 {
+                    teargetTask.TaskProgress ++ ;
                     teargetTask.CompleteDate = DateTime.Now;
                     return new JsonResult(teargetTask);
                 }

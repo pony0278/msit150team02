@@ -223,15 +223,7 @@
         padding: 10px; /* 内边距，可以根据需要调整 */
     }
 
-#tutorial {
-    position: absolute;
-    text-align: center;
-    justify-content: center;
-    width: 406px; /* 維持canvas的寬度為406px */
-    height: 600px; /* 維持canvas的高度為600px */
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-}
+
 
 
 #Canvasrungame {

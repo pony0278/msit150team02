@@ -2,13 +2,15 @@
 {
     public class CMemberTask
     {
-        public int fMemberTaskId { get; set; }
+        public int MemberTaskId { get; set; }
 
-        public int? fMemberId { get; set; }
+        public int? MemberId { get; set; }
 
-        public int? fTaskId { get; set; }
+        public int? TaskId { get; set; }
 
-        public DateTime? fCompleteDate { get; set; }
+        public int? TaskProgress { get; set; }
+
+        public DateTime? CompleteDate { get; set; }
 
 
     }
