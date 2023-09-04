@@ -17,18 +17,17 @@
 }
 <!--提示訊息-->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
-
-    <div id="detail-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <img src="..." class="rounded me-2" alt="...">
-            <strong class="me-auto">訊息</strong>
-            <small></small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
+    <div id="detail-toast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i></i>
+                <strong></strong>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
+
 <!-- Start All Title Box -->
 <div class="all-title-box-picture all-title-box">
     <div class="container">
@@ -107,15 +106,22 @@
                     }
 
                     <p class="available-stock">
-                        @if (Model.selectedProduct.p剩餘庫存 != 0)
-                        {
-                            <i class="fa-solid fa-circle-check fa-sm" style="color:#55AA00"></i>
-                            <span>尚有庫存</span>
-                        }
-                        else
+                        @if (Model.selectedProduct.p剩餘庫存 == 0 || Model.selectedProduct.p剩餘庫存 == null)
                         {
                             <i class="fa-solid fa-circle-xmark fa-sm" style="color:red"></i>
                             <span>缺貨中</span>
+                        }
+                        else
+                        {
+
+
+                            <div>
+                                <i class="fa-solid fa-circle-check fa-sm" style="color:#55AA00"></i>
+                                <span>尚有庫存</span>
+                            </div>
+                            <div>
+                                剩餘 @Model.selectedProduct.p剩餘庫存 件
+                            </div>
                         }
                     </p>
                     <p>
@@ -134,16 +140,16 @@
                                 <select id="attr" class="form-control">
                                     @{
 
-                                        @if (Model.selectedProduct.p子項目.Count() != 0)
+                                                @if (Model.selectedProduct.p子項目.Count() != 0)
                                         {
                                             foreach (var attr in Model.selectedProduct.p子項目)
                                             {
-                                                <option value="@attr">@attr</option>
+                                                        <option value="@attr">@attr</option>
                                             }
                                         }
                                         else
                                         {
-                                            <option value="商品" selected>商品</option>
+                                                    <option value="商品" selected>商品</option>
                                         }
                                     }
 
@@ -153,7 +159,15 @@
                         <li>
                             <div class="form-group quantity-box">
                                 <label class="control-label">數量</label>
-                                <input id="count" class="form-control" value="1" min="1" max="10" type="number" />
+                                @if (Model.selectedProduct.p剩餘庫存 == 0 || Model.selectedProduct.p剩餘庫存 == null)
+                                {
+                                    <input id="count" class="form-control" value="0" min="0" max="0" type="number" />
+
+                                }
+                                else
+                                {
+                                    <input id="count" class="form-control" value="1" min="1" max="@Model.selectedProduct.p剩餘庫存" type="number" />
+                                }
                             </div>
                         </li>
                     </ul>
@@ -161,25 +175,25 @@
                     <div class="price-box-bar">
                         <div id="add-to" class="cart-and-bay-btn">
 
-                            <a href="#" id="addToCartButton" class="btn hvr-hover cart-btn"
+                            <a href="#" class="btn hvr-hover cart-btn"
                                data-product-id="@Model.selectedProduct.pId">
                                 <i class="fa-solid fa-cart-plus"></i>
                             </a>
                             @if (Model.selectedProduct.p是否加入收藏)
                             {
-                                <a href="#" id="addToWishListButton" class="btn hvr-hover favorited"
+                                <a href="#" class="btn hvr-hover like-btn favorited"
                                    data-product-id="@Model.selectedProduct.pId">
                                     <i class="fas fa-heart"></i>
                                 </a>
                             }
                             else
                             {
-                                <a href="#" id="addToWishListButton" class="btn hvr-hover"
+                                <a href="#" class="btn hvr-hover like-btn"
                                    data-product-id="@Model.selectedProduct.pId">
                                     <i class="fas fa-heart"></i>
                                 </a>
                             }
-                            
+
                         </div>
                     </div>
                 </div>
@@ -214,9 +228,7 @@
                         <button class="accordion-button collapsed" type="button" data-toggle="collapse"
                                 data-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                             商品評論
-                            <span id="review-avg-rating">
-
-                            </span>
+                            <span id="review-avg-rating" data-rating="@Model.reviews.Average(r=>r.r評分)"></span>
                             (@Model.reviews.Count())
                         </button>
                     </h2>
@@ -242,7 +254,7 @@
                                             <small class="text-muted">by @r.r會員姓名 @r.r評分時間</small>
                                         </div>
                                     </div>
-                                    <hr/>
+                                    <hr />
                                 }
 
 
@@ -279,29 +291,29 @@
                                     <div class="add-to why-text">
                                         <h4>@a.pName</h4>
                                         @if (a.pDiscount != null)
-                                        {
+                                {
                                             <h5><del>$ @a.p優惠價格</del>$ @a.pPrice</h5>
-                                        }
-                                        else
-                                        {
+                                }
+                                else
+                                {
                                             <h5>$ @a.pPrice</h5>
-                                        }
-                                        <a href="#" data-product-id=@a.pId type="button" class="cart-btn add-to-cart-coustom">
+                                }
+                                        <a href="#" data-product-id=@a.pId type="button" class="add-to-cart-coustom">
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
-                                        @if (a.p是否加入收藏==true)
-                                        {
+                                        @if (a.p是否加入收藏 == true)
+                                {
                                             <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom favorited">
                                                 <i class="far fa-heart"></i>
                                             </a>
-                                        }
-                                        else
-                                        {
+                                }
+                                else
+                                {
                                             <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom">
                                                 <i class="far fa-heart"></i>
                                             </a>
-                                        }
-                                        
+                                }
+
                                     </div>
                                 </div>
                             </div>
@@ -332,8 +344,10 @@
 
     <script>
         var rating = $('#review-avg-rating');
-        var ratingAvg = @Model.reviews.Average(r=>r.r評分);
+        var ratingAvg = $('#review-avg-rating').data('rating');
         var arrAvg = [];
+        var addTo = $("#add-to");
+        var relatable = $("#relatable-items");
         for (var i = 1; i <= 5; i++) {
             if (ratingAvg >= i) {
                 arrAvg.push(1);
@@ -357,71 +371,70 @@
             }
         });
 
-        // var reviewNum = -1;
-        // $('.review-rating').each(function () {
-        //     reviewNum++;
-        //     var ratingEach = $(this).find('.rating-each').data('rating-each');
-        //     var arr = [];
-        //     arr[reviewNum] = []; // 為每個評論創建一個陣列
-        //     for (var i = 1; i <= 5; i++) {
-        //         if (ratingEach >= i) {
-        //             arr[reviewNum].push(1);
-        //         } else if (ratingEach > i - 1 && ratingEach <= i) {
-        //             arr[reviewNum].push(2);
-        //         }
-        //         else {
-        //             arr[reviewNum].push(0);
-        //         }
-        //     }
-        //     var $ratingContainer = $(this); // 存儲當前元素的引用
-        //     $ratingContainer.find('.rating-each').each(function (index) {
-        //         if (arr[reviewNum][index] == 1) {
-        //             $(this).append('<i class="fa-solid fa-star fa-sm" style="color:#F4CD1E"></i>');
-        //         } else if (arr[reviewNum][index] == 2) {
-        //             $(this).append('<i class="fa-solid fa-star-half fa-sm" style="color:#F4CD1E"></i>');
-        //         } else {
-        //             $(this).append('<i class="fa-solid fa-star fa-sm" style="color: #e0e0e0;"></i>');
-        //         }
-        //     });
-        // });
-
         //輸入數量加入購物車
-        $("#addToCartButton").on("click", function (e) {
+        addTo.on("click", ".cart-btn", function (e) {
             e.preventDefault();
-
             var attr = $("#attr").val();
             var count = $("#count").val();
+            var countMax = parseInt($("#count").attr('max'));
+            var cartBtn = $('.cart-btn');
             var productId = $(this).data("product-id");
-
-
-            // 發送 Ajax 請求
-            $.ajax({
-                url: '/ProductApi/DetailsAddToCart',
-                type: 'POST',
-                data: { pId: productId, attr: attr, count: count },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+            if (count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#detail-toast').toast('show');
+            }
+            else if (count > countMax) {
+                //輸入數量大於庫存
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('超過可購買數量');
+                $('#detail-toast').toast('show');
+            }
+            else {
+                // 發送 Ajax 請求
+                $.ajax({
+                    url: '/ProductApi/DetailsAddToCart',
+                    type: 'POST',
+                    data: { pId: productId, attr: attr, count: count },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            //成功加入
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#detail-toast').toast('show');
+                        }
+                        else {
+                            //購物車商品將超過可購買數量
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#detail-toast').toast('show');
+                            }
+                            else {
+                                //未登入
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#detail-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
                     }
-                    else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
+                });
+            }
         });
         //加入收藏
-        $("#addToWishListButton").on("click", function (e) {
+        addTo.on("click", ".like-btn", function (e) {
             e.preventDefault();
             var button = $(this);
             var productId = $(this).data("product-id");
-
-
             // 發送 Ajax 請求
             $.ajax({
                 url: '/ProductApi/AddToWishList',
@@ -438,8 +451,11 @@
                         }
                     }
                     else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        //未登入
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#detail-toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -447,13 +463,11 @@
             });
         });
 
-
+        //-----------------------相關商品-------------------------
         //相關商品加入購物車
-        $("#relatable-items").on('click', '.cart-btn', function (e) {
+        relatable.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
             // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
             $.ajax({
                 url: '/ProductApi/AddToCart',
@@ -462,26 +476,36 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#detail-toast').toast('show');
                     }
                     else {
-                        $('#detail-toast .toast-body').text(response.message);
-                        $('#detail-toast').toast('show');
+                        if (response.messageNoQuantity) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                            $('.toast-body strong').text(response.messageNoQuantity);
+                            $('#detail-toast').toast('show');
+                        }
+                        else {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#detail-toast').toast('show');
+                        }
                     }
                 },
                 error: function (error) {
-                    console.error('Ajax Error:', error);
                 }
             });
         });
 
         //相關商品加入收藏
-        $("#relatable-items").on('click', '.add-to-wishlist-coustom', function (e) {
+        relatable.on('click', '.add-to-wishlist-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             var button = $(this);
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
             // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
             $.ajax({
                 url: '/ProductApi/AddToWishList',
@@ -498,7 +522,9 @@
                         }
                     }
                     else {
-                        $('#detail-toast .toast-body').text(response.message);
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
                         $('#detail-toast').toast('show');
                     }
                 },

@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/responsive.css">
     <link rel="stylesheet" href="~/css/custom.css" />
+    <style>
+        .for-category-only:hover{
+            color: #DE9E4F !important;
+        }
+
+    </style>
     @await RenderSectionAsync("Styles",required:false)
 </head>
 <body>
@@ -57,20 +63,15 @@
                         <li class="dropdown" id="categoryDropdown">
                             <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">所有商品</a>
                             <ul class="dropdown-menu">
-                                <li><a asp-controller="Index" asp-action="Shop">全部商品</a></li>
-
-
-                               @*  @foreach (var i in Model.DistinctBy(pCategoryName))
+                                <li><a class="for-category-only" asp-controller="Index" asp-action="Shop">全部商品</a></li>
+                                @foreach (var i in ViewBag.Categories)
                                 {
                                     <li>
-                                        <a class="for-ajax" href="#" data-category-name="@i.pCategoryName">
-                                            <span>@i.pCategoryName</span>
+                                        <a class="for-category-only" href="/Index/Shop?categoryName=@i">
+                                            <span>@i</span>
                                         </a>
                                     </li>
-                                } *@
-
-
-
+                                }
                             </ul>
                         </li>
                         <li class="nav-item"><a class="nav-link" asp-controller="ShopNews" asp-action="News">最新消息</a></li>
@@ -275,7 +276,7 @@
 
 @section Scripts{
     <script>
-       
+        
 
         ////右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
         //const targetloginTextClass = 'LoginText';

@@ -265,11 +265,11 @@
             $('#txtPassword').val("aa1234");
         });
 
-        const divElement = document.getElementById('g_id_onload');
+        //const divElement = document.getElementById('g_id_onload');
 
-        divElement.addEventListener('click', function () {
-            alert('Div被点击了！');
-        });
+        //divElement.addEventListener('click', function () {
+        //    alert('Div被点击了！');
+        //});
 
         //新版登入
         
@@ -283,6 +283,7 @@
                     type: 'POST', 
                     data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
                     success: function (data) {
+                    //寫入任務資料
                         //定義api傳回來的資料
                     var userName = data.userName;
                     var success = data.success;
@@ -290,6 +291,7 @@
                     var mess = data.message;
 
                     if (userName && success==true) {
+                        setTask();
                         Swal.fire({
                             icon: 'success',
                             title: '歡迎回來',
@@ -346,7 +348,21 @@
      
 
       
-           
+           function setTask(){
+            $.ajax({
+                url: '/Task/Create',
+                type: 'GET',
+                data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                success: function () {
+                    console.log("更新任務成功") 
+                },
+                error: function (err) {
+                    $('#ErrorMsg').html(err.responseText);
+                    $('#ErrorAlert').modal('toggle');
+                    return false; // 失敗時返回 false
+                }
+            }); 
+           }
     
 
 

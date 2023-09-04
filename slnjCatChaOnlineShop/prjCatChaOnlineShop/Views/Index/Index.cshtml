@@ -106,20 +106,21 @@
         .swiper-member-say {
             color: #818181;
         }
+        .hideID{
+            display:none;
+        }
     </style>
 }
 
-<!-- Modal -->
+<!-- 提示訊息 -->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
-
-    <div id="live-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <img src="..." class="rounded me-2" alt="...">
-            <strong class="me-auto">訊息</strong>
-            <small></small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
+    <div id="live-toast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i></i>
+                <strong></strong>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -225,7 +226,7 @@
         </div>
         <div id="productIndexNew" class="row special-list">
             @{
-                foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
+                foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4).ToList())
                 {
                         <!-- start prod  -->
                         <div class="col-lg-3 col-md-6 special-grid best-seller">
@@ -233,13 +234,16 @@
                                 <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
                                     <div class="box-img-hover">
                                         <div class="type-lb">
+                                        @if (item.p優惠價格 != null)
+                                        {
                                             <p class="sale">Sale</p>
+                                        }
                                         </div>
-                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">
-                                    <h4>@item.pName</h4>
+                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
                                     @if (item.pDiscount != null)
                                 {
                                         <h5>$ @item.p優惠價格</h5>
@@ -295,7 +299,7 @@
         </div>
         <div id="productIndexSale" class="row special-list">
             @{
-                foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
+                foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4).ToList())
                 {
                         <div class="col-lg-3 col-md-6 special-grid best-seller">
                             <div class="products-single-custom fix">
@@ -304,11 +308,11 @@
                                         <div class="type-lb">
                                             <p class="sale">Sale</p>
                                         </div>
-                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">
-                                    <h4>@item.pName</h4>
+                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
                                     @if (item.pDiscount != null)
                                 {
                                         <h5>$ @item.p優惠價格</h5>
@@ -359,17 +363,10 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
-<div>
+<div class="hideID">
     <div>用户名称：<label id="userName"></label>(<label id="conId"></label>)</div>
+</div>
 
-    <div style="width:25%;border:1px solid #ff0000">
-        <div>在线用户列表</div>
-        <ul id="users"></ul>
-    </div>
-    <div id="userBox">
-    </div>
-</div>
-</div>
 
 
 <!-- 結束評論輪播 -->
@@ -397,7 +394,7 @@
         </div>
         <div class="chat-input">
             <input type="text" id="chat-input" placeholder="輸入訊息" />
-            <button class="chat-submit" id="chat-submit" onclick="SendMessageToPrivateChat()"><i class="material-icons">送出</i></button>
+            
         </div>
     </div>
 </div>
@@ -462,10 +459,7 @@
 
         // 點擊商品時獲取識別ID
         productIndexNew.on('click', '.shop-prod-click', function () {
-
-            console.log(productIndexNew);
             var productId = $(this).data('product-id');
-            console.log('Clicked product ID:', productId);
             $.ajax({
                 url: '/ProductApi/GetDetail',
                 type: 'GET',
@@ -480,9 +474,7 @@
             });
         });
         productIndexSale.on('click', '.shop-prod-click', function () {
-            console.log(productIndexSale);
             var productId = $(this).data('product-id');
-            console.log('Clicked product ID:', productId);
             $.ajax({
                 url: '/ProductApi/GetDetail',
                 type: 'GET',
@@ -500,55 +492,102 @@
 
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(productIndexNew);
+            
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToCart',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+            var count = parseInt($(".for-quantity").data('quantity'));
+            console.log(count);
+
+            if (isNaN(count) || count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#live-toast').toast('show');
+            }
+            else {
+                // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+                $.ajax({
+                    url: '/ProductApi/AddToCart',
+                    type: 'POST',
+                    data: { pId: productId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#live-toast').toast('show');
+                        }
+                        else {
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#live-toast').toast('show');
+                            }
+                            else {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#live-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Ajax Error:', error);
                     }
-                    else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
+                });
+
+            }
         });
 
         productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(productIndexSale);
+
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToCart',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+            var count = parseInt($(".for-quantity").data('quantity'));
+            console.log(count);
+            if (isNaN(count) || count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#live-toast').toast('show');
+            }
+            else {
+                // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+                $.ajax({
+                    url: '/ProductApi/AddToCart',
+                    type: 'POST',
+                    data: { pId: productId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#live-toast').toast('show');
+                        }
+                        else {
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#live-toast').toast('show');
+                            }
+                            else {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#live-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
                     }
-                    else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                }
-            });
+                });
+
+            }
         });
         //加入收藏:獲取id--------------------------------------------------------
 
@@ -557,7 +596,7 @@
             var button = $(this);
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            // 透過 Ajax 將商品 ID 傳送到後端，加入收藏
             $.ajax({
                 url: '/ProductApi/AddToWishlist',
                 type: 'POST',
@@ -574,7 +613,9 @@
 
                     }
                     else {
-                        $('#live-toast .toast-body').text(response.message);
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
                 },
@@ -589,7 +630,7 @@
             var button = $(this);
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            // 透過 Ajax 將商品 ID 傳送到後端，加入收藏
             $.ajax({
                 url: '/ProductApi/AddToWishlist',
                 type: 'POST',
@@ -605,7 +646,9 @@
                         }
                     }
                     else {
-                        $('#live-toast .toast-body').text(response.message);
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
 
@@ -614,9 +657,6 @@
                 }
             });
         });
-        //評論區
-
-
 
         //小動畫
         const fullScreenContainer = document.getElementById('fullScreenContainer');
@@ -802,12 +842,13 @@
             }, 1000);
         }
         //客服
-
+        let saveName = "";
         $('body').on('click', '#chat-circle', function () {
             $('#chat-circle').hide();
             $('.chat-box').show();
             connection.start().then(function () {
                 var userName = prompt('请输入您的名称', '');
+                saveName = userName
                 document.getElementById("userName").textContent = userName;
                 connection.invoke("GetName", userName);
             }).catch(function (err) {
@@ -831,24 +872,37 @@
             if (clients.indexOf(connectionId) === -1) {
                 showWin(connectionId);
             }
+            const chatWindow = $("#chating");
+            let messages = message.slice(0, 3);
+            const userClass = (messages.includes("客服")) ? "other-message" : "own-message";
 
-            var messageList = document.getElementById("messages" + connectionId);
-            var newMessage = document.createElement("li");
-            newMessage.textContent = message;
-            messageList.appendChild(newMessage);
+            const newMessage = $(`<div class="message ${userClass}">
+                                                    <span class="username"><strong></strong></span> ${message}
+                                          </div>`);
+
+            chatWindow.prepend(newMessage);
         });
-
         connection.on("GetUsers", function (data) {
             var users = JSON.parse(data);
-            var userList = document.getElementById("users");
-            userList.innerHTML = "";
-            if (users.length > 0) {
-                var user = users[0];
-                var userHtml = document.createElement("li");
-                userHtml.innerHTML = '用户名: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
-                userList.appendChild(userHtml);
+            console.log(users)
+            var admiin = $('.chat-input');
+            var chat = $('#chating')
+            chat.html("")
+            var hasAdminOnline = false;  
+            $.each(users, function (index, value) {
+                if (value.Name == "客服人員") {
+                    hasAdminOnline = true; 
+                    var btn = $(`<button class="chat-submit" connectionId="${value.ConnectionID}" id="chat-submit" onclick="sendMessages(this)"><i class="material-icons">送出</i></button>`);
+                    admiin.append(btn);
+                    return false;  
+                }
+            });
+            if (hasAdminOnline !== true) {  
+                const word = $(`<p>客服人員不在線上</p>`);
+                chat.append(word);
             }
         });
+
 
         connection.on("showId", function (data) {
             document.getElementById("conId").textContent = data;
@@ -881,6 +935,16 @@
             var username = $("#userName").html();
             message = username + ":" + message;
             var targetConnectionId = $(userObj).attr("connectionId");
+            connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
+            $(data).prev().val("");
+        }
+
+        function sendMessages(data) {
+            var message = $(data).prev().val();
+            var username = $("#userName").html();
+            message = username + ":" + message;
+            console.log(message)
+            var targetConnectionId = $(data).attr("connectionId");
             connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
             $(data).prev().val("");
         }

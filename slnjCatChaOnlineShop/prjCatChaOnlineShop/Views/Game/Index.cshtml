@@ -187,9 +187,9 @@
             </div>
             <nav class="pagination-container" aria-label="Page navigation example">
                 <ul class="pagination" style="display:none;">
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a')">1</a></li>
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b')">2</a></li>
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c')">3</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a'); return false;" id="pageA">1</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b'); return false;" id="pageB">2</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c'); return false;" id="pageC">3</a></li>
                 </ul>
             </nav>
         </div>
@@ -249,21 +249,7 @@
                         <td>0/1</td>
                         <td >領取獎勵</td>
                     </tr>
-                    <tr>
-                        <td>遊玩小遊戲 3 次</td>
-                        <td>0/3</td>
-                        <td>領取獎勵</td>
-                    </tr>
-                    <tr>
-                        <td>遊玩小遊戲並取得 5 分</td>
-                        <td>0/1</td>
-                        <td>領取獎勵</td>
-                    </tr>
-                    <tr>
-                        <td>完成所有每日任務</td>
-                        <td>0/3</td>
-                        <td>領取獎勵</td>
-                    </tr>
+                 
                 </table>
             </div>
         </div>

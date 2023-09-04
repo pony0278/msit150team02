@@ -179,7 +179,7 @@ canvas.addEventListener('click', (event) => {
     }
 
     if (isInBtnRange(dailyMissionBTN, x, y)) { //每日任務
-        
+        loadTask()
         Mission.style.display = "block"
         return;
     }
