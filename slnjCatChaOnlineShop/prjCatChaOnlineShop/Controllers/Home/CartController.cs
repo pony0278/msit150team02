@@ -14,7 +14,7 @@ using System.Web;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
-   
+
     public class CartController : Controller
     {
         private readonly cachaContext _context;
@@ -83,10 +83,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 //購物車
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
 
-                //建構商品名稱的字串
-                string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
-
-
                 //結帳頁面-購物車初始小計金額
                 decimal total = (decimal)cartItems.Sum(item => item.c小計);
                 ViewBag.totalPrice = total; //把初始的小計金額傳到checkout頁面
@@ -103,6 +99,39 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 decimal firstTotalPrice = total + firstFee;
                 ViewBag.firstTotalPrice = firstTotalPrice;
 
+              
+                var viewModel = new CCheckoutViewModel
+                {
+                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
+                    memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
+                    cartItems = cartItems ?? new List<CCartItem>(),                  
+                    getCouponPrice = usableBonus ?? new CGetCouponPrice(),
+                };
+
+
+                return View(viewModel);
+            }
+            return View();
+        }
+
+        public IActionResult Pay()
+        {
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
+
+            //從session中拿取購物車的資料
+            string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+            if (productList != null)
+            {
+                //購物車
+                var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
+
+                //建構商品名稱的字串
+                string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
+
+                // 獲取 finalTotalPrice 的值
+                var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
 
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
@@ -114,7 +143,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //綠界需要的參數
             { "MerchantTradeNo",  orderId},
             { "MerchantTradeDate",  DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")},
-            { "TotalAmount",Convert.ToString(firstTotalPrice)  },
+            { "TotalAmount",finalTotalPrice },
             { "TradeDesc",  "無"},
             { "ItemName",  cartItemName},
             { "ExpireDate",  "3"},
@@ -135,20 +164,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 //檢查碼
                 order["CheckMacValue"] = GetCheckMacValue(order);
 
-                var viewModel = new CCheckoutViewModel
+                var viewmodel = new CCheckoutViewModel
                 {
-                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
-                    memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
-                    cartItems = cartItems ?? new List<CCartItem>(),
                     keyValuePairs = order ?? new Dictionary<string, string>(),
-                    getCouponPrice = usableBonus ?? new CGetCouponPrice(),
                 };
-
-
-                return View(viewModel);
+                 return View(viewmodel);
             }
             return View();
         }
+
         private string GetCheckMacValue(Dictionary<string, string> order)
         {
             var param = order.Keys.OrderBy(x => x).Select(key => key + "=" + order[key]).ToList();
@@ -177,13 +201,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         #endregion
 
-        public IActionResult Pay()
-        {
-            string userName = HttpContext.Session.GetString("UserName");
-            ViewBag.UserName = userName;//把使用者名字傳給_Layout
-            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
-            return View();
-        }
+
 
         #region 確認訂單
         public IActionResult ConfrimOrder()
@@ -196,7 +214,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         #endregion
 
-        
+
 
 
 
