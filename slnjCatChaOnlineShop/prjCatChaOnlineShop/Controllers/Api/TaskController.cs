@@ -105,10 +105,37 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
+        //任務確認機
+        public IActionResult CheckMachine(CMemberTask f)
+        {
+            try
+            {//選出目前啟用的任務
+                var thisTask = (from p in _context.GameMemberTask
+                            .Where(x => x.TaskId == f.fTaskId)
+                                      join i in _context.GameTaskList on p.TaskId equals i.TaskId
+                                      orderby p.TaskId descending
+                                      select new
+                                      {
+                                          p.TaskId,
+                                          p.TaskProgress,
+                                          i.TaskRequireTime,
+                                      }).ToList();
+                if (thisTask.Any())
+                {
 
+                    return new JsonResult(thisTask);
+                }
+
+                return NotFound();
+            }
+            catch
+            {
+                return View();
+            }
+        }
 
         //更新任務狀態
-        public IActionResult UpdteTask(int taskId) 
+        public IActionResult UpdteTask(CMemberTask f) 
         {
         
             try
@@ -117,7 +144,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 int _memberId = memberInfo.MemberId;
 
-                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
+                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == f.fTaskId);
 
                 if( teargetTask != null)
                 {

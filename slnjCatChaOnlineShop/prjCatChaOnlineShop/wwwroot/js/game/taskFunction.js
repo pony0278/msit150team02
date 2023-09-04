@@ -1,4 +1,5 @@
-﻿function loadTask() {
+﻿//任務清單UI呈現用
+function loadTask() {
     $.ajax({
         url: '/Task/LoadTask',
         type: 'GET',
@@ -22,7 +23,6 @@
                         <td>領取獎勵</td>
                     </tr>
                 `);
-
                 const completeDailyTask = ` <tr>
                                                  <td class="_completeAllTask">完成所有每日任務</td>
                                                  <td class="_completeAllTask">${0}/${countOfTask}</td>
@@ -39,3 +39,56 @@
         }
     });
 }
+
+//確認使用者某任務的進度用
+//TaskID12 小遊戲5分以上
+//TaskID13 小遊戲玩3次
+//TaskID14 餵貓一次
+
+function checkProgress(taskIdToCheck) {
+    $.ajax({
+        url: '/Task/CheckMachine',
+        type: 'GET',
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fTaskId: taskIdToCheck }),
+        success: function (data) {
+            if (data.taskProgress == data.taskRequireTime) {
+                //這邊要觸發另外一個ajax方法
+                //如果完成之後要給一個時間戳
+                //用時間戳去觸發把領獎按鈕開啟(時間戳會去觸發開啟獎勵)
+                //使用者領完之後再把領獎按鈕鎖回去(時間戳設為null)
+
+
+            }
+        
+        },
+        error: function () {
+            console.error('查詢使用者任務失敗');
+        }
+    });
+
+
+
+}
+
+//更新使用者任務進度用(要包含做到一半跟完成)
+function updateTaskProgress(TaskId) {
+    $.ajax({
+        type: "POST",
+        url: "/Task/UpdteTask", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        data: JSON.stringify({ fTaskId: TaskId }),
+        success: function (data) {
+            loadTask()
+            console.log("資料更新成功", data.message);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+    });
+
+
+
+}
+
+
