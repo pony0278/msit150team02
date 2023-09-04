@@ -140,6 +140,7 @@
             $('#error-message').text('此為必勾選的項目');
         }
     });
+
     // 監聽送出訂單按鈕的點擊事件
     $('#submit-order-btn').click(function (e) {
         // 檢查 checkbox 是否被勾選
@@ -148,77 +149,69 @@
             e.preventDefault();
             // 顯示錯誤訊息
             $('#error-message').text('此為必勾選的項目');
+        } else {
+            // 如果勾選了，導向到指定頁面
+            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL
+            // 取消默認的表單提交行為
+            e.preventDefault();
         }
-        else {
-           /* e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
-            console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
-            let formData = $("#ecpayform").serializeArray();
-            var json = {};
-            $.each(formData, function () {
-                json[this.name] = this.value || "";
-            });
-            console.log(json); /*F12 -> console*/
-            //step3 : 新增訂單到資料庫
-            $.ajax({
-                type: 'POST',
-                url: 'https://localhost:7218/Ecpay/AddOrders',
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(json),
-                success: function (res) {
-                    console.log(res);
-
-                    var memberId = $("#MemberId").text();
-                    var couponId = $("#CouponId").text();
-                    console.log("會員ID", memberId)
-                    console.log("會員優惠券", couponId)
-                    $.ajax({
-                        type: 'POST',
-                        url: '/CheckOut/AddNewOrder',
-                        data:
-                        {
-                            MemberId: memberId,
-                            CouponId: couponId,
-                        },
-                        success: function (res) {
-                            // 處理成功回應
-                        },
-                        error: function (err) {
-                            // 處理錯誤回應
-                        },
-                    });
+    });
 
 
-                    ///*成功後執行跳轉*/
-                    /* window.location.href = 'https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5';*/
-                },
-                error: function (err) { console.log(err); },
-            });
+    // 監聽送出訂單按鈕的點擊事件
+    //$('#submit-order-btn').click(function (e) {
+    //    // 檢查 checkbox 是否被勾選
+    //    if (!($('#returnsInvoice').is(':checked'))) {
+    //        // 如果未勾選，取消點擊事件，防止送出訂單
+    //        e.preventDefault();
+    //        // 顯示錯誤訊息
+    //        $('#error-message').text('此為必勾選的項目');
+    //    }
+    //    else {
+    //       /* e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+    //        console.log("阿囉哈你好嗎可以讓我過關嗎^_^??")
+    //        let formData = $("#ecpayform").serializeArray();
+    //        var json = {};
+    //        $.each(formData, function () {
+    //            json[this.name] = this.value || "";
+    //        });
+    //        console.log(json); /*F12 -> console*/
+    //        //step3 : 新增訂單到資料庫
+    //        $.ajax({
+    //            type: 'POST',
+    //            url: 'https://localhost:7218/Ecpay/AddOrders',
+    //            contentType: 'application/json; charset=utf-8',
+    //            data: JSON.stringify(json),
+    //            success: function (res) {
+    //                console.log(res);
+
+    //                var memberId = $("#MemberId").text();
+    //                var couponId = $("#CouponId").text();
+    //                console.log("會員ID", memberId)
+    //                console.log("會員優惠券", couponId)
+    //                $.ajax({
+    //                    type: 'POST',
+    //                    url: '/CheckOut/AddNewOrder',
+    //                    data:
+    //                    {
+    //                        MemberId: memberId,
+    //                        CouponId: couponId,
+    //                    },
+    //                    success: function (res) {
+    //                        // 處理成功回應
+    //                    },
+    //                    error: function (err) {
+    //                        // 處理錯誤回應
+    //                    },
+    //                });
+    //            },
+    //            error: function (err) { console.log(err); },
+    //        });
            
 
-        }
-        //else {
-        //    let formData = $("#checkForm").serializeArray();
-        //    var json = {};
-        //    $.each(formData, function () {
-        //        json[this.name] = this.value || "";
-        //    });
-        //    // 發送 AJAX 請求到 AddOrder 方法
-        //    $.ajax({
-        //        type: 'POST',
-        //        url: '/Cart/AddOrder', // 使用適當的路由 URL
-        //        contentType: 'application/json; charset=utf-8',
-        //        data: JSON.stringify(json),
-        //        success: function (res) {
-        //            console.log(res);
-        //            // 根據需要處理成功回應，例如轉向到訂單確認頁面
-        //        },
-        //        error: function (err) {
-        //            console.log(err);
-        //            // 處理錯誤回應，例如顯示錯誤消息給用戶
-        //        },
-        //    });
-        //}
-    });
+    //    }
+       
+    //});
 
 });
 

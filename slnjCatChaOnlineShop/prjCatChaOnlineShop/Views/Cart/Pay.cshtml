@@ -40,7 +40,48 @@
     <!--中間主畫面Start-->
     <div class="cart-box-main">
         <div class="container" style="max-width: 800px; margin: 0 auto;">
-            嗨
+            <!--導至綠界付款的隱藏頁面-->
+            <form id="ecpayform" name="form" method="POST" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
+                <!--step2 : 收到後端的值印出來-->
+                <div class=" coupon-box-btn col-12 d-flex shopping-box ">
+                    <button type="submit" id="gopay"
+                            class=" checkout-btn ml-auto btn hvr-hover">
+                        送出訂單
+                    </button>
+                </div>
+                <div >
+                @if (Model != null)
+                {
+                            <input type="text" name="MerchantTradeNo" value="@Model.keyValuePairs["MerchantTradeNo"]" />
+                            <input type="text" name="MerchantTradeDate" value="@Model.keyValuePairs["MerchantTradeDate"]" />
+                            <input type="text" name="TotalAmount" value="@Model.keyValuePairs["TotalAmount"]" />
+                            <input type="text" name="TradeDesc" value="@Model.keyValuePairs["TradeDesc"]" />
+                            <input type="text" name="ItemName" value="@Model.keyValuePairs["ItemName"]" />
+                            <input type="text" name="ExpireDate" value="@Model.keyValuePairs["ExpireDate"]" />
+                            <input type="text" name="CustomField1" value="@Model.keyValuePairs["CustomField1"]" />
+                            <input type="text" name="CustomField2" value="@Model.keyValuePairs["CustomField2"]" />
+                            <input type="text" name="CustomField3" value="@Model.keyValuePairs["CustomField3"]" />
+                            <input type="text" name="CustomField4" value="@Model.keyValuePairs["CustomField4"]" />
+                            <input type="text" name="ReturnURL" value="@Model.keyValuePairs["ReturnURL"]" />
+                            <input type="text" name="OrderResultURL" value="@Model.keyValuePairs["OrderResultURL"]" />
+                            <input type="text" name="PaymentInfoURL" value="@Model.keyValuePairs["PaymentInfoURL"]" />
+                            <input type="text" name="ClientRedirectURL" value="@Model.keyValuePairs["ClientRedirectURL"]" />
+                            <input type="text" name="MerchantID" value="@Model.keyValuePairs["MerchantID"]" />
+                            <input type="text" name="IgnorePayment" value="@Model.keyValuePairs["IgnorePayment"]" />
+                            <input type="text" name="PaymentType" value="@Model.keyValuePairs["PaymentType"]" />
+                            <input type="text" name="ChoosePayment" value="@Model.keyValuePairs["ChoosePayment"]" />
+                            <input type="text" name="EncryptType" value="@Model.keyValuePairs["EncryptType"]" />
+                            <input type="text" name="CheckMacValue" value="@Model.keyValuePairs["CheckMacValue"]" />
+                    @* @foreach (var key in @Model.keyValuePairs.Keys.ToList())
+                        {
+                            @(key) <input type="text" name="@key" value="@Model.keyValuePairs[key]" />
+
+                            <br />
+                        }
+                        @*<button type="submit" id="checkoutBtn">送出</button>*@
+                }
+                </div>
+            </form>
         </div>
     </div>
     <!--中間主畫面End-->
