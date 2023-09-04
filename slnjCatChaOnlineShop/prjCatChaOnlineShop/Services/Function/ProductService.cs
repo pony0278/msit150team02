@@ -30,19 +30,6 @@ namespace prjCatChaOnlineShop.Services.Function
         }
         public List<CProductItem> getProductItems()
         {
-            //var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
-            //            join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
-            //            join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
-            //            join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
-            //            where p.Discontinued != true
-            //            select new CProductItem
-            //            {
-            //                pItems = p,
-            //                p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
-            //                p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
-            //                pCategoryName = c.CategoryName,
-            //                p是否加入收藏 = isFavorited(p.ProductId)
-            //            }).ToList();
             var data = _context.ShopProductTotal
             .Where(p => p.Discontinued != true)
             .Select(p => new CProductItem
@@ -61,36 +48,10 @@ namespace prjCatChaOnlineShop.Services.Function
             return items;
         }
 
-        //public List<CCategoryItem> getCatProductForEachPage(string? catName, int itemPerPage)
-        //{
-        //    List<CCategoryItem> categoryItems = new List<CCategoryItem>();
-        //    var items = getProductByCategoryName(catName).Take(itemPerPage);
-        //    var name = items.FirstOrDefault().pCategoryName;
-        //    CCategoryItem c = new CCategoryItem();
-        //    c.pItem = items.ToList();
-        //    c.categoryName = name;
-        //    categoryItems.Add(c);
-        //    return categoryItems;
-        //}
+        
         public CProductItem getProductById(int? id)
         {
-            //var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
-            //            join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
-            //            join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
-            //            join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
-            //            where p.ProductId == id && p.Discontinued != true
-            //            select new CProductItem
-            //            {
-            //                pItems = p,
-            //                p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
-            //                p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
-            //                pCategoryName = c.CategoryName,
-            //                p是否加入收藏 = isFavorited(id)
-
-
-            //            }).FirstOrDefault();
-            //CProductItem item = data;
-            //return item;
+            
             var data = _context.ShopProductTotal
             .Where(p => p.ProductId == id && p.Discontinued!=true)
             .Select(p => new CProductItem
@@ -108,23 +69,6 @@ namespace prjCatChaOnlineShop.Services.Function
         }
         public List<CProductItem> getProductByCategoryName(string? categoryName)
         {
-            //var data = (from p in _context.ShopProductTotal.AsEnumerable().ToList()
-            //            join s in _context.ShopProductSpecification on p.ProductId equals s.ProductId into spGroup
-            //            join i in _context.ShopProductImageTable on p.ProductId equals i.ProductId into imgGroup
-            //            join c in _context.ShopProductCategory on p.ProductCategoryId equals c.ProductCategoryId
-            //            where c.CategoryName == categoryName && p.Discontinued != true
-            //            select new CProductItem
-            //            {
-            //                pItems = p,
-            //                p子項目 = spGroup.Select(sp => sp.Specification).ToList(),
-            //                p圖片路徑 = imgGroup.Select(img => img.ProductPhoto).ToList(),
-            //                pCategoryName = c.CategoryName,
-            //                p是否加入收藏 = isFavorited(p.ProductId)
-
-
-            //            }).ToList();
-            //List<CProductItem> items = data;
-            //return items;
             var data = _context.ShopProductTotal
             .Where(p => p.ProductCategory.CategoryName == categoryName && p.Discontinued != true)
             .Select(p => new CProductItem
@@ -178,8 +122,14 @@ namespace prjCatChaOnlineShop.Services.Function
             if (existingCartItem != null)
             {
                 //TODO...
-                if (existingCartItem.c剩餘庫存 >= 1)
+                if (existingCartItem.c剩餘庫存 >= existingCartItem.c數量 + count)
+                {
                     existingCartItem.c數量 = existingCartItem.c數量 + count;
+                }
+                else
+                {
+                    throw new Exception("購物車商品將超出可購買數量"); // 抛出異常，表示庫存不足
+                }
             }
             else
             {
@@ -200,10 +150,13 @@ namespace prjCatChaOnlineShop.Services.Function
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId && item.c子項目 == option);
             if (existingCartItem != null)
             {
-                if (existingCartItem.c剩餘庫存 >= 1)
+                if (existingCartItem.c剩餘庫存 >= existingCartItem.c數量+count)
                 {
                     existingCartItem.c數量 = existingCartItem.c數量 + count;
-
+                }
+                else
+                {
+                    throw new Exception("購物車商品將超出可購買數量"); // 抛出異常，表示庫存不足
                 }
             }
             else

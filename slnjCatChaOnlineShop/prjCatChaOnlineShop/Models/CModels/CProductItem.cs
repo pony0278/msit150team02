@@ -18,15 +18,13 @@ namespace prjCatChaOnlineShop.Models.CModels
         public string? pBrandName
         {
             get {
-                if (pName.Contains('|'))
-                {
-                    string input = pName;
-                    string[] parts = input.Split('|'); // 分割字符串
-                    string result = parts[0].Trim(); // 取得分割後的第一部分並去除首尾空格
-                    string brandName = result;
-                    return brandName; 
-                }
-                return "無品牌";
+                
+                string input = pName;
+                string[] parts = input.Split('|'); // 分割字符串
+                string result = parts[0].Trim(); // 取得分割後的第一部分並去除首尾空格
+                string brandName = result;
+                return brandName; 
+                
             }
            
         }

@@ -228,27 +228,27 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                    <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
+                        <!-- start prod  -->
+                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                            <div class="products-single-custom fix">
+                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                    <div class="box-img-hover">
+                                        <div class="type-lb">
+                                            <p class="sale">Sale</p>
+                                        </div>
+                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
                                     </div>
-                                    <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                                </a>
+                                <div class="why-text">
+                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                    @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
                                     <a data-product-id=@item.pId class="add-to-cart-coustom">
                                         <i class="fa-solid fa-cart-plus"></i>
@@ -298,26 +298,26 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        <p class="sale">Sale</p>
+                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                            <div class="products-single-custom fix">
+                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                    <div class="box-img-hover">
+                                        <div class="type-lb">
+                                            <p class="sale">Sale</p>
+                                        </div>
+                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
                                     </div>
-                                    <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                </div>
-                            </a>
-                            <div class="why-text">
-                                <h4>@item.pName</h4>
-                                @if (item.pDiscount != null)
+                                </a>
+                                <div class="why-text">
+                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                    @if (item.pDiscount != null)
                                 {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
+                                        <h5>$ @item.p優惠價格</h5>
+                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                    <h5>$ @item.pPrice</h5>
+                                        <h5>$ @item.pPrice</h5>
                                 }
                                     <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
                                         <i class="fa-solid fa-cart-plus"></i>
@@ -456,10 +456,7 @@
 
         // 點擊商品時獲取識別ID
         productIndexNew.on('click', '.shop-prod-click', function () {
-
-            console.log(productIndexNew);
             var productId = $(this).data('product-id');
-            console.log('Clicked product ID:', productId);
             $.ajax({
                 url: '/ProductApi/GetDetail',
                 type: 'GET',
@@ -474,9 +471,7 @@
             });
         });
         productIndexSale.on('click', '.shop-prod-click', function () {
-            console.log(productIndexSale);
             var productId = $(this).data('product-id');
-            console.log('Clicked product ID:', productId);
             $.ajax({
                 url: '/ProductApi/GetDetail',
                 type: 'GET',
@@ -494,59 +489,102 @@
 
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(productIndexNew);
+            
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToCart',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#live-toast').toast('show');
+            var count = parseInt($(".for-quantity").data('quantity'));
+            console.log(count);
+
+            if (isNaN(count) || count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#live-toast').toast('show');
+            }
+            else {
+                // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+                $.ajax({
+                    url: '/ProductApi/AddToCart',
+                    type: 'POST',
+                    data: { pId: productId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#live-toast').toast('show');
+                        }
+                        else {
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#live-toast').toast('show');
+                            }
+                            else {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#live-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
+                        console.error('Ajax Error:', error);
                     }
-                    else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#live-toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
+                });
+
+            }
         });
 
         productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            
+
             var productId = $(this).data('product-id');
-            console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
-            $.ajax({
-                url: '/ProductApi/AddToCart',
-                type: 'POST',
-                data: { pId: productId },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#live-toast').toast('show');
+            var count = parseInt($(".for-quantity").data('quantity'));
+            console.log(count);
+            if (isNaN(count) || count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#live-toast').toast('show');
+            }
+            else {
+                // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+                $.ajax({
+                    url: '/ProductApi/AddToCart',
+                    type: 'POST',
+                    data: { pId: productId },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#live-toast').toast('show');
+                        }
+                        else {
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#live-toast').toast('show');
+                            }
+                            else {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#live-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
                     }
-                    else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#live-toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                }
-            });
+                });
+
+            }
         });
         //加入收藏:獲取id--------------------------------------------------------
 
@@ -572,7 +610,8 @@
 
                     }
                     else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
@@ -604,7 +643,8 @@
                         }
                     }
                     else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
