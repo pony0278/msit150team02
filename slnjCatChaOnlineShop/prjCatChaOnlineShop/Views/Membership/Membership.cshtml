@@ -223,14 +223,16 @@
                                                                 <div class="col-7">
                                                                     <input type="text" placeholder="請填入門市地址" id="storeaddress" name="storeaddress" class="form-control" value="@ViewBag.storeaddress" />
                                                                 </div>
-                                                                <button class="btn btn-warning  btn-sm fs-5" type="button" id="SelectShop">+</button>
+                                                                <button class="btn btn-success  btn-sm fs-5 mx-1" type="button" id="SelectShop">+</button>
+                                                                <button class="btn btn-warning  btn-sm fs-5" type="button" id="SelectShopByGooglemap" data-bs-toggle="modal" data-bs-target="#SelectShopModal">+</button>
                                                             </div>
-                                                            <button type="button" class="btn-sm add-address my-2"
+                                                            <button type="button" class="btn-sm add-address "
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#MarketaddressModal">
-                                                                查看已儲存地址
+                                                                查看已儲存超商門市
                                                             </button>
-                                                            <button type="submit" class="btn-sm add-address my-2" id="addNewMarket">新增超商門市</button>
+                                                            <button type="button" class="btn-sm add-address " id="addNewMarket">新增超商門市</button>
+                                                            <button type="button" class="btn-sm add-address " id="SelectOtherShop">測試</button>
                                                         </div>
                                                     </div>
                                                     <button class="btn-customs btn hvr-hovers" id="memberInfoButton" type="submit">送出</button>
@@ -238,92 +240,6 @@
                                                 </form>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 查看已儲存超商取貨地址-->
-                        <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content ">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <input type="text" value="地址一號"><span class="minus-address">
-                                                        <i class="fa-solid fa-circle-minus"></i>
-                                                    </span>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 新增超商取貨地址-->
-                        <div class="modal fade" id="NewMarketAddressModal" tabindex="-1"
-                             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">新增超商取貨地址</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <select class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option selected></option>
-                                                        <option>7-11</option>
-                                                        <option value="1">全家</option>
-                                                        <option value="2">OK</option>
-                                                        <option value="3">萊爾富</option>
-                                                    </select>
-                                                    <select id="county2Select" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇縣市</option>
-                                                    </select>
-                                                    <select id="town2Select" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇鄉鎮</option>
-                                                    </select>
-                                                    <select id="roadSelect" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇街道</option>
-                                                    </select>
-                                                    <select class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option selected>松慈店</option>
-                                                        <option value="1">民和店</option>
-                                                        <option value="2">成都店</option>
-                                                        <option value="3">南機場店</option>
-                                                    </select>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
                                     </div>
                                 </div>
                             </div>
@@ -463,9 +379,9 @@
         </div>
 
         <!--彈跳視窗: 查看已儲存宅配地址-->
-        <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+        <div class="modal fade " id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
              aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title font-weight-bold" id="addressModalLabel">常用地址一覽</h5>
@@ -489,9 +405,6 @@
                                 data-bs-dismiss="modal">
                             關閉
                         </button>
-                        <!--
-                        <button type="button" class="btn btn-primary">儲存</button>
-                        -->
                     </div>
                 </div>
             </div>
@@ -541,6 +454,37 @@
             </div>
         </div>
 
+        <!--彈跳視窗: 查看已儲存超商取貨地址-->
+        <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h5 class="modal-title  font-weight-bold" id="addressModalLabel">常用超商門市一覽</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <ol>
+                                <li>
+                                    <input type="text" value="地址一號"><span class="minus-address">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!--彈跳視窗:查看googlemap-->
         <div class="modal fade" id="mapModal">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
@@ -554,6 +498,26 @@
                     </div>
                     <div class="modal-body">
                         <div id="map" style="height: 400px;"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!--彈跳視窗:查看ShopGoogleMap-->
+        <div class="modal fade" id="SelectShopModal">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-between">
+                        <div>
+                            <input id="shopLocationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
+                            <button onclick="searchShopLocation()">搜尋</button>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="shopMap" style="height: 400px;"></div>
                     </div>
                     <div class="modal-footer">
                     </div>
@@ -1058,7 +1022,7 @@
     <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
     <!--用於Maps JavaScript API，有api需替換-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
-
+    @* <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initShopMap"></script> *@
     <!--1.載入時，導入基本資料-->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1180,8 +1144,11 @@
             //進入頁面時，先呼叫方法載入常用地址的資料
             GetCommonAddress();
             
-            //進入頁面時，先呼叫方法載入常用地址的資料
+            //進入頁面時，先呼叫方法載入常用"地址"的資料
             lookCAButton();
+
+            //進入頁面時，先呼叫方法載入常用超商門市
+            lookCSButton();
 
             //儲存常用宅配地址
             $('#commonAddressSaveButton').click(function (event) {
@@ -1246,36 +1213,44 @@
                     });
                     event.preventDefault();
                 } else {
-                    /*
+
+                    // 創建一個包含 storename 和 storeaddress 的 JavaScript 物件
+                    var dataToSend = {
+                        storename: storename,
+                        storeaddress: storeaddress
+                    };
+
                     fetch('/membership/AddNewMarket', {
                         method: 'POST', // 使用 POST 方法
                         headers: {
                             'Content-Type': 'application/json' // 設置請求標頭
                         },
-                        body: JSON.stringify({ // 要傳遞的資料
-                            storename: storename,
-                            storeaddress: storeaddress
-                        })
+                        body: JSON.stringify(dataToSend) // 將數據轉為 JSON 字符串
                     })
                         .then(response => {
                             if (!response.ok) {
                                 throw new Error('Network response was not ok');
                             }
-                            return response.json();
                         })
                         .then(data => {
-                            // 在這裡處理從控制器返回的回應（如果有的話）
-                            console.log(data);
+                            Swal.fire({
+                                icon: 'success',
+                                title: '新增成功',
+                                confirmButtonText: '關閉',
+                            });
+                            lookCSButton();
                         })
                         .catch(error => {
                             console.error('There was a problem with the fetch operation:', error);
                         });
-                    */
+
+                    
                 }
 
 
             });
             
+
             //Demo鍵:載入基本資料
             $('#memberInfoDemo').click(function (event) {
                 $('#passwordInput').val("a12345");
@@ -1305,7 +1280,22 @@
             }
         }
 
-        //查看常用地址
+        //拿取常用宅配地址:select
+        function GetCommonAddress() {
+            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
+            commonAddressSelectElement.innerHTML = '';
+
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.addressId;
+                    option.textContent = item.recipientAddress;
+                    commonAddressSelectElement.appendChild(option);
+                });
+            });
+        }
+
+        //查看常用宅配地址:button
         function lookCAButton(){
             $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
                 var olElement = document.querySelector('#addressModal ol');
@@ -1388,18 +1378,82 @@
             });
         }
 
-        //拿取常用宅配地址數據
-        function GetCommonAddress() {                    
-            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
-            commonAddressSelectElement.innerHTML = '';
+        //查看已儲存超商門市
+        function lookCSButton() {
+            $.getJSON('@Url.Content("~/membership/GetCommonShop")', function (data) {
+                var olElement = document.querySelector('#MarketaddressModal ol');
 
-            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                // 清空 <ol> 元素的內容
+                olElement.innerHTML = '';
+
+                // 遍歷 JSON 資料並建立 <li> 元素
                 data.forEach(function (item) {
-                    var option = document.createElement('option');
-                    option.value = item.addressId;
-                    option.textContent = item.recipientAddress;
-                    commonAddressSelectElement.appendChild(option);
+
+                    var liElement = document.createElement('li');
+                    liElement.className = 'row align-items-center';
+
+                    var inputDiv = document.createElement('div');
+                    inputDiv.className = 'col-md-9 mb-3';
+
+                    var inputElement = document.createElement('input');
+                    inputElement.type = 'text';
+                    inputElement.value = item.shopName + " / " + item.cityName + item.discitcName;
+                    inputElement.className = 'form-control ';
+
+                    var spanDiv = document.createElement('div');
+                    spanDiv.className = 'col-md-3';
+
+                    var spanElement = document.createElement('span');
+                    spanElement.className = 'minus-address';
+                    spanElement.innerHTML = '<i class="fa-solid fa-circle-minus" style="color: orange;"></i>';
+                    spanElement.setAttribute('data-shop-id', item.id);
+
+                    spanElement.addEventListener('click', function () {
+                        var clickedShopId = spanElement.getAttribute('data-shop-id');
+
+                        Swal.fire({
+                            title: '確認刪除',
+                            showCancelButton: true,
+                            confirmButtonText: '是的',
+                            cancelButtonText: '取消',
+                        }).then((result) => {
+                            
+                            if (result.isConfirmed) {
+                                $.getJSON('@Url.Content("~/membership/DeleteCommonShop?shopId=")' + clickedShopId, function (data) {
+                                    if (data == null) {
+                                        Swal.fire({
+                                            icon: 'fail',
+                                            title: '移除失敗',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '移除成功',
+                                            confirmButtonText: '關閉',
+                                        }).then(() => {
+                                            lookCSButton();
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                            
+                        });
+                    });
+
+                    inputDiv.appendChild(inputElement);
+                    spanDiv.appendChild(spanElement);
+
+                    liElement.appendChild(inputDiv);
+                    liElement.appendChild(spanDiv);
+
+                    olElement.appendChild(liElement);
                 });
+
+                // $('#addressModal').modal('show');
             });
         }
 
@@ -1407,6 +1461,22 @@
         $('#SelectShop').on('click', function () {
             window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
             // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop", "_blank");
+        })
+
+        $('#SelectOtherShop').on('click', function () {
+            // window.location.href = "https://www.family.com.tw/Marketing/Map?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectOtherShop";
+            
+            // window.location.href = "https://www.okmart.com.tw/convenient_shopSearch?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectOtherShop";
+            // window.location.href = "https://family.map.com.tw/ShopSpaceQuery/ShopSpaceQuery.asp?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectOtherShop";
+            // window.location.href = "https:www.famiport.com.tw/Web_Famiport/page/ShopQuery.aspx?url=https:localhost:7218/ConvenienceStore/SlectOtherShop";
+            // https://ecservice.okmart.com.tw/ECMapInquiry/ShowStore_Detail?STNO=0030
+            // window.location.href = "https://ecservice.okmart.com.tw/ECMapInquiry/ShowStore_Mobile.aspx?url=https://localhost:7218/ConvenienceStore/SlectOtherShop";
+            window.location.href = "https://ecservice.okmart.com.tw/ECMapInquiry/ShowStore?&url=https://localhost:7218/ConvenienceStore/SlectOtherShop";
+
+        })
+
+        $('#SelectShopByGooglemap').on('click', function () {
+
         })
 
     </script>
@@ -1444,11 +1514,11 @@
 
     <!--google地圖-->
     <script>
-        // 初始化地圖
+        // 初始化地址的地圖
         var map;
         var geocoder;
-
         function initMap() {
+            console.log("initMap");
             // 創建地圖
             map = new google.maps.Map(document.getElementById("map"), {
                 center: { lat: 25.040862, lng: 121.563904 }, // 台北市政府坐標
@@ -1490,12 +1560,12 @@
                         });
                     });
                 } else {
-                    alert("Geocode was not successful for the following reason: " + status);
+                    console.log("無法獲得地址原因: " + status);
                 }
             });
         }
 
-        // 使用者點擊搜尋按鈕時調用此函數
+        // 使用者點擊搜尋地標時，用於常用地址
         function searchLocation() {
             var locationInput = document.getElementById("locationInput");
             var location = locationInput.value;
@@ -1514,11 +1584,61 @@
                             title: location,
                         });
                     } else {
-                        alert("無法找到位置：" + status);
+                        console.log("無法找到位置：" + status);
                     }
                 });
             }
         }
+        
+        /*
+        // 初始化超商的地圖
+        function initShopMap() {
+            var shopMap = new google.maps.Map(document.getElementById('shopMap'), {
+                zoom: 15, // 初始縮放級別，您可以自行調整
+                center: { lat: 25.0330, lng: 121.5654 },
+            });
+
+            // 創建 PlacesService 實例，以便進行 Places API 查詢
+            var service = new google.maps.places.PlacesService(shopMap);
+
+            // 定義四大超商的類型
+            var storeTypes = [
+                'convenience_store', // 7-11
+                'convenience_store', // 全家
+                'convenience_store', // 萊爾富
+                'convenience_store', // OK超商
+            ];
+
+            // 執行 Places API 查詢，只顯示四大超商
+            service.nearbySearch(
+                {
+                    location: taiwan,
+                    radius: 1000000, // 查詢範圍，以公尺為單位（1000 公尺 = 1 公里）
+                    type: storeTypes,
+                },
+                function (results, status) {
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        for (var i = 0; i < results.length; i++) {
+                            // 取得超商名稱
+                            var storeName = results[i].name;
+                            // 判斷是否是四大超商，只有是才創建標記
+                            if (storeName === '7-11' || storeName === '全家' || storeName === '萊爾富' || storeName === 'OK超商') {
+                                createMarker(results[i]);
+                            }
+                        }
+                    }
+                }
+            );
+
+            // 創建標記並顯示在地圖上
+            function createMarker(place) {
+                var marker = new google.maps.Marker({
+                    map: shopMap,
+                    position: place.geometry.location,
+                });
+            }
+        }
+        */
     </script>
 
     <!--2.載入時，導入消費紀錄-->
