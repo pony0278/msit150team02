@@ -56,7 +56,7 @@
             background-image: none;
         }
 
-        .checked{
+        .checked {
             color: #ffc363;
             font-size: 35px !important;
         }
@@ -80,13 +80,13 @@
             letter-spacing: 1px;
         }
 
-        .swiper-productName{
-        padding: 10px 15px 10px 10px;
-        background-color: #ff766c;
-        border-top-right-radius: 20px;
-        border-bottom-right-radius: 20px;
-        margin-top: 5px;
-        box-shadow: rgba(17, 17, 26, .3) 2px 2px 3px, rgba(17, 17, 26, 0.1) 4px 4px 8px;
+        .swiper-productName {
+            padding: 10px 15px 10px 10px;
+            background-color: #ff766c;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+            margin-top: 5px;
+            box-shadow: rgba(17, 17, 26, .3) 2px 2px 3px, rgba(17, 17, 26, 0.1) 4px 4px 8px;
         }
 
         .stars-css {
@@ -109,17 +109,15 @@
     </style>
 }
 
-<!-- Modal -->
+<!-- 提示訊息 -->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
-
-    <div id="live-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <img src="..." class="rounded me-2" alt="...">
-            <strong class="me-auto">訊息</strong>
-            <small></small>
-            <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
+    <div id="live-toast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i></i>
+                <strong></strong>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
 </div>
@@ -227,27 +225,27 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                        <!-- start prod  -->
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
-                                        <div class="type-lb">
-                                            <p class="sale">Sale</p>
-                                        </div>
-                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                    <!-- start prod  -->
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
                                     </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4>@item.pName</h4>
-                                    @if (item.pDiscount != null)
+                                    <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
                                 <a data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
@@ -297,26 +295,26 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
-                                        <div class="type-lb">
-                                            <p class="sale">Sale</p>
-                                        </div>
-                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
+                                        <p class="sale">Sale</p>
                                     </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4>@item.pName</h4>
-                                    @if (item.pDiscount != null)
+                                    <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                                </div>
+                            </a>
+                            <div class="why-text">
+                                <h4>@item.pName</h4>
+                                @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                    <h5>$ @item.pPrice</h5>
                                 }
                                 <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
                                     <i class="fa-solid fa-cart-plus"></i>
@@ -504,12 +502,14 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#live-toast').toast('show');
                     }
                     else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#live-toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -520,7 +520,7 @@
 
         productIndexSale.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            console.log(productIndexSale);
+            
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
             // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
@@ -531,12 +531,14 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#live-toast').toast('show');
                     }
                     else {
-                        $('.toast .toast-body').text(response.message);
-                        $('.toast').toast('show');
+                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#live-toast').toast('show');
                     }
                 },
                 error: function (error) {
@@ -550,7 +552,7 @@
             var button = $(this);
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            // 透過 Ajax 將商品 ID 傳送到後端，加入收藏
             $.ajax({
                 url: '/ProductApi/AddToWishlist',
                 type: 'POST',
@@ -567,7 +569,8 @@
 
                     }
                     else {
-                        $('#live-toast .toast-body').text(response.message);
+                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
                 },
@@ -582,7 +585,7 @@
             var button = $(this);
             var productId = $(this).data('product-id');
             console.log('Clicked Add to Cart, Product ID:', productId);
-            // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
+            // 透過 Ajax 將商品 ID 傳送到後端，加入收藏
             $.ajax({
                 url: '/ProductApi/AddToWishlist',
                 type: 'POST',
@@ -598,7 +601,8 @@
                         }
                     }
                     else {
-                        $('#live-toast .toast-body').text(response.message);
+                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
                         $('#live-toast').toast('show');
                     }
 
@@ -607,10 +611,8 @@
                 }
             });
         });
-        //評論區
 
-
-
+        //---------------------------------評論區--------------------------------------
         $(function () {
             var INDEX = 0;
             $("#chat-submit").click(function (e) {
@@ -825,8 +827,8 @@
                     const img = $(`<img src="${value.productPhoto}" class="img-thumbnail border-0">`)
                     const productName = $('<div class="position-absolute position-absolute top-0 start-0 swiper-productName"></div>').append(`<h3 class="p-0 swiper-h3-text">${value.productName}</h3>`)
                     let stars = $('<div class="d-flex justify-content-around align-self-center mt-2 mb-3 stars-css"></div>');
-                    if(value.productRating == 5 ){
-                        for(let i = 0; i<value.productRating ; i++){
+                    if (value.productRating == 5) {
+                        for (let i = 0; i < value.productRating; i++) {
                             stars.append('<span class="fs-1 fa fa-star checked "></span>');
                         }
                     }

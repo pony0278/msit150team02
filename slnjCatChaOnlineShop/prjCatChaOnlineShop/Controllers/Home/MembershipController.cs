@@ -41,6 +41,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             ViewBag.memberIdForMembership = memberIdForMembership;
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
 
             return View();
         }

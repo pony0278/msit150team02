@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Services.Function;
 using System.Net.Http.Headers;
 
 namespace prjCatChaOnlineShop.Controllers.Home

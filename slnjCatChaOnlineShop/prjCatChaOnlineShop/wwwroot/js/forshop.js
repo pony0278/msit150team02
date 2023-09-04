@@ -1,11 +1,14 @@
 ﻿
 $(document).ready(async function () {
+    var categoryTitle = $('#categoryTitle');
+    var catName = categoryTitle.data('category-name');
+    categoryTitle.text(catName)//顯示選到的類別
+
     var itemPerPageSelect = $('#itemPerPageSelect');
     var productList = $('#productList');
-
     var showMoreButton = $('#showMore');
-    var categoryTitle = $('#categoryTitle');
-    var catName =null;
+   
+    /*var catName =null;*/
 
     var selOrder = $('#selOrder');
     var selBrand = $('#selBrand');
@@ -14,10 +17,13 @@ $(document).ready(async function () {
 
     //切換類別
     $('.for-ajax').click(async function (e) {
-        e.preventDefault();
+        //e.preventDefault();
 
-        catName = $(this).data("category-name");//丟進選到的類別名稱
-        console.log(catName);
+        //catName = $(this).data("category-name");//丟進選到的類別名稱
+        //console.log(catName);
+        //categoryTitle.text(catName)//顯示選到的類別
+        var categoryTitle = $('#categoryTitle');
+        var catName = categoryTitle.data('category-name');
         categoryTitle.text(catName)//顯示選到的類別
 
         productList.empty();//清空
@@ -160,12 +166,14 @@ $(document).ready(async function () {
             dataType: 'json',
             success: function (response) {
                 if (response.success) {
-                    $('.toast .toast-body').text(response.message);
-                    $('.toast').toast('show');
+                    $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                    $('.toast-body strong').text(response.message);
+                    $('#shop-toast').toast('show');
                 }
                 else {
-                    $('.toast .toast-body').text(response.message);
-                    $('.toast').toast('show');
+                    $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                    $('.toast-body strong').text(response.message);
+                    $('#shop-toast').toast('show');
                 }
             },
             error: function (error) {
@@ -173,6 +181,7 @@ $(document).ready(async function () {
             }
         });
     });
+    //加入收藏
     productList.on('click', '.add-to-wishlist-coustom', async function (e) {
         e.preventDefault(); // 阻止<a>標籤的點擊預設行為
         
@@ -195,7 +204,8 @@ $(document).ready(async function () {
                     }
                 }
                 else {
-                    $('#shop-toast .toast-body').text(response.message);
+                    $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                    $('.toast-body strong').text(response.message);
                     $('#shop-toast').toast('show');
                 }
             },

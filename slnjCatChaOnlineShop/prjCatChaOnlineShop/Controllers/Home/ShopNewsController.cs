@@ -2,22 +2,27 @@
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
+using prjCatChaOnlineShop.Services.Function;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
     public class ShopNewsController : Controller
     {
         private readonly cachaContext _context ;
-        
-        public ShopNewsController(cachaContext context)
+        private readonly ProductService _productService;
+
+
+        public ShopNewsController(cachaContext context, ProductService productService)
         {
             _context = context;
+            _productService = productService;
         }
 
         public IActionResult NewsContent(int? id)
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             GameShopAnnouncement news = _context.GameShopAnnouncement.FirstOrDefault(x => x.AnnouncementId == id);
             if(id == null)
             {
@@ -35,6 +40,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             DateTime currentTime = DateTime.Now;
             var selectAllNews = _context.GameShopAnnouncement.ToList();
             var newsGroupedByType = selectAllNews
