@@ -985,3 +985,18 @@ nav.navbar.bootsnav ul.nav li > a:hover {
 .favorited {
     background-color: #000;
 }
+
+
+
+.toast {
+    font-size: 18px;
+    font-weight: 900;
+    background-color: #fcd7aadc;
+}
+.toast-warning{
+    color: orangered;
+    background-color:none;
+}
+.toast-added {
+    color: forestgreen;
+}

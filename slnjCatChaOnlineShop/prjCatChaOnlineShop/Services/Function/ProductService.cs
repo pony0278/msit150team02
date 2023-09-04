@@ -171,14 +171,15 @@ namespace prjCatChaOnlineShop.Services.Function
                 return (decimal)price;//無特價時金額
             }
         }
+        //TODO...庫存
         public void addCartItem(List<CCartItem> cart, CProductItem prodItem, int count)
         {
             var existingCartItem = cart.FirstOrDefault(item => item.cId == prodItem.pId);
             if (existingCartItem != null)
             {
                 //TODO...
-                //if (existingCartItem.c剩餘庫存 >= 1)
-                existingCartItem.c數量 = existingCartItem.c數量 + count;
+                if (existingCartItem.c剩餘庫存 >= 1)
+                    existingCartItem.c數量 = existingCartItem.c數量 + count;
             }
             else
             {
@@ -200,7 +201,10 @@ namespace prjCatChaOnlineShop.Services.Function
             if (existingCartItem != null)
             {
                 if (existingCartItem.c剩餘庫存 >= 1)
+                {
                     existingCartItem.c數量 = existingCartItem.c數量 + count;
+
+                }
             }
             else
             {
@@ -248,6 +252,11 @@ namespace prjCatChaOnlineShop.Services.Function
                         .ToList();
 
 
+            return data;
+        }
+        public List<string> getAllCategories()
+        {
+            var data =_context.ShopProductCategory.Select(c=>c.CategoryName).ToList();
             return data;
         }
 
