@@ -72,30 +72,31 @@ function loadTask() {
         contentType: 'application/json', // 指定資料類型為 JSON
         success: function (data) {
             if (data.length > 0) {
-                console.log(data);
-                const countOfTask = data.length;
+                const countOfTask = data.length;//確認目前有幾個每日任務
                 const allTask = {
                     "任務清單": data.map((item) => ({
-                        "任務名稱": item.TaskName,
-                        "獎勵": item.TaskReward,
+                        "任務名稱": item.taskName,
+                        "需求次數": item.taskRequireTime,
+                        "獎勵": item.taskReward,
                     }))
                 };
+                
+                const taskData = allTask.任務清單.map(r => `
+                    <tr>
+                        <td>${r.任務名稱}</td>
+                        <td>${0}/${r.需求次數}</td>
+                        <td>領取獎勵</td>
+                    </tr>
+                `);
 
-                const taskData = allTask["任務清單"](r => `
-                                                    <tr>
-                                                        <td>${r.任務名稱}</td>
-                                                        <td>${r.獎勵}</td>
-                                                        <td>領取獎勵</td>
-                                                    </tr>
-                                                `);
                 const completeDailyTask = ` <tr>
-                                                 <td class="_completeAllTask">完成所有每日任務${0}/${countOfTask}</td>
-                                                 <td class="_completeAllTask">貓幣 2000</td>
+                                                 <td class="_completeAllTask">完成所有每日任務</td>
+                                                 <td class="_completeAllTask">${0}/${countOfTask}</td>
                                                  <td class="_completeAllTask">領取獎勵</td>
-                                            </tr>`
+                                            </tr>`;
 
-                let combinedTaskDatas = taskData;
-                combinedRankDatas = taskData.concat(completeDailyTask);
+                
+                let combinedTaskDatas = taskData.concat(completeDailyTask);
                 document.querySelector('#msTable > tbody').innerHTML = combinedTaskDatas.join("")
             }
         },

@@ -88,6 +88,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                              {
                                  p.TaskName,
                                  p.TaskReward,
+                                 p.TaskRequireTime
                              }).ToList();
 
                 if (availibaleTask.Any())

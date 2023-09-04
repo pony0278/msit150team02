@@ -613,6 +613,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.TaskName)
                 .HasMaxLength(50)
                 .HasColumnName("Task Name");
+            entity.Property(e => e.TaskRequireTime).HasColumnName("Task Require Time");
             entity.Property(e => e.TaskReward)
                 .HasColumnType("numeric(18, 0)")
                 .HasColumnName("Task Reward");
