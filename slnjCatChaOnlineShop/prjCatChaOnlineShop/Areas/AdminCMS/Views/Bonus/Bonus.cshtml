@@ -290,14 +290,46 @@
                 { "data": "couponId" },
                 { "data": "couponName" },
                 { "data": "couponContent" },
-                { 
+                {
                     "data": "expiryDate",
-                     "render": function (data) {
+                    "render": function (data) {
                         // 將日期格式轉換為 JavaScript Date 物件
                         var date = new Date(data);
+                        // 獲取當前日期
+                        var currentDate = new Date();
+
+                        // 計算日期差異（以毫秒為單位）
+                        var timeDifference = date.getTime() - currentDate.getTime();
+                        // 計算日期差異的天數
+                        var daysDifference = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
                         // 格式化日期為 yyyy-MM-dd 格式，使用 Moment.js
                         var formattedDate = moment(date).format("YYYY-MM-DD");
-                        return formattedDate;
+
+                        // 如果日期差小於10天，添加圖像
+                        if (daysDifference < 10) {
+                            // 創建一個圖像元素
+                            var image = document.createElement('img');
+                            image.src = '/images/CouponAlert.jpg'; // 圖像檔案的路徑
+                            image.alt = '將在10日內到期';
+                            image.height = 20;
+                            image.width = 20;
+
+                            // 創建一個包含圖像的 div 元素
+                            var imageDiv = document.createElement('div');
+                            imageDiv.appendChild(image);
+
+                            // 創建一個包含日期和圖像的 div 元素
+                            var containerDiv = document.createElement('div');
+                            containerDiv.appendChild(document.createTextNode(formattedDate + ' '));
+                            containerDiv.appendChild(imageDiv);
+
+                            // 返回包含日期和圖像的 HTML 內容
+                            return containerDiv.innerHTML;
+                        } else {
+                            // 否則只返回格式化日期
+                            return formattedDate;
+                        }
                     }
                 },
                 { "data": "totalQuantity" },
@@ -621,5 +653,49 @@
                 });
             });
         });
+
+        //發送到期提醒
+
+        $(document).ready(function () {
+            $(document).on('click', '#SendNotify', function () {
+                console.log("couponId:", couponIdToSend);
+
+                Swal.fire({
+                    title: '確定要發送到期提醒嗎?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '確認發送'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: "/AdminCMS/Bonus/SendNotify",
+                            type: "POST",
+                            data: { id: couponIdToSend },
+                            success: function (response) {
+                                if (response.success) {
+                                    console.log("發送成功");
+                                    Swal.fire({
+                                        title: '發送成功',
+                                        text: '到期提醒已成功發送',
+                                        icon: 'success',
+                                    });
+                                    $('#sendtoMember').modal('hide');
+                                } else {
+                                    console.log("發送失敗");
+                                }
+                            },
+                            error: function (error) {
+                                console.log("發生錯誤：", error);
+                            }
+                        });
+                    }
+                });
+            });
+        });
+
+
+
     </script>
 }
