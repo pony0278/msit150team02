@@ -433,7 +433,8 @@
             connection.start().then(function () {
                 // var userName = prompt('请输入您的名称', '');
                 // document.getElementById("userName").textContent = userName;
-            var userName = "管理员"
+            var userName = "客服人員"
+            document.getElementById("userName").textContent = userName;
                 connection.invoke("GetName", userName);
             }).catch(function (err) {
                 return console.error(err.toString());

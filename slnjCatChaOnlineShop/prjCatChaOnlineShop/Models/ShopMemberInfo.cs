@@ -69,6 +69,8 @@ public partial class ShopMemberInfo
 
     public virtual ICollection<GameGlobalChatData> GameGlobalChatData { get; set; } = new List<GameGlobalChatData>();
 
+    public virtual ICollection<GameMemberTask> GameMemberTask { get; set; } = new List<GameMemberTask>();
+
     public virtual GameRankData Level { get; set; }
 
     public virtual ShopMyCatNameList MyCatNameList { get; set; }
