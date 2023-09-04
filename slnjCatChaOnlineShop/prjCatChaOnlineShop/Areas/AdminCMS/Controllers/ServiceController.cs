@@ -203,5 +203,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return Json(new { success = false, message = "回覆新增失敗：" + ex.Message + " 內部例外：" + innerExceptionMessage });
             }
         }
+        public IActionResult CustomerResponse()
+        {
+            return View();
+        }
     }
 }

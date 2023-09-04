@@ -1,0 +1,168 @@
+﻿@{
+    ViewData["Title"] = "客服聊天";
+    Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        .btnUser{
+            background-color:whitesmoke;
+        }
+        .userMessage{
+            top:20px;
+            left:300px;
+        }
+    </style>
+}
+
+
+
+<div class="middle-content">
+
+    <div class="row align-items-center">
+        <div class="col-6">
+            <h2 class="mt-3">客服聊天  <span class="fs-6" id="userName"></span><span class="fs-6" id="conId"></span></h2>
+        </div>
+    </div>
+    <div class="d-flex position-relative">
+        <div class="shadow d-inline-flex mt-3 flex-column rounded-1">
+
+            <h4>在線客戶列表</h4>
+
+            <ul class="list-group fs-6 d-flex justify-content-between" id="users"></ul>
+        </div>
+        <div class="d-flex flex-column position-absolute userMessage">
+            <div class="border-0  rounded" id="userBox">
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+    {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+        <script>
+        //客服
+        var clients = [];
+        var connection = new signalR.HubConnectionBuilder()
+            .withUrl("/OneToOneHub")
+            .build();
+
+        connection.on("showMessage", function (message) {
+            alert(message);
+        });
+
+        connection.on("addMessage", function (message, connectionId) {
+            if (clients.indexOf(connectionId) === -1) {
+                showWin(connectionId);
+            }
+
+            var messageList = document.getElementById("messages" + connectionId);
+            var newMessage = document.createElement("li");
+            newMessage.textContent = message;
+            messageList.appendChild(newMessage);
+        });
+
+        connection.on("GetUsers", function (data) {
+            var users = JSON.parse(data);
+            var userList = $("#users");
+            userList.empty();  // 清空 userList
+            $.each(users, function (index, user) {
+                if (user.Name === "客服人員") {
+                    return true;  // 跳过当前迭代，继续下一个
+                }
+                var userHtml = $('<li class="list-group-item">').html('訪客： ' + user.Name + '<input type="button" class="btn btnUser shadow ms-3" Name="' + user.Name + ' " connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="回覆" onclick="userChat(this)"/>');
+                userList.append(userHtml);
+            });
+        });
+
+        connection.on("showId", function (data) {
+            document.getElementById("conId").textContent = data;
+            clients.push(data);
+        });
+
+        connection.start().then(function () {
+            // var userName = prompt('请输入您的名称', '');
+            // document.getElementById("userName").textContent = userName;
+            var userName = "客服人員"
+            document.getElementById("userName").textContent = userName;
+            connection.invoke("GetName", userName);
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+
+        function userChat(obj) {
+            var connectionId = $(obj).attr('connectionId');
+            var anotherAttribute = $(obj).attr('Name');
+            showWin(connectionId, anotherAttribute);
+        }
+
+        function showWin(connectionId, anotherAttribute) {
+            clients.push(connectionId);
+
+            var div = $('<div>')
+                .css({
+                    'position': 'relative',  
+                    'margin-top': '5px',
+                    'margin-right': '5px',
+                    'margin-bottom': '15px',
+                    'border': '1px solid #b95756',
+                    'background-color':'white',
+                    'border-radius':'10px 10px 10px 10px',
+                    'padding': '20px',
+                })
+                .attr('id', connectionId)
+                .attr('connectionId', connectionId);
+
+            var header = $('<span>')
+                .text(anotherAttribute + '顧客訊息紀錄');
+
+            var exitBtn = $('<button class="border-0 shadow">')
+                .css({
+                    'position': 'absolute',
+                    'top': '0',
+                    'right': '0',
+                })
+                .text('關閉')
+                .click(function () {
+                    exitChat(this);
+                });
+
+            var messageList = $('<ul>')
+                .attr('id', 'messages' + connectionId);
+
+            var inputBox = $('<input class="input-to-client shadow rounded">')
+                .css({
+                    'border': '1px solid #ced4da',
+                })
+                .attr('type', 'text');
+
+            var sendBtn = $('<button class="border-0 shadow">')
+                .text('送出')
+                .click(function () {
+                    sendMessage(this);
+                });
+
+            div.append(header, exitBtn, messageList, inputBox, sendBtn);
+            $("#userBox").append(div);
+        }
+
+
+        function exitChat(btnObj) {
+            $(btnObj).parent().remove();
+            connection.invoke("ExitChat", connectionId); // 修改為使用invoke
+        }
+
+        //发送消息
+        function sendMessage(data) {
+            var message = $(data).prev().val();
+            var userObj = $(data).parent();
+            var username = $("#userName").html();
+            message = username + ":" + message;
+            var targetConnectionId = $(userObj).attr("connectionId");
+            connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
+            $(data).prev().val("");
+        }
+        </script>
+    }
