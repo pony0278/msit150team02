@@ -106,15 +106,22 @@
                     }
 
                     <p class="available-stock">
-                        @if (Model.selectedProduct.p剩餘庫存 != 0)
-                        {
-                            <i class="fa-solid fa-circle-check fa-sm" style="color:#55AA00"></i>
-                            <span>尚有庫存</span>
-                        }
-                        else
+                        @if (Model.selectedProduct.p剩餘庫存 == 0 || Model.selectedProduct.p剩餘庫存 == null)
                         {
                             <i class="fa-solid fa-circle-xmark fa-sm" style="color:red"></i>
                             <span>缺貨中</span>
+                        }
+                        else
+                        {
+
+
+                            <div>
+                                <i class="fa-solid fa-circle-check fa-sm" style="color:#55AA00"></i>
+                                <span>尚有庫存</span>
+                            </div>
+                            <div>
+                                剩餘 @Model.selectedProduct.p剩餘庫存 件
+                            </div>
                         }
                     </p>
                     <p>
@@ -133,16 +140,16 @@
                                 <select id="attr" class="form-control">
                                     @{
 
-                                        @if (Model.selectedProduct.p子項目.Count() != 0)
+                                                @if (Model.selectedProduct.p子項目.Count() != 0)
                                         {
                                             foreach (var attr in Model.selectedProduct.p子項目)
                                             {
-                                                <option value="@attr">@attr</option>
+                                                        <option value="@attr">@attr</option>
                                             }
                                         }
                                         else
                                         {
-                                            <option value="商品" selected>商品</option>
+                                                    <option value="商品" selected>商品</option>
                                         }
                                     }
 
@@ -152,7 +159,15 @@
                         <li>
                             <div class="form-group quantity-box">
                                 <label class="control-label">數量</label>
-                                <input id="count" class="form-control" value="1" min="1" max="10" type="number" />
+                                @if (Model.selectedProduct.p剩餘庫存 == 0 || Model.selectedProduct.p剩餘庫存 == null)
+                                {
+                                    <input id="count" class="form-control" value="0" min="0" max="0" type="number" />
+
+                                }
+                                else
+                                {
+                                    <input id="count" class="form-control" value="1" min="1" max="@Model.selectedProduct.p剩餘庫存" type="number" />
+                                }
                             </div>
                         </li>
                     </ul>
@@ -178,7 +193,7 @@
                                     <i class="fas fa-heart"></i>
                                 </a>
                             }
-                            
+
                         </div>
                     </div>
                 </div>
@@ -213,9 +228,7 @@
                         <button class="accordion-button collapsed" type="button" data-toggle="collapse"
                                 data-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                             商品評論
-                            <span id="review-avg-rating">
-
-                            </span>
+                            <span id="review-avg-rating" data-rating="@Model.reviews.Average(r=>r.r評分)"></span>
                             (@Model.reviews.Count())
                         </button>
                     </h2>
@@ -241,7 +254,7 @@
                                             <small class="text-muted">by @r.r會員姓名 @r.r評分時間</small>
                                         </div>
                                     </div>
-                                    <hr/>
+                                    <hr />
                                 }
 
 
@@ -278,29 +291,29 @@
                                     <div class="add-to why-text">
                                         <h4>@a.pName</h4>
                                         @if (a.pDiscount != null)
-                                        {
+                                {
                                             <h5><del>$ @a.p優惠價格</del>$ @a.pPrice</h5>
-                                        }
-                                        else
-                                        {
+                                }
+                                else
+                                {
                                             <h5>$ @a.pPrice</h5>
-                                        }
-                                        <a href="#" data-product-id=@a.pId type="button" class="cart-btn add-to-cart-coustom">
+                                }
+                                        <a href="#" data-product-id=@a.pId type="button" class="add-to-cart-coustom">
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
-                                        @if (a.p是否加入收藏==true)
-                                        {
+                                        @if (a.p是否加入收藏 == true)
+                                {
                                             <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom favorited">
                                                 <i class="far fa-heart"></i>
                                             </a>
-                                        }
-                                        else
-                                        {
+                                }
+                                else
+                                {
                                             <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom">
                                                 <i class="far fa-heart"></i>
                                             </a>
-                                        }
-                                        
+                                }
+
                                     </div>
                                 </div>
                             </div>
@@ -331,7 +344,7 @@
 
     <script>
         var rating = $('#review-avg-rating');
-        var ratingAvg = @Model.reviews.Average(r=>r.r評分);
+        var ratingAvg = $('#review-avg-rating').data('rating');
         var arrAvg = [];
         var addTo = $("#add-to");
         var relatable = $("#relatable-items");
@@ -359,32 +372,63 @@
         });
 
         //輸入數量加入購物車
-        addTo.on("click",".cart-btn", function (e) {
+        addTo.on("click", ".cart-btn", function (e) {
             e.preventDefault();
             var attr = $("#attr").val();
             var count = $("#count").val();
+            var countMax = parseInt($("#count").attr('max'));
+            var cartBtn = $('.cart-btn');
             var productId = $(this).data("product-id");
-            // 發送 Ajax 請求
-            $.ajax({
-                url: '/ProductApi/DetailsAddToCart',
-                type: 'POST',
-                data: { pId: productId, attr: attr, count: count },
-                dataType: 'json',
-                success: function (response) {
-                    if (response.success) {
-                        $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#detail-toast').toast('show');
+            if (count == 0) {
+                //缺貨
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('缺貨中');
+                $('#detail-toast').toast('show');
+            }
+            else if (count > countMax) {
+                //輸入數量大於庫存
+                $('.toast-body i').removeClass();
+                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                $('.toast-body strong').text('超過可購買數量');
+                $('#detail-toast').toast('show');
+            }
+            else {
+                // 發送 Ajax 請求
+                $.ajax({
+                    url: '/ProductApi/DetailsAddToCart',
+                    type: 'POST',
+                    data: { pId: productId, attr: attr, count: count },
+                    dataType: 'json',
+                    success: function (response) {
+                        if (response.success) {
+                            //成功加入
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#detail-toast').toast('show');
+                        }
+                        else {
+                            //購物車商品將超過可購買數量
+                            if (response.messageNoQuantity) {
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                                $('.toast-body strong').text(response.messageNoQuantity);
+                                $('#detail-toast').toast('show');
+                            }
+                            else {
+                                //未登入
+                                $('.toast-body i').removeClass();
+                                $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                                $('.toast-body strong').text(response.message);
+                                $('#detail-toast').toast('show');
+                            }
+                        }
+                    },
+                    error: function (error) {
                     }
-                    else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#detail-toast').toast('show');
-                    }
-                },
-                error: function (error) {
-                }
-            });
+                });
+            }
         });
         //加入收藏
         addTo.on("click", ".like-btn", function (e) {
@@ -407,10 +451,11 @@
                         }
                     }
                     else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        //未登入
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#detail-toast').toast('show');
-
                     }
                 },
                 error: function (error) {
@@ -420,7 +465,7 @@
 
         //-----------------------相關商品-------------------------
         //相關商品加入購物車
-        relatable.on('click', '.cart-btn', function (e) {
+        relatable.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
             var productId = $(this).data('product-id');
             // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
@@ -431,14 +476,24 @@
                 dataType: 'json',
                 success: function (response) {
                     if (response.success) {
+                        $('.toast-body i').removeClass();
                         $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#detail-toast').toast('show');
                     }
                     else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
-                        $('.toast-body strong').text(response.message);
-                        $('#detail-toast').toast('show');
+                        if (response.messageNoQuantity) {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                            $('.toast-body strong').text(response.messageNoQuantity);
+                            $('#detail-toast').toast('show');
+                        }
+                        else {
+                            $('.toast-body i').removeClass();
+                            $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                            $('.toast-body strong').text(response.message);
+                            $('#detail-toast').toast('show');
+                        }
                     }
                 },
                 error: function (error) {
@@ -467,7 +522,8 @@
                         }
                     }
                     else {
-                        $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#detail-toast').toast('show');
                     }
@@ -477,6 +533,6 @@
             });
         });
 
-    
+
     </script>
 }

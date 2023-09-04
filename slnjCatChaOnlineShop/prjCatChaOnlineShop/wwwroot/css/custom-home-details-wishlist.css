@@ -993,10 +993,15 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     font-weight: 900;
     background-color: #fcd7aadc;
 }
-.toast-warning{
+.toast-warn{
     color: orangered;
     background-color:none;
 }
 .toast-added {
     color: forestgreen;
+    background-color: none;
+}
+.toast-err {
+    color: red;
+    background-color: none;
 }

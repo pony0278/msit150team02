@@ -25,6 +25,12 @@
     <link rel="stylesheet" href="~/css/style.css">
     <link rel="stylesheet" href="~/css/responsive.css">
     <link rel="stylesheet" href="~/css/custom.css" />
+    <style>
+        .for-category-only:hover{
+            color: #DE9E4F !important;
+        }
+
+    </style>
     @await RenderSectionAsync("Styles",required:false)
 </head>
 <body>
@@ -57,11 +63,11 @@
                         <li class="dropdown" id="categoryDropdown">
                             <a href="#" class="nav-link dropdown-toggle arrow" data-toggle="dropdown">所有商品</a>
                             <ul class="dropdown-menu">
-                                <li><a asp-controller="Index" asp-action="Shop">全部商品</a></li>
+                                <li><a class="for-category-only" asp-controller="Index" asp-action="Shop">全部商品</a></li>
                                 @foreach (var i in ViewBag.Categories)
                                 {
                                     <li>
-                                        <a href="/Index/Shop?categoryName=@i">
+                                        <a class="for-category-only" href="/Index/Shop?categoryName=@i">
                                             <span>@i</span>
                                         </a>
                                     </li>

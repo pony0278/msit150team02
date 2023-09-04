@@ -83,7 +83,7 @@ $(document).ready(async function () {
                     boxImgHover.append(productLink);
 
                     var whyText = $('<div class="why-text"></div>');
-                    var productName = $(`<h4>${item.pName}</h4>`);
+                    var productName = $(`<h4 class="for-quantity" data-quantity=${item.p剩餘庫存}>${item.pName}</h4>`);
                     var productPrice = $('<h5></h5>');
 
                     var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
@@ -155,9 +155,17 @@ $(document).ready(async function () {
     // 點擊加入購物車按鈕(用類別去找addtocartaustom抓不到)
     productList.on('click', '.add-to-cart-coustom', async function (e) {
         e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-        console.log(productList);
+        
         var productId = $(this).data('product-id');
-        console.log('Clicked Add to Cart, Product ID:', productId);
+        var count = parseInt($(".for-quantity").data('quantity'));
+        if (count == 0 || isNaN(count)) {
+            //缺貨
+            $('.toast-body i').removeClass();
+            $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+            $('.toast-body strong').text('缺貨中');
+            $('#shop-toast').toast('show');
+        }
+        else {
         // 透過 Ajax 將商品 ID 傳送到後端，加入購物車
         $.ajax({
             url: '/ProductApi/AddToCart',
@@ -171,15 +179,28 @@ $(document).ready(async function () {
                     $('#shop-toast').toast('show');
                 }
                 else {
-                    $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
-                    $('.toast-body strong').text(response.message);
-                    $('#shop-toast').toast('show');
+                    if (response.messageNoQuantity) {
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
+                        $('.toast-body strong').text(response.messageNoQuantity);
+                        $('#shop-toast').toast('show');
+                    }
+                    else {
+                        $('.toast-body i').removeClass();
+                        $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                        $('.toast-body strong').text(response.message);
+                        $('#shop-toast').toast('show');
+                    }
+
                 }
             },
             error: function (error) {
                 console.error('Ajax Error:', error);
             }
         });
+
+
+        }
     });
     //加入收藏
     productList.on('click', '.add-to-wishlist-coustom', async function (e) {
@@ -204,7 +225,7 @@ $(document).ready(async function () {
                     }
                 }
                 else {
-                    $('.toast-body i').addClass('toast-warning fa-solid fa-triangle-exclamation fa-fade fa-lg');
+                    $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
                     $('.toast-body strong').text(response.message);
                     $('#shop-toast').toast('show');
                 }

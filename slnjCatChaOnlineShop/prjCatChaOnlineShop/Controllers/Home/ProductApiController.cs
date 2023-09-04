@@ -153,12 +153,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var prodItem = _productService.getProductById(pId);
 
                 var cart = GetCartFromSession();
-
-
                 // 調用簡化方法，傳入產品物件和數量
-                _productService.addCartItem(cart, prodItem, 1); 
-                SaveCart(cart);
-                return Json(new { success = true, message = "已加入購物車!"});
+                try
+                {
+                    _productService.addCartItem(cart, prodItem, 1);
+                    SaveCart(cart);
+
+                    return Json(new { success = true, message = "已加入購物車!" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, messageNoQuantity = ex.Message }); // 返回庫存不足的訊息
+                }
             }
 
             return Json(new { success = false, message="請先登入!" });
@@ -173,14 +179,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var prodItem = _productService.getProductById(pId);
                 // 接下來進行購物車處理...
                 var cart = GetCartFromSession();
-
-
                 // 調用簡化方法，傳入產品物件和數量
-                _productService.detailsAddCartItem(cart, prodItem, attr, count);
-                SaveCart(cart);
+                try
+                {
+                    _productService.detailsAddCartItem(cart, prodItem, attr, count);
+                    SaveCart(cart);
 
-
-                return Json(new { success = true, message = "已加入購物車!" });
+                    return Json(new { success = true, message = "已加入購物車!" });
+                }
+                catch (Exception ex)
+                {
+                    return Json(new { success = false, messageNoQuantity = ex.Message }); // 返回庫存不足的訊息
+                }
             }
             return Json(new { success = false, message = "請先登入!" });
 
