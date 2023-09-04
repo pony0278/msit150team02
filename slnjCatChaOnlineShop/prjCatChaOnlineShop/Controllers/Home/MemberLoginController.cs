@@ -28,7 +28,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             _configuration = configuration;
         }
 
-       
+
 
         #region 登入
         public IActionResult Login()
@@ -51,10 +51,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 return Json(new { Message = "帳號未完成信箱驗證，請重新註冊", Success = false, accountExist = true }); //否 => 帳號未經email驗證，請重新註冊
             }
-            
+
             if (existUser.EmailVerified == true)//是=>繼續驗證密碼
             {
-                if (existUser.Password == vm.txtPassword) 
+                if (existUser.Password == vm.txtPassword)
                 {
                     string json = JsonSerializer.Serialize(existUser);
                     HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
@@ -71,7 +71,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         _context.SaveChanges();
                     }
                     return Json(new { UserName = existUser.Name, Success = true, accountExist = true });//密碼正確=>登入 => 歡迎...
-                    
+
                 }
                 else
                     return Json(new { Message = "密碼錯誤，請重新嘗試", Success = true, accountExist = true });//密碼錯誤=>密碼錯誤，請重新嘗試
@@ -92,7 +92,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             registerModel.EmailVerified = false;
             registerModel.CheckinDayCount = false;
             registerModel.RegistrationTime = DateTime.Now;
-         
+
             _context.ShopMemberInfo.Add(registerModel);
             _context.SaveChanges();
 
@@ -189,7 +189,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
-        public IActionResult VerifyEmail(string verify) 
+        public IActionResult VerifyEmail(string verify)
         {
             // 取得系統自定密鑰，這裡使用 IConfiguration 讀取 
             string secretKey = _configuration["VerifyEmail:SecretKey"];
@@ -250,11 +250,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
             return RedirectToAction("Login", "MemberLogin");
         }
-       
+
 
 
         [HttpPost]
-        public IActionResult VerifyEmail() {
+        public IActionResult VerifyEmail()
+        {
 
             var User = HttpContext.Session.GetString("VerifyUserId");
             var newMember = _context.ShopMemberInfo.OrderBy(x => x.MemberId).LastOrDefault(m => m.Email == User);
@@ -586,23 +587,31 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 ViewData["Msg"] += "Picture:" + payload.Picture;
 
                 //如果Email不在資料庫裡就建一個
-                using (var dbcontext = new cachaContext()) 
+                using (var dbcontext = new cachaContext())
                 {
 
-                    var existingMember = dbcontext.ShopMemberInfo.FirstOrDefault(mem=>mem.Email==payload.Email);
+                    var existingMember = dbcontext.ShopMemberInfo
+                                .Where(mem => mem.Email == payload.Email && mem.EmailVerified == true)
+                                .OrderByDescending(mem => mem.MemberId)
+                                .LastOrDefault();
                     if (existingMember == null)
                     {
                         var newMember = new ShopMemberInfo
                         {
                             Email = payload.Email,
                             Name = payload.Name,
+                            MemberImage=payload.Picture,
+                            RegistrationTime = DateTime.Now,
+                            CatCoinQuantity = 0,
+                            LoyaltyPoints = 0,
+                            EmailVerified = true,
 
                         };
                         dbcontext.ShopMemberInfo.Add(newMember);
                         dbcontext.SaveChanges();
                         string json = JsonSerializer.Serialize(newMember);
                         HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
-                        HttpContext.Session.SetString("UserName",newMember.Name);//Session-當前當入者名稱紀錄
+                        HttpContext.Session.SetString("UserName", newMember.Name);//Session-當前當入者名稱紀錄
                         string userName = HttpContext.Session.GetString("UserName");
                         ViewBag.UserName = userName;//把使用者名字傳給_Layout
                     }
@@ -617,7 +626,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 }
             }
 
-            return RedirectToAction("Index","Index");
+            return RedirectToAction("Index", "Index");
         }
 
         //串接Google登入的api
