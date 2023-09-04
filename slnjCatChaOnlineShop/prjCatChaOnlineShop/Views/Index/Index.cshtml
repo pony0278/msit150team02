@@ -106,6 +106,9 @@
         .swiper-member-say {
             color: #818181;
         }
+        .hideID{
+            display:none;
+        }
     </style>
 }
 
@@ -227,47 +230,47 @@
             @{
                 foreach (var item in Model.ToList().OrderByDescending(p => p.p上架時間).Take(4))
                 {
-                        <!-- start prod  -->
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
-                                        <div class="type-lb">
-                                            <p class="sale">Sale</p>
-                                        </div>
-                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
-                                    </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4>@item.pName</h4>
-                                    @if (item.pDiscount != null)
+                                                        <!-- start prod  -->
+                                                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                                            <div class="products-single-custom fix">
+                                                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                                                    <div class="box-img-hover">
+                                                                        <div class="type-lb">
+                                                                            <p class="sale">Sale</p>
+                                                                        </div>
+                                                                        <img src="@item.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                                                    </div>
+                                                                </a>
+                                                                <div class="why-text">
+                                                                    <h4>@item.pName</h4>
+                                                                    @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                                                        <h5>$ @item.p優惠價格</h5>
+                                                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                                                        <h5>$ @item.pPrice</h5>
                                 }
-                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
-                                    @if (item.p是否加入收藏)
+                                                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                                                        <i class="fa-solid fa-cart-plus"></i>
+                                                                    </a>
+                                                                    @if (item.p是否加入收藏)
                                 {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                            <i class="far fa-heart"></i>
-                                        </a>
+                                                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                                                            <i class="far fa-heart"></i>
+                                                                        </a>
                                 }
                                 else
                                 {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
+                                                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                                                            <i class="far fa-heart"></i>
+                                                                        </a>
                                 }
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end prod  -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end prod  -->
                 }
             }
         </div>
@@ -297,48 +300,48 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4))
                 {
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
-                                        <div class="type-lb">
-                                            <p class="sale">Sale</p>
-                                        </div>
-                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
-                                    </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4>@item.pName</h4>
-                                    @if (item.pDiscount != null)
+                                                        <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                                            <div class="products-single-custom fix">
+                                                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                                                    <div class="box-img-hover">
+                                                                        <div class="type-lb">
+                                                                            <p class="sale">Sale</p>
+                                                                        </div>
+                                                                        <img src=@item.p圖片路徑.FirstOrDefault() class="img-fluid shop-image" alt="Image" />
+                                                                    </div>
+                                                                </a>
+                                                                <div class="why-text">
+                                                                    <h4>@item.pName</h4>
+                                                                    @if (item.pDiscount != null)
                                 {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
+                                                                        <h5>$ @item.p優惠價格</h5>
+                                                                        <del>$ @item.pPrice</del>
                                 }
                                 else
                                 {
-                                        <h5>$ @item.pPrice</h5>
+                                                                        <h5>$ @item.pPrice</h5>
                                 }
-                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
+                                                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                                                        <i class="fa-solid fa-cart-plus"></i>
+                                                                    </a>
 
-                                    @if (item.p是否加入收藏)
+                                                                    @if (item.p是否加入收藏)
                                 {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                            <i class="far fa-heart"></i>
-                                        </a>
+                                                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                                                            <i class="far fa-heart"></i>
+                                                                        </a>
                                 }
                                 else
                                 {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
+                                                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                                                            <i class="far fa-heart"></i>
+                                                                        </a>
                                 }
 
-                                </div>
-                            </div>
-                        </div>
-                        <!-- end prod1  -->
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- end prod1  -->
                 }
             }
 
@@ -359,17 +362,10 @@
         <div class="swiper-pagination"></div>
     </div>
 </div>
-<div>
+<div class="hideID">
     <div>用户名称：<label id="userName"></label>(<label id="conId"></label>)</div>
+</div>
 
-    <div style="width:25%;border:1px solid #ff0000">
-        <div>在线用户列表</div>
-        <ul id="users"></ul>
-    </div>
-    <div id="userBox">
-    </div>
-</div>
-</div>
 
 
 <!-- 結束評論輪播 -->
@@ -397,7 +393,7 @@
         </div>
         <div class="chat-input">
             <input type="text" id="chat-input" placeholder="輸入訊息" />
-            <button class="chat-submit" id="chat-submit" onclick="SendMessageToPrivateChat()"><i class="material-icons">送出</i></button>
+            
         </div>
     </div>
 </div>
@@ -802,12 +798,13 @@
             }, 1000);
         }
         //客服
-
+        let saveName = "";
         $('body').on('click', '#chat-circle', function () {
             $('#chat-circle').hide();
             $('.chat-box').show();
             connection.start().then(function () {
                 var userName = prompt('请输入您的名称', '');
+                saveName = userName
                 document.getElementById("userName").textContent = userName;
                 connection.invoke("GetName", userName);
             }).catch(function (err) {
@@ -831,24 +828,37 @@
             if (clients.indexOf(connectionId) === -1) {
                 showWin(connectionId);
             }
+            const chatWindow = $("#chating");
+            let messages = message.slice(0, 3);
+            const userClass = (messages.includes("客服")) ? "other-message" : "own-message";
 
-            var messageList = document.getElementById("messages" + connectionId);
-            var newMessage = document.createElement("li");
-            newMessage.textContent = message;
-            messageList.appendChild(newMessage);
+            const newMessage = $(`<div class="message ${userClass}">
+                                                    <span class="username"><strong></strong></span> ${message}
+                                          </div>`);
+
+            chatWindow.prepend(newMessage);
         });
-
         connection.on("GetUsers", function (data) {
             var users = JSON.parse(data);
-            var userList = document.getElementById("users");
-            userList.innerHTML = "";
-            if (users.length > 0) {
-                var user = users[0];
-                var userHtml = document.createElement("li");
-                userHtml.innerHTML = '用户名: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
-                userList.appendChild(userHtml);
+            console.log(users)
+            var admiin = $('.chat-input');
+            var chat = $('#chating')
+            chat.html("")
+            var hasAdminOnline = false;  
+            $.each(users, function (index, value) {
+                if (value.Name == "客服人員") {
+                    hasAdminOnline = true; 
+                    var btn = $(`<button class="chat-submit" connectionId="${value.ConnectionID}" id="chat-submit" onclick="sendMessages(this)"><i class="material-icons">送出</i></button>`);
+                    admiin.append(btn);
+                    return false;  
+                }
+            });
+            if (hasAdminOnline !== true) {  
+                const word = $(`<p>客服人員不在線上</p>`);
+                chat.append(word);
             }
         });
+
 
         connection.on("showId", function (data) {
             document.getElementById("conId").textContent = data;
@@ -881,6 +891,16 @@
             var username = $("#userName").html();
             message = username + ":" + message;
             var targetConnectionId = $(userObj).attr("connectionId");
+            connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
+            $(data).prev().val("");
+        }
+
+        function sendMessages(data) {
+            var message = $(data).prev().val();
+            var username = $("#userName").html();
+            message = username + ":" + message;
+            console.log(message)
+            var targetConnectionId = $(data).attr("connectionId");
             connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
             $(data).prev().val("");
         }
