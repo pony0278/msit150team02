@@ -452,8 +452,26 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                 for (int row = 2; row <= rowCount; row++)
                 {
-                    var categoryName = worksheet.Cells[row, 1].Text;
-                    var productName = worksheet.Cells[row, 2].Text;
+                    var categoryName = worksheet.Cells[row, 5].Text;  // 分類名稱在第一列
+                    var productName = worksheet.Cells[row, 1].Text;  // 商品名稱在第二列
+                    var describe = worksheet.Cells[row, 2].Text;
+                    var price = worksheet.Cells[row, 3].Text;
+                    var remain = worksheet.Cells[row, 4].Text;
+                    var relseday = worksheet.Cells[row, 6].Text;
+                    var size = worksheet.Cells[row, 7].Text;
+                    var weight = worksheet.Cells[row, 8].Text;
+                    var supplierName = worksheet.Cells[row, 9].Text;
+                    var discontiue = worksheet.Cells[row, 10].Text;
+                    var SpecificationName = worksheet.Cells[row, 11].Text;
+                    var imgsUrl = worksheet.Cells[row, 12].Text;
+
+                    var categoryId = GetOrCreateCategory(categoryName);
+                    var specificationId = GetCreatSpecification(SpecificationName);
+
+                    decimal? parsedPrice = decimal.TryParse(price, out decimal tempPrice) ? tempPrice : (decimal?)null;
+                    DateTime? parseDateTime = DateTime.TryParse(relseday, out DateTime tempDate) ? tempDate : (DateTime?)null;
+                    bool? parseDiscontinued = bool.TryParse(discontiue, out bool tempBool) ? tempBool : (bool?)null;
+                    int? parseRemian = int.TryParse(remain, out int tempRemain) ? tempRemain : (int?)null;
 
                     // 查询数据库，看商品名是否已存在
                     var existingProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductName == productName);
@@ -461,16 +479,38 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     if (existingProduct != null)  // 如果已存在，则更新商品数据
                     {
                         existingProduct.ProductCategoryId = GetOrCreateCategory(categoryName);
+                        existingProduct.SupplierId = GetCreateSupplier(supplierName);
+                        existingProduct.ProductDescription = describe;
+                        existingProduct.ProductPrice = parsedPrice;
+                        existingProduct.RemainingQuantity = parseRemian;
+                        existingProduct.Size = size;
+                        existingProduct.Weight = weight;
+                        existingProduct.Discontinued = parseDiscontinued;
+                        var existingSpecification = _cachaContext.ShopProductSpecification.FirstOrDefault(s => s.Id == specificationId);
+
+                        if (existingSpecification != null)
+                        {
+                            existingProduct.ShopProductSpecification.Add(existingSpecification);
+                        }
                     }
                     else  // 如果不存在，则新增商品数据
                     {
                         var product = new ShopProductTotal
                         {
                             ProductName = productName,
-                            ProductCategoryId = GetOrCreateCategory(categoryName)
+                            ProductCategoryId = GetOrCreateCategory(categoryName),
+                            SupplierId = GetCreateSupplier(supplierName),
+                            ProductDescription = describe,
+                            ProductPrice = parsedPrice,
+                            RemainingQuantity = parseRemian,
+                            Size = size,
+                            Weight = weight,
+                            Discontinued = parseDiscontinued,
                         };
+                        product.ShopProductSpecification.Add(new ShopProductSpecification { Id = specificationId });
                         _cachaContext.ShopProductTotal.Add(product);
                     }
+                    
                 }
                 _cachaContext.SaveChanges();
             }
@@ -489,6 +529,28 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
 
             return category.ProductCategoryId;
+        }
+        private int GetCreateSupplier(string supplierName)
+        {
+            var supplier = _cachaContext.ShopProductSupplier.FirstOrDefault(s => s.CompanyName == supplierName);
+            if (supplier == null)
+            {
+                supplier = new ShopProductSupplier { CompanyName = supplierName };
+                _cachaContext.ShopProductSupplier.Add(supplier);
+                _cachaContext.SaveChanges();
+            }
+            return supplier.SupplierId;
+        }
+        private int GetCreatSpecification(string creatSpecificationName)
+        {
+            var Specification = _cachaContext.ShopProductSpecification.FirstOrDefault(s => s.Specification == creatSpecificationName);
+            if (Specification == null)
+            {
+                Specification = new ShopProductSpecification { Specification = creatSpecificationName };
+                _cachaContext.ShopProductSpecification.Add(Specification);
+                _cachaContext.SaveChanges();
+            }
+            return Specification.Id;
         }
 
         [HttpGet]
