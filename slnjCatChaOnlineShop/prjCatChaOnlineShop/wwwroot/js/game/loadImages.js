@@ -2,7 +2,7 @@
 ruby.src = '../../images/game/ruby.png';
 ccoin.src = '../../images/game/catcoin.png';
 floorImg.src = '../../images/game/lobbyFloor.png';
-lobbyBK.src = '../../images/game/lobbyBK_grass.png';
+lobbyBK.src = '../../images/game/testbackground.png';
 bagbk.src = '../../images/game/Inventory_Bar.png';
 bagItem1.src = '../../images/game/Inventory_select.png';
 helpBTNimg.src = '../../images/game/Icon_Question.png';
@@ -20,6 +20,10 @@ bagItem6.src = '../../images/game/milk_bottle.png'
 bagItem7.src = '../../images/game/tuna_can.png'
 itemSelected.src = '../../images/game/Inventory_select.png'
 
+
+//測試背景
+weatherImage.src = '../../images/game/orig.png';
+weatherImage2.src = '../../images/game/orig.png';
 // const lobbyBGData = {
 // Default:'/LAYOUT/images/game/lobbyBK.png',
 // Beach:'/LAYOUT/images/game/lobbyBK_beach.png'

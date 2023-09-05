@@ -24,8 +24,8 @@
     const rankBTNimg = new Image();
     const gotoGachaimg = new Image();
     const gotoRunGameimg = new Image();
-const editNameimg = new Image();
-const dailyMissionBTNimg = new Image();
+    const editNameimg = new Image();
+    const dailyMissionBTNimg = new Image();
 
     const kittenDefault = new Image();
     const kittenBK = new Image();
@@ -47,21 +47,44 @@ const dailyMissionBTNimg = new Image();
     const bagItem8 = new Image();
     const itemSelected = new Image();
 
+    //測試
+const weatherImage = new Image();
+const weatherImage2 = new Image();
+let sourceX = 0; // 源圖片的 X 位置
+const sourceY = 150;   // 源圖片的 Y 位置
+const sourceWidth = 500; // 源圖片的寬度
+const sourceHeight = 1000; // 源圖片的高度
+let destinationX = 0;
+const destinationY = 0;  // 目標位置 Y
+let currentX = destinationX; // 初始的 x 值
+let currentImage = weatherImage; // 初始的圖片是 weatherImage
 
-    //類別
+function backgroundmove() {
+    // 更新 sourceX，使圖片向左移動
+    sourceX += 0.2;
 
-//class backgroundpic {
-//    draw(pic,x,y) {
-//        c.drawimage(pic,this.x)
+    // 如果 sourceX 超過了 canvas 寬度，切換到下一張圖片
+    if (sourceX >= 1815) {
+        if (currentImage === weatherImage) {
+            currentImage = weatherImage2;
+            currentX = destinationX; // 重置 x 值，開始繪製第二張圖片
+        } else {
+            currentImage = weatherImage;
+            currentX = destinationX ; // 重置 x 值，開始繪製第一張圖片
+        }
+        sourceX = 0; // 重置 sourceX，以便重新開始繪製
+    }
 
-//    }
+    // 根據 currentImage 繪製相應的圖片
+    if (currentImage === weatherImage) {
+        c.drawImage(weatherImage, sourceX, sourceY, sourceWidth, sourceHeight, destinationX, destinationY, canvas.width, canvas.height);
+    } else if (currentImage === weatherImage2) {
+        c.drawImage(weatherImage2, sourceX, sourceY, sourceWidth, sourceHeight, currentX, destinationY, canvas.width, canvas.height);
+    }
 
+    c.drawImage(lobbyBK, 100, 0, canvas.width, canvas.height, 0, 160, canvas.width, canvas.height);
+}
 
-//}
-//const bg1 = new backgroundpic();
-//const bg2 = new backgroundpic();
-//bg1.draw(img1, 200, 1000);
-//bg2.draw(img2, 500, 100);
 
     class UserInfo {
 
@@ -447,7 +470,12 @@ const dailyMissionBTN = new mainpageButton(15, 140, 40, 40, dailyMissionBTNimg);
     function animate() {
         requestAnimationFrame(animate);
         canvas.style.border = "4px solid black";
-        c.drawImage(lobbyBK, 650, 650, canvas.width, canvas.height, 0, 0, canvas.width, canvas.height);
+
+        backgroundmove();
+
+    // 繪製圖片
+
+
 
         //使用者資訊
         new UserInfo()
