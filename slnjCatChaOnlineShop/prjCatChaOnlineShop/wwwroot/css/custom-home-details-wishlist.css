@@ -1011,9 +1011,9 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     font-weight: 900;
     background-color: #fcd7aadc;
 }
-.toast-warn{
-    color: orangered;
-    background-color:none;
+.toast-warn {
+    color: #FF9224;
+    background-color: none;
 }
 .toast-added {
     color: forestgreen;
