@@ -442,6 +442,8 @@
     <script src="~/js/rating.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/8.4.5/swiper-bundle.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <!-- ALL PLUGINS -->
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
@@ -845,30 +847,53 @@
             }, 1000);
         }
         //客服
+
         let saveName = "";
+
         $('body').on('click', '#chat-circle', function () {
             $('#chat-circle').hide();
             $('.chat-box').show();
             connection.start().then(function () {
-                var userName = prompt('请输入您的名称', '');
-                saveName = userName
-                document.getElementById("userName").textContent = userName;
-                connection.invoke("GetName", userName);
+                Swal.fire({
+                    title: '請問您怎麼稱呼',
+                    input: 'text',
+                    inputPlaceholder: '輸入您的名字',
+                    showCancelButton: true,
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let userName = result.value;
+                        saveName = userName;
+                        document.getElementById("userName").textContent = userName;
+                        connection.invoke("GetName", userName);
+                    } else if (result.isDismissed) {
+                        Swal.fire({
+                            title: '未啟用即時客服',
+                            icon: 'warning',
+                        })
+                        $('.chat-box').hide();
+                        $('#chat-circle').show();
+                    }
+                });
             }).catch(function (err) {
-                return console.error(err.toString());
+                console.error(err.toString());
             });
         });
+
+
         $('body').on('click', '.chat-box-toggle', function () {
             $('.chat-box').hide();
             $('#chat-circle').show();
         });
+
+
         var clients = [];
 
         var connection = new signalR.HubConnectionBuilder()
             .withUrl("/OneToOneHub")
             .build();
         connection.on("showMessage", function (message) {
-            alert(message);
+            Swal.fire('Message', message, 'info');
         });
 
         connection.on("addMessage", function (message, connectionId) {
