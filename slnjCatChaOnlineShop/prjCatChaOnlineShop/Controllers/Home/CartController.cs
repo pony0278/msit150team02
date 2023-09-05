@@ -130,7 +130,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //從session中拿取最後計算好的金額資料
             string priceData = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
             //從session中拿取最後選擇的付款方式跟運送方式
-            string finalpaymentMethod = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
+            //string finalpaymentMethod = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
             if (memberInfo != null && productList != null && priceData!=null)
             {
                 //會員資料

@@ -18,17 +18,17 @@ namespace prjCatChaOnlineShop.Controllers.Api
         }
         public IActionResult paymentSelected(string paymentMethod)
         {
-            //string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
-            //CPayModel PayModel=JsonSerializer.Deserialize<CPayModel>(json);
-            //PayModel.paymentMethod = paymentMethod;
-            //string newJson=JsonSerializer.Serialize(PayModel);
-            //HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
-            CPayModel payModel = new CPayModel
-            {
-                paymentMethod = paymentMethod,
-            };
-            var json = JsonSerializer.Serialize(payModel);
-            HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
+            string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+            CPayModel PayModel = JsonSerializer.Deserialize<CPayModel>(json);
+            PayModel.paymentMethod = paymentMethod;
+            string newJson = JsonSerializer.Serialize(PayModel);
+            HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
+            //CPayModel payModel = new CPayModel
+            //{
+            //    paymentMethod = paymentMethod,
+            //};
+            //var json = JsonSerializer.Serialize(payModel);
+            //HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
 
             return View();
         }

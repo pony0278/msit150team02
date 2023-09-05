@@ -339,17 +339,19 @@
             e.preventDefault();
             // 顯示錯誤訊息
             $('#error-message').text('此為必勾選的項目');
-        } else {
+        }
+        else
+        {
             //獲取使用者選擇的付款方式
             var selectedPaymentMethod = $("input[name='paymentMethod']:checked").val();
             console.log("使用者的付款方式",selectedPaymentMethod)
             //發送付款方式到後端
             $.ajax({
                 type: "POST", 
-                url: "/Cart/Pay", 
+                url: "/CheckOut/paymentSelected", 
                 data: { paymentMethod: selectedPaymentMethod }, 
                 success: function (response) {
-                    
+                        
                     console.log("付款方式：" + selectedPaymentMethod);
                 },
                 error: function () {
@@ -357,15 +359,7 @@
                     console.error("發送出錯");
                 }
             });
-
-
-
-
-
-            // 如果勾選了，導向到指定頁面
-            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL
-            // 取消默認的表單提交行為
-            e.preventDefault();
+            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL             
         }
     });
 
