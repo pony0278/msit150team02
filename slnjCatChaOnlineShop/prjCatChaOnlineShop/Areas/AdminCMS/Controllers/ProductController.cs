@@ -447,37 +447,50 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             using (var package = new ExcelPackage(file.OpenReadStream()))
             {
-                var worksheet = package.Workbook.Worksheets[0];  // 讀取第一個工作表
+                var worksheet = package.Workbook.Worksheets[0];
                 var rowCount = worksheet.Dimension.Rows;
 
-                for (int row = 2; row <= rowCount; row++)  // 從第二行開始讀取（假設第一行是標題）
+                for (int row = 2; row <= rowCount; row++)
                 {
-                    var categoryName = worksheet.Cells[row, 1].Text;  // 分類名稱在第一列
-                    var productName = worksheet.Cells[row, 2].Text;  // 商品名稱在第二列
+                    var categoryName = worksheet.Cells[row, 1].Text;
+                    var productName = worksheet.Cells[row, 2].Text;
 
-                    // 尋找或新增商品分類
-                    var category = _cachaContext.ShopProductCategory
-                                    .FirstOrDefault(c => c.CategoryName == categoryName)
-                                    ?? new ShopProductCategory { CategoryName = categoryName };
+                    // 查询数据库，看商品名是否已存在
+                    var existingProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductName == productName);
 
-                    if (category.ProductCategoryId == 0)  // 新增分類
+                    if (existingProduct != null)  // 如果已存在，则更新商品数据
                     {
-                       _cachaContext.ShopProductCategory.Add(category);
-                        _cachaContext.SaveChanges();  // 儲存以獲得 Id
+                        existingProduct.ProductCategoryId = GetOrCreateCategory(categoryName);
                     }
-
-                    // 新增商品
-                    var product = new ShopProductTotal
+                    else  // 如果不存在，则新增商品数据
                     {
-                        ProductName = productName,
-                        ProductCategoryId = category.ProductCategoryId
-                    };
-                    _cachaContext.ShopProductTotal.Add(product);
+                        var product = new ShopProductTotal
+                        {
+                            ProductName = productName,
+                            ProductCategoryId = GetOrCreateCategory(categoryName)
+                        };
+                        _cachaContext.ShopProductTotal.Add(product);
+                    }
                 }
-                _cachaContext.SaveChanges();  // 儲存所有新增的商品
+                _cachaContext.SaveChanges();
             }
             return Json(new { success = true, Message = "成功修改" });
         }
+
+        private int GetOrCreateCategory(string categoryName)
+        {
+            var category = _cachaContext.ShopProductCategory.FirstOrDefault(c => c.CategoryName == categoryName);
+
+            if (category == null)
+            {
+                category = new ShopProductCategory { CategoryName = categoryName };
+                _cachaContext.ShopProductCategory.Add(category);
+                _cachaContext.SaveChanges();
+            }
+
+            return category.ProductCategoryId;
+        }
+
         [HttpGet]
         public IActionResult DoQuery([FromQuery] CShopProductWrap productWrap)
         {
