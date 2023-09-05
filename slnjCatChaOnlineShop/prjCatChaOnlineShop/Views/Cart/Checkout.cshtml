@@ -52,6 +52,24 @@
             align-self: center;
             vertical-align: middle;
         }
+
+        .selectwithBtn {
+            display: flex;
+            align-items: center;
+        }
+
+            .selectwithBtn select {
+                flex: 1; /* 自動填充剩餘空間 */
+                padding: 8px; /* 調整選項框的內邊距 */
+            }
+
+            .selectwithBtn button {
+                padding: 8px 16px; /* 調整按鈕的內邊距 */
+                background-color: #007bff; /* 設置按鈕背景顏色 */
+                color: #fff; /* 設置按鈕文字顏色 */
+                border: none; /* 移除按鈕邊框 */
+                cursor: pointer; /* 讓鼠標顯示為手型 */
+            }
     </style>
 }
 
@@ -269,7 +287,8 @@
                          aria-labelledby="DeliveryMethod_711-tab">
                         <ul>
                             <li>
-                                超商門市：桂林門市
+                                超商門市：
+                                <span id="select-seveneleven"></span>
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
@@ -336,6 +355,34 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--7-11彈出視窗-->
+                                <div class="modal fade" id="SevenElevenToggle" tabindex="-1">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title pb-0" id="exampleModalToggleLabel">選擇 7-11 門市</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!--內容表單-->
+                                                <div class="row">
+                                                    <div class="selectwithBtn">
+                                                        <select id="sevenElevenStoreSelect">
+                                                            <option value="">請選擇一家7-11門市</option>
+                                                        </select>
+                                                        <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-sevenEleven" data-bs-dismiss="modal">確定門市</button>
+                                                    </div>
+
+                                                    <div id="sevenElevenMap" style="width: 100%; height: 400px;"></div>
+                                                </div>
+                                                <!--內容表單-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--7-11彈出視窗-->
                             </li>
                             <li>姓名：韓俊景</li>
                             <li>電話：0927463518</li>
@@ -345,12 +392,18 @@
                          aria-labelledby="DeliveryMethod_fami-tab">
                         <ul>
                             <li>
-                                超商門市：全家成都店
+                                超商門市：
+                                <span id="select-familmart"></span>
                                 <!-- 觸發選擇全家超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#chooseFamiStore">
                                     選擇門市
                                 </button>
+                                <!--全家分頁內容-->
+                                <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab" style="display: contents;">
+                                    @*取貨門市：<span id="select-familmart"></span>*@
+                                    <button class="chooseStore_btn" data-bs-toggle="modal" href="#FamilyMartToggle" role="button" id="showFamilyMart">選擇新的門市</button>
+                                </div>
                                 <!-- 選擇全家超商的互動視窗 -->
                                 <div class="modal fade" id="chooseFamiStore" data-bs-backdrop="static"
                                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="myFamiStoreLabel"
@@ -358,7 +411,7 @@
                                     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="myFamiStoreLabel">我的全家門市</h5>
+                                                <h2 class="modal-title pb-0" id="myFamiStoreLabel">我的全家門市</h2>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
@@ -405,6 +458,33 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--全家彈出視窗-->
+                                <div class="modal fade" id="FamilyMartToggle" tabindex="-1">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalToggleLabel">選擇全家門市</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!--內容表單-->
+                                                <div class="row">
+                                                    <div class="selectwithBtn">
+                                                        <select id="familyMartStoreSelect">
+                                                            <option value="">請選擇一家全家門市</option>
+                                                        </select>
+                                                        <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-familyMart" data-bs-dismiss="modal">確定門市</button>
+                                                    </div>
+
+                                                    <div id="familyMartMap" style="width: 100%; height: 400px;"></div>
+                                                </div>
+                                                <!--內容表單-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--全家彈出視窗-->
                             </li>
                             <li>姓名：尹程善</li>
                             <li>電話：0983755199</li>
@@ -1231,6 +1311,9 @@
     <script src="~/js/contact-form-script.js"></script>
     <!--nav導覽與頁籤使用-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!--Google Map API-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
     <script src="~/js/checkout.js"></script>
   
 }
