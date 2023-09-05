@@ -218,31 +218,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         #endregion
-
-        //public IActionResult ShopItemPerPage(string? catName, int itemPerPage)
-        //{
-        //    var allItems = _productService.getProductItems().Take(itemPerPage);
-
-        //    if (catName != null)//有選category才會傳入catName
-        //    {
-        //        allItems = _productService.getProductByCategoryName(catName).Take(itemPerPage);
-
-        //    }
-        //    return Json(allItems);
-        //    if (itemPerPage >= allItems.Count())
-        //    {
-        //        if (catName != null)//有選category才會傳入catName
-        //        {
-        //            List<CCategoryItem> categoryItems = _productService.getCatProductForEachPage(catName, itemPerPage);
-        //            return Json(categoryItems, message = "已經到底囉!");
-        //        }
-        //        else
-        //        {
-        //            var eachPage = allItems.Take(itemPerPage);
-        //            return Json(new { eachPage, message = "已經到底囉!" });
-        //        }
-        //    }
-        //}
         public IActionResult MultipleFilter(int optionOrder, string? optionBrand, string? catName, int itemPerPage)
         {
             var prods = _productService.getProductItems();
