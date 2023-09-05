@@ -53,8 +53,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 ProductDescription = x.ProductDescription,
                 ProductPrice = x.ProductPrice,
                 ProductImage = x.ProductImage,
-                PurchasedQuantity = x.PurchasedQuantity,
-                RemainingQuantity = x.RemainingQuantity,
                 LotteryProbability = x.LotteryProbability
             }).ToList();
             return Json(new { data });
@@ -142,12 +140,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 if (cGameproduct.ProductPrice != null)
                     editProduct.ProductPrice = cGameproduct.ProductPrice;
 
-                if (cGameproduct.PurchasedQuantity != null)
-                    editProduct.PurchasedQuantity = cGameproduct.PurchasedQuantity;
-
-                if (cGameproduct.RemainingQuantity != null)
-                    editProduct.RemainingQuantity = cGameproduct.RemainingQuantity;
-
                 if (cGameproduct.LotteryProbability != null)
                     editProduct.LotteryProbability = cGameproduct.LotteryProbability;
 
@@ -187,8 +179,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 ProductDescription = cGameproduct.ProductDescription,
                 ProductCategoryId = cGameproduct.ProductCategoryId,
                 ProductPrice = cGameproduct.ProductPrice,
-                PurchasedQuantity = cGameproduct.PurchasedQuantity,
-                RemainingQuantity = cGameproduct.RemainingQuantity,
                 LotteryProbability = cGameproduct.LotteryProbability,
 
             };

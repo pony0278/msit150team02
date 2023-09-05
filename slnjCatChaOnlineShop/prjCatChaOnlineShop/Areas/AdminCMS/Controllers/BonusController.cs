@@ -5,6 +5,7 @@ using NETCore.MailKit.Core;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
+using System.Net.Mail;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -203,33 +204,59 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         }
 
 
+
         [HttpPost]
-        public IActionResult SendNotify(int? id)
+        public IActionResult SendCouponExpirationEmail(int couponId)
         {
-            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+            var coupon = _cachaContext.ShopCouponTotal
+                .Where(c => c.CouponId == couponId && c.Usable == true)
+                .FirstOrDefault();
 
-            if (coupon == null)
+            if (coupon != null)
             {
-                return NotFound();
+                var members = _cachaContext.ShopMemberCouponData
+                    .Where(m => m.CouponId == coupon.CouponId && m.CouponStatusId == true)
+                    .ToList();
+
+                foreach (var member in members)
+                {
+                    // 獲取會員的Email
+                    var memberInfo = _cachaContext.ShopMemberInfo
+                        .Where(mi => mi.MemberId == member.MemberId)
+                        .FirstOrDefault();
+
+                    if (memberInfo != null)
+                    {
+                        // 創建郵件內容
+                        string subject = "優惠券到期通知";
+                        string body = $"優惠券名稱：{coupon.CouponName}\n到期日：{coupon.ExpiryDate}\n總數量：{coupon.TotalQuantity}";
+
+                        // 創建郵件寄件者和收件者
+                        MailAddress from = new MailAddress("catcha20232023@gmail.com", "catcha貓抓抓");
+                        MailAddress to = new MailAddress(memberInfo.Email);
+
+                        // 創建郵件物件並發送
+                        using (SmtpClient smtp = new SmtpClient("smtp.gmail.com"))
+                        {
+                            smtp.Credentials = new System.Net.NetworkCredential("catcha20232023@gmail.com", "catcha123");
+                            smtp.EnableSsl = true;
+
+                            using (MailMessage message = new MailMessage(from, to))
+                            {
+                                message.Subject = subject;
+                                message.Body = body;
+                                message.IsBodyHtml = false;
+
+                                smtp.Send(message);
+                            }
+                        }
+                    }
+                }
+
+                return Json(new { success = true });
             }
-
-            // 獲取符合條件的會員
-            var membersToSendNotification = _cachaContext.ShopMemberCouponData
-                .Where(data => data.CouponId == coupon.CouponId && data.CouponStatusId.GetValueOrDefault())
-                .Select(data => data.MemberId)
-                .ToList();
-
-            foreach (var memberId in membersToSendNotification)
-            {
-                // 呼叫 Email 服務來發送通知信 TODO
-                //_emailService.SendEmail(memberId, "優惠券到期提醒", emailContent);
-            }
-
-            return Json(new { success = true });
+            return NotFound();
         }
-
-
-
     }
 }
 
