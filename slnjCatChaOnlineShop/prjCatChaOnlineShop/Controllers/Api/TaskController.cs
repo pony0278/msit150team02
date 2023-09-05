@@ -79,18 +79,29 @@ namespace prjCatChaOnlineShop.Controllers.Api
         {
             try
             {//選出目前啟用的任務
+
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
                 var availibaleTask = (from p in _context.GameTaskList
-                            .Where(x => x.TaskConditionId == 1)
-                                      join i in _context.GameMemberTask on p.TaskId equals i.TaskId
+                                      where p.TaskConditionId == 1
+                                      join i in _context.GameMemberTask
+                                      on p.TaskId equals i.TaskId
+                                      where i.MemberId == _memberId
                                       orderby p.TaskId descending
+
                              select new
                              {
                                  p.TaskId,
                                  p.TaskName,
                                  p.TaskReward,
                                  p.TaskRequireTime,
-                                 i.TaskProgress
-                             }).ToList();
+                                 i.TaskProgress,
+                                 i.MemberId
+                             })
+                             .GroupBy(task => task.TaskId) 
+                             .Select(group => group.First())
+                             .ToList();
                 if (availibaleTask.Any())
                 {
 
