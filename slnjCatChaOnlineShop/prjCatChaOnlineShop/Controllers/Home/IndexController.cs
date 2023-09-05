@@ -44,10 +44,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
         public IActionResult Index()
         {
+            var banners = _context.GameShopBanner.Where(b => b.Display == true).ToList();
+            var productItems = banners.Select(b => new CProductItem { Link = b.Link, Display = b.Display }).ToList();
+
             var items = _productService.getProductItems();
             string userName = HttpContext.Session.GetString("UserName");
-            ViewBag.UserName = userName;//把使用者名字傳給_Layout
-            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
+            ViewBag.UserName = userName;
+            ViewBag.Categories = _productService.getAllCategories();
+            ViewBag.Banners = productItems;
+
             return View(items);
         }
         [HttpGet]

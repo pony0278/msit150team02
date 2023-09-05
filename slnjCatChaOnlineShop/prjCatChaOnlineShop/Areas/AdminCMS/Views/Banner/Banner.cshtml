@@ -54,19 +54,19 @@
 
             <div class="row align-items-center">
                 <div class="col-6">
-                    <h2 class="mt-3">Banner管理</h2>
+                    <h2 class="mt-3">橫幅管理</h2>
                 </div>
                 <div class="col-6 text-end mt-3">
-                    <button class="btn btn-primary" data-bs-toggle="modal" href="#addBannerModalToggle"
+            <button class="btn btn-success create_btn" data-bs-toggle="modal" href="#addBannerModalToggle"
                             role="button">
-                        新增Banner
+                新增橫幅
                     </button>
             </div>
             </div>
 
     <div class="row mt-3">
         <div class="col-6 offset-6 text-end">
-            <button type="button" class="btn btn-secondary" onclick="showPreviewAlert()">
+            <button type="button" class="btn btn-success" onclick="showPreviewAlert()">
                 預覽首頁
             </button>
         </div>
@@ -79,7 +79,7 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                    <h5 class="modal-title" id="addBannerModalToggleLabel">新增Banner</h5>
+                    <h5 class="modal-title" id="addBannerModalToggleLabel">新增橫幅</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
@@ -119,7 +119,8 @@
                                         <img id="preview-createimage" src="" class="w-100 border">
                                     </div>
                                 </div>
-                        <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton" id="submitButton"
+                        <button type="button" class="mt-3 btn btn-danger" onclick="setCreateBannerValue()">Demo</button>
+                        <button type="submit" class="mt-3 btn btn-danger btn-block" name="submitButton" id="submitButton"
                                 style="width: 100%;">
                             儲存
                         </button>
@@ -205,7 +206,7 @@
                                                 <img id="previewImage" src="" alt="Image Preview" class="w-100 border">
                                             </div>
                                         </div>
-                                    <button type="submit" class="mt-3 btn btn-primary btn-block" name="submitButton-edior" id="submitButton-edior"
+                                    <button type="submit" class="mt-3 btn btn-danger btn-block" name="submitButton-edior" id="submitButton-edior"
                                                     style="width: 100%;">儲存</button>
                                     </div>
                                     <!--內容表單-->
@@ -365,6 +366,16 @@
                 formData.append("Image", file)
             }
 
+
+            //驗證非空值
+            if (!name || !date ) {
+                showErrorMessage("錯誤", "名稱、上架日期為必填欄位，請再次檢查。");
+                return;
+            }
+
+
+
+
             $.ajax({
                 url: "@Url.Action("EditBanner","Banner" , new { area="AdminCMS" })",
                 type: 'POST',
@@ -373,7 +384,7 @@
                 contentType: false,
                 success: function (response) {
                     if (response.success) {
-                        showSuccessMessage("編輯成功", "內容已儲存");
+                        showSuccessMessage("編輯成功", "橫幅內容已儲存");
                         closeModalAndReloadTable();
                     } else {
                         showErrorMessage("編輯失敗", "請再次確認");
@@ -432,6 +443,15 @@
             const display = $('#create-display').val();
             var fileInput = $('#create-image')[0];
             var file = fileInput.files[0];
+
+
+            //驗證非空值
+            if (!name || !publishdate || !display || !file) {
+                showErrorMessage("錯誤", "名稱、上架日期、是否顯示、圖片為必填欄位，請再次檢查。");
+                return;
+            }
+
+
 
             var formData = new FormData();
             formData.append("Banner", name)
@@ -496,7 +516,8 @@
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
-                    confirmButtonText: 'Yes, delete it!'
+                    confirmButtonText: '確認刪除',
+                    cancelButtonText:'取消'
                 }).then((result) => {
                     if (result.isConfirmed) {
                         var deleteButton = $(this);
@@ -597,6 +618,28 @@
             });
         }
 
+        //新增Demo按鍵
+        function setCreateBannerValue() {
+            $("#create-name").val("測試用橫幅");
+            $("#create-date").val("2023-09-05");
+            $('#create-display').val("true");
+            $('#create-image').val("https://msit150team02blob.blob.core.windows.net/msit150team02/categories_img_02.jpg");
+            $('#preview-createimage').val("https://msit150team02blob.blob.core.windows.net/msit150team02/categories_img_02.jpg");
+        }
+
+        // 再次新增時清空表單輸入值
+        function clearFormInputs() {
+            $('#create-name').val('');
+            $('#create-date').val('');
+            $('#create-display').val('');
+            $('#create-image').val('');
+            $('#preview-createimage').val('');
+        }
+
+        // 點擊關閉按鈕時清空表單
+        $('.create_btn').click(function () {
+            clearFormInputs();
+        });
 
     </script>
 }

@@ -13,11 +13,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
     public class BonusController : Controller
     {
         private readonly cachaContext _cachaContext;
-        //private readonly IEmailService _emailService; // 注入 Email 服務
         public BonusController(cachaContext cachaContext)
         {
             _cachaContext = cachaContext;
-            //_emailService = emailService;
         }
 
         public IActionResult Bonus()
@@ -206,10 +204,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
 
         [HttpPost]
-        public IActionResult SendCouponExpirationEmail(int couponId)
+        public IActionResult SendCouponExpirationEmail(int? id)
         {
             var coupon = _cachaContext.ShopCouponTotal
-                .Where(c => c.CouponId == couponId && c.Usable == true)
+                .Where(c => c.CouponId == id && c.Usable == true)
                 .FirstOrDefault();
 
             if (coupon != null)
@@ -229,7 +227,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     {
                         // 創建郵件內容
                         string subject = "優惠券到期通知";
-                        string body = $"優惠券名稱：{coupon.CouponName}\n到期日：{coupon.ExpiryDate}\n總數量：{coupon.TotalQuantity}";
+                        string body = $"優惠券名稱：{coupon.CouponName}\n到期日：{coupon.ExpiryDate}";
+
 
                         // 創建郵件寄件者和收件者
                         MailAddress from = new MailAddress("catcha20232023@gmail.com", "catcha貓抓抓");
@@ -238,7 +237,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         // 創建郵件物件並發送
                         using (SmtpClient smtp = new SmtpClient("smtp.gmail.com"))
                         {
-                            smtp.Credentials = new System.Net.NetworkCredential("catcha20232023@gmail.com", "catcha123");
+                            smtp.Port = 587;
+                            smtp.Credentials = new System.Net.NetworkCredential("catcha20232023@gmail.com", "qwgbrrcdglyquavh");
                             smtp.EnableSsl = true;
 
                             using (MailMessage message = new MailMessage(from, to))
@@ -247,7 +247,15 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                                 message.Body = body;
                                 message.IsBodyHtml = false;
 
-                                smtp.Send(message);
+                                try
+                                {
+                                    smtp.Send(message);
+                                    Console.WriteLine("郵件發送成功！");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("郵件發送失敗：" + ex.Message);
+                                }
                             }
                         }
                     }

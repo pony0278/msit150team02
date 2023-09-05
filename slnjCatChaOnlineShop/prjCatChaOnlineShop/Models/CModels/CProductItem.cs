@@ -5,6 +5,7 @@ namespace prjCatChaOnlineShop.Models.CModels
     public class CProductItem
     {
         public ShopProductTotal? pItems { get; set; }
+        GameShopBanner _banr = new GameShopBanner();
         public int pId
         {
             get { return pItems.ProductId; }
@@ -76,5 +77,11 @@ namespace prjCatChaOnlineShop.Models.CModels
         }
         public List<string?>? p圖片路徑 { get; set; }
         public bool p是否加入收藏 { get; set; }
+
+
+        public GameShopBanner banner { get { return _banr; } set { _banr = value; } }
+        public string Link { get { return _banr.Link; } set { _banr.Link = value; } }
+        public bool? Display { get { return _banr.Display; } set { _banr.Display = value; } }
+
     }
 }
