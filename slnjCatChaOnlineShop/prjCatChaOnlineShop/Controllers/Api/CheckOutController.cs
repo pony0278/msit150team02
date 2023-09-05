@@ -4,6 +4,8 @@ using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Models;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 
 namespace prjCatChaOnlineShop.Controllers.Api
 {
@@ -14,12 +16,26 @@ namespace prjCatChaOnlineShop.Controllers.Api
         { 
         _context = context;
         }
+       
+        public IActionResult StoreCouponId([FromBody] CSelectedCouponId selectedCouponId)
+        {
+            int Id = selectedCouponId.CouponId;
+            HttpContext.Session.SetInt32("CouponId", Id);
+            ViewBag.finalcouponid = Id;
+            return View();
+
+            //HttpContext.Session.SetString("CouponId", Convert.ToString(selectedCouponId.CouponId));
+            //return Json(new { success = true });
+        }
         public IActionResult AddNewOrder([FromForm] CAddorderViewModel addOrder)
         {
             using (var transaction = _context.Database.BeginTransaction())
             {
                 try
                 {
+                    //會員最後使用的優惠券ID
+                    int couponID = HttpContext.Session.GetInt32("CouponId")??0;
+
                     // 新建訂單
                     ShopOrderTotalTable neworder = new ShopOrderTotalTable
                     {
@@ -27,7 +43,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         OrderCreationDate = DateTime.Now,
                         OrderStatusId = 2,
                         PaymentMethodId = 2,
-                        CouponId = addOrder.CouponId
+                        CouponId = couponID,
                     };
                     _context.Add(neworder);
                     _context.SaveChanges(); // 
