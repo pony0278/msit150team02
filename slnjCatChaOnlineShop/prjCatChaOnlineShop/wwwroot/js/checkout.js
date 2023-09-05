@@ -9,26 +9,34 @@
         var usecouponid = $(this).data('coupon-id');
         console.log("優惠券名稱", couponName);
         console.log("優惠券折數", couponSpecialOffer);
+        console.log("優惠券ID", usecouponid);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
         $("#CouponId").text(usecouponid);
+        $("#CouponId").val(usecouponid);
         // 將優惠券SpecialOffer的值綁定到input標籤上的data-coupon-specialoffer屬性
         $("#couponCodeInput").data("coupon-specialoffer", couponSpecialOffer);
-        //$.ajax({
-
-        //    url: '/Coupon/couponDiscount', //TODO:建議要用url.content
-        //    type: 'POST',
-        //    data: { SpecialOffer: couponSpecialOffer },
-        //    success: function (response) {
-        //        $('#AllTotalPrice').text("NT" + response.totalPrice),
-        //            $('#couponBonus').text("NT" + response.couponBonus),
-        //            console.log(response);
-        //    }
-        //})
+        var formData =
+        {
+            CouponId: $("#CouponId").val()
+        };
         calculateDiscounts(); // 優惠券計算
         // 模擬使用者操作關閉模態框
-        $('.btn-close').click();
+        $('.btn-close').click(); 
+        $.ajax({
+            type: 'POST',
+            url: '/CheckOut/StoreCouponId/',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                // 
+            },
+            error: function (error) {
+                // 
+            }
+        });
     });
+
 
     //監聽會員是否勾選使用紅利，當用戶勾選或取消勾選該複選框時，觸發計算優惠券和紅利的函數。
     $('#useLoyalityPoint').on('change', function () {

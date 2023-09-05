@@ -112,7 +112,7 @@
                     </div>
                     @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null &&Model!=null)
                     {
-                        <div id="MemberId"> @memberinfo.MemberId </div>
+                        @*<div id="MemberId"> @memberinfo.MemberId </div>*@
                         <form class="needs-validation">
                             <div class="custom-control custom-checkbox">
                                 <input type="checkbox" class="custom-control-input" id="useLoyalityPoint">
@@ -136,7 +136,7 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
-                                <div id="CouponId"></div>
+                                <input id="CouponId" value=""></input>
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
                                        aria-label="請選擇優惠券" aria-describedby="button-addon2" data-coupon-specialoffer readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
