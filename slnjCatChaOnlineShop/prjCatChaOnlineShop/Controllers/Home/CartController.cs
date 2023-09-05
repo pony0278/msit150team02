@@ -116,6 +116,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         #endregion
 
         #region 付款頁面
+       
         public IActionResult Pay()
         {
             string userName = HttpContext.Session.GetString("UserName");
@@ -128,6 +129,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
             //從session中拿取最後計算好的金額資料
             string priceData = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+            //從session中拿取最後選擇的付款方式跟運送方式
+            string finalpaymentMethod = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
             if (memberInfo != null && productList != null && priceData!=null)
             {
                 //會員資料
@@ -143,9 +146,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 //最後金額資料
                 var priceDatas=JsonSerializer.Deserialize<CPayModel>(priceData);
-
+                //
                 // 獲取 finalTotalPrice 的值
                 var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
+
+                //最後運送方式、付款方式
+                //var fPaymentMethod = JsonSerializer.Deserialize<CPayModel>(finalpaymentMethod);
 
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
@@ -179,10 +185,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 order["CheckMacValue"] = GetCheckMacValue(order);
 
                 var viewmodel = new CCheckoutViewModel
-                {
+                { 
                     keyValuePairs = order ?? new Dictionary<string, string>(),
                     cartItems=cartItems??new List<CCartItem>(),
                     getFinalPriceData=priceDatas?? new CPayModel(),
+                    //getFinalPaymentMethod = fPaymentMethod ?? new CPayModel(),
                 };
                 return View(viewmodel);
             }

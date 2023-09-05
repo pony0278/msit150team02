@@ -16,16 +16,29 @@ namespace prjCatChaOnlineShop.Controllers.Api
         { 
         _context = context;
         }
-       
+        public IActionResult paymentSelected(string paymentMethod)
+        {
+            //string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+            //CPayModel PayModel=JsonSerializer.Deserialize<CPayModel>(json);
+            //PayModel.paymentMethod = paymentMethod;
+            //string newJson=JsonSerializer.Serialize(PayModel);
+            //HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
+            CPayModel payModel = new CPayModel
+            {
+                paymentMethod = paymentMethod,
+            };
+            var json = JsonSerializer.Serialize(payModel);
+            HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
+
+            return View();
+        }
+
         public IActionResult StoreCouponId([FromBody] CSelectedCouponId selectedCouponId)
         {
             int Id = selectedCouponId.CouponId;
             HttpContext.Session.SetInt32("CouponId", Id);
             ViewBag.finalcouponid = Id;
-            return View();
-
-            //HttpContext.Session.SetString("CouponId", Convert.ToString(selectedCouponId.CouponId));
-            //return Json(new { success = true });
+            return View(); 
         }
         public IActionResult AddNewOrder([FromForm] CAddorderViewModel addOrder)
         {

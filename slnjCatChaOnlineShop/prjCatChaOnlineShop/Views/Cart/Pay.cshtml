@@ -9,8 +9,8 @@
     {
         memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
     }
-   
-   
+
+
 }
 @{
     ViewData["Title"] = "Pay";
@@ -78,23 +78,25 @@
                 </div>
             </div>
         </div>
-        <div class="row mt-3">
-            <div class="col-6">
-                <div class="title-left">
-                    <h3>付款方式</h3>
+        @if (Model != null && Model.getFinalPriceData != null && Model.getFinalPaymentMethod!=null)
+        {
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="title-left">
+                        <h3>付款方式</h3>
+                        <div> @Model.getFinalPaymentMethod.paymentMethod </div>
+                    </div>
+                </div>
+                <div class="col-6">
+                    <div class="title-left">
+                        <h3>運送方式</h3>
+                    </div>
                 </div>
             </div>
-            <div class="col-6">
-                <div class="title-left">
-                    <h3>運送方式</h3>
-                </div>
-            </div>
-        </div>
-        <div class="row ">
-            <div class="col-md-12 col-lg-12">
-                <div class="order-box">
-                    @if (Model != null && Model.getFinalPriceData != null)
-                    {
+            <div class="row ">
+                <div class="col-md-12 col-lg-12">
+                    <div class="order-box">
+
                         <div class="d-flex">
                             <h4>小計</h4>
                             <div class="ml-auto font-weight-bold" id="finalSubtotal"> NT @Model.getFinalPriceData.subtotal  </div>
@@ -114,10 +116,11 @@
                             <div class="ml-auto h4" style="color:red" id="allTotalPrice"> NT @Model.getFinalPriceData.finalAmount  </div>
                         </div>
                         <hr>
-                    }
+
+                    </div>
                 </div>
             </div>
-        </div>
+        }
         @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null && Model != null)
         {
             <div id="MemberId" hidden> @memberinfo.MemberId </div>
@@ -206,7 +209,7 @@
     <script>
         // 監聽送出訂單按鈕的點擊事件
         $('#gotopay').on('click', (e) => {
-            /*e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+            e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("嚴重折壽耶^_^")
             let formData = $("#ecpayform").serializeArray();
             var json = {};

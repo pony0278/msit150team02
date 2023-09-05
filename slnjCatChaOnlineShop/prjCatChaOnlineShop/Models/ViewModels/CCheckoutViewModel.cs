@@ -16,5 +16,7 @@ namespace prjCatChaOnlineShop.Models.ViewModels
         public CGetCouponPrice getCouponPrice { get; set; }
         //取得會員訂單各金額的計算
         public CPayModel getFinalPriceData { get; set; }
+        //取得會員最後選擇的付款方式、運送方式
+        public CPayModel getFinalPaymentMethod { get; set; }
     }
 }

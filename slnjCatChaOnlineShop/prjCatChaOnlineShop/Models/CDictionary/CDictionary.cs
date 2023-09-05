@@ -10,5 +10,7 @@
         public static readonly string SK_LOINGED_USER = "SK_LOINGED_USER";
 
         public static readonly string SK_PAY_MODEL = "SK_PAY_MODEL";
+
+        public static readonly string SK_PAYMEMENT_MODEL = "SK_PAYMEMENT_MODEL";
     }
 }

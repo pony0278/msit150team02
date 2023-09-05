@@ -6,7 +6,8 @@
         public decimal shippingFee { get; set; }
         public decimal finalBonus { get; set; }
         public int finalAmount { get; set; }
-
+        public string paymentMethod { get; set; }
+        public string shippingMethod { get; set; }
 
     }
 }
