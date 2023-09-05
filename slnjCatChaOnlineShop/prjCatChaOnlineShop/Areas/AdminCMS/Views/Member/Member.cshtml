@@ -34,9 +34,9 @@
         }
 
         /*         #member-table_filter {
-                                    display: inline-block;
-                                    margin-bottom: 10px;
-                                } */
+                                            display: inline-block;
+                                            margin-bottom: 10px;
+                                        } */
 
         paginate_button:hover {
             background-color: unset !important;
@@ -46,6 +46,20 @@
         .selected-cell {
             background-color: #2079fd !important; /* 將“blue”替換為您想要的藍色選中行的背景顏色 */
             color: #fff !important; /* 調整文字顏色以確保可讀性 */
+        }
+
+        #select-all {
+            width: 25px;
+            height: 25px;
+            cursor: pointer;
+        }
+
+        .checkbox-label {
+            font-size: 20px;
+            background-color: #f2d6d6;
+            opacity: .8;
+            padding: 0 5px 0 5px;
+            cursor: pointer;
         }
 
         .checkbox-css {
@@ -66,6 +80,11 @@
             padding: 7px;
             line-height: 40px;
         }
+
+        .selectall-checkbox-group {
+            align-items: center;
+            display: flex;
+        }
     </style>
 }
 
@@ -76,8 +95,8 @@
             <h2 class="mt-3">會員管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
-            <button class="btn btn-warning" data-bs-toggle="modal" href="#sentLetterModalToggle" id="NewsLetterModalBtn" role="button">發送電子報</button>
-            <button class="btn btn-danger" data-bs-toggle="modal" href="#addLetterModalToggle" role="button">電子報上下版新增</button>
+            <button class="create_btn" data-bs-toggle="modal" href="#sentLetterModalToggle" id="NewsLetterModalBtn" role="button">發送電子報</button>
+            @*<button class="btn btn-danger" data-bs-toggle="modal" href="#addLetterModalToggle" role="button">電子報上下版新增</button>*@
             <button class="create_btn" data-bs-toggle="modal" href="#addMemberModalToggle" role="button">新增會員</button>
         </div>
     </div>
@@ -85,10 +104,11 @@
     <!---發送電子報 modal-->
     <div class="modal fade" id="sentLetterModalToggle" aria-hidden="true"
          aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-        <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">發送電子報</h5>
+                    <button type="button" class="btn btn-danger ms-2" onclick="setSendEmailValue()">demo</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
@@ -100,14 +120,6 @@
                     <div class="form-group mb-2">
                         <label>會員郵件列表</label>
                         <div class="sentLetterModalToggleDiv" id="sentMailAddress">
-                            @*<p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>
-                            <p>123@gmail.com</p>*@
                         </div>
                     </div>
 
@@ -124,6 +136,10 @@
                     <div class="form-group mb-2">
                         <label>圖片內容</label>
                         <input type="file" class="form-control" id="sentContentImage" name="ContentImage" accept="image/*" />
+                    </div>
+
+                    <div class="mb-3 text-center">
+                        <img id="showImg" width="500" />
                     </div>
 
                     <button id="SentNewsLetter" class="btn btn-danger btn-block" style="width: 100%;">
@@ -187,7 +203,6 @@
                     <div class="form-group mb-2">
                         <label>帳號</label><span class="RequiredText"> *必填</span>
                         <input type="email" class="form-control" id="CreatMemberAccount" name="MemberAccount" onblur="CheckDuplicateAccount()" placeholder="請輸入電子信箱">
-                        @* <span id="duplicateMessage" style="display:none;color:red;"></span> *@
                         <span id="error1" class="error-message"></span>
                     </div>
 
@@ -267,15 +282,15 @@
             <div class="col-12 col-xs-12">
                 <div class="mb-3">
                     <label>會員狀態</label>
-                    <select class="form-select w-25" id="payList" style="display: inline-block !important;">
+                    <select class="form-select w-25" id="memberStatusList" style="display: inline-block !important;">
                         <option value="" selected>全部資料</option>
                         <option value="開放">開放</option>
                         <option value="凍結">凍結</option>
                     </select>
 
-                    <div>
+                    <div class="selectall-checkbox-group mt-2">
                         <input type="checkbox" id="select-all" />
-                        <label for="select-all">全選</label>
+                        <label for="select-all" class="checkbox-label">全選訂閱電子報的會員</label>
                     </div>
                 </div>
                 <!--表格-->
@@ -328,18 +343,12 @@
                                     role="tab">
                                 遊戲資訊
                             </button>
-                            @* <button class="nav-link" id="nav-contact-tab"
-                            data-bs-toggle="tab"
-                            data-bs-target="#member-edit-nav-contact" type="button"
-                            role="tab">
-                            常用地址
-                            </button> 
-                            @*                                         <button class="nav-link" id="nav-contact2-tab"
-                            data-bs-toggle="tab"
-                            data-bs-target="#member-edit-nav-paper" type="button"
-                            role="tab">
-                            會員優惠券
-                            </button> *@
+                            <button class="nav-link" id="nav-contact-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#member-edit-nav-contact" type="button"
+                                    role="tab">
+                                常用地址
+                            </button>
                         </div>
                     </nav>
                     <div class="tab-content mt-3" id="nav-tabContent">
@@ -393,6 +402,14 @@
                                 </select>
                             </div>
 
+                            <div class="form-group mb-2">
+                                <label>訂閱電子報：</label>
+                                <select class="form-control" id="memberSubscribe_edit">
+                                    <option value="true">是</option>
+                                    <option value="false">否</option>
+                                </select>
+                            </div>
+
                             <button class="btn btn-danger btn-block mt-2 EditMember_Save"
                                     style="width: 100%;">
                                 儲存
@@ -424,45 +441,33 @@
                                 儲存
                             </button>
                         </div>
-                        @* <div class="tab-pane fade" id="member-edit-nav-contact">
-                        <div class="form-group">
-                        <label>Address ID：</label>
+                        <div class="tab-pane fade" id="member-edit-nav-contact">
+                            <div class="form-group">
+                                <label>Address ID：</label>
 
-                        <input type="text" class="form-control">
-                        </div>
+                                <input type="text" class="form-control">
+                            </div>
 
-                        <div class="form-group">
-                        <label>Recipient Name：</label>
-                        <input type="text" class="form-control">
-                        </div>
+                            <div class="form-group">
+                                <label>Recipient Name：</label>
+                                <input type="text" class="form-control">
+                            </div>
 
-                        <div class="form-group">
-                        <label>Recipient Phone：</label>
-                        <input type="text" class="form-control">
-                        </div>
+                            <div class="form-group">
+                                <label>Recipient Phone：</label>
+                                <input type="text" class="form-control">
+                            </div>
 
-                        <div class="form-group">
-                        <label>Recipient Address：</label>
-                        <input type="text" class="form-control">
-                        </div>
+                            <div class="form-group">
+                                <label>Recipient Address：</label>
+                                <input type="text" class="form-control">
+                            </div>
 
-                        <button class="btn btn-danger btn-block"
-                        style="width: 100%;">
-                        儲存
-                        </button>
-                        </div> *@
-                        @*                                     <div class="tab-pane fade" id="member-edit-nav-paper">
-                        <div style="border: 1px solid #000;">
-                        <p>折價券ID：2</p>
-                        <p>折價券內容：滿500折10</p>
-                        <p>使用狀態：未使用</p>
-                        <p>優惠券狀態：_______(此欄待確認)</p>
-                        <button class="btn btn-danger btn-block" style="width: 100%"
-                        onclick="userDelete()">
-                        刪除
-                        </button>
+                            <button class="btn btn-danger btn-block"
+                                    style="width: 100%;">
+                                儲存
+                            </button>
                         </div>
-                        </div> *@
                     </div>
                 </div>
             </div>
@@ -712,12 +717,11 @@
         //=======================搜尋功能
 
         // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-        $('#payList').on('change', function () {
+        $('#memberStatusList').on('change', function () {
             var filterOption1 = $(this).val();
 
             // 使用DataTable的column().search()方法進行過濾
-            dataTable.column(7).search(filterOption1).draw();
-            // 其他列...
+            dataTable.column(9).search(filterOption1).draw();
         });
 
 
@@ -788,9 +792,6 @@
                 },
             ],
             columnDefs: [
-                //{ targets: 7, searchable: true },
-                // { targets: 5, searchable: true }
-                // 其他列...
                 {
                     targets: 7,
                     searchable: true,
@@ -842,7 +843,7 @@
         });
 
 
-        
+
 
 
         // 監聽checkbox變更事件
@@ -1041,12 +1042,12 @@
                             var addressNumber = i + 1; //計算幾筆資料的數字
 
                             itemDiv.innerHTML = `
-                                                                                                                                                                                                                    <h5><b>常用地址－${addressNumber}</b></h5>
-                                                                                                                                                                                                                    <p>收件人姓名: ${item.recipientName}</p>
-                                                                                                                                                                                                                    <p>連絡電話: ${item.recipientPhone}</p>
-                                                                                                                                                                                                                    <p>收件地址: ${item.recipientAddress}</p>
-                                                                                                                                                                                                            <hr>
-                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                            <h5><b>常用地址－${addressNumber}</b></h5>
+                                                                                                                                                                                                                            <p>收件人姓名: ${item.recipientName}</p>
+                                                                                                                                                                                                                            <p>連絡電話: ${item.recipientPhone}</p>
+                                                                                                                                                                                                                            <p>收件地址: ${item.recipientAddress}</p>
+                                                                                                                                                                                                                    <hr>
+                                                                                                                                                                                                                `;
                             CAContainer.append(itemDiv);
                         }
                     } else {
@@ -1075,13 +1076,13 @@
                             }
 
                             itemDiv.innerHTML = `
-                                                                                                                                                                                                                            <h5><b>優惠券第${couponNumber}張</b></h5>
-                                                                                                                                                                                                                                    <p>優惠券ID: ${item.couponId}</p>
-                                                                                                                                                                                                                                            <p>優惠券內容: ${item.coupon.couponContent}</p>
-                                                                                                                                                                                                                                                            <p>有效日期: ${formattedExpiryDate}</p>
-                                                                                                                                                                                                                                    <p>優惠券狀態: ${item.couponStatusId}</p>
-                                                                                                                                                                                                            <hr>
-                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                    <h5><b>優惠券第${couponNumber}張</b></h5>
+                                                                                                                                                                                                                                            <p>優惠券ID: ${item.couponId}</p>
+                                                                                                                                                                                                                                                    <p>優惠券內容: ${item.coupon.couponContent}</p>
+                                                                                                                                                                                                                                                                    <p>有效日期: ${formattedExpiryDate}</p>
+                                                                                                                                                                                                                                            <p>優惠券狀態: ${item.couponStatusId}</p>
+                                                                                                                                                                                                                    <hr>
+                                                                                                                                                                                                                `;
                             couponContainer.append(itemDiv);
                         }
                     } else {
@@ -1131,6 +1132,12 @@
                         $('#memberStatus_edit').val(data.data.memberStatus.toString());
                     }
 
+                    if (data.data.subscribe == null) {
+                        $('#memberSubscribe_edit').val("true");
+                    } else {
+                        $('#memberSubscribe_edit').val(data.data.subscribe.toString());
+                    }
+
                     //==================遊戲資料
                     $('#levelId_edit').val(data.data.levelId);
                     $('#characterName_edit').val(data.data.characterName);
@@ -1167,6 +1174,7 @@
             var PhoneNumber = $('#phoneNumber_edit').val();
             var Address = $('#address_edit').val();
             var MemberStatus = $('#memberStatus_edit').val();
+            var MemberSubscribe = $('#memberSubscribe_edit').val();
 
             //==================遊戲資料
             var LevelId = $('#levelId_edit').val();
@@ -1187,7 +1195,8 @@
                 LevelId: LevelId,
                 CharacterName: CharacterName,
                 CatCoinQuantity: CatCoinQuantity,
-                LoyaltyPoints: LoyaltyPoints
+                LoyaltyPoints: LoyaltyPoints,
+                Subscribe: MemberSubscribe,
             };
 
             $.ajax({
@@ -1267,15 +1276,30 @@
 
         //====================新增會員demo鍵
         function setValue() {
-            var Name = $('#CreatName').val("王小明");
-            var MemberAccount = $('#CreatMemberAccount').val("catcha@yahoo.com.tw");
-            var Password = $('#CreatMemberPassword').val("12345678a");
-            var CheckPassword = $('#CreatMemberCheckPassword').val("12345678");
-            var Birthday = $('#CreatBirthday').val("1992-10-04");
-            var Email = $('#CreatEmail').val("catcha");
-            var PhoneNumber = $('#CreatPhoneNumber').val("0912345678");
-            var Address = $('#CreatAddress').val("235新北市中和區中山路二段347號");
+            $('#CreatName').val("王小明");
+            $('#CreatMemberAccount').val("catcha@yahoo.com.tw");
+            $('#CreatMemberPassword').val("12345678a");
+            $('#CreatMemberCheckPassword').val("12345678");
+            $('#CreatBirthday').val("1992-10-04");
+            $('#CreatEmail').val("catcha");
+            $('#CreatPhoneNumber').val("0912345678");
+            $('#CreatAddress').val("235新北市中和區中山路二段347號");
         }
+
+        //=====================電子報demo鍵
+        function setSendEmailValue() {
+            $('#sentSubject').val('【CATCHA｜春夏特賣會好評加碼24HR】現正熱賣中！立刻去瞧瞧');
+            $('#sentImgUrl').val('https://localhost:7218/Index/ShopDetail?pId=24');
+        }
+
+        //=============上傳圖片預覽功能
+        $('#sentContentImage').on('change', function (e) {
+            //1 - createObjectURL 寫法
+            const file = this.files[0];
+            const objectURL = URL.createObjectURL(file);
+
+            $('#showImg').attr('src', objectURL);
+        });
 
         //====================新增會員
         $('#CreatMember').click(function () {

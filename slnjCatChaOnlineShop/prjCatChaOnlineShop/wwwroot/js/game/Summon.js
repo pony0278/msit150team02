@@ -17,6 +17,10 @@ let 角色名稱;
 let 貓幣數量;
 let 紅利數量;
 let 道具ID = [];
+// 定義全局變數以存儲計時器的引用
+let gachaTimer;
+
+
 // 初始化 playerDataArray 為一個空陣列
 const playerDataArray = [];
 
@@ -86,6 +90,7 @@ RubySingleDrow.addEventListener('click', function () {
 //顯示抽獎動畫及道具
 function showGachaResult(scaledProbability, allImages, allItemName) {
     skipClicked = false;
+    clearTimeout(gachaTimer);
     result.innerHTML = '';
 
     // 創建 ItemNameContainer 變數並初始化
@@ -165,7 +170,7 @@ function showGachaResult(scaledProbability, allImages, allItemName) {
         result.appendChild(itemContainer);
     });
 
-    setTimeout(() => {
+    gachaTimer = setTimeout(() => {
         if (!skipClicked) {
             animationImages.forEach(image => {
                 image.style.display = 'none';
@@ -190,9 +195,11 @@ function showGachaResult(scaledProbability, allImages, allItemName) {
     }, 10000); // 10 秒
 }
 
+
 // 跳過動畫
 skipButton.addEventListener('click', function () {
     skipClicked = true;
+    clearTimeout(gachaTimer); // 清除計時器
 
     animationImages.forEach(image => {
         image.style.display = 'none';

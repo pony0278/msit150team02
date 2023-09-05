@@ -11,6 +11,7 @@ using static prjCatChaOnlineShop.Models.ViewModels.CForgetPwdModel;
 using Google.Apis.Auth;
 using prjCatChaOnlineShop.Models.CModels;
 using System.Reflection;
+using prjCatChaOnlineShop.Services.Function;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -20,12 +21,15 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly cachaContext _context;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly ProductService _productService;
 
-        public MemberLoginController(cachaContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+
+        public MemberLoginController(cachaContext context, IConfiguration configuration, IHttpContextAccessor httpContextAccessor, ProductService productService)
         {
             _httpContextAccessor = httpContextAccessor;
             _context = context;
             _configuration = configuration;
+            _productService = productService;
         }
 
 
@@ -59,14 +63,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
                     string json = JsonSerializer.Serialize(existUser);
                     HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
                     HttpContext.Session.SetString("UserName", existUser.Name);//Session-當前當入者名稱紀錄
+                    ViewBag.Categories = _productService.getAllCategories(); //把類別傳給_Layout
 
                     //記錄完Session之後，馬上紀錄登入時間
-                    var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-                    var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                    int _memberId = memberInfo.MemberId;
-                    var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == memberInfo.MemberId);
+                    var db = _context.ShopMemberInfo.FirstOrDefault(p => p.MemberId == thisUserId());
                     if (db != null)
                     {
+
+                        if (db.LastLoginTime == null)
+                        {
+                            dealWithTaskForNewUser();
+                        }
+
+                        dealWithTaskForOldUser();
                         db.LastLoginTime = DateTime.Now;
                         _context.SaveChanges();
                     }
@@ -192,6 +201,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult VerifyEmail(string verify)
         {
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             // 取得系統自定密鑰，這裡使用 IConfiguration 讀取 
             string secretKey = _configuration["VerifyEmail:SecretKey"];
             verify = verify.Replace(" ", "+");
@@ -257,7 +267,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult VerifyEmail()
         {
-
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             var User = HttpContext.Session.GetString("VerifyUserId");
             var newMember = _context.ShopMemberInfo.OrderBy(x => x.MemberId).LastOrDefault(m => m.Email == User);
             if (newMember != null)
@@ -266,6 +276,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 _context.Update(newMember);
                 _context.SaveChanges();
                 HttpContext.Session.Remove("VerifyUserId");
+                ViewBag.Categories = _productService.getAllCategories();
 
             }
             return View();
@@ -615,36 +626,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         HttpContext.Session.SetString("UserName", newMember.Name);//Session-當前當入者名稱紀錄
                         string userName = HttpContext.Session.GetString("UserName");
                         ViewBag.UserName = userName;//把使用者名字傳給_Layout
+                        ViewBag.Categories = _productService.getAllCategories(); //把類別傳給_Layout
+                        dealWithTaskForNewUser();//處理每日任務
 
-                        //更新暪日任務
-                        var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-                        var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                        int _memberId = memberInfo.MemberId;
-
-
-                        //更新每日任務
-                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
-                        var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
-
-                        if (taskIdList != null)
-                        {
-                            foreach (var taskId in taskIdList)
-                            {
-                                var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
-
-                                if (existingRecord == null)
-                                {
-                                    var newTask = new GameMemberTask//把所有啟用任務加進去
-                                    {
-                                        MemberId = _memberId,
-                                        TaskId = taskId
-                                    };
-                                    _context.GameMemberTask.Add(newTask);
-                                }
-                            }
-                        }
-                        _context.SaveChanges();
-
+                        
                     }
                     else
                     {
@@ -653,35 +638,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         HttpContext.Session.SetString("UserName", existingMember.Name);//Session-當前當入者名稱紀錄
                         string userName = HttpContext.Session.GetString("UserName");
                         ViewBag.UserName = userName;//把使用者名字傳給_Layout
-
-                        //更新暪日任務
-                        var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-                        var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                        int _memberId = memberInfo.MemberId;
-
-                        //更新每日任務
-                        var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
-                        var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
-
-                        if (taskIdList != null)
-                        {
-                            foreach (var taskId in taskIdList)
-                            {
-                                var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
-
-                                if (existingRecord == null)
-                                {
-                                    var newTask = new GameMemberTask//把所有啟用任務加進去
-                                    {
-                                        MemberId = _memberId,
-                                        TaskId = taskId
-                                    };
-                                    _context.GameMemberTask.Add(newTask);
-                                }
-                            }
-                        }
-                        _context.SaveChanges();
-
+                        ViewBag.Categories = _productService.getAllCategories(); //把類別傳給_Layout
+                        dealWithTaskForOldUser();
                     }
                 }
             }
@@ -740,5 +698,99 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return payload;
         }
         #endregion
+
+        private int thisUserId() 
+        {
+            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+            var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+            int _memberId = memberInfo.MemberId;
+            return _memberId;
+        }
+
+        private bool? isCrossMidnight() 
+        {
+            var nowTime = DateTime.Now;//登入當下的時間
+            var todayMidnight = DateTime.Today;//當天的午夜12點
+            var lastLoginTime = _context.ShopMemberInfo.FirstOrDefault(c => c.MemberId == thisUserId()).LastLoginTime;
+            if (lastLoginTime != null)
+            {
+                if (lastLoginTime > todayMidnight) 
+                    return false;
+                if(todayMidnight >= lastLoginTime)
+                    return true;
+            }
+            return null;
+        }
+
+
+
+        //不論新舊使用者，都要先把已經啟用的任務都加進去
+        //如果是新使用者(從來沒有登過)，設定progress = 0，completeTime自動為null
+        //如果不是第一次登入，則先跟前一次登入時間比較(MemberInfo的LastLoginTime)，
+        //如果中間有橫跨午夜12點，設定progress=0，completeTime = null
+        //如果沒有則不動作
+        //====================================
+        private void dealWithTaskForNewUser()//只發生在使用者的首次登入
+        {
+            var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
+            var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
+
+            if (taskIdList != null)//如果有啟用的任務
+            {
+                foreach (var taskId in taskIdList)
+                {
+                    var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == thisUserId() && x.TaskId == taskId);
+                    if (existingRecord == null)//如果該使用者沒有某一個任務
+                    {
+                        var newTask = new GameMemberTask//就把任務加到資料表裡面
+                        {
+                            TaskProgress = 0,
+                            MemberId = thisUserId(),
+                            TaskId = taskId
+                        };
+                        _context.GameMemberTask.Add(newTask);
+                    }
+                }
+                _context.SaveChanges();
+            }
+
+            else
+                _context.SaveChanges();
+        }
+
+        private void dealWithTaskForOldUser() 
+        {
+            if (isCrossMidnight().HasValue && isCrossMidnight() == true)
+            {
+                var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
+                var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();
+
+                if (taskIdList != null)//如果有啟用的任務
+                {
+                    foreach (var taskId in taskIdList)
+                    {
+                        var existingRecord = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == thisUserId() && x.TaskId == taskId);
+                        if (existingRecord == null)
+                        {
+                            var newTask = new GameMemberTask
+                            {
+                                TaskProgress = 0,
+                                MemberId = thisUserId(),
+                                TaskId = taskId,
+                                CompleteDate = null
+                            };
+                            _context.GameMemberTask.Add(newTask);
+                        }
+                        else//如果已經存在任務，就重置
+                            existingRecord.TaskProgress = 0;
+                            existingRecord.CompleteDate = null;
+                    }
+                    _context.SaveChanges();
+                }
+
+                else
+                    _context.SaveChanges();
+            }
+        }
     }
 }

@@ -8,6 +8,7 @@
     <link href="~/css/game/gameinstructions.css" rel="stylesheet" />
     <link href="~/css/game/gachabutton.css" rel="stylesheet" />
     <link href="~/css/game/confirmWin.css" rel="stylesheet" />
+    <link href="~/css/game/tutorial.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
     <style>
         #sidebar {
@@ -211,13 +212,52 @@
 
         <!-- End 獲得物品確認視窗 -->
         <!-- Start Canvas遊戲畫布 -->
-       
+
         <div id="tutorial">
-             <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
-            <div class="tutorial-pagination">
-                <span class="dot active" style="width:50px; position:absolute;   " ></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
+            <div id="tutorial-container">
+                <!-- 返回鍵 -->
+                <button id="closetutorial" class=" btn-secondary" onclick="">x</button>
+                <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
+                <div class="content-container">
+                    <div id="page1" class="page active">
+                        <!-- 第1頁的內容 -->
+                        <h1>第一頁</h1>
+                        <p>這是第一頁的內容。</p>
+                    </div>
+                    <div id="page2" class="page">
+                        <!-- 第2頁的內容 -->
+                        <h1>第二頁</h1>
+                        <p>這是第二頁的內容。</p>
+                    </div>
+                    <div id="page3" class="page">
+                        <!-- 第3頁的內容 -->
+                        <h1>第三頁</h1>
+                        <p>這是第三頁的內容。</p>
+                    </div>
+                    <div id="page4" class="page">
+                        <!-- 第4頁的內容 -->
+                        <h1>第四頁</h1>
+                        <p>這是第四頁的內容。</p>
+                    </div>
+                    <div id="page5" class="page">
+                        <!-- 第5頁的內容 -->
+                        <h1>第五頁</h1>
+                        <p>這是第五頁的內容。</p>
+                    </div>
+                    <div id="page6" class="page">
+                        <!-- 第6頁的內容 -->
+                        <h1>第六頁</h1>
+                        <p>這是第六頁的內容。</p>
+                    </div>
+                </div>
+                <div class="pagination-dots-container">
+                    <span class="dot" onclick="handleDotClick(1)"></span>
+                    <span class="dot" onclick="handleDotClick(2)"></span>
+                    <span class="dot" onclick="handleDotClick(3)"></span>
+                    <span class="dot" onclick="handleDotClick(4)"></span>
+                    <span class="dot" onclick="handleDotClick(5)"></span>
+                    <span class="dot" onclick="handleDotClick(6)"></span>
+                </div>
             </div>
         </div>
 
@@ -277,6 +317,9 @@
 
 <button type="submit" id="testDBlogin" style="display:none">測試資料庫登入</button>
 
+<button type="submit" id="testTask" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;">
+    DEMO跨日重置
+</button>
 
 <div id="sidebar">
     <div id="sidebar-inside">
@@ -318,6 +361,8 @@
     <script src="~/js/game/loadImages.js"></script>
     <script src="~/js/game/instructions.js"></script>
     <script src="~/js/game/catFeed.js"></script>
+    <script src="~/js/game/taskFunction.js"></script>
+        
 
     <!--排行榜測試資料-->
     <script>

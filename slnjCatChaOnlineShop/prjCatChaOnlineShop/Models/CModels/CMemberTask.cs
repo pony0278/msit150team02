@@ -8,6 +8,8 @@
 
         public int? fTaskId { get; set; }
 
+        public int? fTaskProgress { get; set; }
+
         public DateTime? fCompleteDate { get; set; }
 
 

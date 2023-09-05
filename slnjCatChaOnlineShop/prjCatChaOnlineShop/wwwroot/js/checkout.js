@@ -1,5 +1,187 @@
 ﻿$(document).ready(function () {
 
+    //==============超商取貨門市for google map api
+    var sevenElevenMap; //初始化7-11地圖
+    var familyMartMap; //初始化全家地圖
+    var sevenElevenMarkers = []; //初始化地標
+    var familyMartMarkers = []; //初始化地標
+
+    // 在全局範圍內定義 infoWindow 變數
+    var infoWindow = new google.maps.InfoWindow();
+
+    function initializeMaps() {
+        $('#sevenElevenStoreSelect').empty();
+        $('#familyMartStoreSelect').empty();
+        // 初始化7-11地圖
+        var sevenElevenMapElement = document.getElementById('sevenElevenMap');
+        sevenElevenMap = new google.maps.Map(sevenElevenMapElement, {
+            center: { lat: 25.032969, lng: 121.565418 },
+            zoom: 14
+        });
+
+        // 初始化全家地圖
+        var familyMartMapElement = document.getElementById('familyMartMap');
+        familyMartMap = new google.maps.Map(familyMartMapElement, {
+            center: { lat: 25.032969, lng: 121.565418 },
+            zoom: 14
+        });
+    }
+
+    // 清除地標方法
+    function clearMarkers(markers) {
+        markers.forEach(function (marker) {
+            marker.setMap(null);
+        });
+        markers = [];
+    }
+
+    //用於移動到所選的超商
+    function moveToSelectedStore(selectedStore, map, markers) {
+        var selectedStoreName = selectedStore.value;
+        //console.log(selectedStoreName);
+        var selectedMarker = markers.find(function (marker) {
+            return marker.getTitle() === selectedStoreName;
+        });
+
+        if (selectedMarker) {
+            map.setCenter(selectedMarker.getPosition());
+            map.setZoom(15);
+
+            // 使用 Google Places API 獲取超商的詳細資訊
+            var service = new google.maps.places.PlacesService(map);
+            service.getDetails({
+                placeId: selectedMarker.placeResult.place_id
+            }, function (place, status) {
+                if (status === google.maps.places.PlacesServiceStatus.OK) {
+                    // 獲取超商的地址
+                    var storeAddress = place.formatted_address;
+
+                    // 創建 InfoWindow 內容，包括超商名稱和地址
+                    var content = '<div><strong>' + selectedStoreName + '</strong></div>' +
+                        '<div>' + storeAddress + '</div>';
+
+                    // 更新 InfoWindow 的內容，讓每次都是新的資訊
+                    infoWindow.setContent(content);
+
+                    // 顯示 InfoWindow
+                    infoWindow.open(map, selectedMarker);
+                }
+            });
+        }
+    }
+
+    //用於顯示超商的 InfoWindow
+    function showInfoWindow(marker, map) {
+        // 獲取超商的名稱和地址
+        var storeName = marker.getTitle();
+        var storeAddress = "";
+
+        // 使用Google Places API獲取超商的詳細資訊
+        var service = new google.maps.places.PlacesService(map);
+        service.getDetails({
+            placeId: marker.placeResult.place_id
+        }, function (place, status) {
+            if (status === google.maps.places.PlacesServiceStatus.OK) {
+                storeAddress = place.formatted_address;
+
+                // 設置 InfoWindow 內容，包括超商名稱和地址
+                var content = '<div><strong>' + storeName + '</strong></div>' +
+                    '<div>' + storeAddress + '</div>';
+
+                // 更新 InfoWindow 的內容
+                infoWindow.setContent(content);
+
+                // 顯示 InfoWindow
+                infoWindow.open(map, marker);
+            }
+        });
+    }
+
+    //用於搜索附近的超商
+    function searchNearbyStores(keyword, map, markers, selectId) {
+        clearMarkers(markers);
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function (position) {
+                var userLocation = {
+                    lat: position.coords.latitude,
+                    lng: position.coords.longitude
+                };
+
+                map.setCenter(userLocation);
+
+                // 使用 Google Places API 搜尋附近的超商
+                var service = new google.maps.places.PlacesService(map);
+                service.nearbySearch({
+                    location: userLocation,
+                    radius: 1000, // 以米為單位，設定搜索半徑
+                    keyword: keyword
+                }, function (results, status) {
+
+                    //console.log(results);
+                    //console.log(status);
+
+                    if (status === google.maps.places.PlacesServiceStatus.OK) {
+                        results.forEach(function (place) {
+                            var marker = new google.maps.Marker({
+                                map: map,
+                                position: place.geometry.location,
+                                title: place.name,
+                                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // 使用紅色圖釘
+                            });
+
+                            marker.placeResult = place;
+
+                            markers.push(marker);
+
+                            //點擊地圖圖釘事件
+                            marker.addListener('click', function () {
+                                showInfoWindow(marker, map);
+                            });
+
+                            var storeName = place.name.replace(new RegExp(keyword, 'gi'), ''); //將超商名稱用正規表示法轉換
+
+                            // 根據所選超商的不同，將超商名稱添加到對應的下拉菜單中
+                            var option = document.createElement('option');
+                            option.value = place.name;
+                            option.text = storeName;
+                            $('#' + selectId).append(option);
+                        });
+                    }
+                });
+            });
+        } else {
+            alert('瀏覽器不支持地理位置功能。');
+        }
+    }
+
+    // 初始化地圖
+    initializeMaps();
+
+    // 當選擇7-11下拉菜單中的選項時，移動地圖到選定的超商
+    $('#sevenElevenStoreSelect').change(function () {
+        moveToSelectedStore(this, sevenElevenMap, sevenElevenMarkers);
+    });
+
+    // 當選擇全家下拉菜單中的選項時，移動地圖到選定的超商
+    $('#familyMartStoreSelect').change(function () {
+        moveToSelectedStore(this, familyMartMap, familyMartMarkers);
+    });
+
+
+    // 按鈕點擊事件，搜尋附近7-11超商
+    $('#showSevenEleven').click(function () {
+        searchNearbyStores('7-ELEVEN', sevenElevenMap, sevenElevenMarkers, 'sevenElevenStoreSelect');
+    });
+
+    // 按鈕點擊事件，搜尋附近全家超商
+    $('#showFamilyMart').click(function () {
+        searchNearbyStores('FamilyMart', familyMartMap, familyMartMarkers, 'familyMartStoreSelect');
+    });
+
+    // 初始化地圖
+    initializeMaps();
+
     //優惠券選擇，當使用者選擇該優惠券時將優惠券名稱填至input標籤裡
     $('.useCouponBtn').on('click', function () {
         //獲取按鈕上的優惠券名稱
@@ -9,26 +191,34 @@
         var usecouponid = $(this).data('coupon-id');
         console.log("優惠券名稱", couponName);
         console.log("優惠券折數", couponSpecialOffer);
+        console.log("優惠券ID", usecouponid);
         // 將優惠券名稱填入<input>標籤
         $("#couponCodeInput").val(couponName);
         $("#CouponId").text(usecouponid);
+        $("#CouponId").val(usecouponid);
         // 將優惠券SpecialOffer的值綁定到input標籤上的data-coupon-specialoffer屬性
         $("#couponCodeInput").data("coupon-specialoffer", couponSpecialOffer);
-        //$.ajax({
-
-        //    url: '/Coupon/couponDiscount', //TODO:建議要用url.content
-        //    type: 'POST',
-        //    data: { SpecialOffer: couponSpecialOffer },
-        //    success: function (response) {
-        //        $('#AllTotalPrice').text("NT" + response.totalPrice),
-        //            $('#couponBonus').text("NT" + response.couponBonus),
-        //            console.log(response);
-        //    }
-        //})
+        var formData =
+        {
+            CouponId: $("#CouponId").val()
+        };
         calculateDiscounts(); // 優惠券計算
         // 模擬使用者操作關閉模態框
-        $('.btn-close').click();
+        $('.btn-close').click(); 
+        $.ajax({
+            type: 'POST',
+            url: '/CheckOut/StoreCouponId/',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(formData),
+            success: function (response) {
+                // 
+            },
+            error: function (error) {
+                // 
+            }
+        });
     });
+
 
     //監聽會員是否勾選使用紅利，當用戶勾選或取消勾選該複選框時，觸發計算優惠券和紅利的函數。
     $('#useLoyalityPoint').on('change', function () {
@@ -149,11 +339,27 @@
             e.preventDefault();
             // 顯示錯誤訊息
             $('#error-message').text('此為必勾選的項目');
-        } else {
-            // 如果勾選了，導向到指定頁面
-            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL
-            // 取消默認的表單提交行為
-            e.preventDefault();
+        }
+        else
+        {
+            //獲取使用者選擇的付款方式
+            var selectedPaymentMethod = $("input[name='paymentMethod']:checked").val();
+            console.log("使用者的付款方式",selectedPaymentMethod)
+            //發送付款方式到後端
+            $.ajax({
+                type: "POST", 
+                url: "/CheckOut/paymentSelected", 
+                data: { paymentMethod: selectedPaymentMethod }, 
+                success: function (response) {
+                        
+                    console.log("付款方式：" + selectedPaymentMethod);
+                },
+                error: function () {
+                    
+                    console.error("發送出錯");
+                }
+            });
+            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL             
         }
     });
 
@@ -285,4 +491,14 @@
 //    });
 //});
 
+//================按下確定門市後將值顯示在取貨門市
+$('#submit-sevenEleven').on('click', function () {
+    var selectText = $("#sevenElevenStoreSelect option:selected").text();
+    $('#select-seveneleven').text(selectText);
+})
+
+$('#submit-familyMart').on('click', function () {
+    var selectText = $("#familyMartStoreSelect option:selected").text();
+    $('#select-familmart').text(selectText);
+})
 

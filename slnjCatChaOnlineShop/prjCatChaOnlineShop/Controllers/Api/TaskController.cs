@@ -27,12 +27,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
         {
             return View();
         }
-      
 
-       
+
+        //登入時如果會員都沒有紀錄的話，就每一個任務都新增一欄
         public IActionResult Create(CMemberGameInfo c)
         {
-            //登入時如果會員都沒有紀錄的話，就每一個任務都新增一欄
+           
             try
             {
                 var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
@@ -55,6 +55,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         {
                             var newTask = new GameMemberTask//把所有啟用任務加進去
                             {
+                                TaskProgress = 0,
                                 MemberId = _memberId,
                                 TaskId = taskId
                             };
@@ -73,24 +74,35 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-
- 
-
         //載入任務
         public IActionResult LoadTask(CMemberTask c)
         {
             try
             {//選出目前啟用的任務
+
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
                 var availibaleTask = (from p in _context.GameTaskList
-                            .Where(x => x.TaskConditionId == 1)
-                             orderby p.TaskId descending
+                                      where p.TaskConditionId == 1
+                                      join i in _context.GameMemberTask
+                                      on p.TaskId equals i.TaskId
+                                      where i.MemberId == _memberId
+                                      orderby p.TaskId descending
+
                              select new
                              {
+                                 p.TaskId,
                                  p.TaskName,
                                  p.TaskReward,
-                                 p.TaskRequireTime
-                             }).ToList();
-
+                                 p.TaskRequireTime,
+                                 i.TaskProgress,
+                                 i.MemberId,
+                                 i.CompleteDate
+                             })
+                             .GroupBy(task => task.TaskId) 
+                             .Select(group => group.First())
+                             .ToList();
                 if (availibaleTask.Any())
                 {
 
@@ -105,11 +117,38 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
+        //任務確認機
+        //public IActionResult CheckMachine(CMemberTask f)
+        //{
+        //    try
+        //    {//選出目前啟用的任務
+        //        var thisTask = (from p in _context.GameMemberTask
+        //                    .Where(x => x.TaskId == f.fTaskId)
+        //                              join i in _context.GameTaskList on p.TaskId equals i.TaskId
+        //                              orderby p.TaskId descending
+        //                              select new
+        //                              {
+        //                                  p.TaskId,
+        //                                  p.TaskProgress,
+        //                                  i.TaskRequireTime,
+        //                              }).ToList();
+        //        if (thisTask.Any())
+        //        {
 
+        //            return new JsonResult(thisTask);
+        //        }
+
+        //        return NotFound();
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         //更新任務狀態
-
-        public IActionResult UpdteTask(int taskId) 
+        [HttpPost]
+        public IActionResult UpdteTask([FromBody]GameMemberTask g) 
         {
         
             try
@@ -118,11 +157,25 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 int _memberId = memberInfo.MemberId;
 
-                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == taskId);
+                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == g.TaskId);
+                var task = _context.GameTaskList.FirstOrDefault(x => x.TaskId == g.TaskId);
 
                 if( teargetTask != null)
                 {
-                    teargetTask.CompleteDate = DateTime.Now;
+                    if(teargetTask.CompleteDate==null)
+                    teargetTask.TaskProgress ++ ;
+                    _context.SaveChanges();
+
+                    if (task != null) 
+                    {
+                        var taskrequiretime = task.TaskRequireTime;
+                        if (teargetTask.TaskProgress == taskrequiretime)
+                        {
+                            teargetTask.CompleteDate = DateTime.Now;
+                        }
+                        _context.SaveChanges();
+                    }
+                    
                     return new JsonResult(teargetTask);
                 }
 
@@ -134,6 +187,43 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-        
+
+
+        //更新任務狀態
+        [HttpPost]
+        public IActionResult ResetTaskAfterReward([FromBody] GameMemberTask g)
+        {
+            try
+            {
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
+
+                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == g.TaskId);
+                var task = _context.GameTaskList.FirstOrDefault(x => x.TaskId == g.TaskId);
+
+                if (teargetTask != null)
+                {
+                    if (task != null)
+                    {
+                        var taskrequiretime = task.TaskRequireTime;
+                        if (teargetTask.TaskProgress == taskrequiretime)
+                        {
+                            teargetTask.CompleteDate = null;
+                        }
+                        _context.SaveChanges();
+                    }
+
+                    return new JsonResult(teargetTask);
+                }
+
+                return NotFound();
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
     }
 }

@@ -160,7 +160,7 @@
                 <div class="round-box-title">熱賣商品</div>
                 <div class="round-box-custome offer-box-products">
                     <img class="text-center rounded-circle img-fluid" src="~/images/hot.png" alt="" />
-                    <a asp-controller="Index" asp-action="Shop">
+                    <a href="/Index/Shop?orderBy=1">
                         <div class="mask rounded-circle">
                         </div>
                     </a>
@@ -172,7 +172,7 @@
                 <div class="round-box-title">貓咪玩具</div>
                 <div class="round-box-custome offer-box-products">
                     <img class="text-center rounded-circle img-fluid" src="~/images/toy.png" alt="" />
-                    <a asp-controller="Index" asp-action="Shop">
+                    <a href="/Index/Shop?categoryName=玩具">
                         <div class="mask rounded-circle">
                         </div>
                     </a>
@@ -183,7 +183,7 @@
                 <div class="round-box-title">保健食品</div>
                 <div class="round-box-custome offer-box-products">
                     <img class="text-center rounded-circle img-fluid" src="~/images/supplement.png" alt="" />
-                    <a asp-controller="Index" asp-action="Shop">
+                    <a href="/Index/Shop?categoryName=保健食品">
                         <div class="mask rounded-circle">
                         </div>
                     </a>
@@ -201,7 +201,7 @@
                 <div class="home-section-title">
                     <h2>新進商品!</h2>
 
-                    <a asp-controller="Index" asp-action="Shop">
+                    <a href="/Index/Shop?orderBy=3">
                         <span>瀏覽所有新商品</span>
                     </a>
                 </div>
@@ -222,7 +222,7 @@
                                             <p class="sale">Sale</p>
                                         }
                                         </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">
@@ -274,7 +274,7 @@
             <div class="col-lg-12">
                 <div class="home-section-title">
                     <h2>熱賣商品!</h2>
-                    <a asp-controller="Index" asp-action="Shop">
+                    <a href="/Index/Shop?orderBy=1">
                         <span>瀏覽所有熱賣商品</span>
                     </a>
                 </div>
@@ -288,10 +288,13 @@
                             <div class="products-single-custom fix">
                                 <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
                                     <div class="box-img-hover">
-                                        <div class="type-lb">
+                                    <div class="type-lb">
+                                        @if (item.p優惠價格 != null)
+                                        {
                                             <p class="sale">Sale</p>
-                                        </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                        }
+                                    </div>
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">

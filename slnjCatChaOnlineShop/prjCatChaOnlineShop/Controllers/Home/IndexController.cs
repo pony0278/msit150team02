@@ -39,6 +39,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             ViewBag.ProductCount= items.Count();
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             ViewBag.CategoryName = Request.Query["categoryName"];
+            ViewBag.OrderBy = Request.Query["orderBy"];
             return View(items);
         }
         public IActionResult Index()

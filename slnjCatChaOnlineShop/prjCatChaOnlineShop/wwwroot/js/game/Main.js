@@ -49,6 +49,20 @@ const dailyMissionBTNimg = new Image();
 
 
     //類別
+
+//class backgroundpic {
+//    draw(pic,x,y) {
+//        c.drawimage(pic,this.x)
+
+//    }
+
+
+//}
+//const bg1 = new backgroundpic();
+//const bg2 = new backgroundpic();
+//bg1.draw(img1, 200, 1000);
+//bg2.draw(img2, 500, 100);
+
     class UserInfo {
 
         loadName() {

@@ -218,6 +218,7 @@
         {
 
             rcat.currentScore++;
+            updateTaskProgress(12) //每日任務檢查點
             userScore = rcat.currentScore;
             if (hightestScore <= userScore && userScore !== 0)//如果當前分數>最高分數，則兩個分數同步 
             {

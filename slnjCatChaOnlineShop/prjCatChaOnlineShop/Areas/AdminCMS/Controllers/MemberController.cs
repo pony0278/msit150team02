@@ -60,9 +60,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult ShowMemeberInfo()
         {
-            //ShowMemeberInfo
-            //var data = _memberService.ShowMemeberInfo();
-
             var data = _context.ShopMemberInfo;
 
             return Json(new { data });
@@ -145,9 +142,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult UpdateMember(CMember editMember)
         {
-            //Utility utility = new Utility();
-            //if (IsValidFormat(memberData))
-            //{
             var memberData = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == editMember.MemberId);
             try
             {
@@ -163,6 +157,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     memberData.Email = editMember.Email;
                     memberData.PhoneNumber = editMember.PhoneNumber;
                     memberData.MemberStatus = editMember.MemberStatus;
+                    memberData.Subscribe = editMember.Subscribe;
                     memberData.CatCoinQuantity = editMember.CatCoinQuantity;
                     memberData.LoyaltyPoints = editMember.LoyaltyPoints;
                     memberData.RunGameHighestScore = editMember.RunGameHighestScore;
@@ -183,30 +178,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return Json(new { success = false, message = "編輯會員失敗：" + ex.Message });
             }
         }
-
-        //private bool IsValidFormat(CMember memberData)
-        //{
-        //    if (!string.IsNullOrWhiteSpace(memberData.Name) && !string.IsNullOrWhiteSpace(memberData.Email))
-        //    {
-        //        if (IsValidEmail(memberData.Email))
-        //        {
-        //            return true;
-        //        }
-        //    }
-
-        //    return false;
-        //}
-
-        //private bool IsValidEmail(string email)
-        //{
-        //    return true;
-        //}
-
-
-        //public IActionResult DeleteMemeber()
-        //{
-        //    return View();
-        //}
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> editorUploadImage([FromForm] CNewsLetterTemplete cAnnounce)
@@ -385,16 +356,16 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     // 發送郵件
                     smtpClient.Send(mailMessage);
-                    Console.WriteLine("邮件发送成功！");
+                    Console.WriteLine("郵件發送成功！");
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("邮件发送失败：" + ex.Message);
+                    Console.WriteLine("郵件發送失敗：" + ex.Message);
                 }
             }
             else
             {
-                Console.WriteLine("无可用Newsletter数据。");
+                Console.WriteLine("無可用的Newsletter數據。");
             }
             return Json(new { success = true, message = "發送信件成功" });
         }

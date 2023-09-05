@@ -1,18 +1,29 @@
 ﻿
 $(document).ready(async function () {
     var categoryTitle = $('#categoryTitle');
-    var catName = categoryTitle.data('category-name');
-    categoryTitle.text(catName)//顯示選到的類別
 
+    categoryTitle.text("全部商品")//沒有選類別時先顯示全部商品
+    //從layout點進類別
+    var catName = categoryTitle.data('category-name');
+    if (catName!="" ) {
+        categoryTitle.text(catName)//顯示選到的類別
+    }
+    console.log(catName);
     var itemPerPageSelect = $('#itemPerPageSelect');
     var productList = $('#productList');
     var showMoreButton = $('#showMore');
    
     /*var catName =null;*/
-
     var selOrder = $('#selOrder');
     var selBrand = $('#selBrand');
-    var optionOrder = 0;
+
+    //從index進入
+    var optionOrder = categoryTitle.data('order-by');
+    if (optionOrder == 1)//全新商品
+        selOrder.val(1);
+    if (optionOrder == 3)//熱門商品
+        selOrder.val(3);
+
     var optionBrand = '';
 
     //切換類別
@@ -36,7 +47,7 @@ $(document).ready(async function () {
     //複合篩選
     var btnFilter = $('#filter-submit');
     btnFilter.on('click', async function () {
-
+        
         productList.empty();//清空商品區
         displayedItemCount = 0;//重置目前要顯示的所有筆數
         selectedValue = parseInt(itemPerPageSelect.val());//一次顯示多少筆
@@ -76,7 +87,7 @@ $(document).ready(async function () {
                     /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
 
                     var productLink = $(`<a href="/Index/ShopDetail?pId=${item.pId}" data-product-id="${item.pId}" class="shop-prod-click"></a>`);
-                    var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
+                    var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid img-box-size" alt="Image" />`);
 
                     productLink.append(productImg);
                     //boxImgHover.append(typeLb);
@@ -234,71 +245,4 @@ $(document).ready(async function () {
             }
         });
     });
-    ////複合篩選
-    //var btnFilter = $('#filter-submit');  
-    
-    //btnFilter.on('click', function () {
-    //    var selOrder = $('#selOrder');
-    //    var selBrand = $('#selBrand');
-    //    optionOrder = parseInt(selOrder.val());
-    //    optionBrand = selBrand.val();
-    //    $.ajax({
-    //        url: '/ProductApi/MultipleFilter',
-    //        type: 'GET',
-    //        data: { optionOrder: optionOrder, optionBrand: optionBrand,catName: catName, itemPerPage: displayedItemCount },
-    //        dataType: 'json',
-    //        success: function (data) {
-    //            //console.log(data)
-    //            productList.empty();
-    //            var products =  data;
-    //            products.forEach(function (item) {
-    //                var productItemDiv = $('<div class="col-sm-6 col-md-6 col-lg-4 col-xl-4"></div>');
-    //                var productDiv = $('<div class="products-single fix"></div>');
-    //                var boxImgHover = $('<div class="box-img-hover shop-image"></div>');
-    //                /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
-
-    //                var productLink = $(`<a href="/Index/ShopDetail?pId=${item.pId}" data-product-id="${item.pId}" class="shop-prod-click"></a>`);
-    //                var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
-
-    //                productLink.append(productImg);
-    //                //boxImgHover.append(typeLb);
-    //                boxImgHover.append(productLink);
-
-    //                var whyText = $('<div class="why-text"></div>');
-    //                var productName = $(`<h4>${item.pName}</h4>`);
-    //                var productPrice = $('<h5></h5>');
-
-    //                var addToCartLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-cart-coustom"><i class="fa-solid fa-cart-plus"></i></a>`);
-    //                var addToWishlistLink = $(`<a href="#" data-product-id=${item.pId} class="add-to-wishlist-coustom"><i class="far fa-heart"></i></>`);
-
-    //                whyText.append(productName);
-
-    //                whyText.append(productPrice);
-    //                if (item.pDiscount != null) {
-    //                    productPrice.text('$' + item.p優惠價格);
-    //                    var originalPrice = $(`<del>$ ${item.pPrice}</del>`);
-    //                    whyText.append(originalPrice);
-    //                }
-    //                else {
-    //                    productPrice.text('$' + item.pPrice);
-    //                }
-    //                whyText.append(addToCartLink);
-    //                whyText.append(addToWishlistLink);
-
-    //                productDiv.append(boxImgHover);
-    //                productDiv.append(whyText);
-
-    //                productItemDiv.append(productDiv);
-    //                productList.append(productItemDiv);
-
-    //            });
-    //        },
-    //        error: function (error) {
-    //            console.error('Ajax Error:', error);
-    //        }
-
-    //    });
-    //})
-    
-
 });

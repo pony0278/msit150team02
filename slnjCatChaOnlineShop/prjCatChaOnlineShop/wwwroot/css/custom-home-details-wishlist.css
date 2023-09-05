@@ -962,14 +962,32 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     letter-spacing: 1px;
 }
 
-.shop-image:hover {
+/*detail商品圖*/
+.detail-prod-img {
+    height: 260px;
+    width: 260px;
+}
+
+.detail-prod-img:hover {
     opacity: 0.6;
     transform: translate3d(-2px, -2px, 0);
 }
+/*index商品圖*/
+.index-prod-img {
+    height:300px;
+    width:300px;
+}
+.index-prod-img:hover {
+    opacity: 0.6;
+    transform: translate3d(-2px, -2px, 0);
+}
+/*shop商品圖*/
+.img-box-size{
+    width: 100%;
+}
 /* -------------------end補給站/商品遮罩------------------*/
-
-.breadcrumb{
-    padding:0px;
+.breadcrumb {
+    padding: 0px;
 }
 .btn-custom {
     margin-top: 20px;
@@ -993,9 +1011,9 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     font-weight: 900;
     background-color: #fcd7aadc;
 }
-.toast-warn{
-    color: orangered;
-    background-color:none;
+.toast-warn {
+    color: #FF9224;
+    background-color: none;
 }
 .toast-added {
     color: forestgreen;

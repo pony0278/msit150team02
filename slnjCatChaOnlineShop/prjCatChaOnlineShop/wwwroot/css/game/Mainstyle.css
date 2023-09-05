@@ -1,4 +1,47 @@
- .result-container {
+/* CSS部分：樣式可以根據需要自訂 */
+#tutorial-container {
+    padding: 20px;
+}
+#closetutorial {
+    position: absolute;
+    margin-left: 120px;
+    margin-top: 55px;
+}
+.page {
+    display: none;
+    border: 4px solid blanchedalmond;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: black;
+    margin-top: 50px;
+    border-radius: 15px;
+    height: 400px;
+    background-color: wheat;
+}
+
+    .page.active {
+        display: block;
+    }
+
+.pagination-dots-container {
+    display: flex;
+    justify-content: center;
+}
+
+.dot {
+    width: 10px;
+    height: 10px;
+    background-color: #ccc;
+    border-radius: 50%;
+    margin: 0 5px;
+    cursor: pointer;
+}
+
+    .dot.active {
+        background-color: #17a2b8; /* 活躍狀態的顏色 */
+    }
+
+.result-container {
         grid-template-columns: repeat(5, 75px);
         grid-template-rows: 100px 100px 50px; /* 注意這裡第三行高度為 50px */
         padding-top: 150px;
@@ -213,7 +256,7 @@
 
     border-collapse: separate; 
     border-spacing: 0 10px;
-    width: 90%; 
+    width: 100%; 
 }
 
    
@@ -223,15 +266,7 @@
         padding: 10px; /* 内边距，可以根据需要调整 */
     }
 
-#tutorial {
-    position: absolute;
-    text-align: center;
-    justify-content: center;
-    width: 406px; /* 維持canvas的寬度為406px */
-    height: 600px; /* 維持canvas的高度為600px */
-    background-color: rgba(0, 0, 0, 0.5);
-    display: none;
-}
+
 
 
 #Canvasrungame {

@@ -13,6 +13,8 @@ public partial class GameMemberTask
 
     public int? TaskId { get; set; }
 
+    public int? TaskProgress { get; set; }
+
     public DateTime? CompleteDate { get; set; }
 
     public virtual ShopMemberInfo Member { get; set; }

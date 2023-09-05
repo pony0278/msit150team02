@@ -95,6 +95,13 @@
             border: none; /* 移除按鈕邊框 */
             cursor: pointer; /* 讓鼠標顯示為手型 */
             }
+
+            .checkMarketBtn {
+            border-radius: 5px;
+            background-color: #b4793594;
+            color: white;
+            border: 2px #b4793594;
+            }
     </style>
 }
 
@@ -108,100 +115,6 @@
         <input type="text" class="form-control w-25" name="dates" />
         </div> *@
         <div class="row align-items-center mb-3">
-
-            <!--配送方式Start-->
-            <div class="row">
-                <div class="col-sm-12 col-lg-12 mb-3">
-                    <div class="title-left">
-                        <h3>配送方式</h3>
-                    </div>
-
-                    <nav class="customer_info">
-                        <div class="nav nav-tabs" id="nav-paymentMethod-tab" role="tablist">
-                            <input class="nav-link active" id="nav-credit-tab" type="radio" name="paymentMethod"
-                                   data-bs-toggle="tab" data-bs-target="#nav-credit" role="tab" aria-controls="nav-credit"
-                                   aria-selected="true" checked>
-                            <label for="nav-credit-tab" class="mb-0">7-11門市取貨</label>
-
-                            <input class="nav-link" id="nav-ATM-tab" type="radio" name="paymentMethod"
-                                   data-bs-toggle="tab" data-bs-target="#nav-ATM" role="tab" aria-controls="nav-ATM"
-                                   aria-selected="false">
-                            <label for="nav-ATM-tab" class="mb-0">全家門市取貨</label>
-                        </div>
-                    </nav>
-                    <div class="tab-content invoice-size" id="nav-invoice-tabContent">
-                        <!--7-11分頁內容-->
-                        <div class="tab-pane fade show active" id="nav-credit" role="tabpanel"
-                             aria-labelledby="nav-credit-tab">
-                            取貨門市：<span id="select-seveneleven"></span>
-                            <button class="detail_input" data-bs-toggle="modal" href="#SevenElevenToggle" role="button" id="showSevenEleven">選擇7-11</button>
-                        </div>
-                        <!--全家分頁內容-->
-                        <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
-                            取貨門市：<span id="select-familmart"></span>
-                            <button class="detail_input" data-bs-toggle="modal" href="#FamilyMartToggle" role="button" id="showFamilyMart">選擇全家</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!--7-11彈出視窗-->
-            <div class="modal fade" id="SevenElevenToggle" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalToggleLabel">選擇7-11門市</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!--內容表單-->
-                            <div class="row">
-                                <div class="selectwithBtn">
-                                    <select id="sevenElevenStoreSelect">
-                                        <option value="">請選擇一家7-11門市</option>
-                                    </select>
-                                    <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-sevenEleven" data-bs-dismiss="modal">確定門市</button>
-                                </div>
-
-                                <div id="sevenElevenMap" style="width: 100%; height: 400px;"></div>
-                            </div>
-                            <!--內容表單-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--7-11彈出視窗-->
-            <!--全家彈出視窗-->
-            <div class="modal fade" id="FamilyMartToggle" tabindex="-1">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalToggleLabel">選擇全家門市</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <!--內容表單-->
-                            <div class="row">
-                                <div class="selectwithBtn">
-                                    <select id="familyMartStoreSelect">
-                                        <option value="">請選擇一家全家門市</option>
-                                    </select>
-                                    <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-familyMart" data-bs-dismiss="modal">確定門市</button>
-                                </div>
-
-                                <div id="familyMartMap" style="width: 100%; height: 400px;"></div>
-                            </div>
-                            <!--內容表單-->
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--全家彈出視窗-->
-
-
-            <hr>
             付款方式：
             <select class="form-select w-25" id="payList">
                 <option value="" selected>全部訂單</option>
@@ -403,7 +316,6 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
 
     <script>
         //日期插件
@@ -411,189 +323,6 @@
 
         //-------------------------------------------------
         $(document).ready(function () {
-
-            //==============超商取貨門市for google map api
-            var sevenElevenMap; //初始化7-11地圖
-            var familyMartMap; //初始化全家地圖
-            var sevenElevenMarkers = []; //初始化地標
-            var familyMartMarkers = []; //初始化地標
-
-            // 在全局範圍內定義 infoWindow 變數
-            var infoWindow = new google.maps.InfoWindow();
-
-            function initializeMaps() {
-                $('#sevenElevenStoreSelect').empty();
-                $('#familyMartStoreSelect').empty();
-                // 初始化7-11地圖
-                var sevenElevenMapElement = document.getElementById('sevenElevenMap');
-                sevenElevenMap = new google.maps.Map(sevenElevenMapElement, {
-                    center: { lat: 25.032969, lng: 121.565418 },
-                    zoom: 14
-                });
-
-                // 初始化全家地圖
-                var familyMartMapElement = document.getElementById('familyMartMap');
-                familyMartMap = new google.maps.Map(familyMartMapElement, {
-                    center: { lat: 25.032969, lng: 121.565418 },
-                    zoom: 14
-                });
-            }
-
-            // 清除地標方法
-            function clearMarkers(markers) {
-                markers.forEach(function (marker) {
-                    marker.setMap(null);
-                });
-                markers = [];
-            }
-
-            //用於移動到所選的超商
-            function moveToSelectedStore(selectedStore, map, markers) {
-                var selectedStoreName = selectedStore.value;
-                console.log(selectedStoreName);
-                var selectedMarker = markers.find(function (marker) {
-                    return marker.getTitle() === selectedStoreName;
-                });
-
-                if (selectedMarker) {
-                    map.setCenter(selectedMarker.getPosition());
-                    map.setZoom(15);
-
-                    // 使用 Google Places API 獲取超商的詳細資訊
-                    var service = new google.maps.places.PlacesService(map);
-                    service.getDetails({
-                        placeId: selectedMarker.placeResult.place_id
-                    }, function (place, status) {
-                        if (status === google.maps.places.PlacesServiceStatus.OK) {
-                            // 獲取超商的地址
-                            var storeAddress = place.formatted_address;
-
-                            // 創建 InfoWindow 內容，包括超商名稱和地址
-                            var content = '<div><strong>' + selectedStoreName + '</strong></div>' +
-                                '<div>' + storeAddress + '</div>';
-
-                            // 更新 InfoWindow 的內容，讓每次都是新的資訊
-                            infoWindow.setContent(content);
-
-                            // 顯示 InfoWindow
-                            infoWindow.open(map, selectedMarker);
-                        }
-                    });
-                }
-            }
-
-            //用於顯示超商的 InfoWindow
-            function showInfoWindow(marker, map) {
-                // 獲取超商的名稱和地址
-                var storeName = marker.getTitle();
-                var storeAddress = "";
-
-                // 使用Google Places API獲取超商的詳細資訊
-                var service = new google.maps.places.PlacesService(map);
-                service.getDetails({
-                    placeId: marker.placeResult.place_id
-                }, function (place, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        storeAddress = place.formatted_address;
-
-                        // 設置 InfoWindow 內容，包括超商名稱和地址
-                        var content = '<div><strong>' + storeName + '</strong></div>' +
-                            '<div>' + storeAddress + '</div>';
-
-                        // 更新 InfoWindow 的內容
-                        infoWindow.setContent(content);
-
-                        // 顯示 InfoWindow
-                        infoWindow.open(map, marker);
-                    }
-                });
-            }
-
-            //用於搜索附近的超商
-            function searchNearbyStores(keyword, map, markers, selectId) {
-                clearMarkers(markers);
-
-                if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(function (position) {
-                        var userLocation = {
-                            lat: position.coords.latitude,
-                            lng: position.coords.longitude
-                        };
-
-                        map.setCenter(userLocation);
-
-                        // 使用 Google Places API 搜尋附近的超商
-                        var service = new google.maps.places.PlacesService(map);
-                        service.nearbySearch({
-                            location: userLocation,
-                            radius: 1000, // 以米為單位，設定搜索半徑
-                            keyword: keyword
-                        }, function (results, status) {
-
-                            console.log(results);
-                            console.log(status);
-
-                            if (status === google.maps.places.PlacesServiceStatus.OK) {
-                                results.forEach(function (place) {
-                                    var marker = new google.maps.Marker({
-                                        map: map,
-                                        position: place.geometry.location,
-                                        title: place.name,
-                                        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // 使用紅色圖釘
-                                    });
-
-                                    marker.placeResult = place;
-
-                                    markers.push(marker);
-
-                                    //點擊地圖圖釘事件
-                                    marker.addListener('click', function () {
-                                        showInfoWindow(marker, map);
-                                    });
-
-                                    var storeName = place.name.replace(new RegExp(keyword, 'gi'), ''); //將超商名稱用正規表示法轉換
-
-                                    // 根據所選超商的不同，將超商名稱添加到對應的下拉菜單中
-                                    var option = document.createElement('option');
-                                    option.value = place.name;
-                                    option.text = storeName;
-                                    $('#' + selectId).append(option);
-                                });
-                            }
-                        });
-                    });
-                } else {
-                    alert('瀏覽器不支持地理位置功能。');
-                }
-            }
-
-            // 初始化地圖
-            initializeMaps();
-
-            // 當選擇7-11下拉菜單中的選項時，移動地圖到選定的超商
-            $('#sevenElevenStoreSelect').change(function () {
-                moveToSelectedStore(this, sevenElevenMap, sevenElevenMarkers);
-            });
-
-            // 當選擇全家下拉菜單中的選項時，移動地圖到選定的超商
-            $('#familyMartStoreSelect').change(function () {
-                moveToSelectedStore(this, familyMartMap, familyMartMarkers);
-            });
-
-
-            // 按鈕點擊事件，搜尋附近7-11超商
-            $('#showSevenEleven').click(function () {
-                searchNearbyStores('7-ELEVEN', sevenElevenMap, sevenElevenMarkers, 'sevenElevenStoreSelect');
-            });
-
-            // 按鈕點擊事件，搜尋附近全家超商
-            $('#showFamilyMart').click(function () {
-                searchNearbyStores('FamilyMart', familyMartMap, familyMartMarkers, 'familyMartStoreSelect');
-            });
-
-            // 初始化地圖
-            initializeMaps();
-
             $.ajax({
                 url: '@Url.Action("ShowOrderTotal", "Order")',
                 type: 'GET',
@@ -605,17 +334,6 @@
                 }
             });
         });
-
-        //================按下確定門市後將值顯示在取貨門市
-        $('#submit-sevenEleven').on('click', function () {
-            var selectText = $("#sevenElevenStoreSelect option:selected").text();
-            $('#select-seveneleven').text(selectText);
-        })
-
-        $('#submit-familyMart').on('click', function () {
-            var selectText = $("#familyMartStoreSelect option:selected").text();
-            $('#select-familmart').text(selectText);
-        })
 
             //==================datatable
             var table = $('#order-table').DataTable({

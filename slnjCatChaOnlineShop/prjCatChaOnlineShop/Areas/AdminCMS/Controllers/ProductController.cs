@@ -447,36 +447,155 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         {
             using (var package = new ExcelPackage(file.OpenReadStream()))
             {
-                var worksheet = package.Workbook.Worksheets[0];  // 讀取第一個工作表
+                var worksheet = package.Workbook.Worksheets[0];
                 var rowCount = worksheet.Dimension.Rows;
 
-                for (int row = 2; row <= rowCount; row++)  // 從第二行開始讀取（假設第一行是標題）
+                for (int row = 2; row <= rowCount; row++)
                 {
-                    var categoryName = worksheet.Cells[row, 1].Text;  // 分類名稱在第一列
-                    var productName = worksheet.Cells[row, 2].Text;  // 商品名稱在第二列
+                    var categoryName = worksheet.Cells[row, 5].Text;  // 分類名稱在第一列
+                    var productName = worksheet.Cells[row, 1].Text;  // 商品名稱在第二列
+                    var describe = worksheet.Cells[row, 2].Text;
+                    var price = worksheet.Cells[row, 3].Text;
+                    var remain = worksheet.Cells[row, 4].Text;
+                    var relseday = worksheet.Cells[row, 6].Text;
+                    var size = worksheet.Cells[row, 7].Text;
+                    var weight = worksheet.Cells[row, 8].Text;
+                    var supplierName = worksheet.Cells[row, 9].Text;
+                    var discontiue = worksheet.Cells[row, 10].Text;
+                    var SpecificationName = worksheet.Cells[row, 11].Text;
+                    var imgsUrl = worksheet.Cells[row, 12].Text;
 
-                    // 尋找或新增商品分類
-                    var category = _cachaContext.ShopProductCategory
-                                    .FirstOrDefault(c => c.CategoryName == categoryName)
-                                    ?? new ShopProductCategory { CategoryName = categoryName };
+                    var categoryId = GetOrCreateCategory(categoryName);
+                    var specificationId = GetCreatSpecification(SpecificationName);
 
-                    if (category.ProductCategoryId == 0)  // 新增分類
+                    decimal? parsedPrice = decimal.TryParse(price, out decimal tempPrice) ? tempPrice : (decimal?)null;
+                    DateTime? parseDateTime = DateTime.TryParse(relseday, out DateTime tempDate) ? tempDate : (DateTime?)null;
+                    bool? parseDiscontinued = bool.TryParse(discontiue, out bool tempBool) ? tempBool : (bool?)null;
+                    int? parseRemian = int.TryParse(remain, out int tempRemain) ? tempRemain : (int?)null;
+
+                    // 查询数据库，看商品名是否已存在
+                    var existingProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductName == productName);
+
+                    if (existingProduct != null)  // 如果已存在，则更新商品数据
                     {
-                       _cachaContext.ShopProductCategory.Add(category);
-                        _cachaContext.SaveChanges();  // 儲存以獲得 Id
+                        existingProduct.ProductCategoryId = GetOrCreateCategory(categoryName);
+                        existingProduct.SupplierId = GetCreateSupplier(supplierName);
+                        existingProduct.ProductDescription = describe;
+                        existingProduct.ProductPrice = parsedPrice;
+                        existingProduct.RemainingQuantity = parseRemian;
+                        existingProduct.Size = size;
+                        existingProduct.Weight = weight;
+                        existingProduct.Discontinued = parseDiscontinued;
+                        var existingSpecification = _cachaContext.ShopProductSpecification.FirstOrDefault(s => s.Id == specificationId);
+
+                        if (existingSpecification != null)
+                        {
+                            existingProduct.ShopProductSpecification.Add(existingSpecification);
+                        }
                     }
-
-                    // 新增商品
-                    var product = new ShopProductTotal
+                    else  // 如果不存在，则新增商品数据
                     {
-                        ProductName = productName,
-                        ProductCategoryId = category.ProductCategoryId
-                    };
-                    _cachaContext.ShopProductTotal.Add(product);
+                        var product = new ShopProductTotal
+                        {
+                            ProductName = productName,
+                            ProductCategoryId = GetOrCreateCategory(categoryName),
+                            SupplierId = GetCreateSupplier(supplierName),
+                            ProductDescription = describe,
+                            ProductPrice = parsedPrice,
+                            RemainingQuantity = parseRemian,
+                            Size = size,
+                            Weight = weight,
+                            Discontinued = parseDiscontinued,
+                        };
+                        product.ShopProductSpecification.Add(new ShopProductSpecification { Id = specificationId });
+                        _cachaContext.ShopProductTotal.Add(product);
+                    }
+                    
                 }
-                _cachaContext.SaveChanges();  // 儲存所有新增的商品
+                _cachaContext.SaveChanges();
             }
             return Json(new { success = true, Message = "成功修改" });
         }
+
+        private int GetOrCreateCategory(string categoryName)
+        {
+            var category = _cachaContext.ShopProductCategory.FirstOrDefault(c => c.CategoryName == categoryName);
+
+            if (category == null)
+            {
+                category = new ShopProductCategory { CategoryName = categoryName };
+                _cachaContext.ShopProductCategory.Add(category);
+                _cachaContext.SaveChanges();
+            }
+
+            return category.ProductCategoryId;
+        }
+        private int GetCreateSupplier(string supplierName)
+        {
+            var supplier = _cachaContext.ShopProductSupplier.FirstOrDefault(s => s.CompanyName == supplierName);
+            if (supplier == null)
+            {
+                supplier = new ShopProductSupplier { CompanyName = supplierName };
+                _cachaContext.ShopProductSupplier.Add(supplier);
+                _cachaContext.SaveChanges();
+            }
+            return supplier.SupplierId;
+        }
+        private int GetCreatSpecification(string creatSpecificationName)
+        {
+            var Specification = _cachaContext.ShopProductSpecification.FirstOrDefault(s => s.Specification == creatSpecificationName);
+            if (Specification == null)
+            {
+                Specification = new ShopProductSpecification { Specification = creatSpecificationName };
+                _cachaContext.ShopProductSpecification.Add(Specification);
+                _cachaContext.SaveChanges();
+            }
+            return Specification.Id;
+        }
+
+        [HttpGet]
+        public IActionResult DoQuery([FromQuery] CShopProductWrap productWrap)
+        {
+            var doquery = _cachaContext.ShopProductTotal.AsQueryable();
+
+            if (productWrap.ReleaseDate.HasValue)
+            {
+                DateTime userDate = productWrap.ReleaseDate.Value;
+                DateTime startOfDay = new DateTime(userDate.Year, userDate.Month, userDate.Day, 0, 0, 0);
+                DateTime endOfDay = new DateTime(userDate.Year, userDate.Month, userDate.Day, 23, 59, 59);
+                doquery = doquery.Where(x => x.ReleaseDate >= startOfDay && x.ReleaseDate <= endOfDay);
+            }
+
+            if (productWrap.ProductCategoryId != null)
+            {
+                doquery = doquery.Where(x => x.ProductCategoryId == productWrap.ProductCategoryId);
+            }
+
+            var data = doquery.Select(x=> new
+            {
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ProductDescription = x.ProductDescription.Length > 20 ? x.ProductDescription.Substring(0, 20) : x.ProductDescription,
+                ProductPrice = x.ProductPrice == null ? "沒有資料" :
+                                            x.ProductPrice.ToString(),
+                RemainingQuantity = x.RemainingQuantity == null ? "沒有資料" :
+                                                         x.RemainingQuantity.ToString(),
+                ProductCategory = x.ProductCategory == null ? "沒有資料" :
+                                                     x.ProductCategory.CategoryName.ToString(),
+                ShopProductImageTable = x.ShopProductImageTable == null ? "沒有資料" :
+                                                                    x.ShopProductImageTable.FirstOrDefault().ProductPhoto,
+                ReleaseDate = x.ReleaseDate == null ? "沒有資料" :
+                                            x.ReleaseDate.ToString(),
+                Size = x.Size == null ? "沒有資料" :
+                            x.Size.ToString(),
+                Weight = x.Weight == null ? "沒有資料" :
+                                   x.Weight.ToString(),
+                Supplier = x.Supplier == null ? "沒有資料" :
+                                     x.Supplier.CompanyName.ToString(),
+                Discontinued = x.Discontinued == null ? "未設定" : (x.Discontinued == true ? "是" : "否")
+            });
+            return Json(new { success= true , data });
+        }
+
     }
 }

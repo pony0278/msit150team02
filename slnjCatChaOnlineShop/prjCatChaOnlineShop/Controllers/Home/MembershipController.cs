@@ -397,6 +397,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //前往圖片審核的頁面
         public IActionResult ImageModerator()
         {
+            ViewBag.memberIdForMembership = memberIdForMembership;
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View();
         }
 
@@ -556,16 +558,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         //取得商品的過往評論
-        public IActionResult GetCommentByOrderId(int orderid)
+        public IActionResult GetCommentByOrderId(int orderid, int productid)
         {
 
             try
             {
                 var query = from comment in _context.ShopProductReviewTable
-                            where comment.OrderId == orderid & comment.ProductId == memberIdForMembership
+                            where comment.OrderId == orderid & comment.ProductId == productid & comment.MemberId == memberIdForMembership
                             select new
                             {
-                                comment.ReviewContent
+                                comment.ReviewContent,
+                                comment.ProductRating,
+                                comment.ReviewTime
                             };
 
                 var datas = query.ToList();
@@ -576,7 +580,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 }
                 else
                 {
-                    datas = null;
+                    //datas = null;
                     return new JsonResult(datas);
                 }
             }
@@ -926,7 +930,50 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
 
+        /*
+        [HttpPost]
+        public async Task<IActionResult> ImageModeratorToMemberInfo(IFormFile image, string AnnouncementContent)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
 
+            string imageUrl;
+            try
+            {
+                imageUrl = await _imageService.UploadImageAsync(image);
+            }
+            catch
+            {
+
+                return BadRequest("Error uploading the image.");
+            }
+
+            if (string.IsNullOrWhiteSpace(AnnouncementContent))
+            {
+                return BadRequest("Announcement content cannot be empty.");
+            }
+
+            try
+            {
+                if (int.TryParse(Request.Form["memberIdForMembership"], out int memberIdForMembership))
+                {
+                    var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
+                    memberToUpdate.MemberImage = imageUrl;
+                    await _cachaContext.SaveChangesAsync();
+                }
+
+            }
+            catch
+            {
+                return BadRequest("Error saving the announcement.");
+            }
+
+            return new JsonResult(imageUrl);
+
+        }
+        */
     }
 
     //用於取得超商api信息

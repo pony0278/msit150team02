@@ -35,12 +35,12 @@ namespace prjCatChaOnlineShop.Services.Function
                 }
                 else
                 {
-                    await Clients.Client(Context.ConnectionId).SendAsync("showMessage", "你只能与管理员聊天。");
+                    await Clients.Client(Context.ConnectionId).SendAsync("showMessage", "客服人員不在線上。");
                 }
             }
             else
             {
-                await Clients.Client(Context.ConnectionId).SendAsync("showMessage", "该用户已离线...");
+                await Clients.Client(Context.ConnectionId).SendAsync("showMessage", "客服人員不在線上");
             }
         }
 
