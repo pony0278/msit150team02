@@ -239,7 +239,7 @@
                                             <p class="sale">Sale</p>
                                         }
                                         </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">
@@ -305,10 +305,13 @@
                             <div class="products-single-custom fix">
                                 <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
                                     <div class="box-img-hover">
-                                        <div class="type-lb">
+                                    <div class="type-lb">
+                                        @if (item.p優惠價格 != null)
+                                        {
                                             <p class="sale">Sale</p>
-                                        </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                        }
+                                    </div>
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                     </div>
                                 </a>
                                 <div class="why-text">
