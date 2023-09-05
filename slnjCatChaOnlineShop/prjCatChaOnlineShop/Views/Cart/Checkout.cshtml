@@ -275,9 +275,13 @@
                                         data-bs-target="#choose711Store">
                                     我儲存的門市
                                 </button>
-                                <button type="button" class="chooseStore_btn" id="choose711CVS">
+                                <!--7-11分頁內容-->
+                                <div class="tab-pane fade show active" id="nav-credit" role="tabpanel" aria-labelledby="nav-credit-tab" style="display: contents;">
+                                    <button class="chooseStore_btn" data-bs-toggle="modal" href="#SevenElevenToggle" role="button" id="showSevenEleven">選擇新的門市</button>
+                                </div>
+                                @*<button type="button" class="chooseStore_btn" id="choose711CVS">
                                     選擇新的超商門市
-                                </button>
+                                </button>*@
                                 <!-- 選擇711超商的互動視窗 -->
                                 <div class="modal fade" id="choose711Store" data-bs-backdrop="static"
                                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="my711StoreLabel"
