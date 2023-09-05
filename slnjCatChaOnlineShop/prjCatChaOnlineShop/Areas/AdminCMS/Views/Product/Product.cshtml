@@ -44,8 +44,12 @@
             height: 40px;
         }
 
-        #description{
-            height:400px;
+        #description {
+            height: 400px;
+        }
+
+        #pickdate{
+            width:250px;
         }
     </style>
 }
@@ -53,40 +57,38 @@
 <div class="middle-content">
 
     <div class="row align-items-center">
-        <div class="col-6">
+        <div class="d-flex justify-content-between">
             <h2 class="mt-3">商城產品管理</h2>
-            <input type="file" id="excel" />
-            <button id="upload">上傳</button>
+            <div class="d-block">
+                <button class="btn btn-primary small-btn ms-1 mt-3" data-bs-toggle="modal" href="#addSuppierModalToggle" role="button">新增供應商</button>
+                <button class="btn btn-primary small-btn mt-3" data-bs-toggle="modal" href="#addProductModalToggle" role="button">新增商品</button>
+            </div>
         </div>
     </div>
     <!---新增產品 modal-->
     <!---新增產品 modal-->
     <!---篩選上架日期-->
+
     <div class="container-fluid">
-        <div class="d-flex justify-content-between">
-            <div class="dates d-flex flex-column">
-                <span>上架日期</span>
-                <div class="d-flex align-items-center">
-                    <input type="datetime-local" class="form-control">
-                </div>
-                <label>類型篩選</label>
-                <div class="d-flex align-items-center">
-                    <select class="form-select" id="CpayList">
-                        <option value="" selected disabled>請選擇類別</option>
-                        @foreach (var category in Model.ProductCategories)
-                        {
-                            <option value="@category.ProductCategoryId">@category.CategoryName</option>
-                        }
-                    </select>
-                </div>
-            </div>
-            <div class="d-inline-flex flex-column">
-                <button class="btn btn-primary" data-bs-toggle="modal" href="#addProductModalToggle" role="button">新增商品</button>
-                <button class="btn btn-primary mt-2" data-bs-toggle="modal" href="#addSuppierModalToggle" role="button">新增供應商</button>
-            </div>
+        <label for="excel" class="form-label">批次匯入</label>
+        <div class="col-md-6 d-flex">
+            <input class="form-control w-50" type="file" id="excel" />
+            <button class="btn btn-primary" id="upload">上傳</button>
         </div>
+        <label for="pickdate" class="form-label">上架日期篩選</label>
+        <div class="d-flex">
+        <input type="datetime-local" class="form-control" id="pickdate">
+            <select class="form-select" id="CpayLists">
+                <option selected disabled>請選擇類別</option>
+                @foreach (var category in Model.ProductCategories)
+                {
+                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                }
+            </select>
+            <button class="btn btn-primary" id="start-query">查詢</button>
     </div>
 </div>
+
 <!---篩選上架日期-->
 
 <div class="container-fluid mt-4">
@@ -287,7 +289,7 @@
                             <i class="fa-regular fa-square-plus ms-1" id="edit-addproductSpecifications"></i>
                             <i class="fa-regular fa-square-minus" id="edit-minusproductSpecifications"></i>
                         </div>
-                        
+
                     </div>
                     <div class="col-md-6">
                         <label>折扣</label>
@@ -413,12 +415,12 @@
 
         })
 
-        let id = 1; 
+        let id = 1;
         $(document).on('click', '#addproductSpecifications', function () {
             const productSpecifications = $('#productSpecifications');
             const addproductSpecifications = $(`<input type="text" class="form-control specifications" id="specifications-${id}"></input>`);
-            productSpecifications.append(addproductSpecifications); 
-            id++; 
+            productSpecifications.append(addproductSpecifications);
+            id++;
         });
         $(document).on('click', '#edit-addproductSpecifications', function () {
             const productSpecifications = $('#edit-productSpecifications');
@@ -472,7 +474,7 @@
 
 
         //初始化表格==================================================
-        $(document).ready(function () {
+
             var table = $('#Product-table').DataTable({
                 responsive: true,
                 "paging": true,
@@ -511,7 +513,7 @@
                 { targets: 5, searchable: true }
                 //{ targets: 11, searchable: true }
             ]
-        });
+
 
         // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
         $('#CpayList').on('change', function () {
@@ -633,7 +635,7 @@
                             $('#editor-img').append(container);
                             $("#editor-imgID").append(selectID);
                         });
-                        $.each(response.data.shopProductSpecification , function(index , value){
+                        $.each(response.data.shopProductSpecification, function (index, value) {
                             var editproductSpecifications = $("#edit-productSpecifications")
                             const SpecificationID = value.id
                             editSpecificationID.push(SpecificationID)
@@ -709,7 +711,7 @@
         $("#category").on("change", function () {
             Type = $(this).val()
         })
-        
+
         $(document).on('change', '.frontCoverCheckbox', function () {
             productImageId = $(this).data('product-image-id');
             isChecked = $(this).is(':checked');
@@ -1020,6 +1022,29 @@
                     });
                 } else {
                     alert("請選擇一個檔案。");
+                }
+            });
+        });
+        let CpayLists;
+        $("#CpayLists").on("change", function () {
+            CpayLists = $(this).val()
+        })
+        $(document).on('click', '#start-query', function () {
+            const queryDate = $('#pickdate').val();
+            var newUrl = '/AdminCMS/Product/DoQuery?ReleaseDate=' + encodeURIComponent(queryDate) + '&ProductCategoryId=' + CpayLists;
+            const data = {
+                ReleaseDate: queryDate,
+                ProductCategoryId: CpayLists
+            };
+            $.ajax({
+                url: '@Url.Action("DoQuery", "Product", new { area = "AdminCMS"})',
+                type: 'GET',
+                data: data,
+                success: function (response) {
+                    if (response.success) {
+                        table.ajax.url(newUrl).load();
+                        console.log(response.data)
+                    }
                 }
             });
         });
