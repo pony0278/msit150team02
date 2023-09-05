@@ -76,7 +76,7 @@ $(document).ready(async function () {
                     /* var typeLb = $('<div class="type-lb"><p class="sale">Sale</p></div>');*/
 
                     var productLink = $(`<a href="/Index/ShopDetail?pId=${item.pId}" data-product-id="${item.pId}" class="shop-prod-click"></a>`);
-                    var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid" alt="Image" />`);
+                    var productImg = $(`<img src=${item.p圖片路徑[0]} data-product-id=${item.pId} class="img-fluid img-box-size" alt="Image" />`);
 
                     productLink.append(productImg);
                     //boxImgHover.append(typeLb);

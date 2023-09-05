@@ -282,9 +282,12 @@
                                     <a href="@Url.Action("ShopDetail", new {pId =  a.pId })" title="@a.pName">
                                         <div class="box-img-hover">
                                             <div class="type-lb">
-                                                <p class="sale">Sale</p>
+                                                @if (a.p優惠價格 != null)
+                                                {
+                                                    <p class="sale">Sale</p>
+                                                }
                                             </div>
-                                            <img src="@a.p圖片路徑.FirstOrDefault()" class="img-fluid shop-image" alt="Image" />
+                                            <img src="@a.p圖片路徑.FirstOrDefault()" class="detail-prod-img" alt="Image" />
 
                                         </div>
                                     </a>

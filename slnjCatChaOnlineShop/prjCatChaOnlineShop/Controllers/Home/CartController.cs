@@ -99,12 +99,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 decimal firstTotalPrice = total + firstFee;
                 ViewBag.firstTotalPrice = firstTotalPrice;
 
-              
+
                 var viewModel = new CCheckoutViewModel
                 {
                     memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
                     memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
-                    cartItems = cartItems ?? new List<CCartItem>(),                  
+                    cartItems = cartItems ?? new List<CCartItem>(),
                     getCouponPrice = usableBonus ?? new CGetCouponPrice(),
                 };
 
@@ -120,10 +120,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
 
+            //從session中拿取會員資料
+            string memberInfo = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
             //從session中拿取購物車的資料
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-            if (productList != null)
+            if (memberInfo != null && productList != null)
             {
+                //會員資料
+                var member = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfo);
+                var memberid = member.MemberId;
+                ViewBag.MemberId = memberid;
+
                 //購物車
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
 
@@ -168,10 +175,21 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 {
                     keyValuePairs = order ?? new Dictionary<string, string>(),
                 };
-                 return View(viewmodel);
+                return View(viewmodel);
             }
             return View();
         }
+        //[HttpPost]
+        //public IActionResult Pay([FromBody] CSelectedCouponId selectedCouponId)
+        //{
+        //    string userName = HttpContext.Session.GetString("UserName");
+        //    ViewBag.UserName = userName;//把使用者名字傳給_Layout
+        //    ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
+
+        //    int couponid = selectedCouponId.selectedCouponId;
+        //    ViewBag.finalcouponid = couponid;
+        //    return View();
+        //}
 
         private string GetCheckMacValue(Dictionary<string, string> order)
         {
