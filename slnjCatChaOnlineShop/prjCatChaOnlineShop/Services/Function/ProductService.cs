@@ -105,14 +105,18 @@ namespace prjCatChaOnlineShop.Services.Function
 
         public decimal priceFinal(decimal? price, decimal? priceSale)
         {
-            if (price != null && priceSale != null)
+            if (price != null)
             {
-                return (decimal)priceSale;//特價時的金額
+                if (priceSale != null)
+                {
+                    return priceSale.Value;//特價時的金額
+                }
+                else
+                {
+                    return price.Value;//無特價時金額
+                }
             }
-            else
-            {
-                return (decimal)price;//無特價時金額
-            }
+            return 0;
         }
         //TODO...庫存
         public void addCartItem(List<CCartItem> cart, CProductItem prodItem, int count)
