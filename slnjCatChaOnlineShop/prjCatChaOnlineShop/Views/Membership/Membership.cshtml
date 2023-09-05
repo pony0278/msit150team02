@@ -232,6 +232,7 @@
                                                                 查看已儲存超商門市
                                                             </button>
                                                             <button type="button" class="btn-sm add-address " id="addNewMarket">新增超商門市</button>
+                                                            <button type="button" class="btn-sm add-address " id="addNewMarketDemo">Demo填入超商</button>
                                                             <button type="button" class="btn-sm add-address " id="SelectOtherShop">測試</button>
                                                         </div>
                                                     </div>
@@ -711,7 +712,7 @@
                                 <div class="container">
                                     <div class="row">
                                         <div class="col mt-2">
-                                            <button type="submit" class="btn btn-danger btn-block">送出</button>
+                                            <button type="submit" class="btn btn-danger btn-block" id="saveComment">送出</button>
                                         </div>
                                         <div class="col mt-2">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
@@ -1265,6 +1266,12 @@
                 $('#fillRecipientPhoneInput').val("0912345678");
                 $('#fillAddressInput').val("台北市信義區信義路五段20號");
             });
+
+            //Demo鍵:載入超商門市
+            $('#addNewMarketDemo').click(function (event) {
+                $('#storename').val("平鎮龍恩店");
+                $('#storeaddress').val("桃園市平鎮區游泳路120巷1弄2、4號1樓");
+            });
             
         });
 
@@ -1776,12 +1783,6 @@
             });
             */
 
-           //取得以前的評論資料
-            var commentProductSelectElement = document.getElementById('productSelect');
-            commentProductSelectElement.addEventListener('change', function () {
-                console.log("hi");
-            });
-
             loadOrderRecords()
         });
 
@@ -1942,6 +1943,8 @@
                                         option.textContent = item.productName;
                                         selectElement.appendChild(option);
                                     });
+                                    //載入過往評論
+                                    loadProductReview();
                                 });
                             });
 
@@ -2063,6 +2066,41 @@
                 });
         })
 
+        //載入過往評論:需要商品ID跟訂單編號
+        function loadProductReview() {
+            $('#commentTextarea').val("");
+
+            var orderid = document.querySelector('#orderIdSpan').textContent;
+            var productid = document.getElementById('productSelect').value;
+
+            $.getJSON('@Url.Content("~/membership/GetCommentByOrderId?orderid=")' + orderid + "&productid="+ productid, function (data) {
+
+                if (data.length == 0) {
+                    document.getElementById('commentTextarea').readOnly = false;
+                    document.getElementById('saveComment').disabled = false;
+
+                } else {
+
+                    data.forEach(function (item) {
+                        $('#commentTextarea').val(item.reviewContent);
+                        document.getElementById('startRating').value = 4;
+                        // item.productRating
+                        //reviewTime
+                        document.getElementById('commentTextarea').readOnly = true;
+                        document.getElementById('saveComment').disabled = true;
+
+                    });
+
+                 }
+
+            });
+        }
+
+        //若使用者轉動商品，載入新商品的過往評論
+        document.getElementById('productSelect').addEventListener('change', function () {
+            loadProductReview();
+        });
+
         //退貨圖片預覽
         document.getElementById('returnImageInput').addEventListener('change', function (event) {
             var previewImage = document.getElementById('uploadReturnImagePreview');
@@ -2097,6 +2135,8 @@
                 console.log("error");
             });
         });
+
+
     </script>
 
     <!--用於dataTables搜尋關鍵字採ajax-->
@@ -2254,24 +2294,7 @@
                         imgCell.appendChild(imgContainer);
                         
                         row.insertCell().textContent = item.productName;
-
-                        var randomNumber = Math.floor(Math.random() * 10) + 1;
-                        if (randomNumber > 7) {
-                            row.insertCell().textContent = randomNumber;
-                        } else if (randomNumber > 4) {
-                            var cell = row.insertCell();
-                            var span = document.createElement("span");
-                            span.textContent = randomNumber;
-                            span.style.color = "#EA7500";
-                            cell.appendChild(span);
-                        } else {
-                            var cell = row.insertCell();
-                            var span = document.createElement("span");
-                            span.textContent = randomNumber;
-                            span.style.color = "red";
-                            span.style.fontWeight = "bold";
-                            cell.appendChild(span);
-                        }
+                        row.insertCell().textContent = item.remainingQuantity;
                         row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
 
                         var cartCell = row.insertCell();
@@ -2538,6 +2561,7 @@
                                         text: '感謝您來信'
                                     });
 
+                                    document.getElementById('checkComplaint').classList.remove('is-invalid');//將紅框移除
                                     loadComplaintRecords();
                                 })
                                 .catch(error => {
