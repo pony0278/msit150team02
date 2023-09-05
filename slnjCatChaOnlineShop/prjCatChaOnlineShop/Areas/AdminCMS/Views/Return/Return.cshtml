@@ -77,6 +77,13 @@
                 background: #FFF !important;
             }
         }
+
+        #return_returnReason {
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px !important;
+        }
     </style>
 }
 
@@ -132,14 +139,6 @@
             原因類別：
             <select class="form-select w-25" id="reasonList">
                 <option value="" selected>全部訂單</option>
-                @*                <option value="商品品質問題">商品品質問題</option>
-                <option value="不符合期望">不符合期望</option>
-                <option value="送錯商品">送錯商品</option>
-                <option value="重複運送商品">重複運送商品</option>
-                <option value="訂單問題">訂單問題</option>
-                <option value="售後服務問題">售後服務問題</option>
-                <option value="改變主意">改變主意</option>
-                <option value="其他原因">其他原因</option>*@
             </select>
         </div>
         <div class="row align-items-center mb-3">
@@ -187,7 +186,7 @@
 <!---詳細資料model-->
 <div class="modal fade" id="returnDetailModalToggle" aria-hidden="true"
      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalToggleLabel">
@@ -208,6 +207,11 @@
                                 data-bs-target="#nav-profile" type="button"
                                 role="tab">
                             訂單明細
+                        </button>
+                        <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
+                                data-bs-target="#nav-product" type="button"
+                                role="tab">
+                            退換貨明細
                         </button>
                     </div>
                 </nav>
@@ -237,6 +241,7 @@
                             </div>
                         </div>
                     </div>
+                    <!--訂單明細-->
                     <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
                         <div class="row">
                             <div class="col-12 col-lg-6">
@@ -254,10 +259,11 @@
                             </div>
                             <div class="col-12">
                                 <!--下拉卷軸-->
-                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrderExample" aria-expanded="false" aria-controls="collapseExample">
                                     訂購產品明細
                                 </button>
-                                <div class="collapse show" id="collapseExample">
+                                <!--訂購產品明細-->
+                                <div class="collapse show" id="collapseOrderExample">
                                     <div class="card card-body">
                                         <div id="ProductTotalContainer"></div>
                                     </div>
@@ -266,6 +272,33 @@
                             </div>
                         </div>
                     </div>
+                    <!--退換貨明細-->
+                    <div class="tab-pane fade" id="nav-product" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <p id="return_returnId"></p>
+                                <p id="return_returnDate"></p>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <p id="return_returnReason"></p>
+                                <p id="return_returnStatus"></p>
+                            </div>
+                            <div class="col-12">
+                                <!--下拉卷軸-->
+                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReturnExample" aria-expanded="false" aria-controls="collapseExample">
+                                    訂購產品明細
+                                </button>
+                                <!--訂購產品明細-->
+                                <div class="collapse show" id="collapseReturnExample">
+                                    <div class="card card-body">
+                                        <div id="ReturnProductContainer"></div>
+                                    </div>
+                                </div>
+                                <!--下拉卷軸-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--退換貨明細-->
                 </div>
             </div>
         </div>
@@ -291,28 +324,11 @@
                     <div class="col-12 mb-3">
                         <label>退換貨原因</label>
                         <select class="form-select" id="returnReasonId">
-                            @*                                            <option value="1">商品品質問題</option>
-                            <option value="2">不符合期望</option>
-                            <option value="3">送錯商品</option>
-                            <option value="4">重複運送商品</option>
-                            <option value="5">訂單問題</option>
-                            <option value="6">售後服務問題</option>
-                            <option value="7">改變主意</option>
-                            <option value="8">其他原因</option>*@
                         </select>
                     </div>
                     <div class="col-12 mb-3">
                         <label>狀態</label>
                         <select class="form-select" id="processingStatusId">
-                            @*                                            <option value="1">待處理</option>
-                            <option value="2">審核中</option>
-                            <option value="3">已批准</option>
-                            <option value="4">待退貨</option>
-                            <option value="5">待換貨</option>
-                            <option value="6">退貨中</option>
-                            <option value="7">換貨中</option>
-                            <option value="8">已完成</option>
-                            <option value="9">取消</option>*@
                         </select>
                     </div>
 
@@ -436,11 +452,11 @@
 
                 //----------------AJAX
                 $.ajax({
-                    url: '@Url.Action("GetOrderDetails", "Order")',
+                    url: '@Url.Action("GetOrderDetails", "Return")',
                     type: 'GET',
                     data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
                     success: function (data) {
-                        console.log(data);
+                        console.log(data.data);
 
 
                         function formatDateTime(dateTimeString) {
@@ -530,19 +546,19 @@
 
                         if (data.data.orderDetails.length != 0) {
                             var tableHTML = `
-                                                                                                        <table class="rwd-table">
-                                                                                                            <thead style='border-bottom: 1px solid #ddd;'>
-                                                                                                                <tr>
-                                                                                                                    <th>項次</th>
-                                                                                                                    <th>商品ID</th>
-                                                                                                                    <th>名稱</th>
-                                                                                                                    <th>數量</th>
-                                                                                                                    <th>單價</th>
-                                                                                                                    <th>小計</th>
-                                                                                                                </tr>
-                                                                                                            </thead>
-                                                                                                            <tbody>
-                                                                                                    `;
+                                                                                                                                        <table class="rwd-table">
+                                                                                                                                            <thead style='border-bottom: 1px solid #ddd;'>
+                                                                                                                                                <tr>
+                                                                                                                                                    <th>項次</th>
+                                                                                                                                                    <th>商品ID</th>
+                                                                                                                                                    <th>名稱</th>
+                                                                                                                                                    <th>數量</th>
+                                                                                                                                                    <th>單價</th>
+                                                                                                                                                    <th>小計</th>
+                                                                                                                                                </tr>
+                                                                                                                                            </thead>
+                                                                                                                                            <tbody>
+                                                                                                                                    `;
 
                             for (var i = 0; i < data.data.orderDetails.length; i++) {
                                 var item = data.data.orderDetails[i];
@@ -552,21 +568,21 @@
                                 totalPrice += subTotal; // 將小計累加到總金額中
 
                                 tableHTML += `
-                                                                                                            <tr>
-                                                                                                                                        <td data-th="項次">${orderNumber}</td>
-                                                                                                                                        <td data-th="商品ID">${item.product.productId}</td>
-                                                                                                                                        <td data-th="名稱">${item.product.productName}</td>
-                                                                                                                                        <td data-th="數量">${item.productQuantity}</td>
-                                                                                                                                        <td data-th="單價">${item.product.productPrice}</td>
-                                                                                                                                                                <td data-th="小計">${subTotal}</td>
-                                                                                                            </tr>
-                                                                                                        `;
+                                                                                                                                            <tr>
+                                                                                                                                                                        <td data-th="項次">${orderNumber}</td>
+                                                                                                                                                                        <td data-th="商品ID">${item.product.productId}</td>
+                                                                                                                                                                        <td data-th="名稱">${item.product.productName}</td>
+                                                                                                                                                                        <td data-th="數量">${item.productQuantity}</td>
+                                                                                                                                                                        <td data-th="單價">${item.product.productPrice}</td>
+                                                                                                                                                                                                <td data-th="小計">${subTotal}</td>
+                                                                                                                                            </tr>
+                                                                                                                                        `;
                             }
 
                             tableHTML += `
-                                                                                                            </tbody>
-                                                                                                        </table>
-                                                                                                    `;
+                                                                                                                                            </tbody>
+                                                                                                                                        </table>
+                                                                                                                                    `;
 
                             PTContainer.html(tableHTML);
 
@@ -574,6 +590,49 @@
                             $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
                         } else {
                             PTContainer.text("沒有可顯示的產品明細");
+                        }
+
+                        //==================退換貨明細
+                        $('#return_returnId').text("ID：" + data.data.returnData.id);
+                        $('#return_returnDate').text("申請日期：" + data.data.returnData.returnDate);
+                        $('#return_returnReason').text("退換貨原因：" + data.data.returnReason);
+                        $('#return_returnStatus').text("申請狀態：" + data.data.returnStatus);
+
+                        //===========訂購產品明細
+                        var RPContainer = $("#ReturnProductContainer");
+                        RPContainer.html(""); // 使用html()方法來重置容器內容
+
+                        console.log(data.data.returnData);
+
+                        if (data.data.returnData != null) {
+
+                            var ReturnTableHTML = `
+                                                                                                                                                <table class="rwd-table">
+                                                                                                                                                    <thead style='border-bottom: 1px solid #ddd;'>
+                                                                                                                                                        <tr>
+                                                                                                                                                            <th>項次</th>
+                                                                                                                                                            <th>商品ID</th>
+                                                                                                                                                            <th>名稱</th>
+                                                                                                                                                            <th>數量</th>
+                                                                                                                                                            <th>回傳圖片</th>
+                                                                                                                                                            <th>備註</th>
+                                                                                                                                                        </tr>
+                                                                                                                                                    </thead>
+                                                                                                                                                    <tbody>
+                                                                                                                                                    <tr>
+                                                                                                                                                                                        <td data-th="項次">1</td>
+                                                                                                                                                                                                        <td data-th="商品ID">${data.data.returnData.productId}</td>
+                                                                                                                                                                                                        <td data-th="名稱">${data.data.returnProduct}</td>
+                                                                                                                                                                                                        <td data-th="數量">${data.data.returnData.returnCount}</td>
+                                                                                                                                                                                                        <td data-th="回傳圖片"><img src="${data.data.returnData.returnImage}" width="100" /></td>
+                                                                                                                                                                                                                        <td data-th="備註">${data.data.returnData.returnContent}</td>
+                                                                                                                                                    </tr>
+                                                                                                                                                    </tbody>
+                                                                                                                                                </table>
+                                                                                                                                            `;
+
+                            RPContainer.html(ReturnTableHTML);
+
                         }
                     },
                     error: function (error, a, b) {
@@ -709,11 +768,11 @@
                 // 遍歷data數組中的每個對象
                 $.each(data.data.serviceCase, function (index, reason) {
                     htmlToInsert += `
-                                                                    <tr>
-                                                                        <td>${reason.returnReasonId}</td>
-                                                                        <td>${reason.returnReason}</td>
-                                                                    </tr>
-                                                                `;
+                                                                                                    <tr>
+                                                                                                        <td>${reason.returnReasonId}</td>
+                                                                                                        <td>${reason.returnReason}</td>
+                                                                                                    </tr>
+                                                                                                `;
                 });
 
                 // 將HTML字符串添加到目標元素
