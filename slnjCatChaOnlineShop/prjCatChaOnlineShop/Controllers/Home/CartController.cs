@@ -102,7 +102,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 var viewModel = new CCheckoutViewModel
                 {
-                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), // 初始化為空列表
+                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), 
                     memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
                     cartItems = cartItems ?? new List<CCartItem>(),
                     getCouponPrice = usableBonus ?? new CGetCouponPrice(),
@@ -113,7 +113,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
             return View();
         }
+        #endregion
 
+        #region 付款頁面
         public IActionResult Pay()
         {
             string userName = HttpContext.Session.GetString("UserName");
@@ -124,18 +126,23 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string memberInfo = HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
             //從session中拿取購物車的資料
             string productList = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
-            if (memberInfo != null && productList != null)
+            //從session中拿取最後計算好的金額資料
+            string priceData = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+            if (memberInfo != null && productList != null && priceData!=null)
             {
                 //會員資料
                 var member = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfo);
                 var memberid = member.MemberId;
                 ViewBag.MemberId = memberid;
 
-                //購物車
+                //購物車資料
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
 
                 //建構商品名稱的字串
                 string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
+
+                //最後金額資料
+                var priceDatas=JsonSerializer.Deserialize<CPayModel>(priceData);
 
                 // 獲取 finalTotalPrice 的值
                 var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
@@ -174,23 +181,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var viewmodel = new CCheckoutViewModel
                 {
                     keyValuePairs = order ?? new Dictionary<string, string>(),
+                    cartItems=cartItems??new List<CCartItem>(),
+                    getFinalPriceData=priceDatas?? new CPayModel(),
                 };
                 return View(viewmodel);
             }
             return View();
         }
-        //[HttpPost]
-        //public IActionResult Pay([FromBody] CSelectedCouponId selectedCouponId)
-        //{
-        //    string userName = HttpContext.Session.GetString("UserName");
-        //    ViewBag.UserName = userName;//把使用者名字傳給_Layout
-        //    ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
-
-        //    int couponid = selectedCouponId.selectedCouponId;
-        //    ViewBag.finalcouponid = couponid;
-        //    return View();
-        //}
-
         private string GetCheckMacValue(Dictionary<string, string> order)
         {
             var param = order.Keys.OrderBy(x => x).Select(key => key + "=" + order[key]).ToList();
@@ -218,8 +215,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return result.ToString();
         }
         #endregion
-
-
 
         #region 確認訂單
         public IActionResult ConfrimOrder()

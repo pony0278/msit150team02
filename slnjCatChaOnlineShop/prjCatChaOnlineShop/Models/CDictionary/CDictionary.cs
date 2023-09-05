@@ -8,5 +8,7 @@
         public static readonly string SK_PURCHASED_PRODUCTS_LIST = "SK_PURCHASED_PRODUCTS_LIST";
         //登入使用
         public static readonly string SK_LOINGED_USER = "SK_LOINGED_USER";
+
+        public static readonly string SK_PAY_MODEL = "SK_PAY_MODEL";
     }
 }
