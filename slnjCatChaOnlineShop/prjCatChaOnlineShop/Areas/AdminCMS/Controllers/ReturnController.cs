@@ -60,6 +60,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             var orderTotal = _context.ShopOrderTotalTable
                 .FirstOrDefault(o => o.OrderId == orderId);
 
+            var returnData = _context.ShopReturnDataTable.
+                FirstOrDefault(r => r.OrderId == orderId);
+
             var orderDetails = _context.ShopOrderDetailTable
                 .Where(od => od.OrderId == orderId)
                 .ToList();
@@ -85,17 +88,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             var orderStatus = _context.ShopOrderStatusData
                 .FirstOrDefault(os => os.OrderStatusId == orderTotal.OrderStatusId)?.StatusName;
 
+            var returnProduct = _context.ShopProductTotal
+                .FirstOrDefault(rp => rp.ProductId == returnData.ProductId)?.ProductName;
+
+            var returnReason = _context.ShopReturnReasonDataTable
+               .FirstOrDefault(rr => rr.ReturnReasonId == returnData.ReturnReasonId)?.ReturnReason;
+
+            var returnStatus = _context.ShopReturnStatusDataTable
+               .FirstOrDefault(rs => rs.ProcessingStatusId == returnData.ProcessingStatusId)?.StatusName;
+
             var data = new
             {
                 MemberInfo = memberInfo,
                 OrderTotal = orderTotal,
+                ReturnData = returnData,
                 OrderDetails = orderDetails,
                 Products = products,
                 PaymentMethod = paymentMethod,
                 ShippingMethod = shippingMethod,
                 CouponContent = couponContent,
                 OrderStatus = orderStatus,
-                Shippment = shippment
+                Shippment = shippment,
+                ReturnProduct = returnProduct,
+                ReturnReason = returnReason,
+                ReturnStatus = returnStatus
             };
 
             return Json(new { data });
