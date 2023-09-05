@@ -5,11 +5,12 @@
 @{
     var jsonString = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
     ShopMemberInfo memberinfo = null;
-
     if (jsonString != null)
     {
         memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
     }
+   
+   
 }
 @{
     ViewData["Title"] = "Pay";
@@ -52,19 +53,83 @@
 <!--中間主畫面Start-->
 <div class="cart-box-main">
     <div class="container" style="max-width: 800px; margin: 0 auto;">
+        <div class="row">
+            <div class="odr-box">
+                <div class="title-left">
+                    <h3>購物明細</h3>
+                </div>
+                <div class="rounded p-2 bg-light">
+                    @{
+                        if (Model != null && Model.cartItems != null)
+                        {
+                            foreach (var item in Model.cartItems)
+                            {
+                                <div class="media mb-2 border-bottom d-flex justify-content-between">
+                                    <div class="media-body">
+                                        <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
+                                    </div>
+                                    <div class="small text-muted" style="font-size:14px">
+                                        數量: @item.c數量 <span class="mx-2">|</span> 小計: NT @item.c小計
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-6">
+                <div class="title-left">
+                    <h3>付款方式</h3>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="title-left">
+                    <h3>運送方式</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row ">
+            <div class="col-md-12 col-lg-12">
+                <div class="order-box">
+                    @if (Model != null && Model.getFinalPriceData != null)
+                    {
+                        <div class="d-flex">
+                            <h4>小計</h4>
+                            <div class="ml-auto font-weight-bold" id="finalSubtotal"> NT @Model.getFinalPriceData.subtotal  </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>運費</h4>
+                            <div class="ml-auto font-weight-bold" id="finalShippingFee"> +NT @Model.getFinalPriceData.shippingFee  </div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4>總折扣</h4>
+                            <div class="ml-auto font-weight-bold" id="finalTotalDiscount"> -NT @Model.getFinalPriceData.finalBonus  </div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5>總計</h5>
+                            <div class="ml-auto h4" style="color:red" id="allTotalPrice"> NT @Model.getFinalPriceData.finalAmount  </div>
+                        </div>
+                        <hr>
+                    }
+                </div>
+            </div>
+        </div>
         @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null && Model != null)
         {
             <div id="MemberId" hidden> @memberinfo.MemberId </div>
-        
-        }
 
+        }
         <!--導至綠界付款的隱藏頁面-->
         <form id="ecpayform" name="form" method="POST" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
             <!--step2 : 收到後端的值印出來-->
             <div class=" coupon-box-btn col-12 d-flex shopping-box ">
                 <button type="submit" id="gotopay"
                         class=" checkout-btn ml-auto btn hvr-hover">
-                    送出訂單
+                    去結帳
                 </button>
             </div>
             <div>
@@ -141,7 +206,7 @@
     <script>
         // 監聽送出訂單按鈕的點擊事件
         $('#gotopay').on('click', (e) => {
-            e.preventDefault(); /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+            /*e.preventDefault();*/ /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("嚴重折壽耶^_^")
             let formData = $("#ecpayform").serializeArray();
             var json = {};
@@ -165,7 +230,7 @@
                         data:
                         {
                             MemberId: memberId,
-                         
+
                         },
                         success: function (res) {
                             // 處理成功回應
