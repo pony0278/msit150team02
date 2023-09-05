@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
+using prjCatChaOnlineShop.Models.ViewModels;
 using System.Text.Json;
 
 
@@ -26,6 +28,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
             //反序列化購物車內容
             List<CCartItem> cartItem = JsonSerializer.Deserialize<List<CCartItem>>(Json);
 
+            //初始小計金額
+            int firstPrice = (int)cartItem.Sum(item => item.c小計);
+
+
             // 計算使用優惠券折扣後的金額
             decimal totalPrice = 0;
             decimal couponBonus = 0;
@@ -42,11 +48,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
 
             //計算使用紅利的使用金額
-            int loyaltyPointsDiscount = 0;
+            decimal loyaltyPointsDiscount = 0;
             // 使用者選擇使用紅利
             if (useLoyaltyPoints == true)
             {
-                loyaltyPointsDiscount = (int)loyaltyPointsInfo.finalPrice;
+                loyaltyPointsDiscount = loyaltyPointsInfo.finalPrice;
             }
 
             //計算運費
@@ -56,19 +62,32 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 shippingfee = 60;
             }
 
+
+            //計算總折扣(使用紅利+使用優惠券)金額
+            decimal finalBonus = loyaltyPointsDiscount + couponBonus;
+
+
             //計算最終的總金額
             int finalTotalPrice = ((int)(cartItem.Sum(item => item.c小計) - couponBonus - loyaltyPointsDiscount + shippingfee));
-
             HttpContext.Session.SetString("FinalTotalPrice", Convert.ToString(finalTotalPrice));
- 
-            
+
+            CPayModel payModel = new CPayModel
+            {
+                subtotal=firstPrice,
+                shippingFee = shippingfee,
+                finalBonus = finalBonus,
+                finalAmount = finalTotalPrice,
+            };
+            string json = JsonSerializer.Serialize(payModel);
+            HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, json);
+
 
             //創建一個匿名對象，商品更新後的總金額
             var response = new
             {
                 loyaltypoints = loyaltyPointsDiscount,
                 couponBonus = couponBonus,
-                shippingfee=shippingfee,
+                shippingfee = shippingfee,
                 finalTotalPrice = Convert.ToString(finalTotalPrice),
             };
             return new JsonResult(response);
