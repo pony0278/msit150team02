@@ -478,5 +478,49 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Json(new { success = true, Message = "成功修改" });
         }
+        [HttpGet]
+        public IActionResult DoQuery([FromQuery] CShopProductWrap productWrap)
+        {
+            var doquery = _cachaContext.ShopProductTotal.AsQueryable();
+
+            if (productWrap.ReleaseDate.HasValue)
+            {
+                DateTime userDate = productWrap.ReleaseDate.Value;
+                DateTime startOfDay = new DateTime(userDate.Year, userDate.Month, userDate.Day, 0, 0, 0);
+                DateTime endOfDay = new DateTime(userDate.Year, userDate.Month, userDate.Day, 23, 59, 59);
+                doquery = doquery.Where(x => x.ReleaseDate >= startOfDay && x.ReleaseDate <= endOfDay);
+            }
+
+            if (productWrap.ProductCategoryId != null)
+            {
+                doquery = doquery.Where(x => x.ProductCategoryId == productWrap.ProductCategoryId);
+            }
+
+            var data = doquery.Select(x=> new
+            {
+                ProductId = x.ProductId,
+                ProductName = x.ProductName,
+                ProductDescription = x.ProductDescription.Length > 20 ? x.ProductDescription.Substring(0, 20) : x.ProductDescription,
+                ProductPrice = x.ProductPrice == null ? "沒有資料" :
+                                            x.ProductPrice.ToString(),
+                RemainingQuantity = x.RemainingQuantity == null ? "沒有資料" :
+                                                         x.RemainingQuantity.ToString(),
+                ProductCategory = x.ProductCategory == null ? "沒有資料" :
+                                                     x.ProductCategory.CategoryName.ToString(),
+                ShopProductImageTable = x.ShopProductImageTable == null ? "沒有資料" :
+                                                                    x.ShopProductImageTable.FirstOrDefault().ProductPhoto,
+                ReleaseDate = x.ReleaseDate == null ? "沒有資料" :
+                                            x.ReleaseDate.ToString(),
+                Size = x.Size == null ? "沒有資料" :
+                            x.Size.ToString(),
+                Weight = x.Weight == null ? "沒有資料" :
+                                   x.Weight.ToString(),
+                Supplier = x.Supplier == null ? "沒有資料" :
+                                     x.Supplier.CompanyName.ToString(),
+                Discontinued = x.Discontinued == null ? "未設定" : (x.Discontinued == true ? "是" : "否")
+            });
+            return Json(new { success= true , data });
+        }
+
     }
 }

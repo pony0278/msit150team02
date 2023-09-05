@@ -51,7 +51,7 @@
             <!--左邊圖片區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <form method="post" enctype="multipart/form-data" id="imgForm">
-                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" style="max-width: 400px; max-height: 400px;" />
+                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" style="max-width: 350px; max-height: 350px;" />
                     <div class="my-3">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                         <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
@@ -59,33 +59,27 @@
                         <button type="submit" id="imgChangeUrl">上傳圖片</button>
                     </div>
                 </form>
-                <div >
+                <div>
                     <h2>審核結果</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="imageResults" rows="2"></textarea>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
                 </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <div>
                     <h2>圖像審核</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="checkResults" rows="3"></textarea>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
                 </div>
                 <div class="my-4">
                     <h2>圖像描述</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2"></textarea>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2" readonly></textarea>
                 </div>
                 <div class="my-4">
                     <h2>圖像識別</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="visionResults" rows="7"></textarea>
+                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
                 </div>
             </div>
         </div>
-
-        <!-- start 展開區域 -->
-        <div class="card-header">
-        </div>
-        <!-- end 展開區域 -->
-
     </div>
 </div>
 
@@ -213,13 +207,33 @@
                                     var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
                                     var ans = Category1ans + Category2ans + Category3ans;
 
-                                    document.getElementById('imageResults').value = "系統判定" + ans + "指數過高，無法將您上傳的照片設為頭貼";
-                                    document.getElementById('imageResults').style.display = 'block';
-                                    document.getElementById('checkResults').style.display = 'block';
+                                    document.getElementById('imageResults').value = "系統判定" + ans + "指數過高\n無法將您上傳的照片設為頭貼";
 
-                                } else { 
-                                
-                                
+                                    document.getElementById('imageResults').classList.remove('is-valid');//將綠框移除
+                                    document.getElementById('checkResults').classList.remove('is-valid');//將綠框移除
+                                    document.getElementById('imageResults').classList.add('is-invalid');//將紅框加入
+                                    document.getElementById('checkResults').classList.add('is-invalid');//將紅框加入
+
+                                } else {
+
+                                    fetch('@Url.Content("/ImageTest/ImageModeratorToMemberInfo")', {
+                                        body: formData,
+                                        method: 'POST'
+                                    })
+                                        .then(response => {
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: '完成上傳',
+                                            });
+                                            document.getElementById('imageResults').value = "您上傳的圖片已通過智能審核\n已更新您的頭貼照片";
+                                            document.getElementById('checkResults').classList.remove('is-invalid');//將紅框移除
+                                            document.getElementById('imageResults').classList.remove('is-invalid');//將紅框移除
+                                            document.getElementById('checkResults').classList.add('is-valid'); // 將綠框加入
+                                            document.getElementById('imageResults').classList.add('is-valid');//將綠框加入
+                                        })
+                                        .catch(error => {
+                                            console.log(error);
+                                        });
                                 }
 
                             }).fail(function (err) {
@@ -344,4 +358,7 @@
 
         }
     </script>
+
+    <!--新加入sweetalert2的cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }

@@ -97,7 +97,8 @@ namespace prjCatChaOnlineShop.Controllers.Api
                                  p.TaskReward,
                                  p.TaskRequireTime,
                                  i.TaskProgress,
-                                 i.MemberId
+                                 i.MemberId,
+                                 i.CompleteDate
                              })
                              .GroupBy(task => task.TaskId) 
                              .Select(group => group.First())
@@ -117,33 +118,33 @@ namespace prjCatChaOnlineShop.Controllers.Api
         }
 
         //任務確認機
-        public IActionResult CheckMachine(CMemberTask f)
-        {
-            try
-            {//選出目前啟用的任務
-                var thisTask = (from p in _context.GameMemberTask
-                            .Where(x => x.TaskId == f.fTaskId)
-                                      join i in _context.GameTaskList on p.TaskId equals i.TaskId
-                                      orderby p.TaskId descending
-                                      select new
-                                      {
-                                          p.TaskId,
-                                          p.TaskProgress,
-                                          i.TaskRequireTime,
-                                      }).ToList();
-                if (thisTask.Any())
-                {
+        //public IActionResult CheckMachine(CMemberTask f)
+        //{
+        //    try
+        //    {//選出目前啟用的任務
+        //        var thisTask = (from p in _context.GameMemberTask
+        //                    .Where(x => x.TaskId == f.fTaskId)
+        //                              join i in _context.GameTaskList on p.TaskId equals i.TaskId
+        //                              orderby p.TaskId descending
+        //                              select new
+        //                              {
+        //                                  p.TaskId,
+        //                                  p.TaskProgress,
+        //                                  i.TaskRequireTime,
+        //                              }).ToList();
+        //        if (thisTask.Any())
+        //        {
 
-                    return new JsonResult(thisTask);
-                }
+        //            return new JsonResult(thisTask);
+        //        }
 
-                return NotFound();
-            }
-            catch
-            {
-                return View();
-            }
-        }
+        //        return NotFound();
+        //    }
+        //    catch
+        //    {
+        //        return View();
+        //    }
+        //}
 
         //更新任務狀態
         [HttpPost]
@@ -186,6 +187,43 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-        
+
+
+        //更新任務狀態
+        [HttpPost]
+        public IActionResult ResetTaskAfterReward([FromBody] GameMemberTask g)
+        {
+            try
+            {
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
+
+                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == g.TaskId);
+                var task = _context.GameTaskList.FirstOrDefault(x => x.TaskId == g.TaskId);
+
+                if (teargetTask != null)
+                {
+                    if (task != null)
+                    {
+                        var taskrequiretime = task.TaskRequireTime;
+                        if (teargetTask.TaskProgress == taskrequiretime)
+                        {
+                            teargetTask.CompleteDate = null;
+                        }
+                        _context.SaveChanges();
+                    }
+
+                    return new JsonResult(teargetTask);
+                }
+
+                return NotFound();
+            }
+            catch
+            {
+                return View();
+            }
+        }
+
     }
 }

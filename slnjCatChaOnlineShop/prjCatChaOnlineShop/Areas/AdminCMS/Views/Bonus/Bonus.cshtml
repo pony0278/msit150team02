@@ -670,7 +670,7 @@
                 }).then((result) => {
                     if (result.isConfirmed) {
                         $.ajax({
-                            url: "/AdminCMS/Bonus/SendNotify",
+                            url: "/AdminCMS/Bonus/SendCouponExpirationEmail",
                             type: "POST",
                             data: { id: couponIdToSend },
                             success: function (response) {

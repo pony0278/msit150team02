@@ -298,6 +298,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     if (existingRecord != null)
                     {
                         existingRecord.QuantityOfInGameItems += 1;
+                        _context.SaveChanges();
                     }
                     else
                     {

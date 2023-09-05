@@ -130,16 +130,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label>已被購買數量：</label>
-                            <input type="text" class="form-control" id="create_purchasedquantity" name="PurchasedQuantity">
-                        </div>
-
-                        <div class="form-group">
-                            <label>剩餘數量：</label>
-                            <input type="text" class="form-control" id="create_remainingquantity" name="RemainingQuantity">
-                        </div>
-
-                        <div class="form-group">
                             <label>抽獎機率：</label>
                             <input type="text" class="form-control" id="create_rate" name="LotteryProbability">
                         </div>
@@ -255,8 +245,6 @@
                             <th>描述</th>
                             <th>價格</th>
                             <th>圖片</th>
-                            <th>已被購買數量</th>
-                            <th>剩餘數量</th>
                             <th>抽獎機率</th>
                             <th>編輯/刪除</th>
                         </tr>
@@ -320,14 +308,6 @@
                                             <input type="text" class="form-control" id="editprice" name="ProductPrice ">
                                         </div>
 
-                                        <div class="col-md-6">
-                                            <label>已被購買數量</label>
-                                            <input type="text" class="form-control" id="editpurchasedquantity" name="PurchasedQuantity">
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label>剩餘數量</label>
-                                            <input type="text" class="form-control" id="editremainingquantity" name="RemainingQuantity">
-                                        </div>
                                         <div class="col-md-6">
                                             <label>抽獎機率</label>
                                             <input type="text" class="form-control" id="editrate" name="LotteryProbability">
@@ -427,8 +407,6 @@
                             return `<img class="img-thumbnail" src="${data}">`;
                         }
                     },
-                    { "data": "purchasedQuantity" },
-                    { "data": "remainingQuantity" },
                     { "data": "lotteryProbability" },
                     {
                         "data": "productId",
@@ -463,8 +441,6 @@
                             $('#editdescription').val(response.data.productDescription);
                             $('#editcategoryid').val(response.data.productCategoryId);
                             $('#editprice').val(response.data.productPrice);
-                            $('#editpurchasedquantity').val(response.data.purchasedQuantity);
-                            $('#editremainingquantity').val(response.data.remainingQuantity);
                             $('#editrate').val(response.data.lotteryProbability);
                             $('#previewImage').attr('src', response.data.productImage)
                             console.log(response.data)
@@ -498,8 +474,6 @@
             var ProductDescription = $('#editdescription').val();
             var ProductCategoryId = $('#editcategoryid').val();
             var ProductPrice = $('#editprice').val();
-            var PurchasedQuantity = $('#editpurchasedquantity').val();
-            var RemainingQuantity = $('#editremainingquantity').val();
             var LotteryProbability = $('#editrate').val();
             var fileInput = $('#editimage')[0];
             var file = fileInput.files[0];
@@ -511,8 +485,8 @@
             }
 
             // 驗證必為數字
-            if (!isNumeric(ProductPrice) || !isNumeric(PurchasedQuantity) || !isNumeric(RemainingQuantity) || !isDecimal(LotteryProbability)) {
-                showErrorMessage("錯誤", "已被購買數量、剩餘數量、抽獎機率僅可輸入數字，請再次檢查。");
+            if (!isNumeric(ProductPrice) ||  !isDecimal(LotteryProbability)) {
+                showErrorMessage("錯誤", "價格、抽獎機率僅可輸入數字，請再次檢查。");
                 return;
             }
 
@@ -529,8 +503,6 @@
             formData.append("ProductDescription", ProductDescription);
             formData.append("ProductCategoryId", ProductCategoryId);
             formData.append("ProductPrice", ProductPrice);
-            formData.append("PurchasedQuantity", PurchasedQuantity);
-            formData.append("RemainingQuantity", RemainingQuantity);
             formData.append("LotteryProbability", LotteryProbability);
             if (file) {
                 formData.append("Image", file)
@@ -603,8 +575,6 @@
             const ProductDescription = $('#create_description').val();
             const ProductCategoryId = $('#create_categoryid').val();
             const ProductPrice = $('#create_price').val();
-            const PurchasedQuantity = $('#create_purchasedquantity').val();
-            const RemainingQuantity = $('#create_remainingquantity').val();
             const LotteryProbability = $('#create_rate').val();
             var fileInput = $('#create_image')[0];
             var file = fileInput.files[0];
@@ -616,8 +586,8 @@
             }
 
             // 驗證必為數字
-            if (!isNumeric(ProductPrice) || !isNumeric(PurchasedQuantity) || !isNumeric(RemainingQuantity) || !isDecimal(LotteryProbability)) {
-                showErrorMessage("錯誤", "已被購買數量、剩餘數量、抽獎機率僅可輸入數字，請再次檢查。");
+            if (!isNumeric(ProductPrice) ||  !isDecimal(LotteryProbability)) {
+                showErrorMessage("錯誤", "價格、抽獎機率僅可輸入數字，請再次檢查。");
                 return;
             }
 
@@ -635,8 +605,6 @@
             formData.append("ProductDescription", ProductDescription);
             formData.append("ProductCategoryId", ProductCategoryId);
             formData.append("ProductPrice", ProductPrice);
-            formData.append("PurchasedQuantity", PurchasedQuantity);
-            formData.append("RemainingQuantity", RemainingQuantity);
             formData.append("LotteryProbability", LotteryProbability);
             if (file) {
                 formData.append("Image", file)
