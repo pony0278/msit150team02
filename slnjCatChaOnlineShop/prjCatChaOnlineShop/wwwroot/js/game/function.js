@@ -436,6 +436,7 @@ function chooseCatBeforeGame() {
 async function doCCoinTenDraw() {
     if (貓幣數量 >= 9000) {
         try {
+            updateTaskProgress(13);
             const gachaData = await fetchData(); // 取得轉蛋資料
             const numDraws = 10;
             const drawResults = [];
@@ -505,6 +506,7 @@ async function doCCoinTenDraw() {
 async function doRubyTenDraw() {
     if (紅利數量 >= 1800) {
         try {
+            updateTaskProgress(13);
             const gachaData = await fetchData(); // 取得轉蛋資料
             const numDraws = 10;
             const drawResults = [];
@@ -571,6 +573,7 @@ async function doRubyTenDraw() {
 async function doCcoinSingleDraw() {
     if (貓幣數量 >= 1000) {
         try {
+            updateTaskProgress(13);
             const gachaData = await fetchData(); // 取得轉蛋資料
             const numDraws = 1;
             const drawResults = [];
@@ -637,6 +640,7 @@ async function doCcoinSingleDraw() {
 async function doRubySingleDraw() {
     if (紅利數量 >= 200) {
         try {
+            updateTaskProgress(13);
             const gachaData = await fetchData(); // 取得轉蛋資料
             const numDraws = 1;
             const drawResults = [];
