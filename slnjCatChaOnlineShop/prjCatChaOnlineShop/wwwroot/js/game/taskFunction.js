@@ -23,14 +23,14 @@ function loadTask() {
                         <td>領取獎勵</td>
                     </tr>
                 `);
-                const completeDailyTask = ` <tr>
-                                                 <td class="_completeAllTask">完成所有每日任務</td>
-                                                 <td class="_completeAllTask">${0}/${countOfTask}</td>
-                                                 <td class="_completeAllTask">領取獎勵</td>
-                                            </tr>`;
+                //const completeDailyTask = ` <tr>
+                //                                 <td class="_completeAllTask">完成所有每日任務</td>
+                //                                 <td class="_completeAllTask">${0}/${countOfTask}</td>
+                //                                 <td class="_completeAllTask">領取獎勵</td>
+                //                            </tr>`;
 
 
-                let combinedTaskDatas = taskData.concat(completeDailyTask);
+                let combinedTaskDatas = taskData/*.concat(completeDailyTask);*/
                 document.querySelector('#msTable > tbody').innerHTML = combinedTaskDatas.join("")
             }
         },
@@ -77,7 +77,7 @@ function updateTaskProgress(TaskId) {
         type: "POST",
         url: "/Task/UpdteTask", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
-        data: JSON.stringify({ fTaskId: TaskId }),
+        data: JSON.stringify({ TaskId: TaskId }),
         success: function (data) {
             loadTask()
             console.log("資料更新成功", data.message);
@@ -86,9 +86,11 @@ function updateTaskProgress(TaskId) {
             console.log("資料更新失敗", error);
         }
     });
-
-
-
 }
 
+
+$('#testTask').click(function () {
+    console.log('執行任務12')
+    updateTaskProgress(12)
+});
 

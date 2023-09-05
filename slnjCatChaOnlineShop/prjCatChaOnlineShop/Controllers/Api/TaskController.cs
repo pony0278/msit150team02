@@ -146,7 +146,8 @@ namespace prjCatChaOnlineShop.Controllers.Api
         }
 
         //更新任務狀態
-        public IActionResult UpdteTask(CMemberTask f) 
+        [HttpPost]
+        public IActionResult UpdteTask([FromBody]GameMemberTask g) 
         {
         
             try
@@ -155,12 +156,25 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
                 int _memberId = memberInfo.MemberId;
 
-                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == f.fTaskId);
+                var teargetTask = _context.GameMemberTask.FirstOrDefault(x => x.MemberId == _memberId && x.TaskId == g.TaskId);
+                var task = _context.GameTaskList.FirstOrDefault(x => x.TaskId == g.TaskId);
 
                 if( teargetTask != null)
                 {
+                    if(teargetTask.CompleteDate==null)
                     teargetTask.TaskProgress ++ ;
-                    teargetTask.CompleteDate = DateTime.Now;
+                    _context.SaveChanges();
+
+                    if (task != null) 
+                    {
+                        var taskrequiretime = task.TaskRequireTime;
+                        if (teargetTask.TaskProgress == taskrequiretime)
+                        {
+                            teargetTask.CompleteDate = DateTime.Now;
+                        }
+                        _context.SaveChanges();
+                    }
+                    
                     return new JsonResult(teargetTask);
                 }
 

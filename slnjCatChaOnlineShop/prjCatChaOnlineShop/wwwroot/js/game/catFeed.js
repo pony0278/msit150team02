@@ -48,7 +48,8 @@ function feedcat(cat, x, y) { //餵貓貓的方法
         if (itmMilk.isSelected || itmCan.isSelected)//點擊食物之後點擊貓咪
         {
             cat.selected = true;
-             consumeFood()
+            consumeFood()
+            updateTaskProgress(14)//每日任務檢查點
         }
         return;
     }
