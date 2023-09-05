@@ -201,6 +201,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         public IActionResult VerifyEmail(string verify)
         {
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             // 取得系統自定密鑰，這裡使用 IConfiguration 讀取 
             string secretKey = _configuration["VerifyEmail:SecretKey"];
             verify = verify.Replace(" ", "+");
@@ -266,7 +267,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         [HttpPost]
         public IActionResult VerifyEmail()
         {
-
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             var User = HttpContext.Session.GetString("VerifyUserId");
             var newMember = _context.ShopMemberInfo.OrderBy(x => x.MemberId).LastOrDefault(m => m.Email == User);
             if (newMember != null)
