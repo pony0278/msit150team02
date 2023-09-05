@@ -79,7 +79,7 @@
         <div class="d-flex">
         <input type="datetime-local" class="form-control" id="pickdate">
             <select class="form-select" id="CpayLists">
-                <option selected disabled>請選擇類別</option>
+                <option value="" selected disabled>請選擇類別</option>
                 @foreach (var category in Model.ProductCategories)
                 {
                     <option value="@category.ProductCategoryId">@category.CategoryName</option>
@@ -679,8 +679,8 @@
         $("#editor-image").on("change", function () {
             var files = this.files;
 
-            if (files.length > 1) {
-                alert("您只能上傳最多1張圖片");
+            if (files.length > 5) {
+                alert("您只能上傳最多5張圖片");
                 this.value = "";
             }
 
@@ -1030,7 +1030,7 @@
             CpayLists = $(this).val()
         })
         $(document).on('click', '#start-query', function () {
-            const queryDate = $('#pickdate').val();
+            let queryDate = $('#pickdate').val();
             var newUrl = '/AdminCMS/Product/DoQuery?ReleaseDate=' + encodeURIComponent(queryDate) + '&ProductCategoryId=' + CpayLists;
             const data = {
                 ReleaseDate: queryDate,
@@ -1043,7 +1043,8 @@
                 success: function (response) {
                     if (response.success) {
                         table.ajax.url(newUrl).load();
-                        console.log(response.data)
+                        $('#pickdate').val("");
+                        $('#CpayLists').val("")
                     }
                 }
             });
