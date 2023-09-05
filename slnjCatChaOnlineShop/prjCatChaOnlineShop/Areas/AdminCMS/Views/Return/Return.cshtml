@@ -96,7 +96,7 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalToggleLabel">新增會員</h5>
+                    <h5 class="modal-title" id="exampleModalToggleLabel">新增退換貨原因</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
@@ -407,6 +407,7 @@
                 "paging": true, //分頁功能
                 responsive: true, //RWD
                 // "searching": false, //隱藏搜尋框
+                "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
             });
 
             // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
@@ -439,7 +440,7 @@
                     type: 'GET',
                     data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
                     success: function (data) {
-                        console.log(data.data.orderTotal);
+                        console.log(data);
 
 
                         function formatDateTime(dateTimeString) {

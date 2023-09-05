@@ -30,6 +30,8 @@
 
         public bool? MemberStatus { get; set; }
 
+        public bool? Subscribe { get; set; }
+
         public bool? isBanned { get; set; }
         public DateTime unBannedTime { get; set; }
     }
