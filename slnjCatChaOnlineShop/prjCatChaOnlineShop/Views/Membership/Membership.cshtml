@@ -251,12 +251,14 @@
                                 <div class="card-body text-center">
                                     <div class="avatar text-center">
                                         <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/toy.png")' alt="" style="width: 200px; height: 200px;">
+                                        <!--
                                         <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
                                                 data-bs-target="#personalPictureModal">
                                             更換個人圖片
                                         </button>
+                                        -->
                                         <button class="btn btn-warning btn-sm mt-2 mb-3"  id="imageModeratorButton">
-                                            圖片審核
+                                            更換個人圖片
                                         </button>
                                     </div>
                                     <h1 id="summonName" class="font-weight-bold fs-2 my-1">會員</h1>
@@ -570,7 +572,7 @@
 
         <!--彈跳視窗:訂單明細-->
         <div class="modal fade" id="orderDetailModal">
-            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="col d-flex justify-content-end">
@@ -674,7 +676,7 @@
 
         <!--彈跳視窗:評論-->
         <div class="modal fade" id="commentModal">
-            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="col d-flex justify-content-end">
@@ -709,12 +711,18 @@
                                         <textarea class="form-control" aria-label="With textarea" id="commentTextarea" rows="2"></textarea>
                                     </div>
                                 </div>
+                                <div class="row my-1 ml-2" style="display: none;" id="commentTimeDiv">
+                                    <label>發送日期: </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="commentTimeTextarea" rows="1" readonly></textarea>
+                                    </div>
+                                </div>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col mt-2">
+                                        <div class="col-md-4 mx-auto">
                                             <button type="submit" class="btn btn-danger btn-block" id="saveComment">送出</button>
                                         </div>
-                                        <div class="col mt-2">
+                                        <div class="col-md-4 mx-auto">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
                                                     data-bs-dismiss="modal">
                                                 取消
@@ -722,8 +730,6 @@
                                         </div>
                                     </div>
                                 </div>
-
-
                             </form>
                         </div>
 
@@ -962,7 +968,7 @@
                                 <div class="form-group" id="aiCheck" style="display: none;">
                                     <h4 class="font-weight-bold">系統審合</h4>
                                     <textarea class="form-control is-invalid" id="checkComplaint" rows="1"
-                                              data-error="文字判讀"></textarea>
+                                              data-error="文字判讀" readonly></textarea>
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
@@ -2078,16 +2084,24 @@
                 if (data.length == 0) {
                     document.getElementById('commentTextarea').readOnly = false;
                     document.getElementById('saveComment').disabled = false;
+                    document.getElementById('commentTimeDiv').style.display = 'none';
 
                 } else {
 
                     data.forEach(function (item) {
                         $('#commentTextarea').val(item.reviewContent);
-                        document.getElementById('startRating').value = 4;
-                        // item.productRating
-                        //reviewTime
+
+                        //星星插件無法處理
+                        // document.getElementById('startRating').value = 4;
+                        // 選取元素
+                        // var inputElement = document.getElementById('startRating');
+                        // 設定新的值
+                        // inputElement.value = 2;
+
                         document.getElementById('commentTextarea').readOnly = true;
                         document.getElementById('saveComment').disabled = true;
+                        $('#commentTimeTextarea').val(item.reviewTime);
+                        document.getElementById('commentTimeDiv').style.display = 'block';
 
                     });
 
@@ -2294,7 +2308,33 @@
                         imgCell.appendChild(imgContainer);
                         
                         row.insertCell().textContent = item.productName;
-                        row.insertCell().textContent = item.remainingQuantity;
+
+                        // row.insertCell().textContent = item.remainingQuantity;
+                        // 假設 remainingQuantity 是一個數字
+                        var remainingQuantity = item.remainingQuantity;
+                        // 將 remainingQuantity 取個位數並加一
+                        var lastDigit = remainingQuantity % 10;
+                        var randomNumber = lastDigit + 1;
+                        // 將增加後的值設定回 item.remainingQuantity
+
+                        if (randomNumber > 7) {
+                            row.insertCell().textContent = randomNumber;
+                        } else if (randomNumber > 4) {
+                            var cell = row.insertCell();
+                            var span = document.createElement("span");
+                            span.textContent = randomNumber;
+                            span.style.color = "#EA7500";
+                            cell.appendChild(span);
+                        } else {
+                            var cell = row.insertCell();
+                            var span = document.createElement("span");
+                            span.textContent = randomNumber;
+                            span.style.color = "red";
+                            span.style.fontWeight = "bold";
+                            cell.appendChild(span);
+                        }
+
+
                         row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
 
                         var cartCell = row.insertCell();
@@ -2533,6 +2573,10 @@
                                 title: '系統判讀',
                                 text: `冒犯指數過高：${(Category3 * 100).toFixed(2)}%`
                             })
+
+                            document.getElementById('checkComplaint').classList.remove('is-valid');//將綠框移除
+                            document.getElementById('checkComplaint').classList.add('is-invalid'); // 將紅框加入
+
                         } else {
                             const formData = new FormData(document.querySelector('#complaintForm'));
                             formData.append("selectedValue", selectedValue);
@@ -2562,6 +2606,8 @@
                                     });
 
                                     document.getElementById('checkComplaint').classList.remove('is-invalid');//將紅框移除
+                                    document.getElementById('checkComplaint').classList.add('is-valid'); // 將綠框加入
+
                                     loadComplaintRecords();
                                 })
                                 .catch(error => {

@@ -397,7 +397,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //前往圖片審核的頁面
         public IActionResult ImageModerator()
         {
-
+            ViewBag.memberIdForMembership = memberIdForMembership;
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View();
         }
