@@ -128,36 +128,19 @@
 <!-- Start Slider -->
 <div id="slides-shop" class="cover-slides">
     <ul class="slides-container">
-        <li class="text-center">
-            <img src="~/images/home-slide-1.jpg" alt="" />
-            <div class="container">
-                <div class="row d-flex justify-content-center align-items-end mb-5">
-                    <div class="col-md-12 ">
-                        <p><a class="btn hvr-hover" asp-controller="Index" asp-action="Shop">來去逛逛</a></p>
+        @foreach (var banner in ViewBag.Banners)
+        {
+            <li class="text-center">
+                <img src="@banner.Link" alt="" style="object-fit:cover" />
+                <div class="container">
+                    <div class="row d-flex justify-content-center align-items-end mb-5">
+                        <div class="col-md-12 ">
+                            <p><a class="btn hvr-hover" asp-controller="Index" asp-action="Shop">來去逛逛</a></p>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </li>
-        <li class="text-center">
-            <img src="~/images/home-slide-2.jpg" alt="" />
-            <div class="container">
-                <div class="row d-flex justify-content-center align-items-end mb-5">
-                    <div class="col-md-12">
-                        <p><a class="btn hvr-hover" asp-controller="Index" asp-action="Shop">來去逛逛</a></p>
-                    </div>
-                </div>
-            </div>
-        </li>
-        <li class="text-center">
-            <img src="~/images/home-slide-3.jpg" alt="" />
-            <div class="container">
-                <div class="row d-flex justify-content-center align-items-end mb-5">
-                    <div class="col-md-12">
-                        <p><a class="btn hvr-hover" asp-controller="Index" asp-action="Shop">來去逛逛</a></p>
-                    </div>
-                </div>
-            </div>
-        </li>
+            </li>
+        }
     </ul>
     <div class="slides-navigation">
         <a href="#" class="next"><i class="fa fa-angle-right" aria-hidden="true"></i></a>
