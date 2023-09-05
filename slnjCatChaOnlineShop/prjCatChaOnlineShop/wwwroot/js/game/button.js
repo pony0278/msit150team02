@@ -11,11 +11,54 @@ const allPages = [Canvaslobby, Canvasrungame, CatchaGatCha, CanvasRank, Mission,
 const testlogin = document.getElementById('testlogin');
 const btnProBability = document.getElementById('btnProBability');//轉蛋返回按鈕
 const ProbabilityContainer = document.getElementById("Probability");// 獲取第一個頁碼按鈕元素
+var closeButton = document.getElementById("closetutorial");// 獲取 "closetutorial" 按鈕元素
 // 獲取所有頁碼按鈕元素
 var pageA = document.getElementById("pageA");
 var pageB = document.getElementById("pageB");
 var pageC = document.getElementById("pageC");
 var closeBtn = document.getElementById("closeinstruction");
+// 獲取所有點和頁面元素
+var dots = document.querySelectorAll(".dot");
+var pages = document.querySelectorAll(".page");
+var tutorialContainer = document.getElementById("tutorial");
+
+closeButton.addEventListener("click", function () {
+    // 隱藏整個容器
+    tutorialContainer.style.display = "none";
+    handleDotClick(1);
+    pagesControl(Canvaslobby); //畫面返回大廳
+});
+// 默認選中第一頁
+handleDotClick(1);
+
+// 處理點擊點的函數
+function handleDotClick(selectedDot) {
+    // 隱藏所有頁面
+    pages.forEach(function (page) {
+        page.classList.remove("active");
+    });
+
+    // 顯示所選頁面
+    var selectedPage = document.getElementById("page" + selectedDot);
+    if (selectedPage) {
+        selectedPage.classList.add("active");
+    }
+
+    // 更新點的樣式
+    dots.forEach(function (dot, index) {
+        dot.classList.remove("active");
+        if (index === selectedDot - 1) {
+            dot.classList.add("active");
+        }
+    });
+}
+
+// 添加點擊事件監聽器到每個圓點頁碼按鈕
+dots.forEach(function (dot, index) {
+    dot.addEventListener("click", function () {
+        handleDotClick(index + 1);
+    });
+});
 
 // 點擊頁碼按鈕時的事件處理函數
 function handlePageClick(selectedPage) {

@@ -115,7 +115,7 @@
                 const form = document.querySelector('#imgForm');
 
                 const formData = new FormData(form);
-                fetch('@Url.Content("/ImageTest/UploadImage")', {
+                fetch('@Url.Content("/ImageTest/UploadImageToImageModerator")', {
                     body: formData,
                     method: 'POST'
                 })
@@ -207,16 +207,42 @@
                                 document.getElementById('visionResults').value = visionText;
                                 document.getElementById('descriptionResults').value = descriptionText;
 
+                                if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
+                                    var Category1ans = Category1 > 0.7 ? '成人內容' + (Category1 * 100).toFixed(2) + "%" : "";
+                                    var Category2ans = Category2 > 0.7 ? '種族歧視' + (Category2 * 100).toFixed(2) + "%" : "";
+                                    var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
+                                    var ans = Category1ans + Category2ans + Category3ans;
+
+                                    document.getElementById('imageResults').value = "系統判定" + ans + "指數過高，無法將您上傳的照片設為頭貼";
+                                    document.getElementById('imageResults').style.display = 'block';
+                                    document.getElementById('checkResults').style.display = 'block';
+
+                                } else { 
+                                
+                                
+                                }
+
                             }).fail(function (err) {
-                                alert(err.statusText);
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '您上傳的圖片違反平台政策',
+                                });
+
                             });
                         }).fail(function (err) {
-                            alert(err.statusText);
+                            Swal.fire({
+                                icon: 'error',
+                                title: '您上傳的圖片不符合規格',
+                            });
+
                         });
 
                     })
                     .catch(error => {
-                        console.log("error");
+                        Swal.fire({
+                            icon: 'error',
+                            title: '您上傳的圖片違反著作或肖像權',
+                        });
                     });
                     
 

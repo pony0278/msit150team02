@@ -397,6 +397,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //前往圖片審核的頁面
         public IActionResult ImageModerator()
         {
+
+            ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View();
         }
 
@@ -556,16 +558,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         //取得商品的過往評論
-        public IActionResult GetCommentByOrderId(int orderid)
+        public IActionResult GetCommentByOrderId(int orderid, int productid)
         {
 
             try
             {
                 var query = from comment in _context.ShopProductReviewTable
-                            where comment.OrderId == orderid & comment.ProductId == memberIdForMembership
+                            where comment.OrderId == orderid & comment.ProductId == productid & comment.MemberId == memberIdForMembership
                             select new
                             {
-                                comment.ReviewContent
+                                comment.ReviewContent,
+                                comment.ProductRating,
+                                comment.ReviewTime
                             };
 
                 var datas = query.ToList();
@@ -576,7 +580,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 }
                 else
                 {
-                    datas = null;
+                    //datas = null;
                     return new JsonResult(datas);
                 }
             }
