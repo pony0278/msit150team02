@@ -17,5 +17,7 @@
         public string Image { get; set; }
 
         public IFormFile? getImage { get; set; }
+
+        public decimal? SpecialOffer { get; set; }
     }
 }

@@ -50,41 +50,39 @@
     //測試
 const weatherImage = new Image();
 const weatherImage2 = new Image();
-let sourceX = 0; // 源圖片的 X 位置
-const sourceY = 150;   // 源圖片的 Y 位置
-const sourceWidth = 500; // 源圖片的寬度
-const sourceHeight = 1000; // 源圖片的高度
 let destinationX = 0;
-const destinationY = 0;  // 目標位置 Y
-let currentX = destinationX; // 初始的 x 值
-let currentImage = weatherImage; // 初始的圖片是 weatherImage
+let currentImage = weatherImage; // 設置當前使用的圖像
 
 function backgroundmove() {
     // 更新 sourceX，使圖片向左移動
-    sourceX += 0.2;
+    destinationX -= 1;
 
-    // 如果 sourceX 超過了 canvas 寬度，切換到下一張圖片
-    if (sourceX >= 1815) {
-        if (currentImage === weatherImage) {
-            currentImage = weatherImage2;
-            currentX = destinationX; // 重置 x 值，開始繪製第二張圖片
-        } else {
-            currentImage = weatherImage;
-            currentX = destinationX ; // 重置 x 值，開始繪製第一張圖片
-        }
-        sourceX = 0; // 重置 sourceX，以便重新開始繪製
-    }
-
-    // 根據 currentImage 繪製相應的圖片
     if (currentImage === weatherImage) {
-        c.drawImage(weatherImage, sourceX, sourceY, sourceWidth, sourceHeight, destinationX, destinationY, canvas.width, canvas.height);
+        // 繪製 weatherImage 的一系列圖像
+        c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX, 0, 2304, 1296);
+        c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX + 2304, 0, 2304, 1296);
+
+        if (destinationX <= -2304) {
+            destinationX = 0;
+
+            // 切換到 weatherImage2
+            currentImage = weatherImage2;
+        }
     } else if (currentImage === weatherImage2) {
-        c.drawImage(weatherImage2, sourceX, sourceY, sourceWidth, sourceHeight, currentX, destinationY, canvas.width, canvas.height);
+        // 繪製 weatherImage2 的一系列圖像
+        c.drawImage(weatherImage2, 0, 450, 2304, 1296, destinationX, 0, 2304, 1296);
+        c.drawImage(weatherImage2, 0, 450, 2304, 1296, destinationX + 2304, 0, 2304, 1296);
+
+        if (destinationX <= -2304) {
+            destinationX = 0;
+
+            // 切換回 weatherImage
+            currentImage = weatherImage;
+        }
     }
 
     c.drawImage(lobbyBK, 100, 0, canvas.width, canvas.height, 0, 160, canvas.width, canvas.height);
 }
-
 
     class UserInfo {
 

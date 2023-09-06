@@ -217,37 +217,35 @@
             <div id="tutorial-container">
                 <!-- 返回鍵 -->
                 <button id="closetutorial" class=" btn-secondary" onclick="">x</button>
-                <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
-                <div class="content-container">
+                <button id="commonbackBTN" style="top:20px !important; z-index:99;"onclick="pagesControl(Canvaslobby)"></button>
+                <div class="tutorial-container" style=" position: relative; display: flex; justify-content: center;">
                     <div id="page1" class="page active">
                         <!-- 第1頁的內容 -->
-                        <h1>第一頁</h1>
-                        <p>這是第一頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial1.png"/>
                     </div>
                     <div id="page2" class="page">
                         <!-- 第2頁的內容 -->
-                        <h1>第二頁</h1>
-                        <p>這是第二頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial2.png" />
                     </div>
                     <div id="page3" class="page">
                         <!-- 第3頁的內容 -->
-                        <h1>第三頁</h1>
-                        <p>這是第三頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial3.png" />
                     </div>
                     <div id="page4" class="page">
                         <!-- 第4頁的內容 -->
-                        <h1>第四頁</h1>
-                        <p>這是第四頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial4.png" />
                     </div>
                     <div id="page5" class="page">
                         <!-- 第5頁的內容 -->
-                        <h1>第五頁</h1>
-                        <p>這是第五頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial5.png" />
                     </div>
                     <div id="page6" class="page">
                         <!-- 第6頁的內容 -->
-                        <h1>第六頁</h1>
-                        <p>這是第六頁的內容。</p>
+                        <img src="~/images/game/tutorial/tutorial6.png" />
+                    </div>
+                    <div id="page7" class="page">
+                        <!-- 第6頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial7.png" />
                     </div>
                 </div>
                 <div class="pagination-dots-container">
@@ -257,6 +255,7 @@
                     <span class="dot" onclick="handleDotClick(4)"></span>
                     <span class="dot" onclick="handleDotClick(5)"></span>
                     <span class="dot" onclick="handleDotClick(6)"></span>
+                    <span class="dot" onclick="handleDotClick(7)"></span>
                 </div>
             </div>
         </div>
@@ -317,7 +316,9 @@
 
 <button type="submit" id="testDBlogin" style="display:none">測試資料庫登入</button>
 
-<button type="submit" id="testTask" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;">
+<button type="submit" id="testTask" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;top: 770px;
+    left: 677px;
+}">
     DEMO跨日重置
 </button>
 

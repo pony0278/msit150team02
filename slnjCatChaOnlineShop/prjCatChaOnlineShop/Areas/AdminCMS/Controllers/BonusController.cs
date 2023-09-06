@@ -44,7 +44,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 CouponName = x.CouponName,
                 CouponContent = x.CouponContent,
                 ExpiryDate = x.ExpiryDate,
-                TotalQuantity = x.TotalQuantity,
+                SpecialOffer = x.SpecialOffer,
                 Usable = x.Usable == null ? "未設定" : (x.Usable == true ? "是" : "否")
             }).ToList();
             return Json(new { data });
@@ -87,8 +87,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     editCoupon.CouponContent = cCoupon.CouponContent;
                 if (cCoupon.ExpiryDate != null)
                     editCoupon.ExpiryDate = cCoupon.ExpiryDate;
-                if (cCoupon.TotalQuantity != null)
-                    editCoupon.TotalQuantity = cCoupon.TotalQuantity;
+                if (cCoupon.SpecialOffer != null)
+                    editCoupon.SpecialOffer = cCoupon.SpecialOffer;
                 if (cCoupon.Usable != null)
                     editCoupon.Usable = cCoupon.Usable;
 
@@ -109,7 +109,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 CouponName = cCoupon.CouponName,
                 CouponContent = cCoupon.CouponContent,
                 ExpiryDate = cCoupon.ExpiryDate,
-                TotalQuantity = cCoupon.TotalQuantity,
+                SpecialOffer = cCoupon.SpecialOffer,
                 Usable = cCoupon.Usable
             };
             _cachaContext.ShopCouponTotal.Add(newCoupon);
@@ -121,18 +121,26 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult Delete(int? id)
         {
-            if (id != null)
+            try
             {
-                ShopCouponTotal cCoupon = _cachaContext.ShopCouponTotal.FirstOrDefault(p => p.CouponId == id);
-                if (cCoupon != null)
+                if (id != null)
                 {
-                    _cachaContext.ShopCouponTotal.Remove(cCoupon);
-                    _cachaContext.SaveChanges();
-                    return Json(new { success = true });
+                    ShopCouponTotal cCoupon = _cachaContext.ShopCouponTotal.FirstOrDefault(p => p.CouponId == id);
+                    if (cCoupon != null)
+                    {
+                        _cachaContext.ShopCouponTotal.Remove(cCoupon);
+                        _cachaContext.SaveChanges();
+                        return Json(new { success = true });
+                    }
                 }
+                return Json(new { success = false });
             }
-            return Json(new { success = false });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, error = ex.Message });
+            }
         }
+
 
         //發送給所有會員
         [HttpPost]
@@ -155,7 +163,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     MemberId = member.MemberId,
                     CouponId = coupon.CouponId,
-                    CouponStatusId = true //設置為可使用
+                    CouponStatusId = false //設置為可使用
                 };
 
                 _cachaContext.ShopMemberCouponData.Add(memberCouponData);
@@ -193,7 +201,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
                 MemberId = memberId.Value,
                 CouponId = coupon.CouponId,
-                CouponStatusId = true //設置為可使用
+                CouponStatusId = false //設置為可使用
             };
 
             _cachaContext.ShopMemberCouponData.Add(memberCouponData);
@@ -214,7 +222,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             if (coupon != null)
             {
                 var members = _cachaContext.ShopMemberCouponData
-                    .Where(m => m.CouponId == coupon.CouponId && m.CouponStatusId == true)
+                    .Where(m => m.CouponId == coupon.CouponId && m.CouponStatusId == false)
                     .ToList();
 
                 foreach (var member in members)

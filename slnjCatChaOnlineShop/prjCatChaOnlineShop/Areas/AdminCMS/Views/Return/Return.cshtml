@@ -84,6 +84,27 @@
             font-weight: bold;
             margin-bottom: 10px !important;
         }
+
+        /* 自定義SweetAlert2的字體大小 */
+        .swal2-popup {
+            font-size: 19px; /* 調整字體大小，根據需要更改數值 */
+        }
+
+        /* 自定義SweetAlert2的確認按鈕樣式 */
+        .swal2-confirm {
+            background-color: #b95756 !important; /* 更改背景顏色 */
+            color: #fff !important; /* 更改文字顏色 */
+            border: 2px solid #b95756 !important; /* 更改邊框 */
+        }
+
+        #swal2-title{
+        font-size: 27px !important;
+        }
+
+        #imageContainer {
+            display: inline-block;
+            cursor: pointer;
+        }
     </style>
 }
 
@@ -97,6 +118,24 @@
             <button class="create_btn" id="createReason" data-bs-toggle="modal" href="#editStatusModalToggle" role="button">新增原因</button>
         </div>
     </div>
+
+    @*<a data-bs-toggle="modal" href="#modal1" class="btn btn-primary">Launch modal</a>
+
+    <!-- 第一个模态框 -->
+    <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modal1Label">第一个模态框</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <!-- 添加触发SweetAlert的按钮 -->
+                    <button type="button" class="btn btn-primary" id="openSweetAlert">打开SweetAlert</button>
+                </div>
+            </div>
+        </div>
+    </div>*@
 
     <!---新增退換貨狀態 modal-->
     <div class="modal fade" id="editStatusModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -112,7 +151,7 @@
                     <table class="table table-bordered border-danger">
                         <thead>
                             <tr>
-                                <th scope="col">ID</th>
+                                @*<th scope="col">ID</th>*@
                                 <th scope="col">原因名稱</th>
                             </tr>
                         </thead>
@@ -286,7 +325,7 @@
                             <div class="col-12">
                                 <!--下拉卷軸-->
                                 <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReturnExample" aria-expanded="false" aria-controls="collapseExample">
-                                    訂購產品明細
+                                    申請退換貨產品明細
                                 </button>
                                 <!--訂購產品明細-->
                                 <div class="collapse show" id="collapseReturnExample">
@@ -305,6 +344,8 @@
     </div>
 </div>
 <!---詳細資料model-->
+
+
 <!--編輯彈出視窗-->
 <div class="modal fade" id="returnEditModalToggle" aria-hidden="true"
      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
@@ -351,7 +392,25 @@
     <script>
         $('input[name="dates"]').daterangepicker();
 
+        $(".testBtn").on("click", function () {
+            // 在按钮点击时触发showRemark()函数
+            showRemark();
+        });
+
+       
+
+
+        function showRemark() {
+            Swal.fire({
+                title: '編輯成功',
+                text: returnRemark
+            });
+        }
+
         $(document).ready(function () {
+
+            
+
             $.ajax({
                 url: '@Url.Action("ReasonList", "Return")',
                 type: 'GET',
@@ -446,6 +505,8 @@
 
             //==================按下「詳細資料」按鈕的點擊事件處理
             $('#SReturn-table').on('click', '.detail_input', function () {
+
+                
                 var memberId = $(this).data('memberid'); // 從按鈕的 data-memberid 屬性中獲取 memberId
                 var orderId = $(this).data('orderid');
                 // console.log('Clicked on "詳細資料" button for memberId:', memberId);
@@ -457,7 +518,6 @@
                     data: { memberId: memberId, orderId: orderId }, // id=>這個名稱要確保欄位跟controller的參數名稱相同（傳遞會員ID或其他必要的參數）
                     success: function (data) {
                         console.log(data.data);
-
 
                         function formatDateTime(dateTimeString) {
                             var dateTime = new Date(dateTimeString);
@@ -624,14 +684,35 @@
                                                                                                                                                                                                         <td data-th="商品ID">${data.data.returnData.productId}</td>
                                                                                                                                                                                                         <td data-th="名稱">${data.data.returnProduct}</td>
                                                                                                                                                                                                         <td data-th="數量">${data.data.returnData.returnCount}</td>
-                                                                                                                                                                                                        <td data-th="回傳圖片"><img src="${data.data.returnData.returnImage}" width="100" /></td>
-                                                                                                                                                                                                                        <td data-th="備註">${data.data.returnData.returnContent}</td>
+                                                                                                                                                                                                                <td data-th="回傳圖片"><div id="imageContainer"><img src="${data.data.returnData.returnImage}" width="100" /></div></td>
+                                                                                                                                                                                                                                                                                                <td data-th="備註"><button type="button" class="detail_input" id="openSweetAlert">查看</button></td>
                                                                                                                                                     </tr>
                                                                                                                                                     </tbody>
                                                                                                                                                 </table>
                                                                                                                                             `;
 
                             RPContainer.html(ReturnTableHTML);
+
+                            $("#imageContainer").on('click', function () {
+                                var imageURL = $(this).find('img').attr('src');
+
+                                // 使用SweetAlert2顯示圖片
+                                Swal.fire({
+                                    imageUrl: imageURL, // 圖片的URL
+                                    imageWidth: 'auto', // 使用圖片的原始寬度
+                                    imageHeight: 'auto', // 使用圖片的原始高度
+                                    confirmButtonText: '確定'
+                                });
+                            });
+
+                            // 打開SweetAlert
+                            $("#openSweetAlert").on('click', function () {
+                                Swal.fire({
+                                    title: '備註內容',
+                                    text: data.data.returnData.returnContent,
+                                    confirmButtonText: '確定'
+                                });
+                            });
 
                         }
                     },
@@ -643,6 +724,8 @@
                     }
                 });
             });
+
+
 
             //==================按下「編輯」按鈕的點擊事件處理
             $('#SReturn-table').on('click', '.edit_orderbtn', function () {
@@ -769,7 +852,6 @@
                 $.each(data.data.serviceCase, function (index, reason) {
                     htmlToInsert += `
                                                                                                     <tr>
-                                                                                                        <td>${reason.returnReasonId}</td>
                                                                                                         <td>${reason.returnReason}</td>
                                                                                                     </tr>
                                                                                                 `;
@@ -778,7 +860,7 @@
                 // 將HTML字符串添加到目標元素
                 $('#appendReason').html(htmlToInsert);
 
-                let maxId = data.data.serviceCase.length;
+                //let maxId = data.data.serviceCase.length;
 
                 // 找到最後一個元素並添加加號圖標
                 let lastElement = data.data.serviceCase[data.data.serviceCase.length - 1];
@@ -787,7 +869,7 @@
                 }
             }
 
-            let maxId; //最大ID
+            //let maxId; //最大ID
 
             //================按下新增原因按鈕事件
             $('#createReason').click(function () {
@@ -797,7 +879,7 @@
                     success: function (data) {
                         //console.log(data);
                         setupReasonTable(data);
-                        maxId = data.data.serviceCase.length;
+                        //maxId = data.data.serviceCase.length;
                     },
                     error: function () {
                         console.log("error:" + error);
@@ -809,19 +891,19 @@
             // 監聽加號圖標的點擊事件
             $('#appendReason').on('click', 'i.fa-plus', function () {
                 // 增加最大ID
-                maxId++;
+                //maxId++;
 
                 // 創建一個新的<tr>行
                 let newRow = $('<tr></tr>');
 
                 // 在新的<tr>行中創建新的<td>元素，顯示ID
-                let newIdCell = $(`<td>${maxId}</td>`);
+                //let newIdCell = $(`<td>${maxId}</td>`);
 
                 // 創建新的<td>元素，其中包含新的<input>元素
                 let newInputCell = $('<td><input type="text" class="newadd" /><i class="fas fa-minus-circle"></i></td>');
 
                 // 將新的<td>元素添加到新的<tr>行中
-                newRow.append(newIdCell);
+                //newRow.append(newIdCell);
                 newRow.append(newInputCell);
 
                 // 在最後一行的後面插入新的<tr>行
@@ -837,21 +919,21 @@
                 let deletedRow = $(this).closest('tr');
 
                 deletedRow.remove();
-                recalculateMaxId();
+                //recalculateMaxId();
             });
 
             // 重新計算maxId
-            function recalculateMaxId() {
-                let idCells = $('#appendReason td:first-child');
-                maxId = 0;
+            //function recalculateMaxId() {
+            //    let idCells = $('#appendReason td:first-child');
+            //    maxId = 0;
 
-                idCells.each(function () {
-                    let idValue = parseInt($(this).text(), 10);
-                    if (!isNaN(idValue) && idValue > maxId) {
-                        maxId = idValue;
-                    }
-                });
-            }
+            //    idCells.each(function () {
+            //        let idValue = parseInt($(this).text(), 10);
+            //        if (!isNaN(idValue) && idValue > maxId) {
+            //            maxId = idValue;
+            //        }
+            //    });
+            //}
 
             //=================新增原因按下「儲存」的事件
             $('#CreatReturnReason').click(function () {
@@ -878,13 +960,13 @@
                                     icon: 'success',
                                     title: '新增成功',
                                     text: response.message
-                                });
-
-                                // 關閉modal
-                                $('#editStatusModalToggle').modal('hide');
-
+                                }).then(function () {
+                                    // 關閉modal
+                                    $('#editStatusModalToggle').modal('hide');
+                                    window.location.reload();
+                                });;
                                 // 重新整理dataTable
-                                $('#return-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                                //$('#return-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
                             } else {
                                 Swal.fire({
                                     icon: 'error',
