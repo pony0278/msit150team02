@@ -264,18 +264,32 @@ namespace prjCatChaOnlineShop.Controllers.Home
             
         }
 
-        public IActionResult GetDetails(int? pId)
+        //public IActionResult GetDetails(int? pId)
+        //{
+        //    var prodItem = _productService.getProductById(pId);
+
+        //    var cart = GetCartFromSession();
+
+
+        //    // 調用簡化方法，傳入產品物件和數量
+        //    _productService.addCartItem(cart, prodItem, 1);
+        //    SaveCart(cart);
+        //    return Json(new { success = true });
+        //}
+        public IActionResult GetTopAnnouncement()
         {
-            var prodItem = _productService.getProductById(pId);
+            var data = _context.GameShopAnnouncement
+                .Where(a => a.PinToTop == true&&a.DisplayOrNot==true)
+                .OrderBy(a=>a.AnnouncementTypeId)
+                .Select(a=>a.AnnouncementContent)
+                .FirstOrDefault();
 
-            var cart = GetCartFromSession();
+            if (data != null)
+            {
+                return Json(new { success = true, message = data });
 
-
-            // 調用簡化方法，傳入產品物件和數量
-            _productService.addCartItem(cart, prodItem, 1);
-            SaveCart(cart);
-            return RedirectToAction("Shop");
+            }
+            return Json(new { success = false, messageWelcome = " 歡迎光臨catCha貓抓抓商城" });
         }
-        
     }
 }
