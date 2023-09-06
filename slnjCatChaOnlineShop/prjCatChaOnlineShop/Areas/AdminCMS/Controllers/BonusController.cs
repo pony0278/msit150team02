@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ChatGPT.Net.DTO.ChatGPTUnofficial;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Build.Experimental.ProjectCache;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
@@ -222,12 +223,45 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     var memberInfo = _cachaContext.ShopMemberInfo
                         .Where(mi => mi.MemberId == member.MemberId)
                         .FirstOrDefault();
-
+                    var newsletterTemplete = _cachaContext.NewsletterTemplate.FirstOrDefault();
                     if (memberInfo != null)
                     {
                         // 創建郵件內容
-                        string subject = "優惠券到期通知";
-                        string body = $"優惠券名稱：{coupon.CouponName}\n到期日：{coupon.ExpiryDate}";
+                        string subject = "CatCha 優惠券到期通知";
+                        string imgHeader = newsletterTemplete.HeaderImage;
+                        string imgFooter = newsletterTemplete.FooterImage;
+                        string body = $@"
+                            <html>
+                            <body>
+                                <table align='center' cellspacing='0' cellpadding='0' width='100%'>
+                                    <tr>
+                                        <td style='padding: 0 2rem;'>
+                                        </td>
+                                        <td style='text-align: center;'>
+                                            <p style='font-size: 18px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
+                        <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
+                        <div>
+                                <h2>{subject}</h2>
+                                <p style='font-size: 20px'>親愛的會員{memberInfo.Name} 您好，以下是有關您的優惠券的詳細訊息：</p>
+                                    <p style='font-size: 18px'>優惠券名稱：<strong>{coupon.CouponName}</strong></p>
+                                    <p style='font-size: 18px'>到期日：<strong>{coupon.ExpiryDate.Value.ToString("yyyy-MM-dd")}</strong></p>
+                                <p style='font-size: 20px'>提醒您於到期日前使用完畢唷，CatCha貓抓抓感謝您的支持與購買！</p>
+                        </div>
+
+                                            <button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button>
+                        </a>
+                                            <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
+                                            <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
+                                                <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
+                                                <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>
+                                            </div>
+                                        </td>
+                                        <td style = 'padding: 0 2rem;' >
+                                        </td>
+                                    </tr>
+                                </table>
+                            </body>
+                            </html>";
 
 
                         // 創建郵件寄件者和收件者
@@ -245,7 +279,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                             {
                                 message.Subject = subject;
                                 message.Body = body;
-                                message.IsBodyHtml = false;
+                                message.IsBodyHtml = true;
 
                                 try
                                 {

@@ -30,6 +30,10 @@
             color: #DE9E4F !important;
         }
 
+        .main-top .formain-topSpan {
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
     </style>
     @await RenderSectionAsync("Styles",required:false)
 </head>
@@ -39,7 +43,7 @@
         <div class="d-flex justify-content-center p-2">
             <ul>
                 <li>
-                    <i class="fab fa-opencart"><span class="formain-topSpan">打折</span></i>
+                    <i class="fab fa-opencart" style="color:#ffff"><span class="formain-topSpan"></span></i>
                 </li>
             </ul>
         </div>
@@ -98,26 +102,26 @@
 
                             if (!string.IsNullOrEmpty(userName))
                             {
-                                <li class="Login">
-                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                        <span class="LoginText">Hello, @userName</span>
-                                    </a>
-                                </li>
-                                <li class="Logout">
-                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
-                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
-                                            <span class="LogoutText">登出</span>
-                                        </button>
-                                    </form>
-                                </li>
+                                            <li class="Login">
+                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                                    <span class="LoginText">Hello, @userName</span>
+                                                </a>
+                                            </li>
+                                            <li class="Logout">
+                                                <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                                    <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                                        <span class="LogoutText">登出</span>
+                                                    </button>
+                                                </form>
+                                            </li>
                             }
                             else
                             {
-                                <li class="Login">
-                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                        <span class="LoginText">登入/註冊</span>
-                                    </a>
-                                </li>
+                                            <li class="Login">
+                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                                    <span class="LoginText">登入/註冊</span>
+                                                </a>
+                                            </li>
                             }
                         }
                     </ul>
@@ -142,26 +146,26 @@
 
                             if (!string.IsNullOrEmpty(userName))
                             {
-                                <li class="Login">
-                                    <a id="loginLink" asp-controller="Membership" asp-action="Membership">
-                                        <span class="LoginText">Hello, @userName</span>
-                                    </a>
-                                </li>
-                                <li class="Logout">
-                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
-                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
-                                            <span class="LogoutText">登出</span>
-                                        </button>
-                                    </form>
-                                </li>
+                                            <li class="Login">
+                                                <a id="loginLink" asp-controller="Membership" asp-action="Membership">
+                                                    <span class="LoginText">Hello, @userName</span>
+                                                </a>
+                                            </li>
+                                            <li class="Logout">
+                                                <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                                    <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                                        <span class="LogoutText">登出</span>
+                                                    </button>
+                                                </form>
+                                            </li>
                             }
                             else
                             {
-                                <li class="Login">
-                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                        <span class="LoginText">登入/註冊</span>
-                                    </a>
-                                </li>
+                                            <li class="Login">
+                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                                    <span class="LoginText">登入/註冊</span>
+                                                </a>
+                                            </li>
                             }
                         }
 
@@ -267,47 +271,32 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
+    
     @await RenderSectionAsync("ScriptsForAfter",required:false)
+    <script>
+        $(document).ready(function () {
+            var topAnnouncement = $('.formain-topSpan');
+            console.log(topAnnouncement);
+            $.ajax({
+                url: '@Url.Action("GetTopAnnouncement","ProductApi")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.success) {
+                        topAnnouncement.text(data.message);
+                    }
+                    else {
+                        topAnnouncement.text(data.messageWelcome);
+                    }
+                },
+                error: function () {
+                    console.log('error');
+                }
+            });
 
+        });
+    </script>
 </body>
 </html>
 
-@section Scripts{
-    <script>
-        
 
-        ////右上角登入/註冊字樣切換功能(登入後會出現" Hello,xxx")
-        //const targetloginTextClass = 'LoginText';
-        //const logoutcontainer = 'Logout';
-        //const loginLink = document.getElementById('loginLink');
-        //const targetElements = document.querySelectorAll(`.${targetloginTextClass}`);
-        //const logoutElements = document.querySelectorAll(`.${logoutcontainer}`);
-        ////取得使用者名稱API
-        //function loginAndGetName() {
-        //    $.ajax({
-        //        url: '/api/GetUserName/',
-        //        contentType: 'application/json',
-        //        type: 'GET',
-        //        success: function (data) {
-        //            if (data.includes('Hello')) {
-        //                targetElements.forEach(element => {
-        //                    element.textContent = `${data}`;
-        //                });
-        //                loginLink.href = '/Membership/Membership';
-        //                //讓登出按鈕出現
-        //                logoutElements.forEach(element => {
-        //                    element.style.display = 'block';
-        //                });
-        //            }
-        //        },
-        //        error: function () {
-        //            console.error('登入失敗');
-        //        }
-        //    });
-        //}
-        //loginAndGetName();//載入頁面時檢查
-    </script>
-
-}

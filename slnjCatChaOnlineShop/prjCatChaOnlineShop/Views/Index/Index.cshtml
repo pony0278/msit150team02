@@ -446,36 +446,36 @@
         var productIndexSale = $('#productIndexSale');
 
         // 點擊商品時獲取識別ID
-        productIndexNew.on('click', '.shop-prod-click', function () {
-            var productId = $(this).data('product-id');
-            $.ajax({
-                url: '/ProductApi/GetDetail',
-                type: 'GET',
-                data: { pId: productId },
-                dataType: 'html',
-                success: function (response) {
-                    console.log('GoToDetail:', response.message);
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
-        });
-        productIndexSale.on('click', '.shop-prod-click', function () {
-            var productId = $(this).data('product-id');
-            $.ajax({
-                url: '/ProductApi/GetDetail',
-                type: 'GET',
-                data: { pId: productId },
-                dataType: 'html',
-                success: function (response) {
-                    console.log('Added to Cart:', response.message);
-                },
-                error: function (error) {
-                    console.error('Ajax Error:', error);
-                }
-            });
-        });
+        // productIndexNew.on('click', '.shop-prod-click', function () {
+        //     var productId = $(this).data('product-id');
+        //     $.ajax({
+        //         url: '/ProductApi/GetDetail',
+        //         type: 'GET',
+        //         data: { pId: productId },
+        //         dataType: 'html',
+        //         success: function (response) {
+        //             console.log('GoToDetail:', response.message);
+        //         },
+        //         error: function (error) {
+        //             console.error('Ajax Error:', error);
+        //         }
+        //     });
+        // });
+        // productIndexSale.on('click', '.shop-prod-click', function () {
+        //     var productId = $(this).data('product-id');
+        //     $.ajax({
+        //         url: '/ProductApi/GetDetail',
+        //         type: 'GET',
+        //         data: { pId: productId },
+        //         dataType: 'html',
+        //         success: function (response) {
+        //             console.log('Added to Cart:', response.message);
+        //         },
+        //         error: function (error) {
+        //             console.error('Ajax Error:', error);
+        //         }
+        //     });
+        // });
         //加入購物車:獲取id---------------------------------------------------------
 
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {

@@ -127,25 +127,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     return BadRequest("圖片上傳錯誤.");
                 }
             }
-            //var replaceSpecification = _cachaContext.ShopProductSpecification
-            //                .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.productSpecificationID.Contains(x.Id))
-            //                .ToList();
-
-            //var targetSpecification = replaceSpecification.FirstOrDefault(x => x.Id == cShopproduct.productSpecificationIDforEdit);
-
-            //if (targetSpecification != null)
-            //{
-            //    targetSpecification.Specification = cShopproduct.ProductSpecificationName ?? targetSpecification.Specification; // null check
-            //    _cachaContext.Update(targetSpecification);
-            //    try
-            //    {
-            //        await _cachaContext.SaveChangesAsync();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        return BadRequest("儲存錯誤");
-            //    }
-            //}
 
             var insertImgList = _cachaContext.ShopProductImageTable
                                 .Where(x => x.ProductId == cShopproduct.ProductId && cShopproduct.ProductImageID.Contains(x.ProductImageId))
@@ -299,15 +280,21 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult SaveSuppier([FromBody]CSuppiersWrap cSuppiers)
         {
-            var newSuppiers = new ShopProductSupplier
+            var existSuppier = _cachaContext.ShopProductSupplier.FirstOrDefault(x=>x.CompanyName == cSuppiers.CompanyName);
+
+            if(existSuppier == null)
             {
-                CompanyName = cSuppiers.CompanyName,
-                ContactPhone = cSuppiers.ContactPhone,
-                CompanyAddress = cSuppiers.CompanyAddress,
-            };
-            _cachaContext.ShopProductSupplier.Add(newSuppiers);
-            _cachaContext.SaveChanges();
-            return Json(new { success = true, message = "Content saved!" });
+                var newSuppiers = new ShopProductSupplier
+                {
+                    CompanyName = cSuppiers.CompanyName,
+                    ContactPhone = cSuppiers.ContactPhone,
+                    CompanyAddress = cSuppiers.CompanyAddress,
+                };
+                _cachaContext.ShopProductSupplier.Add(newSuppiers);
+                _cachaContext.SaveChanges();
+                return Json(new { success = true, message = "Content saved!" });
+            }
+            return BadRequest("已有相同供應商");
         }
 
 
@@ -352,7 +339,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 {
                     Prompt = prompt,
                     Model = OpenAI_API.Models.Model.DavinciText,
-                    MaxTokens = 500
+                    MaxTokens = 1000
                 };
 
                 var completions = await openai.Completions.CreateCompletionAsync(completionRequest);
@@ -467,6 +454,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                     var categoryId = GetOrCreateCategory(categoryName);
                     var specificationId = GetCreatSpecification(SpecificationName);
+                    var imgId = GetCreatImg(imgsUrl);
 
                     decimal? parsedPrice = decimal.TryParse(price, out decimal tempPrice) ? tempPrice : (decimal?)null;
                     DateTime? parseDateTime = DateTime.TryParse(relseday, out DateTime tempDate) ? tempDate : (DateTime?)null;
@@ -487,10 +475,15 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         existingProduct.Weight = weight;
                         existingProduct.Discontinued = parseDiscontinued;
                         var existingSpecification = _cachaContext.ShopProductSpecification.FirstOrDefault(s => s.Id == specificationId);
+                        var existingImgUrl = _cachaContext.ShopProductImageTable.FirstOrDefault(x => x.ProductImageId == imgId);
 
                         if (existingSpecification != null)
                         {
                             existingProduct.ShopProductSpecification.Add(existingSpecification);
+                        }
+                        if (existingImgUrl != null)
+                        {
+                            existingProduct.ShopProductImageTable.Add(existingImgUrl);
                         }
                     }
                     else  // 如果不存在，则新增商品数据
@@ -508,6 +501,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                             Discontinued = parseDiscontinued,
                         };
                         product.ShopProductSpecification.Add(new ShopProductSpecification { Id = specificationId });
+                        product.ShopProductImageTable.Add(new ShopProductImageTable { ProductImageId = imgId });
                         _cachaContext.ShopProductTotal.Add(product);
                     }
                     
@@ -552,6 +546,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             return Specification.Id;
         }
+        private int GetCreatImg(string creatImgName)
+        {
+            var Img = _cachaContext.ShopProductImageTable.FirstOrDefault(s=>s.ProductPhoto ==  creatImgName); ;
+            if (Img == null)
+            {
+                Img = new ShopProductImageTable { ProductPhoto = creatImgName};
+                _cachaContext.ShopProductImageTable.Add(Img);
+                _cachaContext.SaveChanges();
+            }
+            return Img.ProductImageId;
+        }
 
         [HttpGet]
         public IActionResult DoQuery([FromQuery] CShopProductWrap productWrap)
@@ -566,7 +571,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 doquery = doquery.Where(x => x.ReleaseDate >= startOfDay && x.ReleaseDate <= endOfDay);
             }
 
-            if (productWrap.ProductCategoryId != null)
+            if (productWrap.ProductCategoryId.HasValue)
             {
                 doquery = doquery.Where(x => x.ProductCategoryId == productWrap.ProductCategoryId);
             }

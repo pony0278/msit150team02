@@ -356,7 +356,7 @@
 
                 reader.readAsDataURL(file);
             } else {
-                alert('請選擇圖片');
+                Swal.fire('警告', '請選擇圖片','info')
             }
         });
         $("#AnnouncementImageHeader").on('change', function () {
@@ -375,7 +375,7 @@
                 reader.readAsDataURL(file); 
                 preview.append(img);
             } else {
-                alert('請選擇圖片');
+                Swal.fire('警告', '請選擇圖片', 'info')
             }
         });
 
@@ -403,7 +403,7 @@
                                     editor.summernote('insertImage', response.imageUrl, 'image');
                                 },
                                 error: function () {
-                                    console.log("上傳失敗");
+                                    Swal.fire('警告', '上傳失敗', 'info')
                                 }
                             });
                         }
@@ -444,8 +444,10 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        alert("儲存成功!");
-                        window.location.reload();
+                        swal.fire("成功", "", "success");
+                        $('#GProduct-table').DataTable().ajax.reload();
+                    }, error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX error: ", textStatus, errorThrown);
                     }
                 });
             });
@@ -484,8 +486,10 @@
                     processData: false,
                     contentType: false,
                     success: function (response) {
-                        alert("Content saved successfully!");
-                        window.location.reload();
+                        swal.fire("成功", "", "success");
+                        $('#GProduct-table').DataTable().ajax.reload();
+                    }, error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("AJAX error: ", textStatus, errorThrown);
                     }
                 });
             });
