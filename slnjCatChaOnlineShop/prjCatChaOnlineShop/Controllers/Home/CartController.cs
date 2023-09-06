@@ -145,7 +145,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
 
                 //最後金額資料
-                var priceDatas=JsonSerializer.Deserialize<CPayModel>(priceData);
+                var finalpriceData = JsonSerializer.Deserialize<CPayModel>(priceData);
                 //
                 // 獲取 finalTotalPrice 的值
                 var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
@@ -188,7 +188,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 { 
                     keyValuePairs = order ?? new Dictionary<string, string>(),
                     cartItems=cartItems??new List<CCartItem>(),
-                    getFinalPriceData=priceDatas?? new CPayModel(),
+                    getFinalPriceData= finalpriceData ?? new CPayModel(),
                     //getFinalPaymentMethod = fPaymentMethod ?? new CPayModel(),
                 };
                 return View(viewmodel);

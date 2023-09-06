@@ -128,7 +128,7 @@
                     <div class="title-left">
                         <h3>紅利折抵</h3>
                     </div>
-                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null &&Model!=null)
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null && Model != null)
                     {
                         @*<div id="MemberId"> @memberinfo.MemberId </div>*@
                         <form class="needs-validation">
@@ -191,9 +191,11 @@
                                                                 <!--刪除MyCss.css 123行，增加160行hover-->
                                                                 <div class="coupon-status align-middle text-center">
                                                                     <button type="button" class="btn useCouponBtn"
-                                                                        data-coupon-id="@coupon.CouponID"
-                                                                        data-coupon-code="@coupon.CouponName" 
-                                                                        data-coupon-specialoffer="@coupon.SpecialOffer">使用</button>
+                                                                            data-coupon-id="@coupon.CouponID"
+                                                                            data-coupon-code="@coupon.CouponName"
+                                                                            data-coupon-specialoffer="@coupon.SpecialOffer">
+                                                                        使用
+                                                                    </button>
                                                                 </div>
                                                             </div>
                                                             <div class="coupon-middle flex-container flex-1">
@@ -287,8 +289,8 @@
                          aria-labelledby="DeliveryMethod_711-tab">
                         <ul>
                             <li>
-                                超商門市：
-                                <span id="select-seveneleven"></span>
+                                <label for="711StoreName">取件門市：</label>
+                                <input id="select-seveneleven" type="text" name="711StoreName" class="checkout-inputs" readonly />
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
@@ -299,7 +301,7 @@
                                     <button class="chooseStore_btn" data-bs-toggle="modal" href="#SevenElevenToggle" role="button" id="showSevenEleven">選擇新的門市</button>
                                 </div>
                                 @*<button type="button" class="chooseStore_btn" id="choose711CVS">
-                                    選擇新的超商門市
+                                選擇新的超商門市
                                 </button>*@
                                 <!-- 選擇711超商的互動視窗 -->
                                 <div class="modal fade" id="choose711Store" data-bs-backdrop="static"
@@ -384,16 +386,22 @@
                                 </div>
                                 <!--7-11彈出視窗-->
                             </li>
-                            <li>姓名：韓俊景</li>
-                            <li>電話：0927463518</li>
+                            <li>
+                                <label for="name">取件姓名：</label>
+                                <input type="text" id="711name" name="name" class="checkout-inputs" />
+                            </li>
+                            <li>
+                                <label for="phone">取件人電話：</label>
+                                <input type="text" id="711phone" name="phone" class="checkout-inputs" size="18" />
+                            </li>
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="nav-fami" role="tabpanel"
                          aria-labelledby="DeliveryMethod_fami-tab">
                         <ul>
                             <li>
-                                超商門市：
-                                <span id="select-familmart"></span>
+                                <label for="famiStoreName">取件門市：</label>
+                                <input id="select-familmart" type="text" name="famiStoreName" class="checkout-inputs" readonly />
                                 <!-- 觸發選擇全家超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#chooseFamiStore">
@@ -486,8 +494,14 @@
                                 </div>
                                 <!--全家彈出視窗-->
                             </li>
-                            <li>姓名：尹程善</li>
-                            <li>電話：0983755199</li>
+                            <li>
+                                <label for="faminame">取件姓名：</label>
+                                <input type="text" id="faminame" name="name" class="checkout-inputs" />
+                            </li>
+                            <li>
+                                <label for="famiphone">取件人電話：</label>
+                                <input type="text" id="famiphone" name="phone" class="checkout-inputs" size="18" />
+                            </li>
                         </ul>
                     </div>
                     <!--選擇宅配地址Start-->
@@ -879,54 +893,7 @@
                     <!--信用卡付款分頁內容-->
                     <div class="tab-pane fade show active" id="nav-credit" role="tabpanel"
                          aria-labelledby="nav-credit-tab">
-                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
-                        @* <div class="row ">
-                        <form class="needs-validation" novalidate>
-                        <div class="row">
-                        <div class="col-md-6 ">
-                        <label for="cc-name">持卡人姓名</label>
-                        <input type="text" class="form-control" id="cc-name" placeholder="請輸入全名"
-                        required>
-                        <div class="invalid-feedback"> 持卡人姓名為必填 </div>
-                        </div>
-                        <div class="col-md-6 ">
-                        <label for="cc-number">信用卡號</label>
-                        <input type="text" class="form-control" id="cc-number"
-                        placeholder="XXXX-XXXX-XXXX-XXXX" required>
-                        <div class="invalid-feedback"> 信用卡號為必填 </div>
-                        </div>
-                        </div>
-                        <div class="row">
-                        <div class="col-md-3 ">
-                        <label for="cc-expiration">到期日</label>
-                        <input type="text" class="form-control" id="cc-expiration"
-                        placeholder="MM/YY" required>
-                        <div class="invalid-feedback"> 到期日為必填 </div>
-                        </div>
-                        <div class="col-md-3 ">
-                        <label for="cc-expiration">CVV</label>
-                        <input type="text" class="form-control" id="cc-cvv" placeholder="背面末三碼"
-                        required>
-                        <div class="invalid-feedback"> 信用卡檢核碼為必填 </div>
-                        </div>
-                        <div class="col-md-6 ">
-                        <div class="payment-icon-mycss payment-icon ">
-                        <ul>
-                        <li>
-                        <img class="img-fluid" src="~/images/payment-icon/1.png" alt="">
-                        </li>
-                        <li>
-                        <img class="img-fluid" src="~/images/payment-icon/2.png" alt="">
-                        </li>
-                        <li>
-                        <img class="img-fluid" src="images/payment-icon/3.png" alt="">
-                        </li>
-                        </ul>
-                        </div>
-                        </div>
-                        </div>
-                        </form>
-                        </div> *@
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label> 
                     </div>
                     <!--銀行轉帳分頁內容-->
                     <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
@@ -1017,7 +984,7 @@
                                                 <label for="eInvoiceNum">載具條碼：</label>
                                                 <div class="input-group">
 
-                                                    <input type="text" class="form-control" id="eInvoiceNum"
+                                                    <input type="text" class="form-control checkout-inputs" id="eInvoiceNum"
                                                            placeholder="請輸入載具條碼(包含/)" required>
                                                     <div class="invalid-feedback" style="width: 100%; height:100%">
                                                         請輸入載具條碼
@@ -1249,25 +1216,26 @@
                         <h4>小計</h4>
                         <div class="ml-auto font-weight-bold" id="subtotal"> NT @ViewBag.totalPrice </div>
                     </div>
-                    @if(Model!=null){
-                    <div class="d-flex">
-                        <h4>紅利折扣</h4>
-                        <div class="ml-auto font-weight-bold"id="loyaltyPointsBonus"> NT0 </div>
-                    </div>
-                    <hr class="my-1">
-                    <div class="d-flex">
-                        <h4>優惠券折扣</h4>
-                        <div class="ml-auto font-weight-bold" id="couponBonus"> NT0 </div>
-                    </div>
-                    <div class="d-flex">
-                        <h4>運費</h4>
+                    @if (Model != null)
+                    {
+                        <div class="d-flex">
+                            <h4>紅利折扣</h4>
+                            <div class="ml-auto font-weight-bold" id="loyaltyPointsBonus"> NT0 </div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4>優惠券折扣</h4>
+                            <div class="ml-auto font-weight-bold" id="couponBonus"> NT0 </div>
+                        </div>
+                        <div class="d-flex">
+                            <h4>運費</h4>
                             <div class="ml-auto font-weight-bold" id="shippingFee"> NT @ViewBag.firstFee </div>
-                    </div>
-                    <hr>
-                    <div class="d-flex gr-total">
-                        <h5>總計</h5>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total">
+                            <h5>總計</h5>
                             <div class="ml-auto h4" style="color:red" id="allTotalPrice"> NT @ViewBag.firstTotalPrice </div>
-                    </div>
+                        </div>
                         <hr>
                     }
                 </div>
@@ -1278,7 +1246,7 @@
                     </button>
                 </div>
             </div>
-            
+
         </div>
     </div>
 </div>
@@ -1302,7 +1270,7 @@
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
     <script src="~/js/inewsticker.js"></script>
-    <script src="~/js/bootsnav.js."></script>
+    @*<script src="~/js/bootsnav.js."></script>*@
     <script src="~/js/images-loded.min.js"></script>
     <script src="~/js/isotope.min.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
@@ -1315,7 +1283,56 @@
     <!--Google Map API-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
     <script src="~/js/checkout.js"></script>
-  
+    <script>
+        // 創建一個物件來保存送貨方式和相關資訊
+        var deliveryInfo = {
+            method: '7-11取貨',
+            storeName: '',
+            name: '',
+            phone: ''
+        };
+        //選擇7-11的按鈕
+        $('#submit-sevenEleven').on('click', function () {
+            var selectText = $("#sevenElevenStoreSelect option:selected").val();
+            $('#select-seveneleven').val(selectText);
+        })
+        //選擇全家的按鈕
+        $('#submit-familyMart').on('click', function () {
+            var selectText = $("#familyMartStoreSelect option:selected").val();
+            $('#select-familmart').val(selectText);
+        })
+
+        //儲存使用者選擇哪一種送貨方式
+        var selectedDeliveryMethod = '7-11取貨';
+        function setDeliveryMethod(method) {
+            console.log("選的送貨方式", method)
+            deliveryInfo.method = method;
+            //selectedDeliveryMethod = method;
+        }
+
+        //// 當使用者輸入取件門市時，更新物件中的值
+        $('#sevenElevenStoreSelect').on('change', function () {
+            selectedSevenElevenStore = $(this).val();
+            deliveryInfo.storeName = selectedSevenElevenStore;
+        });
+        //$('#select-seveneleven').on('input', function () {
+        //    var storeName = $(this).val();
+        //    deliveryInfo.storeName = storeName;
+        //});
+
+        // 當使用者輸入取件姓名時，更新物件中的值
+        $('#711name').on('input', function () {
+            var name = $(this).val();
+            deliveryInfo.name = name;
+        });
+
+        // 當使用者輸入取件人電話時，更新物件中的值
+        $('#711phone').on('input', function () {
+            var phone = $(this).val();
+            deliveryInfo.phone = phone;
+        });
+
+    </script>
 }
 
 
