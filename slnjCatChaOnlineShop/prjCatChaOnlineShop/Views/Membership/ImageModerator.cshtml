@@ -12,6 +12,13 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="~/css/custom.css" />
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
+
+    <style>
+        #loading {
+            display: none
+            /*剛開始載入時，先將照片隱藏none起來*/
+        }
+    </style>
 }
 <!--提示訊息-->
 <div class="toast-container position-fixed top-25 start-50 translate-middle">
@@ -50,33 +57,37 @@
         <div class="row">
             <!--左邊圖片區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
-                <form method="post" enctype="multipart/form-data" id="imgForm">
-                    <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block w-100" style="max-width: 350px; max-height: 350px;" />
+                <form method="post" enctype="multipart/form-data" id="imgForm" class="d-flex flex-column align-items-center">
+                    <div class="d-flex justify-content-center align-items-center">
+                        <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
+                        <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
+                    </div>
+
                     <div class="my-3">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                         <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
                         <input type="file" name="image" id="imageInput" accept="image/*">
-                        <button type="submit" id="imgChangeUrl">上傳圖片</button>
+                        <button type="submit" id="imgChangeUrl" class="btn-sm">上傳圖片</button>
                     </div>
                 </form>
                 <div>
-                    <h2>審核結果</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
+                    <h4>審核結果</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
                 </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <div>
-                    <h2>圖像審核</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
+                    <h4>圖像審核</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
                 </div>
                 <div class="my-4">
-                    <h2>圖像描述</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2" readonly></textarea>
+                    <h4>圖像描述</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2" readonly></textarea>
                 </div>
                 <div class="my-4">
-                    <h2>圖像識別</h2>
-                    <textarea class="form-control fs-5 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
+                    <h4>圖像識別</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
                 </div>
             </div>
         </div>
@@ -104,6 +115,7 @@
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
                 event.preventDefault();
+                document.querySelector('#loading').style.display = "inline";
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -163,7 +175,10 @@
                                 "構成主色: " + visionResult.color.dominantColors + "\n" +
                                 "尺寸: 高度 " + visionResult.metadata.height * 0.04 + "公分 、 寬度 " + visionResult.metadata.width * 0.04 + "公分\n" +
                                 "檔案類型: " + visionResult.metadata.format + "檔";
-                            
+
+
+
+
                             // 圖片仲裁的地方
                             var moderationData = {
                                 "DataRepresentation": "URL",
@@ -195,11 +210,8 @@
 
                                 var checkText = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容\n" +
                                     "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視\n" +
-                                    "露骨暴力指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面\n";
+                                    "暴力攻擊指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面\n";
 
-                                document.getElementById('checkResults').value = checkText;
-                                document.getElementById('visionResults').value = visionText;
-                                document.getElementById('descriptionResults').value = descriptionText;
 
                                 if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
                                     var Category1ans = Category1 > 0.7 ? '成人內容' + (Category1 * 100).toFixed(2) + "%" : "";
@@ -207,8 +219,12 @@
                                     var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
                                     var ans = Category1ans + Category2ans + Category3ans;
 
-                                    document.getElementById('imageResults').value = "系統判定" + ans + "指數過高\n無法將您上傳的照片設為頭貼";
+                                    document.querySelector('#loading').style.display = "none";
+                                    document.getElementById('checkResults').value = checkText;
+                                    document.getElementById('visionResults').value = visionText;
+                                    document.getElementById('descriptionResults').value = descriptionText;
 
+                                    document.getElementById('imageResults').value = "系統判定" + ans + "指數過高\n無法將您上傳的照片設為頭貼";
                                     document.getElementById('imageResults').classList.remove('is-valid');//將綠框移除
                                     document.getElementById('checkResults').classList.remove('is-valid');//將綠框移除
                                     document.getElementById('imageResults').classList.add('is-invalid');//將紅框加入
@@ -216,15 +232,19 @@
 
                                 } else {
 
-                                    fetch('@Url.Content("/ImageTest/ImageModeratorToMemberInfo")', {
-                                        body: formData,
-                                        method: 'POST'
+                                    fetch('@Url.Content("/Membership/ImageModeratorToMemberInfo?imageUrl=")' + data.url, {
                                     })
                                         .then(response => {
                                             Swal.fire({
                                                 icon: 'success',
                                                 title: '完成上傳',
                                             });
+
+                                            document.querySelector('#loading').style.display = "none";
+                                            document.getElementById('checkResults').value = checkText;
+                                            document.getElementById('visionResults').value = visionText;
+                                            document.getElementById('descriptionResults').value = descriptionText;
+                                            
                                             document.getElementById('imageResults').value = "您上傳的圖片已通過智能審核\n已更新您的頭貼照片";
                                             document.getElementById('checkResults').classList.remove('is-invalid');//將紅框移除
                                             document.getElementById('imageResults').classList.remove('is-invalid');//將紅框移除
@@ -233,6 +253,7 @@
                                         })
                                         .catch(error => {
                                             console.log(error);
+                                            document.querySelector('#loading').style.display = "none";
                                         });
                                 }
 
@@ -241,14 +262,14 @@
                                     icon: 'error',
                                     title: '您上傳的圖片違反平台政策',
                                 });
-
+                                document.querySelector('#loading').style.display = "none";
                             });
                         }).fail(function (err) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '您上傳的圖片不符合規格',
                             });
-
+                            document.querySelector('#loading').style.display = "none";
                         });
 
                     })
@@ -257,6 +278,7 @@
                             icon: 'error',
                             title: '您上傳的圖片違反著作或肖像權',
                         });
+                        document.querySelector('#loading').style.display = "none";
                     });
                     
 

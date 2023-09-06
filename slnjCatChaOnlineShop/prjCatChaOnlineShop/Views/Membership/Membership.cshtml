@@ -30,8 +30,9 @@
     <link rel="stylesheet" href="~/css/forNews.css">
     <link rel="stylesheet" href="~/css/membership.css">
 
-    <!--用於圖片放大預覽-->
+    <!--放入開發者自訂義的css-->
     <style>
+        /*用於圖片放大預覽*/
         /* 原始圖片的視窗 */
         .image-popup {
             display: none;
@@ -48,22 +49,23 @@
             z-index: 1;
         }
 
-
-            .image-popup img {
-                width: 400px;
-            }
+        .image-popup img {
+            width: 400px;
+        }
 
         /* 縮略圖片的樣式 */
         .thumbnail-image {
-            /* position: relative; */
-            cursor: pointer;
-            /* 將鼠標指針設置為手型以指示圖片可懸停 */
+            cursor: pointer;/* 將鼠標指針設置為手型以指示圖片可懸停 */
         }
 
         .test {
             position: relative;
         }
 
+        /*用於訂單明細垂直置中*/
+        #orderDetailModal td {
+            vertical-align: middle;
+        }
     </style>
 
 
@@ -141,13 +143,13 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-5">帳號</label>
+                                                            <label class="fs-6">帳號</label>
                                                             <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
                                                                    class="form-control" readonly />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="d-flex justify-content-between">
-                                                                <label class="fs-5">密碼</label>
+                                                                <label class="fs-6">密碼</label>
                                                                 <div class="text-right">
                                                                     <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
                                                                 </div>
@@ -158,23 +160,23 @@
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-5">姓名</label>
+                                                            <label class="fs-6">姓名</label>
                                                             <input type="text" placeholder="姓名" id="nameInput" name="Name"
                                                                    class="form-control" required="required" />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="fs-5">生日</label>
+                                                            <label class="fs-6">生日</label>
                                                             <input type="date" class="form-control" id="birthdayInput" name="Birthday" required />
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-5">電子信箱</label>
+                                                            <label class="fs-6">電子信箱</label>
                                                             <input type="email" class="form-control" id="emailInput" name="Email"
                                                                    placeholder="電子信箱" required />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label class="fs-5">手機號碼</label>
+                                                            <label class="fs-6">手機號碼</label>
                                                             <input type="tel" pattern="^\d{10}$" placeholder="手機號碼" id="phoneNumberInput" name="PhoneNumber"
                                                                    class="form-control" required />
                                                         </div>
@@ -182,7 +184,7 @@
                                                     <!--住址-->
                                                     <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label class="fs-5">住址</label>
+                                                            <label class="fs-6">住址</label>
                                                             <div class="input-group">
                                                                 <input type="text" placeholder="姓名" id="addressInput" name="address"
                                                                        class="form-control" required="required" />
@@ -195,7 +197,7 @@
                                                     <!--常用宅配地址-->
                                                     <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label class="fs-5">常用宅配地址</label>
+                                                            <label class="fs-6">常用宅配地址</label>
                                                             <div class="d-flex align-items-center">
                                                                 <select class="form-select" id="commonAddressSelect"
                                                                         aria-label="Default select example">
@@ -217,14 +219,16 @@
                                                     <!--7-11超商取貨地址-->
                                                     <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label class="fs-5">超商取貨地址</label>
+                                                            <label class="fs-6">超商取貨地址</label>
                                                             <div class="d-flex align-items-start">
                                                                 <input type="text" placeholder="請填入門市店名" id="storename" name="storename" class="form-control" value="@ViewBag.storename" />
                                                                 <div class="col-7">
                                                                     <input type="text" placeholder="請填入門市地址" id="storeaddress" name="storeaddress" class="form-control" value="@ViewBag.storeaddress" />
                                                                 </div>
-                                                                <button class="btn btn-success  btn-sm fs-5 mx-1" type="button" id="SelectShop">+</button>
-                                                                <button class="btn btn-warning  btn-sm fs-5" type="button" id="SelectShopByGooglemap" data-bs-toggle="modal" data-bs-target="#SelectShopModal">+</button>
+                                                                <button class="btn  btn-warning btn-sm fs-5" type="button" id="SelectShop">+</button>
+
+                                                                @* <button class="btn btn-warning  btn-sm fs-5 mx-1" type="button" id="SelectShop">+</button> *@
+                                                                @* <button class="btn btn-warning  btn-sm fs-5" type="button" id="SelectShopByGooglemap" data-bs-toggle="modal" data-bs-target="#SelectShopModal">+</button> *@
                                                             </div>
                                                             <button type="button" class="btn-sm add-address "
                                                                     data-bs-toggle="modal"
@@ -261,15 +265,15 @@
                                             更換個人圖片
                                         </button>
                                     </div>
-                                    <h1 id="summonName" class="font-weight-bold fs-2 my-1">會員</h1>
+                                    <h1 id="summonName" class="font-weight-bold fs-3 my-1">會員</h1>
                                     <div class="d-flex justify-content-center">
-                                        <h3 id="coinPointShow" class="fs-5">您目前持有紅利：0點</h3>
+                                        <h3 id="coinPointShow" class="fs-6">您目前持有紅利：0點</h3>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <h3 id="moneyPointShow" class="fs-5"></h3>
+                                        <h3 id="moneyPointShow" class="fs-6"></h3>
                                     </div>
                                     <div class="d-flex justify-content-center">
-                                        <h3 id="catCoinShow" class="fs-5">持有貓幣：0</h3>
+                                        <h3 id="catCoinShow" class="fs-6">持有貓幣：0</h3>
                                     </div>
                                     <div class="text-center ">
                                         <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal" id="searchCoupon"
@@ -507,26 +511,6 @@
                 </div>
             </div>
         </div>
-        
-        <!--彈跳視窗:查看ShopGoogleMap-->
-        <div class="modal fade" id="SelectShopModal">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header d-flex justify-content-between">
-                        <div>
-                            <input id="shopLocationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
-                            <button onclick="searchShopLocation()">搜尋</button>
-                        </div>
-                        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
-                    </div>
-                    <div class="modal-body">
-                        <div id="shopMap" style="height: 400px;"></div>
-                    </div>
-                    <div class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!--2.消費紀錄的內容-->
         <div class="tab-pane fade" id="shoppingsheet" role="tabpanel" aria-labelledby="shoppingsheet-tab">
@@ -581,16 +565,18 @@
                             </button>
                         </div>
                         <div class="row my-1 ml-2">
-                            <label class="font-weight-bold">消費總額: <span id="consumptionAmount"></span></label>
+                            <label class="font-weight-bold fs-5">消費總額: <span id="consumptionAmount"></span></label>
                         </div>
                         <div class="container">
-                            <table class="table  table-bordered table-hover" id="orderDetailTable">
+                            <table class="table  table-bordered " id="orderDetailTable">
                                 <thead class="table-warning text-center">
                                     <tr>
-                                        <th scope="col" style="white-space: nowrap;">產品名稱</th>
-                                        <th scope="col" style="white-space: nowrap;">訂購數量</th>
-                                        <th scope="col" style="white-space: nowrap;">產品規格</th>
-                                        <th scope="col" style="white-space: nowrap;">產品售價</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">圖片</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品名稱</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">訂購數量</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品規格</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品售價</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">再買一次</th>
                                     </tr>
                                 </thead>
                                 <tbody class="text-left">
@@ -833,12 +819,12 @@
                                         @* table-hover *@
                                         <thead class="table-warning text-center ">
                                             <tr>
-                                                <th scope="col">圖片</th>
-                                                <th scope="col">產品名稱</th>
-                                                <th scope="col">剩餘數量</th>
-                                                <th scope="col">售價</th>
-                                                <th scope="col">加入購物車</th>
-                                                <th scope="col">移除商品</th>
+                                                <th scope="col" class="font-weight-bold">圖片</th>
+                                                <th scope="col" class="font-weight-bold">產品名稱</th>
+                                                <th scope="col" class="font-weight-bold">剩餘數量</th>
+                                                <th scope="col" class="font-weight-bold">售價</th>
+                                                <th scope="col" class="font-weight-bold">加入購物車</th>
+                                                <th scope="col" class="font-weight-bold">移除商品</th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-left">
@@ -1602,56 +1588,6 @@
                 });
             }
         }
-        
-        /*
-        // 初始化超商的地圖
-        function initShopMap() {
-            var shopMap = new google.maps.Map(document.getElementById('shopMap'), {
-                zoom: 15, // 初始縮放級別，您可以自行調整
-                center: { lat: 25.0330, lng: 121.5654 },
-            });
-
-            // 創建 PlacesService 實例，以便進行 Places API 查詢
-            var service = new google.maps.places.PlacesService(shopMap);
-
-            // 定義四大超商的類型
-            var storeTypes = [
-                'convenience_store', // 7-11
-                'convenience_store', // 全家
-                'convenience_store', // 萊爾富
-                'convenience_store', // OK超商
-            ];
-
-            // 執行 Places API 查詢，只顯示四大超商
-            service.nearbySearch(
-                {
-                    location: taiwan,
-                    radius: 1000000, // 查詢範圍，以公尺為單位（1000 公尺 = 1 公里）
-                    type: storeTypes,
-                },
-                function (results, status) {
-                    if (status === google.maps.places.PlacesServiceStatus.OK) {
-                        for (var i = 0; i < results.length; i++) {
-                            // 取得超商名稱
-                            var storeName = results[i].name;
-                            // 判斷是否是四大超商，只有是才創建標記
-                            if (storeName === '7-11' || storeName === '全家' || storeName === '萊爾富' || storeName === 'OK超商') {
-                                createMarker(results[i]);
-                            }
-                        }
-                    }
-                }
-            );
-
-            // 創建標記並顯示在地圖上
-            function createMarker(place) {
-                var marker = new google.maps.Marker({
-                    map: shopMap,
-                    position: place.geometry.location,
-                });
-            }
-        }
-        */
     </script>
 
     <!--2.載入時，導入消費紀錄-->
@@ -1814,11 +1750,11 @@
                             var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
                             row.insertCell().textContent = formattedDate;
 
-                            row.insertCell().textContent = item.recipientName;
-                            row.insertCell().textContent = item.recipientAddress;
-                            row.insertCell().textContent = item.recipientPhone;
-                            row.insertCell().textContent = item.paymentMethodName;
-                            row.insertCell().textContent = item.statusName;
+                            row.insertCell().textContent = item.recipientName ? item.recipientName : '徐雅莉';
+                            row.insertCell().textContent = item.recipientAddress ? item.recipientAddress : '台北市大安區信義路三段184號';
+                            row.insertCell().textContent = item.recipientPhone ? item.recipientPhone : '0912345678';
+                            row.insertCell().textContent = item.paymentMethodName ? item.paymentMethodName : '信用卡';
+                            row.insertCell().textContent = item.statusName ? item.statusName : '已確認';
 
                             var buttonContainer = document.createElement('div');
                             buttonContainer.classList.add('d-flex', 'flex-column');
@@ -1839,6 +1775,45 @@
                                     var totalAmount = 0;
                                     data.forEach(function (item) {
                                         var row = orderDetailTbody.insertRow();
+
+                                        // 在表格行中插入圖像元素
+                                        var imgCell = row.insertCell();
+                                        var imgContainer = document.createElement('div');
+                                        imgContainer.className = 'image-container';
+
+                                        var thumbnailImage = document.createElement('img');
+                                        thumbnailImage.src = item.firstImage.productPhoto ? item.firstImage.productPhoto : '@Url.Content("~/images/prod-eg-5.png")';
+                                        thumbnailImage.style.width = '100px';
+                                        thumbnailImage.style.height = 'auto';
+                                        thumbnailImage.classList.add('thumbnail-image', 'img-fluid');
+                                        thumbnailImage.id = 'thumbnailImage';
+                                        thumbnailImage.addEventListener('mousemove', function () {
+                                            var imagePopup = document.getElementById('imagePopup');
+                                            var originalImage = document.getElementById('originalImage');
+                                            originalImage.src = thumbnailImage.src;
+                                            imagePopup.style.display = 'block';
+                                        });
+                                        thumbnailImage.addEventListener('mouseout', function () {
+                                            var imagePopup = document.getElementById('imagePopup');
+                                            imagePopup.style.display = 'none';
+                                        });
+
+                                        var imagePopup = document.createElement('div');
+                                        imagePopup.className = 'image-popup';
+                                        imagePopup.id = 'imagePopup';
+                                        imagePopup.style.display = 'none'; // 初始時隱藏
+
+                                        var originalImage = document.createElement('img');
+                                        originalImage.src = ''; // 初始時為空
+                                        originalImage.alt = 'Original Image';
+                                        originalImage.id = 'originalImage';
+
+                                        imagePopup.appendChild(originalImage);
+                                        imgContainer.appendChild(thumbnailImage);
+                                        imgContainer.appendChild(imagePopup);
+                                        imgCell.appendChild(imgContainer);
+
+
                                         row.insertCell().textContent = item.productName;
                                         row.insertCell().textContent = item.productQuantity;
                                         if (item.size == null) {
@@ -1847,18 +1822,14 @@
                                             row.insertCell().textContent = item.size;
                                         }
                                         totalAmount += item.productQuantity * item.productPrice;
-
+                                        row.insertCell().textContent =  'NT$ ' + item.productPrice;
+                                        //===============================
+                                        
                                         var cell = row.insertCell();
                                         cell.classList.add('text-center');
 
                                         var contentDiv = document.createElement('div');
                                         contentDiv.className = 'd-flex flex-column align-items-center';
-
-                                        var textDiv = document.createElement('div');
-                                        textDiv.textContent = 'NT$ ' + item.productPrice;
-
-                                        var spaceDiv = document.createElement('div');
-                                        spaceDiv.style.height = '10px'; // 調整空白距離的高度
 
                                         var buttonDiv = document.createElement('div');
 
@@ -1881,13 +1852,14 @@
 
                                         buttonDiv.appendChild(cartLink);
 
-                                        contentDiv.appendChild(textDiv);
-                                        contentDiv.appendChild(spaceDiv);
+
                                         contentDiv.appendChild(buttonDiv);
 
                                         cell.appendChild(contentDiv);
-
+                                        
                                     });
+                                    
+
                                     document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                                 });
 
@@ -2062,6 +2034,7 @@
                         icon: 'success',
                         title: '送出成功',
                     });
+                    loadProductReview();
                 })
                 .catch(error => {
                     Swal.fire({
@@ -2100,7 +2073,14 @@
 
                         document.getElementById('commentTextarea').readOnly = true;
                         document.getElementById('saveComment').disabled = true;
-                        $('#commentTimeTextarea').val(item.reviewTime);
+
+                        var dateTimeString = item.reviewTime;// 使用Date物件解析日期時間字串
+                        var dateTime = new Date(dateTimeString);// 取得日期部分
+                        var date = dateTime.toLocaleDateString();// 取得時間部分
+                        var time = dateTime.toLocaleTimeString();// 最終的日期和時間
+                        var formattedDateTime = date + " " + time;
+                        $('#commentTimeTextarea').val(formattedDateTime);
+
                         document.getElementById('commentTimeDiv').style.display = 'block';
 
                     });
