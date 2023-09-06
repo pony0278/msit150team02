@@ -178,7 +178,7 @@
                 <!--內容表單-->
                 <div class="row">
                         <div class="form-group">
-                            <label>會員編號</label>
+                        <label>會員編號：</label>
                             <input type="text" class="form-control" id="send-memberID" name="MemberID">
                         </div>
 
@@ -228,7 +228,7 @@
     </div>
     <!---篩選類別-->
     <div style="margin-left:20px">
-        <button class="btn btn-danger selectAllBtn" id="selectAllBtn">全選</button>
+        <button class="btn btn-danger selectAllBtn" id="selectAllBtn">全部選擇</button>
     </div>
     <div class="container-fluid mt-4">
         <div class="row">
@@ -283,15 +283,15 @@
                                         <div class="tab-pane fade show active"
                                              id="gproduct-edit-nav-home">
                                         <div class="col-md-6">
-                                        <label>ID</label>
+                                                <label>編號：</label>
                                         <input type="text" class="form-control" id="editid" readonly disabled name="ProductId">
                                         </div>
                                         <div class="col-md-6">
-                                            <label>名稱</label>
+                                                <label>名稱：</label>
                                             <input type="text" class="form-control" id="editname" name="ProductName">
                                         </div>
                                         <div class="col-md-6">
-                                            <label>類別</label>
+                                            <label>類別：</label>
                                             <select class="form-control" id="editcategoryid" name="ProductCategoryId">
                                                 <option value="" selected disabled>請選擇類別</option>
                                                 @foreach (var category in Model.GameProductCategory)
@@ -301,16 +301,16 @@
                                             </select>
                                         </div>
                                         <div class="col-md-6">
-                                            <label>描述</label>
+                                            <label>描述：</label>
                                             <input type="text" class="form-control" id="editdescription" name="ProductDescription">
                                         </div>
                                         <div class="col-md-6">
-                                            <label>價格</label>
+                                            <label>價格：</label>
                                             <input type="text" class="form-control" id="editprice" name="ProductPrice ">
                                         </div>
 
                                         <div class="col-md-6">
-                                            <label>抽獎機率</label>
+                                                <label>抽獎機率：</label>
                                             <input type="text" class="form-control" id="editrate" name="LotteryProbability">
                                         </div>
                                             <button type="submit" class="mt-3 btn btn-danger btn-block  edit-submitButton" id="edit-submitButton"
@@ -320,7 +320,7 @@
                                     </div>
                                         <div class="tab-pane fade mt-3" id="gproduct-edit-nav-pic">
                                         <div class="form-group mb-3">
-                                            <label>圖片</label>
+                                                <label>圖片：</label>
                                             <input type="file"  accept="image/*" class="form-control" id="editimage" name="Image">
                                         </div>
                                         <div class=" mb-3 align-items-center mt-3">
@@ -779,6 +779,9 @@
                 if (shouldShowModal) {
                     $('#sendtoMember').modal('show');
                 }
+                //每次點擊時清空input
+                $("#send-memberID").val('');
+
             });
 
 
@@ -788,7 +791,17 @@
                 console.log('memberId:', memberId);
                 console.log('selectedids:', selectedids);
 
-                if (selectedids.length > 0 && memberId !== "") {
+                //驗證非空值
+                if (!memberId) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '未輸入會員編號',
+                        text: '請輸入會員編號',
+                    });
+                    return;
+                }
+                //驗證會員編號不存在
+                if (selectedids.length > 0 ) {
                     $.ajax({
                         url: "/AdminCMS/GameProduct/SendProductsToMemberByID",
                         type: "POST",
@@ -798,15 +811,15 @@
                                 Swal.fire({
                                     icon: 'success',
                                     title: '發送成功',
-                                    text: '商品已成功發送至會員。',
+                                    text: '商品已成功發送至會員',
                                 }).then(function () {
                                     $('#sendtoMember').modal('hide');
                                 });
                             } else {
                                 Swal.fire({
                                     icon: 'error',
-                                    title: '未輸入會員編號或會員編號不存在',
-                                    text: '請輸入正確的會員編號。',
+                                    title: '會員編號不存在',
+                                    text: '請輸入正確的會員編號',
                                 });
                             }
                         },
@@ -815,7 +828,7 @@
                             Swal.fire({
                                 icon: 'error',
                                 title: '發送錯誤',
-                                text: '商品發送錯誤，請再次確認。',
+                                text: '商品發送錯誤，請再次確認',
                             });
                         }
                     });
@@ -843,8 +856,6 @@
              $('#create_categoryid').val("1");
             $('#create_price').val("87");
             $('#create_rate').val("0.87");
-            $('#create_image').val("https://msit150team02blob.blob.core.windows.net/msit150team02/categories_img_02.jpg");
-            $('#preview-createimage').val("https://msit150team02blob.blob.core.windows.net/msit150team02/categories_img_02.jpg");
         }
 
         // 再次新增時清空表單輸入值

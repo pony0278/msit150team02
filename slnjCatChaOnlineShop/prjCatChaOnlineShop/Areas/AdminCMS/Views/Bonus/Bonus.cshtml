@@ -164,19 +164,19 @@
                                         <!--內容表單-->
                                         <div class="row">
                                             <div class="form-group">
-                                                <label>編號</label>
+                                                <label>編號：</label>
                                                 <input type="text" class="form-control" readonly disabled id="edit-id" name="CouponId">
                                             </div>
                                             <div class="form-group">
-                                                <label>名稱</label>
+                                                <label>名稱：</label>
                                                 <input type="text" class="form-control" id="edit-name" name="CouponName">
                                             </div>
                                             <div class="form-group">
-                                                <label>內容</label>
+                                                <label>內容：</label>
                                                 <input type="text" class="form-control" id="edit-content" name="CouponContent">
                                             </div>
                                             <div class="form-group">
-                                                <label>到期日</label>
+                                                <label>到期日：</label>
                                                 <input type="date" class="form-control" id="edit-expirydate" name="ExpiryDate">
                                             </div>
                                             <div class="form-group">
@@ -216,7 +216,7 @@
                                     <div class="modal-body">
                                         <div class="row">
                                             <div class="form-group">
-                                                <label>會員編號</label>
+                                                <label>會員編號：</label>
                                                 <input type="text" class="form-control" id="send-memberID" name="MemberID">
                                             </div>
                                         </div>
@@ -607,6 +607,11 @@
         $('#Bonus-table').on('click', '.send-button', function () {
             couponIdToSend = $(this).data('id');
             $('#sendtoMember').modal('show');
+            clearMemberIDInput();
+            // 再次點選發送時清空表單輸入值
+            function clearMemberIDInput() {
+                $('#send-memberID').val('');
+            }
         });
 
         // 發送至所有會員=======================
@@ -658,9 +663,17 @@
                 console.log("memberId:", memberId);
 
                 // 檢查 memberId 是否為空值或不是整數
-                if (!memberId || isNaN(parseInt(memberId))) {
+                if (!memberId ) {
                     Swal.fire({
-                        title: '請輸入有效的會員ID',
+                        title: '請輸入會員ID',
+                        icon: 'error',
+                    });
+                    return;
+                }
+
+                if ( isNaN(parseInt(memberId))) {
+                    Swal.fire({
+                        title: '會員編號僅可輸入數字',
                         icon: 'error',
                     });
                     return;
@@ -683,8 +696,8 @@
                         } else {
                             console.log("發送失敗");
                             Swal.fire({
-                                title: '發送失敗',
-                                text: response.message,
+                                title: '會員不存在',
+                                text: '發送失敗',
                                 icon: 'error',
                             });
                         }
