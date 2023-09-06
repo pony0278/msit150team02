@@ -1,7 +1,7 @@
 body {
     font-family: 'Noto Sans TC', sans-serif;
     height: 100%;
-    font-size: 20px !important;
+    font-size: 18px !important;
 }
 
 .all-content {
@@ -40,7 +40,7 @@ body {
 
 .img-profile {
     height: 50px;
-/*    margin: 0 0 0 10px;*/
+    /*    margin: 0 0 0 10px;*/
 }
 
 .middle-content {
@@ -314,4 +314,8 @@ td .fas {
     border-radius: 10px;
     background: #666;
     -webkit-box-shadow: inset 0 0 6px rgba(185,87,86,0.5);
+}
+
+.form-control-sm {
+    font-size: 1rem !important;
 }
