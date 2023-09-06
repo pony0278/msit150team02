@@ -12,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
+
 builder.Services.AddSession(options => {
     // 設定 Session 的過期時間（以分為單位）
     options.IdleTimeout = TimeSpan.FromDays(3); // 測試:這裡設定為 3 天
