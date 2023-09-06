@@ -502,7 +502,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from order in _context.ShopOrderDetailTable
-                            //join img on _context.ShopProductImageTable 
+                            orderby order.ProductId descending
                             where order.OrderId == orderid
                             select new
                             {
@@ -968,7 +968,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
 
             //var storeid = ShopDetail["storeid"];
-            string storename = ShopDetail["storename"];
+            string storename = "7-11" + ShopDetail["storename"];
             string storeaddress = ShopDetail["storeaddress"];
 
             TempData["storename"] = storename;
@@ -993,6 +993,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //return Content(storeid + "/" + storename + "/" + storeaddress);
             //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
             //return RedirectToAction("membership", "membership", null);
+            return Content("hi");
+        }
+
+        public IActionResult share()
+        {
+
             return Content("hi");
         }
     }
