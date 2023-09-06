@@ -52,41 +52,50 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         //編輯
         public IActionResult EditBanner(int? id)
         {
-            if (id == null)
+            try
             {
-                return Json(new { success = false, message = "ID不存在" });
-            }
-            GameShopBanner banner = _cachaContext.GameShopBanner
-                                                                    .FirstOrDefault(p => p.BannerId == id);
+                if (id == null)
+                {
+                    return Json(new { success = false, message = "ID不存在" });
+                }
 
-            if (banner == null)
+                GameShopBanner banner = _cachaContext.GameShopBanner.FirstOrDefault(p => p.BannerId == id);
+
+                if (banner == null)
+                {
+                    return Json(new { success = false, message = "Banner不存在" });
+                }
+
+                return Json(new { success = true, data = banner });
+            }
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "Banner不存在" });
+                return BadRequest($"發生錯誤：{ex.Message}");
             }
-            return Json(new { success = true, data = banner });
-
         }
+
 
         //上傳圖片
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
         {
-            if (image == null || image.Length == 0)
-            {
-                return BadRequest("未選擇圖片");
-            }
-
-            string imageUrl;
             try
             {
-                imageUrl = await _imageService.UploadImageAsync(image);
+                if (image == null || image.Length == 0)
+                {
+                    return BadRequest("未選擇圖片");
+                }
+
+                string imageUrl = await _imageService.UploadImageAsync(image);
+
+                return Ok(new { imageUrl = $"{imageUrl}" });
             }
-            catch
+            catch (Exception ex)
             {
-                return BadRequest("圖片上傳失敗");
+                return BadRequest($"圖片上傳錯誤：{ex.Message}");
             }
-            return Ok(new { imageUrl = $"{imageUrl}" });
         }
+
 
 
         //儲存編輯
@@ -94,40 +103,48 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> EditBanner([FromForm] CBannerWrap cBanner)
         {
-            var image = cBanner.Image;
-            GameShopBanner editBanner = _cachaContext.GameShopBanner
-                                                                        .FirstOrDefault(b => b.BannerId == cBanner.BannerId);
-
-            string imageURL = null;
-            if (image != null && image.Length > 0)
+            try
             {
-                try
-                {
-                    imageURL = await _imageService.UploadImageAsync(image);
-                }
-                catch
-                {
-                    return BadRequest("圖片上傳錯誤.");
-                }
-            }
+                var image = cBanner.Image;
+                GameShopBanner editBanner = _cachaContext.GameShopBanner
+                    .FirstOrDefault(b => b.BannerId == cBanner.BannerId);
 
-            if (editBanner != null)
+                string imageURL = null;
+                if (image != null && image.Length > 0)
+                {
+                    try
+                    {
+                        imageURL = await _imageService.UploadImageAsync(image);
+                    }
+                    catch
+                    {
+                        return BadRequest("圖片上傳錯誤.");
+                    }
+                }
+
+                if (editBanner != null)
+                {
+                    if (imageURL != null)
+                        editBanner.Link = imageURL;
+                    if (cBanner.BannerId != null)
+                        editBanner.BannerId = cBanner.BannerId;
+                    if (cBanner.Banner != null)
+                        editBanner.Banner = cBanner.Banner;
+                    if (cBanner.PublishDate != null)
+                        editBanner.PublishDate = cBanner.PublishDate;
+
+                    _cachaContext.Update(editBanner);
+                    _cachaContext.SaveChanges();
+                    return Json(new { success = true, message = "Item updated successfully" });
+                }
+                return Json(new { success = false, message = "Item not found" });
+            }
+            catch (Exception ex)
             {
-                if (imageURL != null)
-                    editBanner.Link = imageURL;
-                if (cBanner.BannerId != null)
-                    editBanner.BannerId = cBanner.BannerId;
-                if (cBanner.Banner != null)
-                    editBanner.Banner = cBanner.Banner;
-                if (cBanner.PublishDate != null)
-                    editBanner.PublishDate = cBanner.PublishDate;
-
-                _cachaContext.Update(editBanner);
-                _cachaContext.SaveChanges();
-                return Json(new { success = true, message = "Item updated successfully" });
+                return BadRequest($"發生錯誤：{ex.Message}");
             }
-            return Json(new { success = false, message = "Item not found" });
         }
+
 
         //新增
         [HttpPost]
@@ -153,10 +170,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 BannerId = cBanner.BannerId,
                 Banner = cBanner.Banner,
                 PublishDate = cBanner.PublishDate,
-                Display=cBanner.Display,
-                ToPage=cBanner.ToPage,
+                Display = cBanner.Display,
+                ToPage = cBanner.ToPage,
                 Link = imageURL
-        };
+            };
+
             try
             {
                 _cachaContext.GameShopBanner.Add(NewBanner);
@@ -166,6 +184,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             {
                 return BadRequest("Error saving the product.");
             }
+
             return Json(new { success = true, message = "Content saved!" });
         }
 
@@ -174,17 +193,24 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult Delete(int? id)
         {
-            if (id != null)
+            try
             {
-                GameShopBanner cBanner = _cachaContext.GameShopBanner.FirstOrDefault(p => p.BannerId == id);
-                if (cBanner != null)
+                if (id != null)
                 {
-                    _cachaContext.GameShopBanner.Remove(cBanner);
-                    _cachaContext.SaveChanges();
-                    return Json(new { success = true });
+                    GameShopBanner cBanner = _cachaContext.GameShopBanner.FirstOrDefault(p => p.BannerId == id);
+                    if (cBanner != null)
+                    {
+                        _cachaContext.GameShopBanner.Remove(cBanner);
+                        _cachaContext.SaveChanges();
+                        return Json(new { success = true });
+                    }
                 }
+                return Json(new { success = false });
             }
-            return Json(new { success = false });
+            catch (Exception ex)
+            {
+                return BadRequest($"發生錯誤：{ex.Message}");
+            }
         }
 
 
