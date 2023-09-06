@@ -123,6 +123,13 @@ async function fetchDataAndProcess() {
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
         const userData = await initialize();
+        //多加入一個用來判斷要不要自動開啟遊戲說明
+        if (information[0].RunGameHighestScore == 0) {
+            tutorial.style.display = "block"
+        }
+        
+
+
         gachaData.forEach(testProbability => {
             // 創建一個新的<p>元素
             const pElement = document.createElement("p");
