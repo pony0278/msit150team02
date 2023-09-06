@@ -288,12 +288,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
                     existingMemberInfo.LoyaltyPoints = rgm.LoyaltyPoints;
                 }
                 _context.SaveChanges();
+                bool foundCoupon = false;
                 foreach (var gachaResult in rgm.GachaResult)
                 {
-                    int productId = gachaResult.productId;
-
                     var existingRecord = _context.GameItemPurchaseRecord
-                        .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.ProductId == productId);
+                        .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.ProductId == gachaResult.productId);
 
                     if (existingRecord != null)
                     {
@@ -306,7 +305,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         {
                             ItemName = gachaResult.productName,
                             MemberId = rgm.MemberId,
-                            ProductId = productId,
+                            ProductId = gachaResult.productId,
                             QuantityOfInGameItems = 1
                         };
                         _context.GameItemPurchaseRecord.Add(dbItemModel);
@@ -314,18 +313,26 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
                     if (gachaResult.productCategoryId == 5)
                     {
-                        var existingCoupon = _context.ShopMemberCouponData
-                            .FirstOrDefault(record => record.MemberId == rgm.MemberId && record.CouponId == gachaResult.couponId);
-
+                        var existingCoupon = _context.ShopCouponTotal
+                            .FirstOrDefault(record =>record.CouponId == gachaResult.couponId);
                         if (existingCoupon != null)
                         {
                             var dbCouponModel = new ShopMemberCouponData
                             {
                                 MemberId = rgm.MemberId,
                                 CouponId = gachaResult.couponId,
-                                CouponStatusId = false,
-                            };
+                                CouponStatusId = false,                           
+                            }; 
                             _context.ShopMemberCouponData.Add(dbCouponModel);
+                            foundCoupon = true; // 找到優惠券
+                        }
+                        else if(existingCoupon == null)
+                        {
+                            return Ok(new { message = "沒有這個優惠券" });
+                        }
+                        else
+                        {
+                            return Ok(new { message = "其他優惠券錯誤" });
                         }
                     }
                     if (gachaResult.productCategoryId == 6)
@@ -339,7 +346,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         _context.SaveChanges();
                     }
                 }
-
+                if (foundCoupon)
+                {
+                    _context.SaveChanges(); // 保存所有的變更
+                    return Ok(new { message = "存入優惠券" });
+                }
+                _context.SaveChanges();
                 return Ok(new { message = "數據已成功保存" });
             }
             catch (Exception ex)

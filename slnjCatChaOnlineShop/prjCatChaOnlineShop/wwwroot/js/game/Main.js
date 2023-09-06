@@ -51,15 +51,36 @@
 const weatherImage = new Image();
 const weatherImage2 = new Image();
 let destinationX = 0;
+let currentImage = weatherImage; // 設置當前使用的圖像
+
 function backgroundmove() {
     // 更新 sourceX，使圖片向左移動
-    destinationX -=0.5;
+    destinationX -= 1;
 
-    c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX, 0, 2304, 1296);
-    c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX + 2304, 0, 2304, 1296);
-    if (destinationX <= -2304) {
-        destinationX= 0;
+    if (currentImage === weatherImage) {
+        // 繪製 weatherImage 的一系列圖像
+        c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX, 0, 2304, 1296);
+        c.drawImage(weatherImage, 0, 500, 2304, 1296, destinationX + 2304, 0, 2304, 1296);
+
+        if (destinationX <= -2304) {
+            destinationX = 0;
+
+            // 切換到 weatherImage2
+            currentImage = weatherImage2;
+        }
+    } else if (currentImage === weatherImage2) {
+        // 繪製 weatherImage2 的一系列圖像
+        c.drawImage(weatherImage2, 0, 450, 2304, 1296, destinationX, 0, 2304, 1296);
+        c.drawImage(weatherImage2, 0, 450, 2304, 1296, destinationX + 2304, 0, 2304, 1296);
+
+        if (destinationX <= -2304) {
+            destinationX = 0;
+
+            // 切換回 weatherImage
+            currentImage = weatherImage;
+        }
     }
+
     c.drawImage(lobbyBK, 100, 0, canvas.width, canvas.height, 0, 160, canvas.width, canvas.height);
 }
 

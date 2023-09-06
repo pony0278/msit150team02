@@ -52,7 +52,7 @@
             <h2 class="mt-3">遊戲商品管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
-            <button class="btn btn-success create_btn" data-bs-toggle="modal" href="#addGProductModalToggle" role="button">
+            <button class="create_btn" data-bs-toggle="modal" href="#addGProductModalToggle" role="button">
                 新增遊戲商品
             </button>
         </div>
@@ -60,7 +60,7 @@
 
     <div class="row mt-3">
         <div class="col-6 offset-6 text-end">
-            <button type="submit" class="btn btn-success" data-bs-toggle="modal"  role="button" id="sendtoMemberModalBtn">
+            <button type="submit" class="create_btn" data-bs-toggle="modal"  role="button" id="sendtoMemberModalBtn">
                 補發遊戲商品
             </button>
         </div>
@@ -163,14 +163,13 @@
     </div>
     </div>
     <!---新增遊戲商品 modal-->
-
-<!--發送至會員-->
+<!--補發遊戲商品-->
 <div class="modal fade" id="sendtoMember" aria-hidden="true"
      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalToggleLabel">發送至會員</h5>
+                <h5 class="modal-title" id="exampleModalToggleLabel">補發遊戲商品</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                         aria-label="Close"></button>
             </div>
@@ -181,7 +180,10 @@
                         <label>會員編號：</label>
                             <input type="text" class="form-control" id="send-memberID" name="MemberID">
                         </div>
-
+                    <div class="form-group">
+                        <label>數量：</label>
+                        <input type="text" class="form-control" id="send-quantity" value="1">
+                    </div>
                     <div class="col">
                         <div class="form-group">
                             <button type="submit" class="mt-3 btn btn-danger btn-block btnSend" id="btnSend" style="width: 100%;">
@@ -206,7 +208,7 @@
     </div>
 </div>
 
-<!--發送至會員-->
+<!--補發遊戲商品-->
 
 
 
@@ -788,8 +790,10 @@
             // 發送按鈕
             $('#btnSend').on('click', function () {
                 var memberId = $("#send-memberID").val();
+                var quantity = $("#send-quantity").val();
                 console.log('memberId:', memberId);
                 console.log('selectedids:', selectedids);
+                console.log('quantity:', quantity);
 
                 //驗證非空值
                 if (!memberId) {
@@ -800,12 +804,21 @@
                     });
                     return;
                 }
+
+                if (!quantity) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '未輸入商品數量',
+                        text: '請輸入商品數量',
+                    });
+                    return;
+                }
                 //驗證會員編號不存在
                 if (selectedids.length > 0 ) {
                     $.ajax({
                         url: "/AdminCMS/GameProduct/SendProductsToMemberByID",
                         type: "POST",
-                        data: { ids: selectedids, memberId: memberId },
+                        data: { ids: selectedids, memberId: memberId, quantity: quantity },
                         success: function (response) {
                             if (response.success) {
                                 Swal.fire({
@@ -845,17 +858,18 @@
 
         //清除鍵
         $('#clearMemberID').on('click', function () {
-            $('#send-memberID').val(''); // 清空输入框的值
+            $('#send-memberID').val('');
+            $('#send-quantity').val('');// 清空輸入框的值
         });
 
 
         //新增Demo按鍵
         function setCreateProductValue() {
-             $('#create_name').val("測試用貓貓");
-             $('#create_description').val("測試用的");
-             $('#create_categoryid').val("1");
-            $('#create_price').val("87");
-            $('#create_rate').val("0.87");
+             $('#create_name').val("中秋節特別折價券");
+             $('#create_description').val("與實體商店共用的1折折價券");
+             $('#create_categoryid').val("");
+            $('#create_price').val("100");
+            $('#create_rate').val("0.001");
         }
 
         // 再次新增時清空表單輸入值
@@ -868,7 +882,8 @@
             $('#create_price').val('');
             $('#create_image').val('');
             $('#preview-createimage').val('');
-        }
+            $('#send-quantity').val('1');
+        } 
 
         // 點擊關閉按鈕時清空表單
         $('.create_btn').click(function () {

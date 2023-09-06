@@ -204,9 +204,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 GameProductTotal cProduct = _cachaContext.GameProductTotal.FirstOrDefault(p => p.ProductId == id);
                 if (cProduct != null)
                 {
-                    _cachaContext.GameProductTotal.Remove(cProduct);
-                    _cachaContext.SaveChanges();
-                    return Json(new { success = true });
+                    try
+                    {
+                        _cachaContext.GameProductTotal.Remove(cProduct);
+                        _cachaContext.SaveChanges();
+                        return Json(new { success = true });
+                    }
+                    catch { return BadRequest(); }
                 }
             }
             return Json(new { success = false });
@@ -214,8 +218,14 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         //發送給會員
         [HttpPost]
-        public IActionResult SendProductsToMemberByID(int[] ids, int? memberId)
+        public IActionResult SendProductsToMemberByID(int[] ids, int? memberId, int quantity)
         {
+            if (quantity <= 0)
+            {
+                // 驗證數量必須大於零
+                return Json(new { success = false, message = "商品數量必須大於零" });
+            }
+
             foreach (int id in ids)
             {
                 GameProductTotal product = _cachaContext.GameProductTotal.FirstOrDefault(p => p.ProductId == id);
@@ -240,7 +250,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 if (existingRecord != null)
                 {
                     // 如果記錄存在，則遞增數量
-                    existingRecord.QuantityOfInGameItems += 1;
+                    existingRecord.QuantityOfInGameItems += quantity;
                 }
                 else
                 {
@@ -249,7 +259,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     {
                         MemberId = member.MemberId,
                         ProductId = product.ProductId,
-                        QuantityOfInGameItems = 1  // 初始化為1，因為這是第一次購買
+                        QuantityOfInGameItems = quantity  // 使用輸入的數量
                     };
                     _cachaContext.GameItemPurchaseRecord.Add(item);
                 }
@@ -259,6 +269,5 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             _cachaContext.SaveChanges();
             return Json(new { success = true });
         }
-
     }
     }

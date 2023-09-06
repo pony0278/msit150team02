@@ -40,6 +40,7 @@
             width: 200px;
             height: 40px;
         }
+
     </style>
 }
 
@@ -50,7 +51,7 @@
             <h2 class="mt-3">優惠券管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
-            <button class="btn btn-success create_btn" data-bs-toggle="modal" href="#addModalToggle"
+            <button class="create_btn" data-bs-toggle="modal" href="#addModalToggle"
                     role="button">
                 新增優惠券
             </button>
@@ -91,8 +92,8 @@
                         </div>
 
                         <div class="form-group">
-                            <label>總數量：</label>
-                            <input type="text" class="form-control" id="create-quantity" name="TotalQuantity">
+                            <label>優惠折數：</label>
+                            <input type="text" class="form-control" id="create-offer" name="SpecialOffer">
                         </div>
 
                     <div class="form-group">
@@ -143,7 +144,7 @@
                             <th>名稱</th>
                             <th>內容</th>
                             <th>到期日</th>
-                            <th>總數量</th>
+                            <th>優惠折數</th>
                             <th>是否可使用</th>                            
                             <th>發送至會員</th>
                             <th>編輯/刪除</th>
@@ -180,8 +181,8 @@
                                                 <input type="date" class="form-control" id="edit-expirydate" name="ExpiryDate">
                                             </div>
                                             <div class="form-group">
-                                                <label>總數量：</label>
-                                                <input type="text" class="form-control" id="edit-quantity" name="TotalQuantity">
+                                                <label>優惠折數：</label>
+                                                <input type="text" class="form-control" id="edit-offer" name="SpecialOffer">
                                             </div>
 
                                             <div class="form-group">
@@ -307,6 +308,10 @@
                         // 格式化日期為 yyyy-MM-dd 格式，使用 Moment.js
                         var formattedDate = moment(date).format("YYYY-MM-DD");
 
+                        // 創建一個包含日期和圖像的 div 元素
+                        var containerDiv = document.createElement('div');
+                        containerDiv.appendChild(document.createTextNode(formattedDate + ' '));
+
                         // 如果日期差小於10天，添加圖像
                         if (daysDifference < 10) {
                             // 創建一個圖像元素
@@ -316,24 +321,15 @@
                             image.height = 20;
                             image.width = 20;
 
-                            // 創建一個包含圖像的 div 元素
-                            var imageDiv = document.createElement('div');
-                            imageDiv.appendChild(image);
-
-                            // 創建一個包含日期和圖像的 div 元素
-                            var containerDiv = document.createElement('div');
-                            containerDiv.appendChild(document.createTextNode(formattedDate + ' '));
-                            containerDiv.appendChild(imageDiv);
-
-                            // 返回包含日期和圖像的 HTML 內容
-                            return containerDiv.innerHTML;
-                        } else {
-                            // 否則只返回格式化日期
-                            return formattedDate;
+                            // 將圖像添加到 containerDiv 中
+                            containerDiv.appendChild(image);
                         }
+
+                        // 返回包含日期和圖像的 HTML 內容
+                        return containerDiv.innerHTML;
                     }
                 },
-                { "data": "totalQuantity" },
+                { "data": "specialOffer" },
                 { "data": "usable" },
                 {
                     "data": "couponId",
@@ -380,7 +376,7 @@
                         $('#edit-expirydate').val(formattedDate);
 
 
-                        $('#edit-quantity').val(response.data.totalQuantity);
+                        $('#edit-offer').val(response.data.specialOffer);
                         // 將布林值轉換成字串，匹配<select>的選項值
                         var usableValue = response.data.usable ? "true" : "false";
                         $('#edit-usable').val(usableValue);
@@ -399,31 +395,34 @@
             const name = $('#edit-name').val();
             const content = $('#edit-content').val();
             const expirydate = $('#edit-expirydate').val();
-            const quantity = $('#edit-quantity').val();
+            const specialoffer = $('#edit-offer').val();
             const usable = $('#edit-usable').val();
 
             //驗證非空值
-            if (!name || !content || !expirydate || !quantity || !usable) {
-                showErrorMessage("錯誤", "名稱、內容、到期日、數量、是否可使用為必填欄位，請再次檢查。");
+            if (!name || !content || !expirydate || !specialoffer || !usable) {
+                showErrorMessage("錯誤", "名稱、內容、到期日、折數、是否可使用為必填欄位，請再次檢查。");
                 return;
             }
 
 
             // 驗證必為數字
-            if (!isNumeric(quantity)) {
-                showErrorMessage("錯誤", "數量僅可輸入數字，請再次檢查。");
+            if (!isDecimal(specialoffer)) {
+                showErrorMessage("錯誤", "折數僅可輸入數字，請再次檢查。");
                 return;
             }
-            function isNumeric(value) {
-                return /^\d+$/.test(value);
+
+            function isDecimal(value) {
+                return /^(\d+\.\d+|\.\d+|\d+)$/.test(value);
             }
+
+
 
             var formData = new FormData();
             formData.append("CouponId", id);
             formData.append("CouponName", name);
             formData.append("CouponContent", content);
             formData.append("ExpiryDate", expirydate);
-            formData.append("TotalQuantity", quantity);
+            formData.append("SpecialOffer", specialoffer);
             formData.append("Usable", usable);
 
 
@@ -473,22 +472,24 @@
             const name = $('#create-name').val();
             const content = $('#create-content').val();
             const expirydate = $('#create-expirydate').val();
-            const quantity = $('#create-quantity').val();
+            const specialOffer = $('#create-offer').val();
             const usable = $('#create-usable').val();
 
             //驗證非空值
-            if (!name || !content || !expirydate || !quantity || !usable) {
-                showErrorMessage("錯誤", "名稱、內容、到期日、數量、是否可使用為必填欄位，請再次檢查。");
+            if (!name || !content || !expirydate || !specialOffer || !usable) {
+                showErrorMessage("錯誤", "名稱、內容、到期日、折數、是否可使用為必填欄位，請再次檢查。");
                 return;
             }
 
+
             // 驗證必為數字
-            if (!isNumeric(quantity)) {
-                showErrorMessage("錯誤", "數量僅可輸入數字，請再次檢查。");
+            if (!isDecimal(specialOffer)) {
+                showErrorMessage("錯誤", "折數僅可輸入數字，請再次檢查。");
                 return;
             }
-            function isNumeric(value) {
-                return /^\d+$/.test(value);
+
+            function isDecimal(value) {
+                return /^(\d+\.\d+|\.\d+|\d+)$/.test(value);
             }
 
 
@@ -497,7 +498,7 @@
             formData.append("CouponName", name);
             formData.append("CouponContent", content);
             formData.append("ExpiryDate", expirydate);
-            formData.append("TotalQuantity", quantity);
+            formData.append("SpecialOffer", specialOffer);
             formData.append("Usable", usable);
 
 
@@ -757,11 +758,11 @@
         });
         //新增Demo按鍵
         function setCreateCouponValue() {
-            $('#create-name').val("測試用9折優惠券");
-            $('#create-content').val("9折優惠券");
-            $('#create-expirydate').val("2023-09-15");
-            $('#create-quantity').val("1000");
-            $('#create-usable').val("false");
+            $('#create-name').val("延遲出貨補償優惠券");
+            $('#create-content').val("補償用的9折折價券");
+            $('#create-expirydate').val("2023-11-30");
+            $('#create-offer').val("0.9");
+            $('#create-usable').val("true");
         }
 
         // 再次新增時清空表單輸入值
@@ -769,7 +770,7 @@
             $('#create-name').val('');
             $('#create-content').val('');
             $('#create-expirydate').val('');
-            $('#create-quantity').val('');
+            $('#create-offer').val('');
             $('#create-usable').val('').prop('selected', ''); // 將選項重設為預設值
         }
 

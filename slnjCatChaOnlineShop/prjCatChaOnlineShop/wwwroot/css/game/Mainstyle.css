@@ -7,16 +7,16 @@
     margin-left: 120px;
     margin-top: 55px;
 }
-.page {
+.page { /*遊戲說明書*/
     display: none;
-    border: 4px solid blanchedalmond;
     padding: 10px;
     margin-bottom: 10px;
     color: black;
     margin-top: 50px;
     border-radius: 15px;
     height: 400px;
-    background-color: wheat;
+    background-color: transparent;
+    padding: 0 0 20px;
 }
 
     .page.active {
