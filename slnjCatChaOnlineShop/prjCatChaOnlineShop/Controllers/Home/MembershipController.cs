@@ -14,6 +14,7 @@ using prjCatChaOnlineShop.Controllers.Home;
 using Newtonsoft.Json.Linq;
 using System.Security.Cryptography.X509Certificates;
 using prjCatChaOnlineShop.Models.ViewModels;
+using MailKit;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -26,14 +27,17 @@ namespace prjCatChaOnlineShop.Controllers.Home
         private readonly ProductService _productService;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private int? memberIdForMembership = null;
+        private readonly ImageService _imageService;
 
 
         //建構子先載入資料
-        public MembershipController(cachaContext context, IHttpContextAccessor httpContextAccessor, ProductService productService)
+        public MembershipController(cachaContext context, IHttpContextAccessor httpContextAccessor, ProductService productService, ImageService imageService )
         {
             _context = context;
             _productService = productService;
             _httpContextAccessor = httpContextAccessor;
+            _imageService = imageService;
+
 
             memberIdForMembership = GetCurrentMemberId();
         }
@@ -397,9 +401,30 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //前往圖片審核的頁面
         public IActionResult ImageModerator()
         {
-            ViewBag.memberIdForMembership = memberIdForMembership;
+            //ViewBag.memberIdForMembership = memberIdForMembership;
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View();
+        }
+
+        //圖片審核的圖片網址存入資料庫
+        //[HttpPost]
+        public IActionResult ImageModeratorToMemberInfo(string imageUrl)
+        {
+            try
+            {
+                var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
+                memberToUpdate.MemberImage = imageUrl;
+                _context.SaveChangesAsync();
+
+                //return new JsonResult(datas);
+                return Content(imageUrl);
+            }
+            catch (Exception ex)
+            {
+                //return BadRequest("Error saving the announcement.");
+                return Content(ex.Message);
+
+            }
         }
 
         /*2.消費紀錄*/
@@ -451,6 +476,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 order.PaymentMethod.PaymentMethodName,
                                 order.OrderStatus.StatusName,
                                 order.ShopOrderDetailTable
+
                             };
                 var datas = query.ToList();
 
@@ -476,6 +502,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var query = from order in _context.ShopOrderDetailTable
+                            //join img on _context.ShopProductImageTable 
                             where order.OrderId == orderid
                             select new
                             {
@@ -483,7 +510,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 order.Product.ProductName,
                                 order.Product.ProductPrice,
                                 order.ProductQuantity,
-                                order.Product.Size
+                                order.Product.Size,
+                                FirstImage = order.Product.ShopProductImageTable.FirstOrDefault() // 取得第一筆照片
                             };
 
                 var datas = query.ToList();
@@ -800,7 +828,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         /*5.客訴紀錄*/
 
-        //取得客訴紀錄
+        //取得客訴細節
         public IActionResult GetComplaintCaseDetail(int complaintcaseid)
         {
             
@@ -829,7 +857,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
 
         }
-        
+
+        //取得客訴案件
         public async Task<IActionResult> GetComplaintCase()
         {
             try
@@ -929,51 +958,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return null;
         }
 
-
-        /*
-        [HttpPost]
-        public async Task<IActionResult> ImageModeratorToMemberInfo(IFormFile image, string AnnouncementContent)
-        {
-            if (image == null || image.Length == 0)
-            {
-                return BadRequest("No image provided.");
-            }
-
-            string imageUrl;
-            try
-            {
-                imageUrl = await _imageService.UploadImageAsync(image);
-            }
-            catch
-            {
-
-                return BadRequest("Error uploading the image.");
-            }
-
-            if (string.IsNullOrWhiteSpace(AnnouncementContent))
-            {
-                return BadRequest("Announcement content cannot be empty.");
-            }
-
-            try
-            {
-                if (int.TryParse(Request.Form["memberIdForMembership"], out int memberIdForMembership))
-                {
-                    var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
-                    memberToUpdate.MemberImage = imageUrl;
-                    await _cachaContext.SaveChangesAsync();
-                }
-
-            }
-            catch
-            {
-                return BadRequest("Error saving the announcement.");
-            }
-
-            return new JsonResult(imageUrl);
-
-        }
-        */
+        
     }
 
     //用於取得超商api信息
