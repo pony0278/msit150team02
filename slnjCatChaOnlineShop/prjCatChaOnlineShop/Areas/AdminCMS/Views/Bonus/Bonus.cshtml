@@ -571,7 +571,7 @@
                                     console.log("優惠券已成功刪除");
                                     deleteButton.closest("tr").remove();
                                     $('#Bonus-table').DataTable().ajax.reload();
-                                    showSuccessMessage("刪除成功", response.message);
+                                    showSuccessMessage("刪除成功", "優惠券已刪除");
                                 } else {
                                     console.log("優惠券刪除失敗。");
                                     showErrorMessage("刪除失敗", "已發送的優惠券無法刪除");
