@@ -77,7 +77,7 @@
     <div class="container-fluid">
         <label for="excel" class="form-label">批次匯入</label>
         <div class="col-md-6 d-flex">
-            <input class="form-control w-50" type="file" id="excel" accept=".csv,.xls" />
+            <input class="form-control w-50" type="file" id="excel"  />
             <button class="btn btn-primary" id="upload">上傳</button>
         </div>
         <label for="pickdate" class="form-label">上架日期篩選</label>
@@ -425,12 +425,19 @@
                 }
             });
         });
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = String(now.getMonth() + 1).padStart(2, '0'); // months are 0-based
+        let day = String(now.getDate()).padStart(2, '0');
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
         $(document).on("click", '#demoBtn', function () {
             const name = $('#name').val('好好吃的貓食')
             const price = $('#price').val('100')
             const remain = $('#remainingquantity').val('100')
             const select = $('#category').val('1')
-            const relesedate = $('#releasedate').val('2023-09-15T13:00');
+            const relesedate = $('#releasedate').val(dateTimeString);
             const offdate = $('#offdate').val('2023-09-16T13:00')
             const size = $('#size').val('30cm*30cm')
             const weight = $('#weight').val('1kg')
