@@ -415,3 +415,8 @@ body {
 
 /*Cart頁面垃圾桶圖樣樣式End*/
 
+.checkout-input {
+    background-color: #F8F0E7;
+    border: solid #dee2e6;
+    border-radius:5px;
+}
