@@ -279,9 +279,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult GetTopAnnouncement()
         {
             var data = _context.GameShopAnnouncement
-                .Where(a => a.PinToTop == true&&a.DisplayOrNot==true)
+                .Where(a => a.PinToTop == true &&a.DisplayOrNot != true)
                 .OrderBy(a=>a.AnnouncementTypeId)
-                .Select(a=>a.AnnouncementContent)
+                .Select(a=>a.AnnouncementTitle)
                 .FirstOrDefault();
 
             if (data != null)
