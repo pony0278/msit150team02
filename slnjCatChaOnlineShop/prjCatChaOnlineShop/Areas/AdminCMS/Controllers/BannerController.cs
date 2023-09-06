@@ -43,7 +43,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 BannerId=x.BannerId,
                 PublishDate=x.PublishDate,
                 Link=x.Link,
-                ToPage=x.ToPage,
                 Display=x.Display
             }).ToList();
             return Json(new { data });
@@ -171,7 +170,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 Banner = cBanner.Banner,
                 PublishDate = cBanner.PublishDate,
                 Display = cBanner.Display,
-                ToPage = cBanner.ToPage,
                 Link = imageURL
             };
 
