@@ -23,7 +23,7 @@ itemSelected.src = '../../images/game/Inventory_select.png'
 
 //測試背景
 weatherImage.src = '../../images/game/orig.png';
-weatherImage2.src = '../../images/game/orig.png';
+weatherImage2.src = '../../images/game/5.png';
 // const lobbyBGData = {
 // Default:'/LAYOUT/images/game/lobbyBK.png',
 // Beach:'/LAYOUT/images/game/lobbyBK_beach.png'
