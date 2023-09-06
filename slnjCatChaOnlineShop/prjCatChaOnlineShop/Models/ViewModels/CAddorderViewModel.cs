@@ -21,5 +21,7 @@
         public int? CouponId { get; set; }
 
         public int? ShippingMethodId { get; set; }
+
+        public decimal? ResultPrice { get; set; }
     }
 }

@@ -150,9 +150,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 // 獲取 finalTotalPrice 的值
                 var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
 
-                //最後運送方式、付款方式
-                //var fPaymentMethod = JsonSerializer.Deserialize<CPayModel>(finalpaymentMethod);
-
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
                 //需填入你的網址

@@ -58,6 +58,8 @@ namespace prjCatChaOnlineShop.Models.CModels
                                 SpecialOffer = (decimal)ct.SpecialOffer,
                             })
                         .Where(ct => ct.Usable == true && ct.ExpiryDate >= DateTime.Now)
+                        .GroupBy(ct=>ct.CouponID) // 根據 CouponID 分組
+                        .Select(group=>group.First())// 選擇每個組中的第一張優惠券
                         .ToList();
 
                         return usableCoupons;

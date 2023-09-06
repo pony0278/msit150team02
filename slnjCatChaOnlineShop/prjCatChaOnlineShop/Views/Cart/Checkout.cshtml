@@ -154,7 +154,7 @@
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
                             <div class="input-group mb-2">
-                                <input id="CouponId" value=""></input>
+                                <input id="CouponId" value="" hidden></input>
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
                                        aria-label="請選擇優惠券" aria-describedby="button-addon2" data-coupon-specialoffer readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
@@ -289,8 +289,8 @@
                          aria-labelledby="DeliveryMethod_711-tab">
                         <ul>
                             <li>
-                                <label for="711StoreName">取件門市：</label>
-                                <input id="select-seveneleven" type="text" name="711StoreName" class="checkout-inputs" readonly />
+                                <label for="711StoreName">取件的門市： </label>
+                                <input id="select-seveneleven" type="text" name="711StoreName" class="checkout-inputs" size="18" readonly />
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
@@ -387,8 +387,8 @@
                                 <!--7-11彈出視窗-->
                             </li>
                             <li>
-                                <label for="name">取件姓名：</label>
-                                <input type="text" id="711name" name="name" class="checkout-inputs" />
+                                <label for="name">取件人姓名：</label>
+                                <input type="text" id="711name" name="name" class="checkout-inputs" size="18" /><button class="ml-1 chooseStore_btn" id="cvsDemo">Demo</button>
                             </li>
                             <li>
                                 <label for="phone">取件人電話：</label>
@@ -400,8 +400,8 @@
                          aria-labelledby="DeliveryMethod_fami-tab">
                         <ul>
                             <li>
-                                <label for="famiStoreName">取件門市：</label>
-                                <input id="select-familmart" type="text" name="famiStoreName" class="checkout-inputs" readonly />
+                                <label for="famiStoreName">取件的門市：</label>
+                                <input id="select-familmart" type="text" name="famiStoreName" class="checkout-inputs" size="18" readonly />
                                 <!-- 觸發選擇全家超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#chooseFamiStore">
@@ -495,8 +495,8 @@
                                 <!--全家彈出視窗-->
                             </li>
                             <li>
-                                <label for="faminame">取件姓名：</label>
-                                <input type="text" id="faminame" name="name" class="checkout-inputs" />
+                                <label for="faminame">取件人姓名：</label>
+                                <input type="text" id="faminame" name="name" class="checkout-inputs" size="18" />
                             </li>
                             <li>
                                 <label for="famiphone">取件人電話：</label>
@@ -1213,28 +1213,28 @@
                 </div>
                 <div class="order-box">
                     <div class="d-flex">
-                        <h4>小計</h4>
-                        <div class="ml-auto font-weight-bold" id="subtotal"> NT @ViewBag.totalPrice </div>
+                        <h4 class="mr-auto">小計</h4>
+                        <span class="mr-2 font-weight-bold">NT</span><div class=" font-weight-bold" id="subtotal">@ViewBag.totalPrice</div>
                     </div>
                     @if (Model != null)
                     {
                         <div class="d-flex">
-                            <h4>紅利折扣</h4>
-                            <div class="ml-auto font-weight-bold" id="loyaltyPointsBonus"> NT0 </div>
+                            <h4 class="mr-auto">紅利折扣</h4>
+                            <span class="mr-2 font-weight-bold">- NT</span><div class=" font-weight-bold" id="loyaltyPointsBonus"> 0 </div>
                         </div>
                         <hr class="my-1">
                         <div class="d-flex">
-                            <h4>優惠券折扣</h4>
-                            <div class="ml-auto font-weight-bold" id="couponBonus"> NT0 </div>
+                            <h4 class="mr-auto">優惠券折扣</h4>
+                             <span class="mr-2 font-weight-bold">- NT</span><div class=" font-weight-bold" id="couponBonus"> 0 </div>
                         </div>
                         <div class="d-flex">
-                            <h4>運費</h4>
-                            <div class="ml-auto font-weight-bold" id="shippingFee"> NT @ViewBag.firstFee </div>
+                            <h4 class="mr-auto">運費</h4>
+                             <span class="mr-2 font-weight-bold">+ NT</span><div class=" font-weight-bold" id="shippingFee">NT @ViewBag.firstFee</div>
                         </div>
                         <hr>
                         <div class="d-flex gr-total">
-                            <h5>總計</h5>
-                            <div class="ml-auto h4" style="color:red" id="allTotalPrice"> NT @ViewBag.firstTotalPrice </div>
+                            <h5 class="mr-auto">總計</h5>
+                            <span class="mr-2 font-weight-bold" style="color:red">NT</span><div class=" h4" style="color:red" id="allTotalPrice">@ViewBag.firstTotalPrice</div>
                         </div>
                         <hr>
                     }
@@ -1315,22 +1315,32 @@
             selectedSevenElevenStore = $(this).val();
             deliveryInfo.storeName = selectedSevenElevenStore;
         });
+
+        //DEMO超商姓名電話
+        $('#cvsDemo').click(function () {
+            var name = "吳敏惠";
+            $('#711name').val(name);
+            var phone = "0938475245";
+            $('#711phone').val(phone);
+            deliveryInfo.name = name;
+            deliveryInfo.phone = phone;
+        })
         //$('#select-seveneleven').on('input', function () {
         //    var storeName = $(this).val();
         //    deliveryInfo.storeName = storeName;
         //});
 
-        // 當使用者輸入取件姓名時，更新物件中的值
-        $('#711name').on('input', function () {
-            var name = $(this).val();
-            deliveryInfo.name = name;
-        });
+        //// 當使用者輸入取件姓名時，更新物件中的值
+        //$('#711name').on('input', function () {
+        //    var name = $(this).val();
+        //    deliveryInfo.name = name;
+        //});
 
-        // 當使用者輸入取件人電話時，更新物件中的值
-        $('#711phone').on('input', function () {
-            var phone = $(this).val();
-            deliveryInfo.phone = phone;
-        });
+        //// 當使用者輸入取件人電話時，更新物件中的值
+        //$('#711phone').on('input', function () {
+        //    var phone = $(this).val();
+        //    deliveryInfo.phone = phone;
+        //});
 
     </script>
 }

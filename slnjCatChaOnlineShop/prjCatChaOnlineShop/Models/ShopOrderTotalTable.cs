@@ -31,6 +31,8 @@ public partial class ShopOrderTotalTable
 
     public int? ShippingMethodId { get; set; }
 
+    public decimal? ResultPrice { get; set; }
+
     public virtual ShopCommonAddressData Address { get; set; }
 
     public virtual ICollection<EcpayOrders> EcpayOrders { get; set; } = new List<EcpayOrders>();

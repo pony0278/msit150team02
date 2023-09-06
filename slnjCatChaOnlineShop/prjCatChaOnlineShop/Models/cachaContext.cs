@@ -1013,6 +1013,7 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.RecipientPhone)
                 .HasMaxLength(10)
                 .HasColumnName("Recipient Phone");
+            entity.Property(e => e.ResultPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ShippingMethodId).HasColumnName("Shipping Method ID");
 
             entity.HasOne(d => d.Address).WithMany(p => p.ShopOrderTotalTable)
