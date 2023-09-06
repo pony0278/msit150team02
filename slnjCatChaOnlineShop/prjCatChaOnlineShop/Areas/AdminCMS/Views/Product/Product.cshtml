@@ -918,8 +918,15 @@
                         processData: false,
                         contentType: false,
                         success: function (response) {
-                            swal.fire("成功", "成功新增產品", "success");
-                            $('#Product-table').DataTable().ajax.reload();
+                            if (response.success) {
+                                swal.fire("成功", "成功新增產品", "success");
+                                $('#Product-table').DataTable().ajax.reload();
+                            }
+                        }, error: function (jqXHR, textStatus, errorThrown) {
+                            if (jqXHR.status === 400) { // 400 是 HTTP BadRequest
+                                var message = jqXHR.responseText || "錯誤"; // 試圖讀取返回的訊息，或使用預設訊息
+                                swal.fire("失敗", message, "error");
+                            }
                         }
                     })
                 } else if (result.isDenied) {

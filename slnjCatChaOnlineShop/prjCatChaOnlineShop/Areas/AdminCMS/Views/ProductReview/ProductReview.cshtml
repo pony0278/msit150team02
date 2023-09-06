@@ -238,38 +238,41 @@
                         $('#reviewContent').text(response.data.ReviewContent)
                         $('#reviewTime').text(response.data.ReviewTime)
                         $('#hideReview').prop('checked', response.data.HideReview)
+                        console.log(response.data)
                     }
                 }
             })
         });
-        $('#submitButton-edior').click(function () {
-            const hideReview = $('#hideReview').is(':checked');
-            const editorID = parseInt($('#productReviewId').text(), 10);
+        // $('#submitButton-edior').click(function () {
+        //     const hideReview = $('#hideReview').is(':checked');
+        //     const editorID = parseInt($('#productReviewId').text(), 10);
 
-            const dataToSend = {
-                ProductReviewId: editorID,
-                HideReview: hideReview
-            };
+        //     const dataToSend = {
+        //         ProductReviewId: editorID,
+        //         HideReview: hideReview
+        //     };
 
-        //    $.ajax({
-        //        url: 
-        //        type: "POST",
-        //        data: JSON.stringify(dataToSend),
-        //        contentType: "application/json; charset=utf-8",
-        //        dataType: "json",
-        //        success: function (response) {
-        //            if (response.success) {
-        //                alert("Content saved successfully!");
-        //            } else {
-        //                alert("Error: " + response.message);
-        //            }
-        //        }
-        //    });
-        //});
+        // //    $.ajax({
+        // //        url: 
+        // //        type: "POST",
+        // //        data: JSON.stringify(dataToSend),
+        // //        contentType: "application/json; charset=utf-8",
+        // //        dataType: "json",
+        // //        success: function (response) {
+        // //            if (response.success) {
+        // //                alert("Content saved successfully!");
+        // //            } else {
+        // //                alert("Error: " + response.message);
+        // //            }
+        // //        }
+        // //    });
+        // //});
         $(document).on('click', '#submitButton-edior', function () {
             const editorID = parseInt($('#productReviewId').text(), 10);
+            const hideReview = $('#hideReview').is(':checked');
             const dataToSend = JSON.stringify({
-                ProductReviewId: editorID
+                ProductReviewId: editorID,
+                HideReview: hideReview
             });
             $.ajax({
                 url: "@Url.Action("editor","ProductReview" , new { area="AdminCMS" })",
@@ -316,25 +319,6 @@
             });
         });
 
-        function userDelete() {
-            Swal.fire({
-                title: '確定要刪除嗎?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
-                }
-            })
-
-                   }    })
              
     </script>
 }

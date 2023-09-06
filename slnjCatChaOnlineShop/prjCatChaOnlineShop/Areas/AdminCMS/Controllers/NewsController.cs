@@ -53,7 +53,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
             if (image == null || image.Length == 0)
             {
-                return BadRequest("No image provided.");
+                return BadRequest("沒有加上標題圖片");
             }
 
             string imageUrl;
@@ -63,9 +63,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-
                 return BadRequest("Error uploading the image.");
             }
+
+            // 检查是否已经存在置顶公告
+            bool hasTopAnnouncement = await _cachaContext.GameShopAnnouncement.AnyAsync(x => x.PinToTop == true);
+
+            if (hasTopAnnouncement == cAnnounce.PinToTop)
+            {
+                return BadRequest("已有置頂公告。");
+            }
+
             var newAnnounce = new GameShopAnnouncement
             {
                 AnnouncementImageHeader = imageUrl,
@@ -84,12 +92,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-                return BadRequest("Error saving the announcement.");
+                return BadRequest("儲存公告失敗");
             }
 
             return Json(new { success = true, message = "Content saved!" });
-
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
@@ -148,7 +157,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     AnnouncementType = x.AnnouncementType,
                     AnnouncementImageContent = x.AnnouncementImageContent,
                     PublishEndTime = formattedDateTime,
-                    displayOrNot = x.DisplayOrNot == null ? "未設定" :
+                    displayOrNot = x.DisplayOrNot == null ? "否" :
                                    x.DisplayOrNot == true ? "是" : "否",
                 };
         }).ToList();
