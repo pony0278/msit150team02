@@ -62,22 +62,30 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpGet]
         public IActionResult EditProduct(int id)
         {
-
-            if (id == null)
+            try
             {
-                return Json(new { success = false, message = "ID不存在" });
-            }
-            GameProductTotal product = _cachaContext.GameProductTotal
-                                                                    .Include(p => p.ProductCategory)
-                                                                    .FirstOrDefault(p => p.ProductId == id);
+                if (id == null)
+                {
+                    return Json(new { success = false, message = "ID不存在" });
+                }
 
-            if (product == null)
+                GameProductTotal product = _cachaContext.GameProductTotal
+                    .Include(p => p.ProductCategory)
+                    .FirstOrDefault(p => p.ProductId == id);
+
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "商品不存在" });
+                }
+
+                return Json(new { success = true, data = product });
+            }
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "商品不存在" });
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
             }
-            return Json(new { success = true, data = product });
-
         }
+
 
         //上傳圖片
         [HttpPost]
@@ -105,50 +113,57 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> EditProduct([FromForm] CGameProductWrap cGameproduct)
         {
-            var image = cGameproduct.Image;
-            GameProductTotal editProduct = _cachaContext.GameProductTotal
-                .FirstOrDefault(p => p.ProductId == cGameproduct.ProductId);
-
-            string imageURL = null;
-            if (image != null && image.Length > 0)
+            try
             {
-                try
+                var image = cGameproduct.Image;
+                GameProductTotal editProduct = _cachaContext.GameProductTotal
+                    .FirstOrDefault(p => p.ProductId == cGameproduct.ProductId);
+
+                string imageURL = null;
+                if (image != null && image.Length > 0)
                 {
-                    imageURL = await _imageService.UploadImageAsync(image);
+                    try
+                    {
+                        imageURL = await _imageService.UploadImageAsync(image);
+                    }
+                    catch (Exception ex)
+                    {
+                        return BadRequest("圖片上傳錯誤: " + ex.Message);
+                    }
                 }
-                catch
+
+                if (editProduct != null)
                 {
-                    return BadRequest("圖片上傳錯誤.");
+                    if (imageURL != null)
+                        editProduct.ProductImage = imageURL;
+
+                    if (cGameproduct.ProductName != null)
+                        editProduct.ProductName = cGameproduct.ProductName;
+
+                    if (cGameproduct.ProductDescription != null)
+                        editProduct.ProductDescription = cGameproduct.ProductDescription;
+
+                    if (cGameproduct.ProductCategoryId != null)
+                        editProduct.ProductCategoryId = cGameproduct.ProductCategoryId;
+
+                    if (cGameproduct.ProductPrice != null)
+                        editProduct.ProductPrice = cGameproduct.ProductPrice;
+
+                    if (cGameproduct.LotteryProbability != null)
+                        editProduct.LotteryProbability = cGameproduct.LotteryProbability;
+
+                    _cachaContext.Update(editProduct);
+                    _cachaContext.SaveChanges();
+                    return Json(new { success = true, message = "商品已成功更新" });
                 }
+                return Json(new { success = false, message = "商品未找到" });
             }
-
-
-            if (editProduct != null)
+            catch (Exception ex)
             {
-                if (imageURL != null)
-                    editProduct.ProductImage = imageURL;
-
-                if (cGameproduct.ProductName != null)
-                    editProduct.ProductName = cGameproduct.ProductName;
-
-                if (cGameproduct.ProductDescription != null)
-                    editProduct.ProductDescription = cGameproduct.ProductDescription;
-
-                if (cGameproduct.ProductCategoryId != null)
-                    editProduct.ProductCategoryId = cGameproduct.ProductCategoryId;
-
-                if (cGameproduct.ProductPrice != null)
-                    editProduct.ProductPrice = cGameproduct.ProductPrice;
-
-                if (cGameproduct.LotteryProbability != null)
-                    editProduct.LotteryProbability = cGameproduct.LotteryProbability;
-
-                _cachaContext.Update(editProduct);
-                _cachaContext.SaveChanges();
-                return Json(new { success = true, message = "Item updated successfully" });
+                return BadRequest("出現了一個錯誤：" + ex.Message);
             }
-            return Json(new { success = false, message = "Item not found" });
         }
+
 
         //新增
 
@@ -220,54 +235,62 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult SendProductsToMemberByID(int[] ids, int? memberId, int quantity)
         {
-            if (quantity <= 0)
+            try
             {
-                // 驗證數量必須大於零
-                return Json(new { success = false, message = "商品數量必須大於零" });
-            }
-
-            foreach (int id in ids)
-            {
-                GameProductTotal product = _cachaContext.GameProductTotal.FirstOrDefault(p => p.ProductId == id);
-
-                if (product == null)
+                if (quantity <= 0)
                 {
-                    return Json(new { success = false, message = "商品不存在" });
+                    // 驗證數量必須大於零
+                    return Json(new { success = false, message = "商品數量必須大於零" });
                 }
 
-                ShopMemberInfo member = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberId);
-
-                if (member == null)
+                foreach (int id in ids)
                 {
-                    return Json(new { success = false, message = "會員不存在" });
-                }
+                    GameProductTotal product = _cachaContext.GameProductTotal.FirstOrDefault(p => p.ProductId == id);
 
-                // 創建會員優惠券資料
-                // 查詢資料庫以獲取當前數量
-                var existingRecord = _cachaContext.GameItemPurchaseRecord
-                    .SingleOrDefault(r => r.MemberId == memberId.Value && r.ProductId == product.ProductId);
-
-                if (existingRecord != null)
-                {
-                    // 如果記錄存在，則遞增數量
-                    existingRecord.QuantityOfInGameItems += quantity;
-                }
-                else
-                {
-                    // 如果記錄不存在，則創建新記錄
-                    GameItemPurchaseRecord item = new GameItemPurchaseRecord
+                    if (product == null)
                     {
-                        MemberId = member.MemberId,
-                        ProductId = product.ProductId,
-                        QuantityOfInGameItems = quantity  // 使用輸入的數量
-                    };
-                    _cachaContext.GameItemPurchaseRecord.Add(item);
-                }
-            }
+                        return Json(new { success = false, message = "商品不存在" });
+                    }
 
-            // 將更改保存到資料庫
-            _cachaContext.SaveChanges();
-            return Json(new { success = true });
+                    ShopMemberInfo member = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberId);
+
+                    if (member == null)
+                    {
+                        return Json(new { success = false, message = "會員不存在" });
+                    }
+
+                    // 創建會員優惠券資料
+                    // 查詢資料庫以獲取當前數量
+                    var existingRecord = _cachaContext.GameItemPurchaseRecord
+                        .SingleOrDefault(r => r.MemberId == memberId.Value && r.ProductId == product.ProductId);
+
+                    if (existingRecord != null)
+                    {
+                        // 如果記錄存在，則遞增數量
+                        existingRecord.QuantityOfInGameItems += quantity;
+                    }
+                    else
+                    {
+                        // 如果記錄不存在，則創建新記錄
+                        GameItemPurchaseRecord item = new GameItemPurchaseRecord
+                        {
+                            MemberId = member.MemberId,
+                            ProductId = product.ProductId,
+                            QuantityOfInGameItems = quantity  // 使用輸入的數量
+                        };
+                        _cachaContext.GameItemPurchaseRecord.Add(item);
+                    }
+                }
+
+                // 將更改保存到資料庫
+                _cachaContext.SaveChanges();
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                // 在這裡處理異常，可以記錄錯誤、返回自定義錯誤消息，或者進行其他適當的處理
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
+            }
         }
     }
-    }
+}

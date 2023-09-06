@@ -54,68 +54,91 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpGet]
         public IActionResult EditCoupon(int? id)
         {
-            if (id == null)
+            try
             {
-                return Json(new { success = false, message = "ID不存在" });
-            }
-            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal
-                                                                    .FirstOrDefault(p => p.CouponId == id);
+                if (id == null)
+                {
+                    return Json(new { success = false, message = "ID不存在" });
+                }
+                ShopCouponTotal coupon = _cachaContext.ShopCouponTotal
+                                                        .FirstOrDefault(p => p.CouponId == id);
 
-            if (coupon == null)
+                if (coupon == null)
+                {
+                    return Json(new { success = false, message = "優惠券不存在" });
+                }
+                return Json(new { success = true, data = coupon });
+            }
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "優惠券不存在" });
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
             }
-            return Json(new { success = true, data = coupon });
-
         }
+
 
         //儲存編輯
         [HttpPost]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> EditCoupon([FromForm] CCouponWrap cCoupon)
         {
-            var editCoupon = _cachaContext.ShopCouponTotal
-                .FirstOrDefault(c => c.CouponId == cCoupon.CouponId);
-
-            if (editCoupon != null)
+            try
             {
-                if (cCoupon.CouponId != null)
-                    editCoupon.CouponId = cCoupon.CouponId;
-                if (cCoupon.CouponName != null)
-                    editCoupon.CouponName = cCoupon.CouponName;
-                if (cCoupon.CouponContent != null)
-                    editCoupon.CouponContent = cCoupon.CouponContent;
-                if (cCoupon.ExpiryDate != null)
-                    editCoupon.ExpiryDate = cCoupon.ExpiryDate;
-                if (cCoupon.SpecialOffer != null)
-                    editCoupon.SpecialOffer = cCoupon.SpecialOffer;
-                if (cCoupon.Usable != null)
-                    editCoupon.Usable = cCoupon.Usable;
+                var editCoupon = _cachaContext.ShopCouponTotal
+                    .FirstOrDefault(c => c.CouponId == cCoupon.CouponId);
 
-                _cachaContext.Update(editCoupon);
-                _cachaContext.SaveChanges();
-                return Json(new { success = true, message = "Item updated successfully" });
+                if (editCoupon != null)
+                {
+                    if (cCoupon.CouponId != null)
+                        editCoupon.CouponId = cCoupon.CouponId;
+                    if (cCoupon.CouponName != null)
+                        editCoupon.CouponName = cCoupon.CouponName;
+                    if (cCoupon.CouponContent != null)
+                        editCoupon.CouponContent = cCoupon.CouponContent;
+                    if (cCoupon.ExpiryDate != null)
+                        editCoupon.ExpiryDate = cCoupon.ExpiryDate;
+                    if (cCoupon.SpecialOffer != null)
+                        editCoupon.SpecialOffer = cCoupon.SpecialOffer;
+                    if (cCoupon.Usable != null)
+                        editCoupon.Usable = cCoupon.Usable;
+
+                    _cachaContext.Update(editCoupon);
+                    _cachaContext.SaveChanges();
+                    return Json(new { success = true, message = "優惠券已成功更新" });
+                }
+                return Json(new { success = false, message = "優惠券未找到" });
             }
-            return Json(new { success = false, message = "Item not found" });
+            catch (Exception ex)
+            {
+                // 在這裡處理異常，可以記錄錯誤、返回自定義錯誤消息，或者進行其他適當的處理
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
+            }
         }
 
         //新增
         [HttpPost]
         public async Task<IActionResult> CreateCoupon([FromForm] CCouponWrap cCoupon)
         {
-            var newCoupon = new ShopCouponTotal
+            try
             {
-                CouponId = cCoupon.CouponId,
-                CouponName = cCoupon.CouponName,
-                CouponContent = cCoupon.CouponContent,
-                ExpiryDate = cCoupon.ExpiryDate,
-                SpecialOffer = cCoupon.SpecialOffer,
-                Usable = cCoupon.Usable
-            };
-            _cachaContext.ShopCouponTotal.Add(newCoupon);
-            await _cachaContext.SaveChangesAsync();
-            return Json(new { success = true, message = "Content saved!" });
+                var newCoupon = new ShopCouponTotal
+                {
+                    CouponId = cCoupon.CouponId,
+                    CouponName = cCoupon.CouponName,
+                    CouponContent = cCoupon.CouponContent,
+                    ExpiryDate = cCoupon.ExpiryDate,
+                    SpecialOffer = cCoupon.SpecialOffer,
+                    Usable = cCoupon.Usable
+                };
+                _cachaContext.ShopCouponTotal.Add(newCoupon);
+                await _cachaContext.SaveChangesAsync();
+                return Json(new { success = true, message = "內容已保存！" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
+            }
         }
+
 
         //刪除
         [HttpPost]
@@ -146,33 +169,41 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult SendCouponToMembers(int? id)
         {
-            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
-
-            if (coupon == null)
+            try
             {
-                return NotFound();
-            }
+                ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
 
-            //獲取所有會員
-            List<ShopMemberInfo> members = _cachaContext.ShopMemberInfo.ToList();
-
-            foreach (var member in members)
-            {
-                // 創建會員優惠券資料
-                ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+                if (coupon == null)
                 {
-                    MemberId = member.MemberId,
-                    CouponId = coupon.CouponId,
-                    CouponStatusId = false //設置為可使用
-                };
+                    return NotFound();
+                }
 
-                _cachaContext.ShopMemberCouponData.Add(memberCouponData);
+                //獲取所有會員
+                List<ShopMemberInfo> members = _cachaContext.ShopMemberInfo.ToList();
+
+                foreach (var member in members)
+                {
+                    // 創建會員優惠券資料
+                    ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+                    {
+                        MemberId = member.MemberId,
+                        CouponId = coupon.CouponId,
+                        CouponStatusId = false //設置為可使用
+                    };
+
+                    _cachaContext.ShopMemberCouponData.Add(memberCouponData);
+                }
+
+                _cachaContext.SaveChanges();
+
+                return Json(new { success = true });
             }
-
-            _cachaContext.SaveChanges();
-
-            return Json(new { success = true });
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
+            }
         }
+
 
 
 
@@ -180,37 +211,43 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         [HttpPost]
         public IActionResult SendCouponToMembersByID(int? id, int? memberId)
         {
-
-            var member = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberId);
-
-            if (member == null)
+            try
             {
-                return Json(new { success = false, message = "會員不存在" });
+
+                var member = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberId);
+
+                if (member == null)
+                {
+                    return Json(new { success = false, message = "會員不存在" });
+                }
+
+
+                ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
+
+                if (coupon == null)
+                {
+                    return Json(new { success = false, message = "優惠券不存在" });
+                }
+
+                // 創建會員優惠券資料
+                ShopMemberCouponData memberCouponData = new ShopMemberCouponData
+                {
+                    MemberId = memberId.Value,
+                    CouponId = coupon.CouponId,
+                    CouponStatusId = false //設置為可使用
+                };
+
+                _cachaContext.ShopMemberCouponData.Add(memberCouponData);
+                _cachaContext.SaveChanges();
+
+                return Json(new { success = true });
             }
 
-
-            ShopCouponTotal coupon = _cachaContext.ShopCouponTotal.FirstOrDefault(c => c.CouponId == id);
-
-            if (coupon == null)
+            catch (Exception ex)
             {
-                return Json(new { success = false, message = "優惠券不存在" });
+                return Json(new { success = false, message = "出現了一個錯誤：" + ex.Message });
             }
-
-            // 創建會員優惠券資料
-            ShopMemberCouponData memberCouponData = new ShopMemberCouponData
-            {
-                MemberId = memberId.Value,
-                CouponId = coupon.CouponId,
-                CouponStatusId = false //設置為可使用
-            };
-
-            _cachaContext.ShopMemberCouponData.Add(memberCouponData);
-            _cachaContext.SaveChanges();
-
-            return Json(new { success = true });
         }
-
-
 
         [HttpPost]
         public IActionResult SendCouponExpirationEmail(int? id)

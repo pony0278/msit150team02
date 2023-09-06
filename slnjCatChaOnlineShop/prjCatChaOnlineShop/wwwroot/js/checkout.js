@@ -340,28 +340,73 @@
             // 顯示錯誤訊息
             $('#error-message').text('此為必勾選的項目');
         }
-        else
-        {
+        else {
             //獲取使用者選擇的付款方式
             var selectedPaymentMethod = $("input[name='paymentMethod']:checked").val();
-            console.log("使用者的付款方式",selectedPaymentMethod)
+            console.log("使用者的付款方式", selectedPaymentMethod)
+
+            // 創建一個物件來包含要傳遞到後端的資訊，包括付款方式和送貨方式
+            var requestData = {
+                paymentMethod: selectedPaymentMethod,
+                deliveryMethod: deliveryInfo.method, // 使用之前保存的送貨方式
+                storeName: selectedSevenElevenStore, // 使用之前保存的門市名稱
+                name: deliveryInfo.name, // 使用之前保存的姓名
+                phone: deliveryInfo.phone // 使用之前保存的電話
+            };
             //發送付款方式到後端
             $.ajax({
-                type: "POST", 
-                url: "/CheckOut/paymentSelected", 
-                data: { paymentMethod: selectedPaymentMethod }, 
+                type: "POST",
+                url: "/CheckOut/paymentSelected",
+                data: JSON.stringify(requestData), // 將資料轉為 JSON 字串
+                contentType: "application/json", // 設定 Content-Type 為 JSON
                 success: function (response) {
-                        
+                    window.location.href = '/cart/pay/'; // 要導向的頁面
                     console.log("付款方式：" + selectedPaymentMethod);
+                    console.log("送貨方式：" + deliveryInfo.method);
+                    console.log("取件門市：" + deliveryInfo.storeName);
+                    console.log("取件姓名：" + deliveryInfo.name);
+                    console.log("取件門市：" + deliveryInfo.phone);
                 },
                 error: function () {
-                    
+
                     console.error("發送出錯");
                 }
             });
-            window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL             
+
         }
     });
+
+    //// 監聽送出訂單按鈕的點擊事件
+    //$('#submit-order-btn').click(function (e) {
+    //    // 檢查 checkbox 是否被勾選
+    //    if (!($('#returnsInvoice').is(':checked'))) {
+    //        // 如果未勾選，取消點擊事件，防止送出訂單
+    //        e.preventDefault();
+    //        // 顯示錯誤訊息
+    //        $('#error-message').text('此為必勾選的項目');
+    //    }
+    //    else
+    //    {
+    //        //獲取使用者選擇的付款方式
+    //        var selectedPaymentMethod = $("input[name='paymentMethod']:checked").val();
+    //        console.log("使用者的付款方式",selectedPaymentMethod)
+    //        //發送付款方式到後端
+    //        $.ajax({
+    //            type: "POST", 
+    //            url: "/CheckOut/paymentSelected", 
+    //            data: { paymentMethod: selectedPaymentMethod }, 
+    //            success: function (response) {
+                        
+    //                console.log("付款方式：" + selectedPaymentMethod);
+    //            },
+    //            error: function () {
+                    
+    //                console.error("發送出錯");
+    //            }
+    //        });
+    //        window.location.href = '/cart/pay/'; // 修改為您要導向的頁面 URL             
+    //    }
+    //});
 
 
     // 監聽送出訂單按鈕的點擊事件
