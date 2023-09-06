@@ -32,6 +32,11 @@
             background-color: #DE9E4F !important;
             color: white; 
         }
+
+        .main-top .formain-topSpan {
+            color: #ffffff;
+            letter-spacing: 2px;
+        }
     </style>
 
 </head>
@@ -41,7 +46,7 @@
         <div class="d-flex justify-content-center p-2">
             <ul>
                 <li>
-                    <i class="fab fa-opencart"><span class="formain-topSpan">貓抓抓購物</span></i>
+                    <i class="fab fa-opencart" style="color:#ffff"><span class="formain-topSpan"></span></i>
                 </li>
             </ul>
         </div>
@@ -363,7 +368,24 @@
                 }
             }); 
            }
-    
+        var topAnnouncement = $('.formain-topSpan');
+        console.log(topAnnouncement);
+        $.ajax({
+            url: '@Url.Action("GetTopAnnouncement","ProductApi")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    topAnnouncement.text(data.message);
+                }
+                else {
+                    topAnnouncement.text(data.messageWelcome);
+                }
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
 
 
     </script>

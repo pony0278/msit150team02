@@ -142,25 +142,25 @@ $(document).ready(async function () {
 
     //--------------------------功能----------------------
     // 點擊商品時獲取識別ID
-    productList.on('click', '.shop-prod-click', function () {
-        
-        console.log(productList);
-        var productId = $(this).data('product-id');
-        console.log('Clicked product ID:', productId);
-        $.ajax({
-            url: '/ProductApi/GetDetail?pId=' + productId,
-            type: 'Get',
-            data: { pId: productId },
-            dataType: 'json',
-            success: function (response) {
-                console.log('Goto:', response.message);
-                window.location.href = '/Index/ShopDetail?pId=' + productId;
-            },
-            error: function (error) {
+    //productList.on('click', '.shop-prod-click', function (e) {
+    //    e.preventDefault();
+        //console.log(productList);
+        //var productId = $(this).data('product-id');
+        //console.log('Clicked product ID:', productId);
+        //$.ajax({
+        //    url: '/ProductApi/GetDetail?pId=' + productId,
+        //    type: 'Get',
+        //    data: { pId: productId },
+        //    dataType: 'json',
+        //    success: function (response) {
+        //        console.log('Goto:', response.message);
+        //        window.location.href = '/Index/ShopDetail?pId=' + productId;
+        //    },
+        //    error: function (error) {
                
-            }
-        });
-    });
+        //    }
+        //});
+    /*});*/
     
     
     // 點擊加入購物車按鈕(用類別去找addtocartaustom抓不到)
