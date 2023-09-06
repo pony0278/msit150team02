@@ -50,7 +50,7 @@
         }
 
         .image-popup img {
-            width: 400px;
+            width: 325px;
         }
 
         /* 縮略圖片的樣式 */
@@ -810,6 +810,23 @@
         <!--4.收藏紀錄的內容-->
         <div class="tab-pane fade" id="collect" role="tabpanel" aria-labelledby="collect-tab">
             <section class="my-5">
+                <div class="btn-group d-flex" role="group" aria-label="Button group with nested dropdown">
+                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="btn-white" href="#btnGroupDrop1"><i class="bi bi-share ic-t"></i>分享</a>
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+                        <a class="dropdown-item fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1&amp;src=sdkpreparse">
+                            <i class="bi bi-facebook"></i> Facebook
+                        </a>
+                        <a class="dropdown-item" href="https://social-plugins.line.me/lineit/share?url=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1"
+                           target="_blank" onclick="LineIt.loadButton()"><i class="bi bi-line"></i> LINE</a>
+                        <a id="gmail" class="dropdown-item" href="javascript:void(0)"><i class="bi bi-envelope"></i> Gmail</a>
+                        <a class="dropdown-item" href="javascript:copyUrl();"><i class="bi bi-link"></i> 複製連結</a>
+                        <button type="button" id="docSave">下載pdf</button>
+                        <button onclick="downloadPDF()">下載表格為 PDF</button>
+                    </div>
+                </div>
+
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
@@ -1015,7 +1032,16 @@
     <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
     <!--用於Maps JavaScript API，有api需替換-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
-    @* <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initShopMap"></script> *@
+    <!--用於Facebook-->
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v16.0" nonce="aqWRwhk5"></script>
+    <!--用於line-->
+    <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
+    <!--用於jsPDF-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <!-- 用於html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+
+
     <!--1.載入時，導入基本資料-->
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -1261,7 +1287,7 @@
 
             //Demo鍵:載入超商門市
             $('#addNewMarketDemo').click(function (event) {
-                $('#storename').val("平鎮龍恩店");
+                $('#storename').val("OkMart平鎮龍恩店");
                 $('#storeaddress').val("桃園市平鎮區游泳路120巷1弄2、4號1樓");
             });
             
@@ -1458,7 +1484,12 @@
 
         //選擇門市按鈕
         $('#SelectShop').on('click', function () {
-            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
+            var baseUrl = new URL(window.location.href);
+            baseUrl.pathname = "/ConvenienceStore/SlectShop";
+            var encodedBaseUrl = encodeURIComponent(baseUrl.href);
+            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=" + encodedBaseUrl;
+
+            // window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
             // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop", "_blank");
         })
 
@@ -2020,10 +2051,6 @@
             })
                 .then(response => {
                     if (response.ok) {
-                        $('#productSelect').val('');
-                        $('#commentTextarea').val('');
-
-
                         return response.text();
                     } else {
                         throw new Error('連線有誤');
@@ -2233,8 +2260,6 @@
 
         //載入收藏紀錄的表格
         function loadFavoriteData() {
-
-
             $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
 
                 if ( data == null) {
@@ -2259,33 +2284,37 @@
                         thumbnailImage.src = item.productPhoto ? item.productPhoto : '@Url.Content("~/images/prod-eg-5.png")';
                         thumbnailImage.style.width = '100px';
                         thumbnailImage.style.height = 'auto';
-                        thumbnailImage.classList.add('thumbnail-image', 'img-fluid');
-                        thumbnailImage.id = 'thumbnailImage';
+
+                        // 使用唯一的id，例如使用item.productId作為id
+                        thumbnailImage.id = 'thumbnailImage_' + item.productId;
+
                         thumbnailImage.addEventListener('mousemove', function () {
-                            var imagePopup = document.getElementById('imagePopup');
-                            var originalImage = document.getElementById('originalImage');
+                            var imagePopup = document.getElementById('imagePopup_' + item.productId);
+                            var originalImage = document.getElementById('originalImage_' + item.productId);
                             originalImage.src = thumbnailImage.src;
                             imagePopup.style.display = 'block';
                         });
+
                         thumbnailImage.addEventListener('mouseout', function () {
-                            var imagePopup = document.getElementById('imagePopup');
+                            var imagePopup = document.getElementById('imagePopup_' + item.productId);
                             imagePopup.style.display = 'none';
                         });
 
                         var imagePopup = document.createElement('div');
                         imagePopup.className = 'image-popup';
-                        imagePopup.id = 'imagePopup';
+                        imagePopup.id = 'imagePopup_' + item.productId;
                         imagePopup.style.display = 'none'; // 初始時隱藏
 
                         var originalImage = document.createElement('img');
                         originalImage.src = ''; // 初始時為空
                         originalImage.alt = 'Original Image';
-                        originalImage.id = 'originalImage';
+                        originalImage.id = 'originalImage_' + item.productId;
 
                         imagePopup.appendChild(originalImage);
                         imgContainer.appendChild(thumbnailImage);
                         imgContainer.appendChild(imagePopup);
                         imgCell.appendChild(imgContainer);
+
                         
                         row.insertCell().textContent = item.productName;
 
@@ -2390,6 +2419,26 @@
                 
             });
         }
+
+
+
+        function downloadPDF() {
+            window.jsPDF = window.jspdf.jsPDF;
+
+            // 創建一個新的 jsPDF 實例
+            const pdf = new jsPDF('p', 'pt', 'letter');
+
+            // 選取要下載的 HTML 元素（這裡是表格）
+            const table = document.getElementById('favoriteRecordTable');
+
+            // 使用 html2canvas 將 HTML 元素轉換為圖像，然後將圖像添加到 PDF 中
+            html2canvas(table).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 40, 40, 500, 500); // 設置圖像位置和大小
+                pdf.save('table.pdf'); // 下載 PDF 文件
+            });
+        }
+
 
     </script>
 
@@ -2697,17 +2746,6 @@
         });
     </script>
 
-    <!--新加入qrcode的cdn
-    <script  src='http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js'></script>
-    <script  src="http://cdn.staticfile.org/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-    <script>
-        const qrcode = new QRCode(document.getElementById("qrcode"), {
-            width: 250,
-            height: 250,
-            text: "https://www.youtube.com/"
-        });
-    </script>
-    -->
     <!--新加入sweetalert2的cdn-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
