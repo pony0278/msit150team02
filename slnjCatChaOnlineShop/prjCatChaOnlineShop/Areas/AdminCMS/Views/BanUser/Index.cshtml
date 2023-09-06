@@ -292,16 +292,6 @@
         </div>
     </div>
 
-    <div>
-        <div>用户名称：<label id="userName"></label>(<label id="conId"></label>)</div>
-
-        <div style="width:25%;border:1px solid #ff0000">
-            <div>在线用户列表</div>
-            <ul id="users"></ul>
-        </div>
-        <div id="userBox">
-        </div>
-    </div>
 </div>
 
 @section Scripts
@@ -431,8 +421,6 @@
             });
 
             connection.start().then(function () {
-                // var userName = prompt('请输入您的名称', '');
-                // document.getElementById("userName").textContent = userName;
             var userName = "客服人員"
             document.getElementById("userName").textContent = userName;
                 connection.invoke("GetName", userName);

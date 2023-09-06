@@ -48,8 +48,13 @@
             height: 400px;
         }
 
-        #pickdate{
-            width:250px;
+        #pickdate {
+            width: 250px;
+        }
+
+        .company-list{
+            height:150px;
+            overflow:auto;
         }
     </style>
 }
@@ -72,12 +77,12 @@
     <div class="container-fluid">
         <label for="excel" class="form-label">批次匯入</label>
         <div class="col-md-6 d-flex">
-            <input class="form-control w-50" type="file" id="excel" />
+            <input class="form-control w-50" type="file" id="excel" accept=".csv,.xls" />
             <button class="btn btn-primary" id="upload">上傳</button>
         </div>
         <label for="pickdate" class="form-label">上架日期篩選</label>
         <div class="d-flex">
-        <input type="datetime-local" class="form-control" id="pickdate">
+            <input type="datetime-local" class="form-control" id="pickdate">
             <select class="form-select" id="CpayLists">
                 <option value="" selected disabled>請選擇類別</option>
                 @foreach (var category in Model.ProductCategories)
@@ -86,42 +91,42 @@
                 }
             </select>
             <button class="btn btn-primary" id="start-query">查詢</button>
+        </div>
     </div>
-</div>
 
-<!---篩選上架日期-->
+    <!---篩選上架日期-->
 
-<div class="container-fluid mt-4">
-    <div class="row">
-        <div class="col-12">
-            <!--表格-->
-            <table id="Product-table" class="table table-striped nowrap" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>序號</th>
-                        <th>商品名稱</th>
-                        <th>描述</th>
-                        <th>價格</th>
-                        <th>剩餘數量</th>
-                        <th>類別</th>
-                        <th>上架日期</th>
-                        <th>尺寸</th>
-                        <th>重量</th>
-                        <th>供應商</th>
-                        <th>是否停售</th>
-                        <th>編輯/刪除</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-                <!--編輯彈出視窗-->
-                <!--編輯彈出視窗-->
-            </table>
-            <!--表格-->
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="col-12">
+                <!--表格-->
+                <table id="Product-table" class="table table-striped nowrap" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th>序號</th>
+                            <th>商品名稱</th>
+                            <th>描述</th>
+                            <th>價格</th>
+                            <th>剩餘數量</th>
+                            <th>類別</th>
+                            <th>上架日期</th>
+                            <th>尺寸</th>
+                            <th>重量</th>
+                            <th>供應商</th>
+                            <th>是否停售</th>
+                            <th>編輯/刪除</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                    <!--編輯彈出視窗-->
+                    <!--編輯彈出視窗-->
+                </table>
+                <!--表格-->
+            </div>
         </div>
     </div>
 </div>
-    </div>
 <div class="modal fade" id="addProductModalToggle" aria-hidden="true"
      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-centered">
@@ -363,13 +368,21 @@
                     <span class="input-group-text" id="companyNames">請填入公司名稱</span>
                     <input type="text" class="form-control" value="" placeholder="公司名稱" id="companyName" aria-label="companyName" aria-describedby="companyName">
                 </div>
-                <div class="input-group mb-3">
-                    <span class="input-group-text" id="contactPhones">請填入公司電話</span>
-                    <input type="text" class="form-control" value="" placeholder="公司電話" id="contactPhone" aria-label="contactPhone" aria-describedby="contactPhone">
+                @*                 <div class="input-group mb-3">
+                <span class="input-group-text" id="contactPhones">請填入公司電話</span>
+                <input type="text" class="form-control" value="" placeholder="公司電話" id="contactPhone" aria-label="contactPhone" aria-describedby="contactPhone">
                 </div>
                 <div class="input-group mb-3">
-                    <span class="input-group-text" id="contactAddresss">請填入公司地址</span>
-                    <input type="text" class="form-control" value="" placeholder="公司地址" id="contactAddress" aria-label="contactAddress" aria-describedby="contactAddress">
+                <span class="input-group-text" id="contactAddresss">請填入公司地址</span>
+                <input type="text" class="form-control" value="" placeholder="公司地址" id="contactAddress" aria-label="contactAddress" aria-describedby="contactAddress">
+                </div> *@
+                <div class="company-list">
+                    <ul class="list-group">
+                        @foreach (var suppliers in Model.Suppliers)
+                        {
+                            <li class="list-group-item">@suppliers.CompanyName</li>
+                        }
+                    </ul>
                 </div>
                 <button type="submit" class="mt-3 btn btn-primary btn-block w-100" id="submitButtonCompany">
                     儲存
@@ -413,7 +426,7 @@
             });
         });
         $(document).on("click", '#demoBtn', function () {
-            const name = $('#name').val('好好貓食')
+            const name = $('#name').val('好好吃的貓食')
             const price = $('#price').val('100')
             const remain = $('#remainingquantity').val('100')
             const select = $('#category').val('1')
@@ -423,7 +436,10 @@
             const weight = $('#weight').val('1kg')
             const discount = $('#discount').val('0.5')
             const supplier = $('#supplier').val('1')
-
+            const keyword_one = $('#keyword01').val('營養貓食')
+            const keyword_two = $('#keyword02').val('蛋白質豐富')
+            const keyword_three = $('#keyword03').val('膳食纖維')
+            const specifications = $('#specifications-0').val('綜合口味')
         })
 
         let id = 1;
@@ -486,48 +502,48 @@
 
         //初始化表格==================================================
 
-            var table = $('#Product-table').DataTable({
-                responsive: true,
-                "paging": true,
-                "ajax": {
-                    "url": "@Url.Action("LoadDatatable", "Product" , new{ area="AdminCMS"})",
-                    type: 'GET',
-                },
-                //載入欄位資料庫資料==========================================
-                "columns": [
-                    { "data": "productId" },
-                    { "data": "productName" },
-                    { "data": "productDescription" },
-                    { "data": "productPrice" },
-                    { "data": "remainingQuantity" },
-                    { "data": "productCategory" },
-                    { "data": "releaseDate" },
-                    { "data": "size" },
-                    { "data": "weight" },
-                    { "data": "supplier" },
-                    { "data": "discontinued" },
-                    {
-                        "data": "productId",
-                        "render": function (data, type, row) {
-                            //var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
-                            //deleteUrl = deleteUrl.replace('productId', row.productIdd);
-                            return `<button class="edit-button " data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> `;
-                        }
+        var table = $('#Product-table').DataTable({
+            responsive: true,
+            "paging": true,
+            "ajax": {
+                "url": "@Url.Action("LoadDatatable", "Product" , new{ area="AdminCMS"})",
+                type: 'GET',
+            },
+            //載入欄位資料庫資料==========================================
+            "columns": [
+                { "data": "productId" },
+                { "data": "productName" },
+                { "data": "productDescription" },
+                { "data": "productPrice" },
+                { "data": "remainingQuantity" },
+                { "data": "productCategory" },
+                { "data": "releaseDate" },
+                { "data": "size" },
+                { "data": "weight" },
+                { "data": "supplier" },
+                { "data": "discontinued" },
+                {
+                    "data": "productId",
+                    "render": function (data, type, row) {
+                        //var deleteUrl = '@Url.Action("Delete", "Product", new { area = "AdminCMS", id = "productId" })';
+                        //deleteUrl = deleteUrl.replace('productId', row.productIdd);
+                        return `<button class="edit-button " data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditProductModalToggle"><i class="fas fa-edit"></i></button> `;
                     }
-                ],
+                }
+            ],
             dom: 'lBfrtip',
             buttons: [
                 'copy', 'csv', 'excel', 'print'
             ]
-            });
+        });
 
 
-            //篩選類別==============================================
-            // 在這裡指定需要過濾的列，商品類別為第六列->索引5
-            columnDefs: [
-                { targets: 5, searchable: true }
-                //{ targets: 11, searchable: true }
-            ]
+        //篩選類別==============================================
+        // 在這裡指定需要過濾的列，商品類別為第六列->索引5
+        columnDefs: [
+            { targets: 5, searchable: true }
+            //{ targets: 11, searchable: true }
+        ]
 
 
         // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
@@ -831,7 +847,7 @@
                                 });
                             }
                             swal.fire("成功", "成功修改產品", "success");
-                            window.location.reload();
+                            $('#Product-table').DataTable().ajax.reload();
                         }
                     });
                 } else if (result.isDenied) {
@@ -903,7 +919,7 @@
                         contentType: false,
                         success: function (response) {
                             swal.fire("成功", "成功新增產品", "success");
-                            window.location.reload();
+                            $('#Product-table').DataTable().ajax.reload();
                         }
                     })
                 } else if (result.isDenied) {
@@ -967,13 +983,13 @@
                 success: function (response) {
                     if (response.success == true) {
                         $('#addSuppierModalToggle').modal('hide');
-                        alert("儲存成功!");
+                        swal.fire("成功", "成功新增供應商", "success");
                         $('#Product-table').DataTable().ajax.reload();
                     }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.log("Error: ", textStatus, errorThrown);
-                    alert("儲存失敗");
+                    swal.fire("錯誤", "未成功新增", "warning");
                 }
             });
         });
@@ -1029,27 +1045,29 @@
                         processData: false,
                         contentType: false,
                         success: function (data) {
-                            alert('上傳成功！');
+                            swal.fire("成功", "成功匯入", "success");
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
-                            alert('上傳失敗：' + errorThrown);
+                            swal.fire("失敗", "匯入失敗", "error");
                         }
                     });
                 } else {
-                    alert("請選擇一個檔案。");
+                    swal.fire("警告", "未加入檔案", "error");
                 }
             });
         });
-        let CpayLists;
+        let CpayLists = "";
         $("#CpayLists").on("change", function () {
             CpayLists = $(this).val()
+            console.log(CpayLists)
         })
         $(document).on('click', '#start-query', function () {
             let queryDate = $('#pickdate').val();
+            console.log(queryDate)
             var newUrl = '/AdminCMS/Product/DoQuery?ReleaseDate=' + encodeURIComponent(queryDate) + '&ProductCategoryId=' + CpayLists;
             const data = {
                 ReleaseDate: queryDate,
-                ProductCategoryId: CpayLists
+                ProductCategoryId: CpayLists || ""
             };
             $.ajax({
                 url: '@Url.Action("DoQuery", "Product", new { area = "AdminCMS"})',
@@ -1059,7 +1077,7 @@
                     if (response.success) {
                         table.ajax.url(newUrl).load();
                         $('#pickdate').val("");
-                        $('#CpayLists').val("")
+                        $('#CpayLists').val("").trigger('change');
                     }
                 }
             });
