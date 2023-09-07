@@ -170,3 +170,6 @@ async function fetchDataAndProcess() {
     }
 }
 
+if (hightestScore == 0) {
+    tutorial.style.display = "block"
+}

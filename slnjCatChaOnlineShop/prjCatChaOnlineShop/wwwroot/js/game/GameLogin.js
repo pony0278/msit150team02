@@ -11,9 +11,7 @@ let hightestScore = 0;
 // 確保 DOM 加載完成後執行代碼
 document.addEventListener("DOMContentLoaded", function () {
 
-    if (hightestScore == 0) {
-        tutorial.style.display = "block"
-    }
+    
     // 獲取所有需要的元素
     const submitButton = document.getElementById("memberIdLogin");
     const GameMain = document.querySelector('.canvas-container');
