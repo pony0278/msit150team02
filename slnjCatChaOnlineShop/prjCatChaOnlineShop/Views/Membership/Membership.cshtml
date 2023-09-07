@@ -496,7 +496,8 @@
                     <div class="modal-header d-flex justify-content-between">
                         <div>
                             <input id="locationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
-                            <button onclick="searchLocation()">搜尋</button>
+                            <button onclick="searchLocation()" class="btn-sm add-address ">搜尋</button>
+                            <button id="nightMarket" class="btn-sm add-address ">demo</button>
                         </div>
                         <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
                     </div>
@@ -1548,6 +1549,17 @@
 
     <!--google地圖-->
     <script>
+        $(document).ready(function () {
+            $('#mapModal').on('shown.bs.modal', function () {
+                initMap();
+            });
+
+            //Demo鍵:載入總客訴-->其他事項
+            $('#nightMarket').click(function (event) {
+                $('#locationInput').val("逢甲夜市");
+            });
+        });
+
         // 初始化地址的地圖
         var map;
         var geocoder;
