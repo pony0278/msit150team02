@@ -398,7 +398,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @*    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />*@
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
     <!---File export--->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
@@ -961,25 +961,30 @@
                 }
             });
         }
-        function generateArticles() {
+        async function generateArticles() {
             const keyword1 = $("#keyword01").val();
             const keyword2 = $("#keyword02").val();
             const keyword3 = $("#keyword03").val();
 
-            $.ajax({
-                url: "/AdminCMS/Product/GenerateArticle",
-                method: "POST",
-                data: { keyword1, keyword2, keyword3 },
-                contentType: "application/x-www-form-urlencoded",
-                dataType: "json",
-                success: function (data) {
-                    $("#description").val(data.article);
-                },
-                error: function (error) {
-                    console.error("Error:", error);
-                }
-            });
+            
+            $("#description").val("等待中...");
+
+            try {
+                const response = await axios.post("/AdminCMS/Product/GenerateArticle", {
+                    keyword1,
+                    keyword2,
+                    keyword3
+                });
+
+                
+                $("#description").val(response.data.article);
+            } catch (error) {
+                
+                $("#description").val("產生失敗，請更換金鑰");
+                console.error("Error:", error);
+            }
         }
+
         $(document).on("click", "#submitButtonCompany", function () {
             const companyName = $("#companyName").val();
             const contactPhone = $("#contactPhone").val();
