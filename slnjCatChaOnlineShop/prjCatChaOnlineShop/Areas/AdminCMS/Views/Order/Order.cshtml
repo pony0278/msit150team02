@@ -543,7 +543,7 @@
                             $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
                         }
 
-                        if (data.data.couponContent == null) {
+                    if (data.data.shippingMethod == null) {
                             $('#order_shippingMethod').text("配送方式：無");
                         } else {
                             $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);

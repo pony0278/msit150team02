@@ -240,7 +240,7 @@
                         <button class="nav-link active" id="nav-home-tab"
                                 data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                                 role="tab">
-                            訂購人 / 收件人資料
+                            退換貨明細
                         </button>
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-profile" type="button"
@@ -250,7 +250,7 @@
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-product" type="button"
                                 role="tab">
-                            退換貨明細
+                            訂購人 / 收件人資料
                         </button>
                     </div>
                 </nav>
@@ -258,25 +258,26 @@
                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                          aria-labelledby="nav-home-tab">
                         <div class="row">
-                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
-                                <h5><strong>訂購人(會員)</strong></h5>
-                                <p id="order_memberId"></p>
-                                <p id="order_name"></p>
-                                <p id="order_memberAccount"></p>
-                                <p id="order_gender"></p>
-                                <p id="order_birthday"></p>
-                                <p id="order_email"></p>
-                                <p id="order_phoneNumber"></p>
-                                <p id="order_address"></p>
-                                <p id="order_registrationTime"></p>
-                                <p id="order_lastLoginTime"></p>
-                                <p id="order_memberStatus"></p>
+                            <div class="col-12 col-lg-6">
+                                <p id="return_returnId"></p>
+                                <p id="return_returnDate"></p>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <h5><strong>收件人</strong></h5>
-                                <p id="order_recipientName"></p>
-                                <p id="order_recipientPhone"></p>
-                                <p id="order_recipientAddress"></p>
+                                <p id="return_returnReason"></p>
+                                <p id="return_returnStatus"></p>
+                            </div>
+                            <div class="col-12">
+                                <!--下拉卷軸-->
+                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReturnExample" aria-expanded="false" aria-controls="collapseExample">
+                                    申請退換貨產品明細
+                                </button>
+                                <!--訂購產品明細-->
+                                <div class="collapse show" id="collapseReturnExample">
+                                    <div class="card card-body">
+                                        <div id="ReturnProductContainer"></div>
+                                    </div>
+                                </div>
+                                <!--下拉卷軸-->
                             </div>
                         </div>
                     </div>
@@ -314,28 +315,28 @@
                     <!--退換貨明細-->
                     <div class="tab-pane fade" id="nav-product" role="tabpanel">
                         <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <p id="return_returnId"></p>
-                                <p id="return_returnDate"></p>
+                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
+                                <h5><strong>訂購人(會員)</strong></h5>
+                                <p id="order_memberId"></p>
+                                <p id="order_name"></p>
+                                <p id="order_memberAccount"></p>
+                                <p id="order_gender"></p>
+                                <p id="order_birthday"></p>
+                                <p id="order_email"></p>
+                                <p id="order_phoneNumber"></p>
+                                <p id="order_address"></p>
+                                <p id="order_registrationTime"></p>
+                                <p id="order_lastLoginTime"></p>
+                                <p id="order_memberStatus"></p>
                             </div>
                             <div class="col-12 col-lg-6">
-                                <p id="return_returnReason"></p>
-                                <p id="return_returnStatus"></p>
-                            </div>
-                            <div class="col-12">
-                                <!--下拉卷軸-->
-                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseReturnExample" aria-expanded="false" aria-controls="collapseExample">
-                                    申請退換貨產品明細
-                                </button>
-                                <!--訂購產品明細-->
-                                <div class="collapse show" id="collapseReturnExample">
-                                    <div class="card card-body">
-                                        <div id="ReturnProductContainer"></div>
-                                    </div>
-                                </div>
-                                <!--下拉卷軸-->
+                                <h5><strong>收件人</strong></h5>
+                                <p id="order_recipientName"></p>
+                                <p id="order_recipientPhone"></p>
+                                <p id="order_recipientAddress"></p>
                             </div>
                         </div>
+
                     </div>
                     <!--退換貨明細-->
                 </div>
@@ -586,7 +587,7 @@
                             $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
                         }
 
-                        if (data.data.couponContent == null) {
+                        if (data.data.shippingMethod == null) {
                             $('#order_shippingMethod').text("配送方式：無");
                         } else {
                             $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
@@ -654,7 +655,9 @@
 
                         //==================退換貨明細
                         $('#return_returnId').text("ID：" + data.data.returnData.id);
-                        $('#return_returnDate').text("申請日期：" + data.data.returnData.returnDate);
+
+                        var formattedreturnDate = formatDateTime(data.data.returnData.returnDate);
+                        $('#return_returnDate').text("申請日期：" + formattedreturnDate);
                         $('#return_returnReason').text("退換貨原因：" + data.data.returnReason);
                         $('#return_returnStatus').text("申請狀態：" + data.data.returnStatus);
 
