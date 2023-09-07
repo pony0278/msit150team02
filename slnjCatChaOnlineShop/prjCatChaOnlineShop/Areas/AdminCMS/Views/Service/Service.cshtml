@@ -34,7 +34,7 @@
             狀態篩選：
             <select class="form-select w-25" id="statusList">
                 <option value="" selected>全部資料</option>
-                <option value="待回覆">待回覆</option>
+                <option value="待處理">待處理</option>
                 <option value="已回覆">已回覆</option>
             </select>
         </div>
@@ -52,7 +52,6 @@
                             <th>類別ID</th>
                             <th>申訴類別</th>
                             <th>建立時間</th>
-                            <th>標題</th>
                             <th>會員ID</th>
                             <th>會員姓名</th>
                             <th>狀態ID</th>
@@ -280,14 +279,14 @@
                                         return data;
                                     }
                                 },
-                                { data: 'complaintTitle' },
+                                //{ data: 'complaintTitle' },   
                                 { data: 'memberId' },
                                 { data: 'name' },
                                 { data: 'complaintStatusId' },
                                 {
                                     data: 'complaintStatusName',
                                     render: function (data, type, row, meta) {
-                                        if (data === "待回覆") {
+                                        if (data === "待處理") {
                                             return '<span class="badge rounded-pill bg-danger fs-6">' + data + '</span>';
                                         } else {
                                             return '<span class="badge rounded-pill bg-success fs-6">' + data + '</span>';
@@ -303,7 +302,7 @@
                                 {
                                     data: 'complaintStatusName',
                                     render: function (data, type, row, meta) {
-                                        if (data == "待回覆") {
+                                        if (data == "待處理") {
                                             return '<button class="reply_casebtn btn" style="background-color: #b95756;color: #FFF; " data-bs-toggle="modal" href="#editModalToggle" role="button" data-caseid="' + row.complaintCaseId + '">回覆</button>';
                                         } else {
                                             return '';
@@ -335,7 +334,7 @@
                             var filterOption2 = $(this).val();
 
                             // 使用DataTable的column().search()方法進行過濾
-                            table.column(8).search(filterOption2).draw();
+                            table.column(7).search(filterOption2).draw();
                             // 其他列...
                         });
 
@@ -416,7 +415,10 @@
                                     if (data.data.replyData != null) {
                                         $('#replyId').text("回覆ID：" + data.data.replyData.replyId);
                                         $('#replyAdminName').text("回覆人員：" + data.data.replyAdminName);
-                                        $('#sentTime').text("回覆時間：" + data.data.replyData.sentTime);
+
+                                        var formattedsentTime = formatDateTime(data.data.replyData.sentTime);
+                                        $('#sentTime').text("回覆時間：" + formattedsentTime);
+
                                         $('#receiverIdOfficial').text("接收者ID：" + data.data.replyData.receiverIdOfficial);
 
                                         var messageRecipientContentElement = $("<div id='messageRecipientContent'><i class='far fa-smile'></i>：" + data.data.replyData.messageRecipientContent + "</div>");

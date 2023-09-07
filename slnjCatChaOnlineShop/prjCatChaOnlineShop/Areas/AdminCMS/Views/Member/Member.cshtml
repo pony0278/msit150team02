@@ -302,7 +302,7 @@
             overflow: auto;
         }
 
-            #couponContainer .col-6 {
+            #couponContainer .col-lg-6 {
                 padding: 0;
             }
     </style>
@@ -471,13 +471,13 @@
                         <input type="text" class="form-control" id="CreatAddress" name="Address">
                     </div>
 
-                    <div class="form-group mb-3">
+@*                    <div class="form-group mb-3">
                         <label>會員狀態：</label>
                         <select class="form-control" id="CreatMemberStatus" name="MemberStatus">
                             <option value="true">開放</option>
                             <option value="false">凍結</option>
                         </select>
-                    </div>
+                    </div>*@
 
                     <div class="form-group mb-3">
                         <label>是否訂閱電子報：</label>
@@ -501,12 +501,12 @@
         <div class="row">
             <div class="col-12 col-xs-12">
                 <div class="mb-3">
-                    <label>會員狀態</label>
+@*                    <label>會員狀態</label>
                     <select class="form-select w-25" id="memberStatusList" style="display: inline-block !important;">
                         <option value="" selected>全部資料</option>
                         <option value="開放">開放</option>
                         <option value="凍結">凍結</option>
-                    </select>
+                    </select>*@
 
                     <div class="selectall-checkbox-group mt-2">
                         <input type="checkbox" id="select-all" />
@@ -525,9 +525,9 @@
                             <th>性別</th>
                             <th>E-mail</th>
                             <th>電話</th>
-                            <th>地址</th>
-                            <th>狀態</th>
-                            <th>訂閱</th>
+                            @*<th>地址</th>*@
+                            @*<th>狀態</th>*@
+                            <th>訂閱電子報</th>
                             <th>詳細資料</th>
                             <th>編輯</th>
                         </tr>
@@ -600,8 +600,8 @@
                             </div>
 
                             <div class="form-group mb-2">
-                                <label>E-mail：</label>
-                                <input type="email" class="form-control" id="email_edit">
+                                @*<label>E-mail：</label>*@
+                                <input type="hidden" class="form-control" id="email_edit">
                             </div>
 
                             <div class="form-group mb-2">
@@ -614,13 +614,13 @@
                                 <input type="text" class="form-control" id="address_edit">
                             </div>
 
-                            <div class="form-group mb-2">
+@*                            <div class="form-group mb-2">
                                 <label>會員狀態：</label>
                                 <select class="form-control" id="memberStatus_edit">
                                     <option value="true">開放</option>
                                     <option value="false">凍結</option>
                                 </select>
-                            </div>
+                            </div>*@
 
                             <div class="form-group mb-2">
                                 <label>訂閱電子報：</label>
@@ -778,7 +778,7 @@
                             <div id="commonaddressContainer" class="row"></div>
                         </div>
                         <div class="tab-pane fade mt-3" id="nav-paper" role="tabpanel">
-                            <div id="couponContainer" class="row"></div>
+                            <div id="couponContainer" class="row justify-content-center"></div>
                         </div>
                     </div>
                 </div>
@@ -992,17 +992,17 @@
                 { data: 'gender' },
                 { data: 'email' },
                 { data: 'phoneNumber' },
-                { data: 'address' },
-                {
-                    data: 'memberStatus',
-                    render: function (data, type, row, meta) {
-                        if (data) {
-                            return '<span class="badge rounded-pill bg-success fs-6">開放</span>';
-                        } else {
-                            return '<span class="badge rounded-pill bg-danger fs-6">凍結</span>';
-                        }
-                    }
-                },
+                //{ data: 'address' },
+                //{
+                //    data: 'memberStatus',
+                //    render: function (data, type, row, meta) {
+                //        if (data) {
+                //            return '<span class="badge rounded-pill bg-success fs-6">開放</span>';
+                //        } else {
+                //            return '<span class="badge rounded-pill bg-danger fs-6">凍結</span>';
+                //        }
+                //    }
+                //},
                 {
                     data: 'subscribe',
                     render: function (data, type, row, meta) {
@@ -1051,7 +1051,7 @@
             buttons: [
                 'pageLength', 'copy', 'csv', 'excel', 'print'
             ],
-            //"order": [[2, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
+            "order": [[2, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
         });
 
 
@@ -1234,10 +1234,21 @@
                     }
 
                     //============基本資料
-                    $('#memberImg').attr("src", data.data.memberImage);
+
+                    if (data.data.memberImage == null) {
+                        $('#memberImg').attr("src", "/images/CatCha/profile_Icon.png");
+                    } else {
+                        $('#memberImg').attr("src", data.data.memberImage);
+                    }
+
                     $('#memberId').text("ID：" + data.data.memberId);
                     $('#name').text(data.data.name);
-                    $('#memberAccount').text("帳號：" + data.data.memberAccount);
+
+                    if (data.data.memberAccount == null){
+                        $('#memberAccount').text("帳號：" + data.data.email);
+                    } else {
+                        $('#memberAccount').text("帳號：" + data.data.memberAccount);
+                    }
 
                     if (data.data.gender == "女") {
                         var html = '<i class="fas fa-venus"></i>';
@@ -1262,11 +1273,11 @@
                     var formattedlastLoginTime = formatDateTime(data.data.lastLoginTime);
                     $('#lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
-                    if (data.data.memberStatus == true) {
-                        $('#memberStatus').text("會員狀態：開放");
-                    } else {
-                        $('#memberStatus').text("會員狀態：凍結");
-                    }
+                    //if (data.data.memberStatus == true) {
+                    //    $('#memberStatus').text("會員狀態：開放");
+                    //} else {
+                    //    $('#memberStatus').text("會員狀態：凍結");
+                    //}
 
                     //============遊戲資料
                     $('#levelId').text("LEVEL " + data.data.levelId);
@@ -1299,7 +1310,17 @@
                             CAContainer.append(itemDiv);
                         }
                     } else {
-                        CAContainer.text("此會員尚未新增任何常用地址");
+
+                        var itemDiv = document.createElement("div");
+                            itemDiv.className = "profile-card";
+
+                        itemDiv.innerHTML = `
+                                                                                                                                                                                                                                                                                    <h5 class="Address-title"><b>常用地址</b></h5>
+                                                                                                                                                                                                                                                                                    <div class="address-text-content">
+                                                                                                                                                                                                                                                                                            <p>此會員尚未新增任何常用地址</p>
+                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                        `;
+                        CAContainer.append(itemDiv);
                     }
 
 
@@ -1313,7 +1334,7 @@
                             var item = data.data.shopMemberCouponData[i];
 
                             var itemDiv = document.createElement("div");
-                            itemDiv.className = "col-6";
+                            itemDiv.className = "col-12 col-lg-6";
 
                             var couponNumber = i + 1; //計算幾筆資料的數字
 
@@ -1324,7 +1345,7 @@
                             } else {
                                 item.couponStatusId = "未使用";
                             }
-
+                            $('#couponContainer').css('height', '500px');
                             itemDiv.innerHTML = `
 
                                                                             <div class="coupon">
@@ -1346,7 +1367,17 @@
                             couponContainer.append(itemDiv);
                         }
                     } else {
-                        couponContainer.text("此會員未持有優惠券");
+                        $('#couponContainer').css('height', 'unset');
+                        var itemDiv = document.createElement("div");
+                        itemDiv.className = "profile-card";
+
+                        itemDiv.innerHTML = `
+                                                                                                                                                                                                                                                                                            <h5 class="Address-title"><b>優惠券</b></h5>
+                                                                                                                                                                                                                                                                                            <div class="address-text-content">
+                                                                                                                                                                                                                                                                                                            <p>此會員未持有優惠券</p>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                `;
+                        couponContainer.append(itemDiv);
                     }
                 },
                 error: function (error, a, b) {
@@ -1386,14 +1417,14 @@
                     $('#phoneNumber_edit').val(data.data.phoneNumber);
                     $('#address_edit').val(data.data.address);
 
-                    if (data.data.memberStatus == null) {
-                        $('#memberStatus_edit').val("true");
-                    } else {
-                        $('#memberStatus_edit').val(data.data.memberStatus.toString());
-                    }
+                    //if (data.data.memberStatus == null) {
+                    //    $('#memberStatus_edit').val("false");
+                    //} else {
+                    //    $('#memberStatus_edit').val(data.data.memberStatus.toString());
+                    //}
 
                     if (data.data.subscribe == null) {
-                        $('#memberSubscribe_edit').val("true");
+                        $('#memberSubscribe_edit').val("false");
                     } else {
                         $('#memberSubscribe_edit').val(data.data.subscribe.toString());
                     }
@@ -1433,7 +1464,7 @@
             var Email = $('#email_edit').val();
             var PhoneNumber = $('#phoneNumber_edit').val();
             var Address = $('#address_edit').val();
-            var MemberStatus = $('#memberStatus_edit').val();
+            //var MemberStatus = $('#memberStatus_edit').val();
             var MemberSubscribe = $('#memberSubscribe_edit').val();
 
             //==================遊戲資料
@@ -1451,7 +1482,7 @@
                 Email: Email,
                 PhoneNumber: PhoneNumber,
                 Address: Address,
-                MemberStatus: MemberStatus,
+                //MemberStatus: MemberStatus,
                 LevelId: LevelId,
                 CharacterName: CharacterName,
                 CatCoinQuantity: CatCoinQuantity,
@@ -1573,7 +1604,7 @@
             var Email = $('#CreatEmail').val();
             var PhoneNumber = $('#CreatPhoneNumber').val();
             var Address = $('#CreatAddress').val();
-            var MemberStatus = $('#CreatMemberStatus').val();
+            //var MemberStatus = $('#CreatMemberStatus').val();
             var Subscribe = $('#CreatMemberSubscribe').val();
 
             CheckDuplicateAccount();
@@ -1609,7 +1640,7 @@
                 Email: Email,
                 PhoneNumber: PhoneNumber,
                 Address: Address,
-                MemberStatus: MemberStatus,
+                //MemberStatus: MemberStatus,
                 Subscribe: Subscribe,
                 RegistrationTime: formattedDateTime
             };
