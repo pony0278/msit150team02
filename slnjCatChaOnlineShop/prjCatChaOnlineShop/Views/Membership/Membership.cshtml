@@ -524,6 +524,7 @@
                                                 <td><input type="text" id="orderMin" name="orderMin"></td>
                                                 <td>查詢迄日:</td>
                                                 <td><input type="text" id="orderMax" name="orderMax"></td>
+                                                <td><button class="btn hvr-hover mx-2" id="shitDownload" type="button">demo圖片</button></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -2157,6 +2158,18 @@
             .catch(error => {
                 console.log("error");
             });
+        });
+
+        //Demo鍵:下載貓咪拉肚子的圖片
+        document.getElementById('shitDownload').addEventListener('click', function () {
+            const imageUrl = '/images/catshit.jpg';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = '貓咪拉肚子.jpg'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
         });
 
 
