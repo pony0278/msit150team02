@@ -962,7 +962,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <h4 class="font-weight-bold">內容</h4>
-                                    <textarea class="form-control" id="ComplaintContent" rows="4" name="ComplaintContent"
+                                    <textarea class="form-control" id="ComplaintContent" rows="6" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
                                 </div>
                                 <div class="form-group" id="aiCheck" style="display: none;">
@@ -972,11 +972,14 @@
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
+                                    <!--
                                     <button class="btn hvr-hover mx-2" id="foodDemo" type="button">食品安全</button>
                                     <button class="btn hvr-hover mx-2" id="gameDemo" type="button">遊戲道具</button>
                                     <button class="btn hvr-hover mx-2" id="addressDemo" type="button">收件地址</button>
                                     <button class="btn hvr-hover mx-2" id="emailDemo" type="button">更改信箱</button>
                                     <button class="btn hvr-hover mx-2" id="newsletterDemo" type="button">訂電子報</button>
+                                    -->
+                                    <button class="btn hvr-hover mx-2" id="totalDemo" type="button">demo訊息</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -2193,8 +2196,8 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
                 },
-                pageLength: 5,
-                lengthMenu: [5, 10, 15],
+                pageLength: 10,
+                lengthMenu: [10, 20, 30],
                 retrieve: true,
             });
             
@@ -2556,7 +2559,7 @@
                         $('#checkComplaint').val(`成人內容：${(Category1 * 100).toFixed(2)}%, 色情內容：${(Category2 * 100).toFixed(2)}%, 冒犯語言：${(Category3 * 100).toFixed(2)}%`);
                         document.getElementById('aiCheck').style.display = 'block';
 
-                        if (Category1 > 0.6 || Category2 > 0.6 || Category3 > 0.6) {
+                        if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '系統判讀',
@@ -2683,13 +2686,13 @@
             //Demo鍵:載入遊戲道具-->遊戲檢舉
             $('#gameDemo').click(function (event) {
                 $('#ComplaintTitle').val("遊戲道具無法使用");
-                $('#ComplaintContent').val("請問我的訂單於8/28成立後付款，能於3日內收到貨嗎?貴公司是否能用急件處理，讓我能在月底收到商品呢?");
+                $('#ComplaintContent').val("請問我在9/7從扭蛋抽獎到的遊戲道具，為何沒有收到呢?");
             });
 
             //Demo鍵:載入變更地址-->會員權益
             $('#addressDemo').click(function (event) {
-                $('#ComplaintTitle').val("請幫我修改住家地址");
-                $('#ComplaintContent').val("因工作搬到新的住處，網站上的個人住址需要修改，新的住址為台中市西屯區臺灣大道三段99號。");
+                $('#ComplaintTitle').val("請幫我修改收件地地址");
+                $('#ComplaintContent').val("因工作搬到新的住處，最新訂單的收件地址需要修改，新的住址為台中市西屯區臺灣大道三段99號。");
             });
 
             //Demo鍵:載入變更信箱-->會員權益
@@ -2703,6 +2706,19 @@
                 $('#ComplaintTitle').val("想訂閱電子報，來了解最新活動");
                 $('#ComplaintContent').val("最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱");
             });
+
+            //Demo鍵:載入總客訴-->其他事項
+            $('#totalDemo').click(function (event) {
+                $('#ComplaintTitle').val("新會員對平台不熟悉，需要由專人服務");
+                $('#ComplaintContent').val(
+                    "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
+                    "2.請問我在9 / 7從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
+                    "3.因工作搬到新的住處，最新訂單的收件地址需要修改，新的住址為台中市西屯區臺灣大道三段99號。\n" +
+                    "4.原電子信箱容納空間已滿，新信箱為abcd1234@gmail.com，請幫我做更新!\n" +
+                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。"
+                );
+            });
+
         });
 
     </script>
