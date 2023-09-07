@@ -272,7 +272,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     if (memberInfo != null)
                     {
                         // 創建郵件內容
-                        string subject = "CatCha 優惠券到期通知";
+                        string subject = "CatCha 優惠券到期提醒";
                         string image = newsletterTemplete.HeaderImage;
                         string body = $@"
                             <html>
@@ -402,7 +402,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                 return Json(new { success = true });
             }
-            return NotFound();
+            return Json(new { success = false });
         }
     }
 }
