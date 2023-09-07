@@ -93,16 +93,6 @@ namespace prjCatChaOnlineShop.Services.Function
             return details;
         }
 
-        public List<string>? getOtherAttr(int? id)
-        {
-            var data = from p in _context.ShopProductTotal.AsEnumerable()
-                       select p.ProductSp.Specification;
-
-            List<string> attrs = data.ToList();
-            return attrs;
-        }
-
-
         public decimal priceFinal(decimal? price, decimal? priceSale)
         {
             if (price != null)
@@ -190,8 +180,6 @@ namespace prjCatChaOnlineShop.Services.Function
         }
         public List<CProductReview> getReview(int? pId)
         {
-
-
             var data = _context.ShopProductReviewTable
                         .Where(r => r.ProductId == pId && r.HideReview == false)
                         .Take(5)
