@@ -15,7 +15,7 @@
     <meta name="keywords" content="" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    
+
 
     <!-- Site Icons -->
     <link rel="shortcut icon" href="~/images/fac.ico" type="image/x-icon" />
@@ -26,13 +26,27 @@
     <link rel="stylesheet" href="~/css/responsive.css">
     <link rel="stylesheet" href="~/css/custom.css" />
     <style>
-        .for-category-only:hover{
+        .for-category-only:hover {
             color: #DE9E4F !important;
         }
 
         .main-top .formain-topSpan {
             color: #ffffff;
             letter-spacing: 2px;
+        }
+
+        .for_header_twoIcon {
+            font-weight: 700;
+            font-style: normal;
+            line-height: 1;
+            text-align: center;
+            white-space: nowrap;
+            vertical-align: baseline;
+            border-radius: 2rem;
+            background-color: red;
+            color: white;
+            position: absolute;
+            width: 1rem;
         }
     </style>
     @await RenderSectionAsync("Styles",required:false)
@@ -102,26 +116,26 @@
 
                             if (!string.IsNullOrEmpty(userName))
                             {
-                                            <li class="Login">
-                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                                    <span class="LoginText">Hello, @userName</span>
-                                                </a>
-                                            </li>
-                                            <li class="Logout">
-                                                <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
-                                                    <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
-                                                        <span class="LogoutText">登出</span>
-                                                    </button>
-                                                </form>
-                                            </li>
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">Hello, @userName</span>
+                                    </a>
+                                </li>
+                                <li class="Logout">
+                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                            <span class="LogoutText">登出</span>
+                                        </button>
+                                    </form>
+                                </li>
                             }
                             else
                             {
-                                            <li class="Login">
-                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                                    <span class="LoginText">登入/註冊</span>
-                                                </a>
-                                            </li>
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">登入/註冊</span>
+                                    </a>
+                                </li>
                             }
                         }
                     </ul>
@@ -138,6 +152,8 @@
                         <li class="side-menu" id="navbar-right-side-menu">
                             <a asp-controller="Cart" asp-action="Cart">
                                 <i class="fa-solid fa-cart-plus"></i>
+                                <i id="for-cart-count" class="for_header_twoIcon"></i>
+                                
                             </a>
                         </li>
 
@@ -146,26 +162,26 @@
 
                             if (!string.IsNullOrEmpty(userName))
                             {
-                                            <li class="Login">
-                                                <a id="loginLink" asp-controller="Membership" asp-action="Membership">
-                                                    <span class="LoginText">Hello, @userName</span>
-                                                </a>
-                                            </li>
-                                            <li class="Logout">
-                                                <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
-                                                    <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
-                                                        <span class="LogoutText">登出</span>
-                                                    </button>
-                                                </form>
-                                            </li>
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="Membership" asp-action="Membership">
+                                        <span class="LoginText">Hello, @userName</span>
+                                    </a>
+                                </li>
+                                <li class="Logout">
+                                    <form id="logoutForm" asp-controller="MemberLogout" asp-action="Logout" method="post">
+                                        <button type="submit" id="logoutButton" style="border: none; background: transparent; padding: 28px">
+                                            <span class="LogoutText">登出</span>
+                                        </button>
+                                    </form>
+                                </li>
                             }
                             else
                             {
-                                            <li class="Login">
-                                                <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
-                                                    <span class="LoginText">登入/註冊</span>
-                                                </a>
-                                            </li>
+                                <li class="Login">
+                                    <a id="loginLink" asp-controller="MemberLogin" asp-action="Login">
+                                        <span class="LoginText">登入/註冊</span>
+                                    </a>
+                                </li>
                             }
                         }
 
@@ -271,11 +287,41 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     @await RenderSectionAsync("ScriptsForAfter",required:false)
     <script>
+        //加入購物車泡泡
+        var bouble = $('#for-cart-count');
+        function showCartBouble() {
+            $.ajax({
+                url: '@Url.Action("GetCartItemsCount","ProductApi")',
+                type: 'GET',
+                dataType: 'json',
+                success: function (count) {
+                    if (count > 0) {
+                        bouble.text(count).show();
+                        bouble.addClass('fa-bounce');
+
+                        // 在動畫結束後移除class
+                        setTimeout(function () {
+                            bouble.removeClass('fa-bounce');
+                        }, 500); // 這裡的500毫秒應該與動畫時間保持一致
+                    }
+                    else {
+                        bouble.hide();
+                    }
+                },
+                error: function () {
+                    console.log('error');
+                }
+            });
+        };
+        showCartBouble();
+
+        //置頂公告title
         $(document).ready(function () {
             var topAnnouncement = $('.formain-topSpan');
+
             console.log(topAnnouncement);
             $.ajax({
                 url: '@Url.Action("GetTopAnnouncement","ProductApi")',
@@ -293,7 +339,6 @@
                     console.log('error');
                 }
             });
-
         });
     </script>
 </body>
