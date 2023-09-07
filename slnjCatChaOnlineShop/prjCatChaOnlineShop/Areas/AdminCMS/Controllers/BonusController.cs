@@ -273,41 +273,101 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     {
                         // 創建郵件內容
                         string subject = "CatCha 優惠券到期通知";
-                        string imgHeader = newsletterTemplete.HeaderImage;
-                        string imgFooter = newsletterTemplete.FooterImage;
+                        string image = newsletterTemplete.HeaderImage;
                         string body = $@"
                             <html>
-                            <body>
-                                <table align='center' cellspacing='0' cellpadding='0' width='100%'>
-                                    <tr>
-                                        <td style='padding: 0 2rem;'>
-                                        </td>
-                                        <td style='text-align: center;'>
-                                            <p style='font-size: 18px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
-                        <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
-                        <div>
-                                <h2>{subject}</h2>
-                                <p style='font-size: 20px'>親愛的會員{memberInfo.Name} 您好，以下是有關您的優惠券的詳細訊息：</p>
-                                    <p style='font-size: 18px'>優惠券名稱：<strong>{coupon.CouponName}</strong></p>
-                                    <p style='font-size: 18px'>到期日：<strong>{coupon.ExpiryDate.Value.ToString("yyyy-MM-dd")}</strong></p>
-                                <p style='font-size: 20px'>提醒您於到期日前使用完畢唷，CatCha貓抓抓感謝您的支持與購買！</p>
-                        </div>
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <title>優惠券到期提醒</title>
+    <style>
+        body {{
+            font-family: Dosis, sans-serif;
+            font-weight: bold;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 0;
+        }}
 
-                                            <button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button>
-                        </a>
-                                            <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
-                                            <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
-                                                <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
-                                                <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>
-                                            </div>
-                                        </td>
-                                        <td style = 'padding: 0 2rem;' >
-                                        </td>
-                                    </tr>
-                                </table>
-                            </body>
-                            </html>";
+        .container {{
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #edd2b4;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }}
 
+        h1 {{
+            color: black;
+        }}
+
+        p {{
+            color: black;
+            font-size: 18px;
+        }}
+
+        .coupon {{
+            background-color: #DE9E4F;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }}
+
+        .expiration {{
+            color: #ff0000;
+            font-weight: bold;
+        }}
+
+        .footer {{
+            margin-top: 20px;
+            text-align: center;
+            color: #777;
+        }}
+
+        /* 新增的樣式用於顯示圖片 */
+        .image-container {{
+            text-align: center;
+            margin-top: 20px;
+        }}
+
+        /* 調整圖片大小 */
+        .coupon-image {{
+            max-width: 100%;
+            height: auto;
+        }}
+
+        .separator {{
+            border-top: 1px solid #DE9E4F;
+            margin-top: 20px;
+        }}
+
+    </style>
+</head>
+
+<body>
+    <div class=""container"">
+        <div class=""image-container"">
+            <img src={image} alt=""Coupon Image"" class=""coupon-image"">
+        </div>
+        <h1>優惠券到期提醒</h1>
+        <div class=""separator""></div>
+        <p style='font-size: 20px;'>親愛的會員 {memberInfo.Name} 您好，</p>
+        <p>這是一封提醒您的優惠券即將到期的郵件，請在優惠券到期前使用，以免失效。</p>
+        <p>以下是有關您的優惠券的詳細訊息：</p>
+        <div class=""coupon"">
+            <p>優惠券名稱：<strong>{coupon.CouponName}</strong></p>
+            <p>到期日：<strong>{coupon.ExpiryDate.Value.ToString("yyyy-MM-dd")}</strong></p>
+        </div>
+        <p>提醒您於到期日前使用完畢唷！</p>
+        <div class=""footer"">
+            <p>CatCha貓抓抓感謝您的支持，祝您購物愉快</p>
+        </div>
+    </div>
+</body>
+</html>
+";
+                        
 
                         // 創建郵件寄件者和收件者
                         MailAddress from = new MailAddress("catcha20232023@gmail.com", "catcha貓抓抓");
