@@ -108,7 +108,7 @@
                                                 </div> *@
 
                                                 <div class="form-group mb-3">
-                                                    <label class="form-label">接收者(官方)：</label>
+                                                    <label class="form-label">接收的管理員：</label>
                                                     <select class="form-control" id="edit_ReceiverIdOfficial">
                                                     </select>
                                                 </div>
@@ -118,7 +118,7 @@
 
 
                                         <div class="form-group mb-3">
-                                            <label class="form-label">申訴標題	Complaint Title：</label>
+                                            <label class="form-label">申訴標題：</label>
                                             <input class="form-control" type="text" id="edit_complaintTitle" readonly disabled />
                                         </div>
 
@@ -318,6 +318,7 @@
                             "paging": true, //分頁功能
                             responsive: true, //RWD
                             // "searching": false, //隱藏搜尋框
+                            "order": [[0, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
                         });
 
                         // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
