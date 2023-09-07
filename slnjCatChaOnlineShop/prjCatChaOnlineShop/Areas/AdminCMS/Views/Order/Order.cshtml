@@ -175,6 +175,7 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalToggleLabel">編輯訂單資料</h5>
+                                <button class="btn btn-danger ms-2" onclick="setValue()">修改收件人地址</button>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
@@ -320,6 +321,10 @@
     <script>
         //日期插件
         $('input[name="dates"]').daterangepicker();
+
+        function setValue() { 
+            $('#recipientAddress').val("台中市西屯區臺灣大道三段99號");
+        }
 
         //-------------------------------------------------
         $(document).ready(function () {

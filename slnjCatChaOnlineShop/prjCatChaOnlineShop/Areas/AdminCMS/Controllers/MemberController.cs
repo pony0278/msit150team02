@@ -305,6 +305,9 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 // 構建HTML郵件內容，包含圖片
                 string htmlBody = $@"
     <html>
+<head>
+    <link rel='stylesheet' type='text/css' href='/css/newsletter.css'>
+</head>
     <body>
         <table align='center' cellspacing='0' cellpadding='0' width='80%'>
             <tr>
@@ -314,12 +317,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     <p style='font-size: 14px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
                     <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
                     <div>
-                        <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
+                        <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='width: 400px;' /></a>
                     </div>
-                        <a href='{imageLink}'>
-                    <button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button>
-</a>
-                    <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
+                        <a href='{imageLink}' style='display: block;background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top: 30px;margin-bottom: 30px;'>前往選購</a>
+                    <img src = '{imgFooter}' alt ='Image' style='max-width: 100%;' />
                     <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
                         <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
                         <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>

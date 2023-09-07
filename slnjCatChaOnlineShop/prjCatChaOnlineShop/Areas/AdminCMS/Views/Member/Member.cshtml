@@ -10,7 +10,6 @@
             color: #b95756;
         }
 
-
         .error-message {
             color: red;
         }
@@ -409,7 +408,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">新增會員</h5>
+
                     <button class="btn btn-danger ms-2" onclick="setValue()">demo</button>
+                    <button class="btn btn-dark" onclick="setErrorValue()">驗證demo</button>
+
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
@@ -1051,7 +1053,7 @@
             buttons: [
                 'pageLength', 'copy', 'csv', 'excel', 'print'
             ],
-            "order": [[2, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
+            "order": [[8, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
         });
 
 
@@ -1566,7 +1568,7 @@
         }
 
         //====================新增會員demo鍵
-        function setValue() {
+        function setErrorValue() {
             $('#CreatName').val("王小明");
             $('#CreatMemberAccount').val("catcha@yahoo.com.tw");
             $('#CreatMemberPassword').val("12345678a");
@@ -1577,10 +1579,67 @@
             $('#CreatAddress').val("235新北市中和區中山路二段347號");
         }
 
+        //====================新增會員有驗證的demo鍵
+        function setValue() {
+            //===================姓名欄位隨機生成三個繁體中文字
+            function generateRandomChineseName() {
+                const chineseCharacters = ["王", "李", "張", "劉", "陳", "楊", "黃", "吳", "趙", "周", "徐", "孫", "馬", "朱", "胡", "林", "郭", "何", "高", "羅", "鄭", "梁", "謝", "宋", "唐", "許", "鄧", "馮", "韓", "曹", "曾", "彭", "蕭", "程", "蔡", "潘", "田", "余", "董", "袁", "于", "蘇", "魏", "呂", "葉", "汪", "程", "朱", "秦", "尤"];
+
+                let randomName = '';
+                for (let i = 0; i < 3; i++) {
+                    const randomIndex = Math.floor(Math.random() * chineseCharacters.length);
+                    randomName += chineseCharacters[randomIndex];
+                }
+
+                return randomName;
+            }
+
+            // 設定#CreatName輸入框的值為隨機生成的繁體中文名字
+            function setRandomChineseName() {
+                const randomName = generateRandomChineseName();
+                $('#CreatName').val(randomName);
+            }
+
+            // 調用setRandomChineseName函數來設定#CreatName輸入框的值
+            setRandomChineseName();
+
+
+
+            //===============帳號郵件欄位生成隨機的5-6個英文字母
+            function generateRandomString() {
+                const length = Math.floor(Math.random() * 2) + 5; // 隨機生成長度為5或6
+                const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                let randomString = '';
+
+                for (let i = 0; i < length; i++) {
+                    const randomIndex = Math.floor(Math.random() * characters.length);
+                    randomString += characters.charAt(randomIndex);
+                }
+
+                return randomString + "@@yahoo.com.tw";
+            }
+
+            // 設置#CreatMemberAccount輸入框的值為隨機生成的英文字母后面加上固定的字符串
+            function setRandomValue() {
+                const randomValue = generateRandomString();
+                $('#CreatMemberAccount').val(randomValue);
+                $('#CreatEmail').val(randomValue);
+            }
+
+            // 調用setRandomValue函數來設置#CreatMemberAccount輸入框的值
+            setRandomValue();
+
+            $('#CreatMemberPassword').val("12345678a");
+            $('#CreatMemberCheckPassword').val("12345678a");
+            $('#CreatBirthday').val("1992-05-05");
+            $('#CreatPhoneNumber').val("0912345678");
+            $('#CreatAddress').val("110台北市信義區市府路45 號");
+        }
+
         //=====================電子報demo鍵
         function setSendEmailValue() {
             $('#sentSubject').val('【CATCHA｜春夏特賣會好評加碼24HR】現正熱賣中！立刻去瞧瞧');
-            $('#sentImgUrl').val('https://localhost:7218/Index/ShopDetail?pId=24');
+            $('#sentImgUrl').val('https://localhost:7218/Index/ShopDetail?pId=22');
         }
 
         //=============上傳圖片預覽功能
@@ -1664,6 +1723,10 @@
 
                             // 重新整理dataTable
                             $('#member-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+
+                            // 將表單input的值恢復成空的
+                            $('#addMemberModalToggle input').val('');
+
                         } else {
                             Swal.fire({
                                 icon: 'error',
