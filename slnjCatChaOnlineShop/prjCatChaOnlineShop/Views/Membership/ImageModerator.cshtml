@@ -74,6 +74,8 @@
                     <h4>審核結果</h4>
                     <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
                 </div>
+                <button class="btn hvr-hover mx-2" id="demoB" type="button">demoB</button>
+                <button class="btn hvr-hover mx-2" id="demoG" type="button">demoG</button>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
@@ -379,6 +381,33 @@
         
 
         }
+
+
+        //Demo鍵:載入壞狗狗的圖片
+        $('#demoB').click(function (event) {
+            console.log("hi");
+            const imageUrl = '/images/baddog.jpg';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = 'baddog.jpg'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
+
+        //Demo鍵:載入好貓咪的圖片
+        $('#demoG').click(function (event) {
+            const imageUrl = '/images/goodcat.png';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = 'goodcat.png'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
+        
     </script>
 
     <!--新加入sweetalert2的cdn-->
