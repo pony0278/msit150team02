@@ -734,11 +734,11 @@
 
                         Swal.fire({
                             title: '請稍候...',
-                            html: '正在發送提醒...', 
+                            html: '正在發送提醒...',
                             icon: 'info',
-                            showConfirmButton: false, 
+                            showConfirmButton: false,
                             allowOutsideClick: false,
-                            onBeforeOpen: () => {
+                            willOpen: () => {
                                 Swal.showLoading();
                             }
                         });
@@ -750,6 +750,7 @@
                             success: function (response) {
                                 if (response.success) {
                                     console.log("發送成功");
+                                    Swal.close();
                                     Swal.fire({
                                         title: '發送成功',
                                         text: '到期提醒已成功發送',
@@ -760,7 +761,7 @@
                                     console.log("發送失敗");
                                     Swal.fire({
                                         title: '發送失敗',
-                                        text: '該優惠券未發送過',
+                                        text: '該優惠券未發送過，無法發送提醒',
                                         icon: 'error',
                                     });
                                 }
