@@ -56,7 +56,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         OrderCreationDate = DateTime.Now,
                         OrderStatusId = 2,
                         PaymentMethodId = 2,
+                        ShippingMethodId = 2,
                         CouponId = couponID,
+                        RecipientAddress=addOrder.RecipientAddress,
+                        RecipientName = addOrder.RecipientName,
+                        RecipientPhone = addOrder.RecipientPhone,
                         ResultPrice=addOrder.ResultPrice,
                     };
                     _context.Add(neworder);
