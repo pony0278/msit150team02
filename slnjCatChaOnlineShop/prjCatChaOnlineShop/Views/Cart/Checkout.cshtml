@@ -153,6 +153,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
+                            <a class="ml-3" style="color:#DE9E4F" asp-controller="game" asp-action="index">沒有優惠券?點擊此連結玩貓貓大進擊抽優惠券！</a>
                             <div class="input-group mb-2">
                                 <input id="CouponId" value="" hidden></input>
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
@@ -1230,7 +1231,7 @@
                         </div>
                         <div class="d-flex">
                             <h4 class="mr-auto">運費</h4>
-                             <span class="mr-2 font-weight-bold">+ NT</span><div class=" font-weight-bold" id="shippingFee">NT @ViewBag.firstFee</div>
+                             <span class="mr-2 font-weight-bold">+ NT</span><div class=" font-weight-bold" id="shippingFee"> @ViewBag.firstFee</div>
                         </div>
                         <hr>
                         <div class="d-flex gr-total">

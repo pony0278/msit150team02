@@ -99,10 +99,24 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 decimal firstTotalPrice = total + firstFee;
                 ViewBag.firstTotalPrice = firstTotalPrice;
 
+                //把初始總計先存在session裡面，綠界參數會需要
+                HttpContext.Session.SetString(CDictionary.SK_FINALTOTALPRICE, Convert.ToString(firstTotalPrice));
+
+                CPayModel paymodel = new CPayModel
+                {
+                    subtotal = (int?)total,
+                    shippingFee=firstFee,
+                    finalBonus=0,
+                    finalAmount= (int?)firstTotalPrice,
+                };
+                //轉換成JSON
+                string json = JsonSerializer.Serialize(paymodel);
+                //存在session
+                HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, json);
 
                 var viewModel = new CCheckoutViewModel
                 {
-                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(), 
+                    memberUsableCoupon = usableCoupons ?? new List<CGetUsableCouponModel>(),
                     memberUsableAddress = usableAddress ?? new List<CgetUsableAddressModel>(),
                     cartItems = cartItems ?? new List<CCartItem>(),
                     getCouponPrice = usableBonus ?? new CGetCouponPrice(),
@@ -116,7 +130,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         #endregion
 
         #region 付款頁面
-       
+
         public IActionResult Pay()
         {
             string userName = HttpContext.Session.GetString("UserName");
@@ -130,8 +144,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //從session中拿取最後計算好的金額資料
             string priceData = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
             //從session中拿取最後選擇的付款方式跟運送方式
-            //string finalpaymentMethod = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
-            if (memberInfo != null && productList != null && priceData!=null)
+            string paymentMethod = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
+
+            if (memberInfo != null && productList != null && priceData != null)
             {
                 //會員資料
                 var member = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfo);
@@ -148,7 +163,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var finalpriceData = JsonSerializer.Deserialize<CPayModel>(priceData);
                 //
                 // 獲取 finalTotalPrice 的值
-                var finalTotalPrice = HttpContext.Session.GetString("FinalTotalPrice");
+                var finalTotalPrice = HttpContext.Session.GetString(CDictionary.SK_FINALTOTALPRICE);
+
+                //獲取最後運送方式、付款方式、姓名、電話等資料
+                var finalpaymentMethod = JsonSerializer.Deserialize<CShippmentModel>(paymentMethod);
 
                 //創建綠界訂單
                 var orderId = Guid.NewGuid().ToString().Replace("-", "").Substring(0, 20);
@@ -182,11 +200,11 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 order["CheckMacValue"] = GetCheckMacValue(order);
 
                 var viewmodel = new CCheckoutViewModel
-                { 
+                {
                     keyValuePairs = order ?? new Dictionary<string, string>(),
-                    cartItems=cartItems??new List<CCartItem>(),
-                    getFinalPriceData= finalpriceData ?? new CPayModel(),
-                    //getFinalPaymentMethod = fPaymentMethod ?? new CPayModel(),
+                    cartItems = cartItems ?? new List<CCartItem>(),
+                    getFinalPriceData = finalpriceData ?? new CPayModel(),
+                    getFinalShippmentData = finalpaymentMethod ?? new CShippmentModel(),
                 };
                 return View(viewmodel);
             }
@@ -223,6 +241,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
         #region 確認訂單
         public IActionResult ConfrimOrder()
         {
+            //結完帳就把購物車的session清空
+            HttpContext.Session.Remove(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+
             string userName = HttpContext.Session.GetString("UserName");
             ViewBag.UserName = userName;//把使用者名字傳給_Layout
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
