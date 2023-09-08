@@ -386,7 +386,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string NewPwd = inModel.NewUserPwd;
 
             //使用cachaContext更新到資料庫
-            var resetMember = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == resetPwdUserId);
+            var resetMember = _context.ShopMemberInfo.OrderBy(m=>m.MemberId).LastOrDefault(m => m.Email == resetPwdUserId);
 
             if (resetMember != null)
             {

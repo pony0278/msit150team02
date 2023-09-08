@@ -141,8 +141,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 //購物車資料
                 var cartItems = JsonSerializer.Deserialize<List<CCartItem>>(productList);
 
-                //建構商品名稱的字串
-                string cartItemName = string.Join("、", cartItems.Select(item => item.cName));
+                //建構商品名稱的字串，綠界用#字號來換行
+                string cartItemName = string.Join("#", cartItems.Select(item => item.cName));
 
                 //最後金額資料
                 var finalpriceData = JsonSerializer.Deserialize<CPayModel>(priceData);
