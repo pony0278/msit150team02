@@ -79,24 +79,24 @@
                 </div>
             </div>
         </div>
-        @if (Model != null && Model.getFinalPriceData !=null)
+        @if (Model != null && Model.getFinalShippmentData !=null)
         {
             <div class="row mt-3">
                 <div class="col-6">
                     <div class="title-left">
                         <h3>付款方式</h3> 
                     </div>
-                    <h4> @Model.getFinalPriceData.paymentMethod </h4>
+                    <h4> @Model.getFinalShippmentData.paymentMethod </h4>
                 </div>
                 <div class="col-6">
                     <div class="title-left">
                         <h3>運送方式</h3>
                     </div>
                     <div>
-                        <h4> @Model.getFinalPriceData.deliveryMethod </h4>
-                        <span>取件門市：</span><div id="caddress"> @Model.getFinalPriceData.storeName </div>
-                        <span>取件姓名：</span><div id="cname" style="display: inline;"> @Model.getFinalPriceData.name </div><br> 
-                        <span>取件人電話：</span><div id="cphone" style="display: inline;"> @Model.getFinalPriceData.phone </div>
+                        <h4> @Model.getFinalShippmentData.deliveryMethod </h4>
+                        <span>取件門市：</span><div id="caddress"> @Model.getFinalShippmentData.storeName </div>
+                        <span>取件姓名：</span><div id="cname" style="display: inline;"> @Model.getFinalShippmentData.name</div><br> 
+                        <span>取件人電話：</span><div id="cphone" style="display: inline;"> @Model.getFinalShippmentData.phone</div>
                     </div>
                 </div>
             </div>
@@ -145,7 +145,7 @@
                     去結帳
                 </button>
             </div>
-            <div hidden>
+            <div >
                 @if (Model != null)
                 {
                     <input type="text" name="MerchantTradeNo" value="@Model.keyValuePairs["MerchantTradeNo"]" />
