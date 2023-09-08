@@ -143,9 +143,9 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">帳號</label>
-                                                            <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
-                                                                   class="form-control" readonly />
+                                                            <label class="fs-6">電子信箱</label>
+                                                            <input type="email" class="form-control" id="emailInput" name="Email"
+                                                                   placeholder="電子信箱" readonly />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="d-flex justify-content-between">
@@ -538,6 +538,7 @@
                                                 <th scope="col">收件電話</th>
                                                 <th scope="col">付款方式</th>
                                                 <th scope="col">訂單狀態</th>
+                                                <th scope="col">付款金額</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -557,13 +558,10 @@
             <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="col d-flex justify-content-end">
-                            <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">
+                        <div class="col d-flex justify-content-end my-2">
+                            <button type="button" class="btn btn-warning px-2" data-bs-dismiss="modal">
                                 X
                             </button>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label class="font-weight-bold fs-5">消費總額: <span id="consumptionAmount"></span></label>
                         </div>
                         <div class="container">
                             <table class="table  table-bordered " id="orderDetailTable">
@@ -634,6 +632,9 @@
                                     附上圖片
                                     <input type="file" name="image" id="returnImageInput" accept="image/*" style="display: none;">
                                 </label>
+                                <button class="btn btn-warning btn-sm my-2" id="catShitReturn" type="button">
+                                    demo備註
+                                </button>
                                 <div class="text-center">
                                     <img id="uploadReturnImagePreview" src='' alt="" class="mx-auto" style="max-width: 200px; max-height: 200px;">
                                 </div>
@@ -652,7 +653,6 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -703,13 +703,18 @@
                                 </div>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-md-4 mx-auto">
+                                        <div class="col-md-3 mx-auto">
                                             <button type="submit" class="btn btn-danger btn-block" id="saveComment">送出</button>
                                         </div>
-                                        <div class="col-md-4 mx-auto">
+                                        <div class="col-md-3 mx-auto">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
                                                     data-bs-dismiss="modal">
                                                 取消
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 mx-auto">
+                                            <button type="button" class="btn btn-outline-secondary btn-block" id="commentDemo">
+                                                demo評論
                                             </button>
                                         </div>
                                     </div>
@@ -896,7 +901,7 @@
 
         <!--彈跳視窗:客訴內容-->
         <div class="modal fade" id="ComplaintModal">
-            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="col d-flex justify-content-end">
@@ -1054,10 +1059,10 @@
             fetch('@Url.Content("~/membership/getmemberinfo")')
                 .then(response => response.json())
                 .then(data => {
-                    $('#memberAccountInput').val(data.memberAccount);
+                    //這裡抓資料也要寫成三元判斷式
+                    $('#emailInput').val(data.email);
                     $('#passwordInput').val(data.password);
                     $('#nameInput').val(data.name);
-                    $('#emailInput').val(data.email);
                     $('#phoneNumberInput').val(data.phoneNumber);
                     $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
@@ -1800,7 +1805,9 @@
                             row.insertCell().textContent = item.recipientName ? item.recipientName : '徐雅莉';
                             row.insertCell().textContent = item.recipientPhone ? item.recipientPhone : '0912345678';
                             row.insertCell().textContent = item.paymentMethodName ? item.paymentMethodName : '信用卡';
-                            row.insertCell().textContent = item.statusName ? item.statusName : '已確認';
+                            row.insertCell().textContent = item.statusName ? item.statusName : '處理中';
+                            row.insertCell().textContent = item.resultPrice ? "NT$ " + item.resultPrice : "NT$ 1250";
+
 
                             var buttonContainer = document.createElement('div');
                             buttonContainer.classList.add('d-flex', 'flex-column');
@@ -1867,7 +1874,7 @@
                                         } else {
                                             row.insertCell().textContent = item.size;
                                         }
-                                        totalAmount += item.productQuantity * item.productPrice;
+                                        // totalAmount += item.productQuantity * item.productPrice;
                                         row.insertCell().textContent =  'NT$ ' + item.productPrice;
                                         //===============================
                                         
@@ -1906,7 +1913,7 @@
                                     });
                                     
 
-                                    document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
+                                    // document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                                 });
 
                             });
@@ -2157,7 +2164,7 @@
             const form = document.querySelector('#returnForm');
 
             const formData = new FormData(form);
-            fetch('@Url.Content("/ImageTest/UploadImage")', {
+            fetch('@Url.Content("/ImageTest/UploadImageToImageModerator")', {
                 body: formData,
                 method: 'POST'
             })
@@ -2184,7 +2191,17 @@
             document.body.removeChild(a);// 移除 a 標籤
         });
 
+        //Demo鍵:載入退換貨的備註
+        $('#catShitReturn').click(function (event) {
+            $('#returnTextarea').val("貓咪在食用產品後，出現了身體不適、腹痛、噁心、嘔吐的狀況，詳如附件照片");
+        });
 
+
+        //Demo鍵:載入商品評價的評論
+        $('#commentDemo').click(function (event) {
+            // $('#commentTextarea').val("貓咪在食用產品後，出現了身體不適的狀況，購買的人需要三思產品是否合毛小孩的胃!");
+            $('#commentTextarea').val("貓咪在食用產品後，出現了身體極不適的狀況，欲購買者請打消念頭! 😡");
+        });
     </script>
 
     <!--用於dataTables搜尋關鍵字採ajax-->
@@ -2342,10 +2359,10 @@
                         imgContainer.appendChild(imagePopup);
                         imgCell.appendChild(imgContainer);
 
-                        
-                        row.insertCell().textContent = item.productName;
-                        row.insertCell().textContent = item.remainingQuantity;
-                        row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
+
+                        row.insertCell().textContent = item.productName ? item.productName : "毛寵物用品";
+                        row.insertCell().textContent = item.remainingQuantity ? item.remainingQuantity : "1";
+                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice + " / 份" : "NT$ 350 / 份";
 
                         var cartCell = row.insertCell();
                         var deleteCell = row.insertCell();
@@ -2515,7 +2532,7 @@
 
     </script>
 
-    <!--6.載入: 導入客服中心。點擊: 送出填寫資料到控制台-->
+    <!--6.載入時: 導入客服中心-->
     <script>
         $(document).ready(function () {
             //拿取客訴類型數據
@@ -2702,45 +2719,15 @@
                 }
             });
 
-            //Demo鍵:載入食安問題-->商品問題
-            $('#foodDemo').click(function (event) {
-                $('#ComplaintTitle').val("產品很有問題");
-                $('#ComplaintContent').val("貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit!!");
-            });
-
-            //Demo鍵:載入遊戲道具-->遊戲檢舉
-            $('#gameDemo').click(function (event) {
-                $('#ComplaintTitle').val("遊戲道具無法使用");
-                $('#ComplaintContent').val("請問我在9/7從扭蛋抽獎到的遊戲道具，為何沒有收到呢?");
-            });
-
-            //Demo鍵:載入變更地址-->會員權益
-            $('#addressDemo').click(function (event) {
-                $('#ComplaintTitle').val("請幫我修改收件地地址");
-                $('#ComplaintContent').val("因工作搬到新的住處，最新訂單的收件地址需要修改，新的住址為台中市西屯區臺灣大道三段99號。");
-            });
-
-            //Demo鍵:載入變更信箱-->會員權益
-            $('#emailDemo').click(function (event) {
-                $('#ComplaintTitle').val("請幫我修改電子信箱");
-                $('#ComplaintContent').val("原電子信箱容納空間已滿，新信箱為abcd1234@gmail.com，請幫我做更新");
-            });
-
-            //Demo鍵:載入訂閱電子報-->其他事項
-            $('#newsletterDemo').click(function (event) {
-                $('#ComplaintTitle').val("想訂閱電子報，來了解最新活動");
-                $('#ComplaintContent').val("最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱");
-            });
-
             //Demo鍵:載入總客訴-->其他事項
             $('#totalDemo').click(function (event) {
-                $('#ComplaintTitle').val("新會員對平台不熟悉，需要由專人服務");
+                $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
                 $('#ComplaintContent').val(
                     "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
-                    "2.請問我在9 / 7從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
-                    "3.因工作搬到新的住處，最新訂單的收件地址需要修改，新的住址為台中市西屯區臺灣大道三段99號。\n" +
-                    "4.原電子信箱容納空間已滿，新信箱為abcd1234@gmail.com，請幫我做更新!\n" +
-                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。"
+                    "2.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
+                    "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
+                    "4.請問我在9 / 15從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
+                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。" 
                 );
             });
 
