@@ -76,8 +76,9 @@
 
     <div class="container-fluid">
         <label for="excel" class="form-label">批次匯入</label>
+        <a href="https://docs.google.com/spreadsheets/d/1yCuigS66mjcwfBNEYdFIFNba0FtEz2o2ziHq6K3rZnE/edit?usp=sharing"> 查看上傳範例 </a>
         <div class="col-md-6 d-flex">
-            <input class="form-control w-50" type="file" id="excel"  />
+            <input class="form-control w-50" type="file" id="excel"  accept=".xlsx"/>
             <button class="btn btn-primary" id="upload">上傳</button>
         </div>
         <label for="pickdate" class="form-label">上架日期篩選</label>
@@ -1065,6 +1066,8 @@
                         contentType: false,
                         success: function (data) {
                             swal.fire("成功", "成功匯入", "success");
+                            $('#excel').val("");
+                            $('#Product-table').DataTable().ajax.reload();
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             swal.fire("失敗", "匯入失敗", "error");
