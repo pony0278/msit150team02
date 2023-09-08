@@ -94,9 +94,9 @@
                     </div>
                     <div>
                         <h4> @Model.getFinalPriceData.deliveryMethod </h4>
-                        <div>取件門市： @Model.getFinalPriceData.storeName </div>
-                        <div>取件姓名： @Model.getFinalPriceData.name </div>
-                        <div>取件人電話： @Model.getFinalPriceData.phone </div>
+                        <span>取件門市：</span><div id="caddress"> @Model.getFinalPriceData.storeName </div>
+                        <span>取件姓名：</span><div id="cname" style="display: inline;"> @Model.getFinalPriceData.name </div><br> 
+                        <span>取件人電話：</span><div id="cphone" style="display: inline;"> @Model.getFinalPriceData.phone </div>
                     </div>
                 </div>
             </div>
@@ -221,7 +221,7 @@
 
         // 監聽送出訂單按鈕的點擊事件
         $('#gotopay').on('click', (e) => {
-            /* e.preventDefault();*/  /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+             /*e.preventDefault();*/  /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("嚴重折壽耶^_^")
             let formData = $("#ecpayform").serializeArray();
             var json = {};
@@ -240,8 +240,13 @@
                     console.log("存回我們自己的資料庫囉")
                     var memberId = $("#MemberId").text();
                     var totalPrice = $("#allTotalPrice").text()
+                    var caddress=$("#caddress").text()
+                    var cname = $("#cname").text()
+                    var cphone = $("#cphone").text()
                     console.log("會員ID", memberId)
                     console.log("會員價格", totalPrice)
+                    console.log("會員價格", cname)
+                    console.log("會員價格", cphone)
                     $.ajax({
                         type: 'POST',
                         url: '/CheckOut/AddNewOrder',
@@ -249,7 +254,9 @@
                         {
                             MemberId: memberId,
                             ResultPrice: totalPrice,
-
+                            RecipientAddress: caddress,
+                            RecipientName: cname,
+                            RecipientPhone: cphone,     
                         },
                         success: function (response) {
                         },
