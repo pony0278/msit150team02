@@ -380,10 +380,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
-
-                memberToUpdate.Name = member.Name;
+                
+                //這邊加入其他可以改的
                 memberToUpdate.Password = member.Password;
-                memberToUpdate.Email = member.Email;
                 memberToUpdate.PhoneNumber = member.PhoneNumber;
                 memberToUpdate.Birthday = member.Birthday;
 
@@ -475,8 +474,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 order.RecipientPhone,
                                 order.PaymentMethod.PaymentMethodName,
                                 order.OrderStatus.StatusName,
-                                order.ShopOrderDetailTable
-
+                                order.ShopOrderDetailTable,
+                                order.ResultPrice
                             };
                 var datas = query.ToList();
 
