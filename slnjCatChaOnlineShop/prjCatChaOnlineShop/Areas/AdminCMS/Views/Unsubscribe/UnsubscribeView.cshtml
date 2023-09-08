@@ -1,0 +1,40 @@
+﻿@{
+    ViewData["Title"] = "取消訂閱電子報 - CATCHA 貓抓抓購物平台";
+    Layout = null; // 不使用佈局
+}
+
+<html>
+<body>
+    <h1>取消訂閱電子報確認</h1>
+    <p>您確定要取消訂閱我們的優質且促銷不定期推播的電子報嗎？</p>
+    <input type="button" value="確認取消訂閱" onclick="confirmUnsubscribe()" />
+</body>
+</html>
+
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<script>
+    function confirmUnsubscribe() {
+        var confirmed = confirm("您真的確定要取消訂閱我們的優質且促銷不定期推播的電子報嗎？");
+        var emails = getUrlParameter('email'); // 获取网址中的 email 参数
+        $.ajax({
+            url: '@Url.Action("Unsubscribe", "Unsubscribe")',
+            type: "POST",
+            data: { emails: emails },
+            success: function (data) {
+                if (data.success) {
+                    alert(data.message);
+                } else {
+                    alert("取消訂閱失敗：" + data.message);
+                }
+            }
+        });
+    };
+
+    function getUrlParameter(name) {
+        name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+        var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+        var results = regex.exec(location.search);
+        return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+    }
+</script>

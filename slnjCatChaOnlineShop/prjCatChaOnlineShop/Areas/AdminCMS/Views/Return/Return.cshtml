@@ -560,11 +560,11 @@
                         var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
                         $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
-                        if (data.data.memberInfo.memberStatus == true) {
-                            $('#order_memberStatus').text("會員狀態：開放");
-                        } else {
-                            $('#order_memberStatus').text("會員狀態：凍結");
-                        }
+                        //if (data.data.memberInfo.memberStatus == true) {
+                        //    $('#order_memberStatus').text("會員狀態：開放");
+                        //} else {
+                        //    $('#order_memberStatus').text("會員狀態：凍結");
+                        //}
 
                         //============收件人資料
                         $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);

@@ -5,7 +5,55 @@
 
 @section Styles{
     <style>
-        
+        .service-container {
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+            .service-container .title {
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 10px;
+                color: #b95756;
+            }
+
+            .service-container .question {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+
+            .service-container i {
+                font-size: 25px;
+            }
+
+            .service-container .reply {
+                font-size: 18px;
+                margin-top: 20px;
+                padding: 10px;
+                background-color: #fff;
+                border: 1px solid #ddd;
+                border-radius: 5px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .service-container .timestamp {
+                font-size: 14px;
+                color: #777;
+            }
+
+
+            .service-container .link {
+                color: #007bff;
+                text-decoration: underline;
+            }
+
+        ..service-container {
+            margin-top: 20px;
+        }
     </style>
 }
 
@@ -68,7 +116,7 @@
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalToggleLabel">回覆客訴案件</h5>
+                                <h5 class="modal-title" id="exampleModalToggleLabel">回覆客服案件</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
@@ -183,24 +231,24 @@
                                         <div class="row">
                                             <div class="col-12 col-lg-6">
                                                 <p id="complaintCaseId"></p>
-                                                <p id="categoryData"></p>
+                                                <p style="font-size: 19px;font-weight: bold;color: #b95756;" id="categoryData"></p>
                                                 <p id="replyId"></p>
                                                 <p id="replyAdminName"></p>
                                             </div>
                                             <div class="col-12 col-lg-6">
                                                 <p id="creationTime"></p>
-                                                <p id="caseStatusName"></p>
+                                                <p style="font-size: 19px;font-weight: bold;" id="caseStatusName"></p>
                                                 <p id="receiverIdOfficial"></p>
                                                 <span id="sentTime"></span>
                                             </div>
                                         </div>
-                                        <hr />
-                                        <h5 id="complaintTitle" class="mb-3" style="font-weight: bold;"></h5>
-                                        <h5 class="question_content">
-                                            <i class="fas fa-meh">：</i><span id="complaintContent"></span>
-                                        </h5>
-                                        <h5 id="parentElement">
-                                        </h5>
+
+                                        <div class="service-container">
+                                            <div class="title" id="complaintTitle"></div>
+                                            <div class="question" id="complaintContent"></div>
+                                            <div class="reply" id="parentElement">
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel">
                                         <div class="row">
@@ -279,7 +327,7 @@
                                         return data;
                                     }
                                 },
-                                //{ data: 'complaintTitle' },   
+                                //{ data: 'complaintTitle' },
                                 { data: 'memberId' },
                                 { data: 'name' },
                                 { data: 'complaintStatusId' },
@@ -347,7 +395,7 @@
 
                             // 清空回覆元素的選項
                             $('#messageRecipientContent').remove();
-                            $('parentElement').empty();
+                            $('#parentElement').empty();
 
                             //----------------AJAX
                             $.ajax({
@@ -397,20 +445,32 @@
                                     var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
                                     $('#lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
-                                    if (data.data.memberInfo.memberStatus == true) {
-                                        $('#memberStatus').text("會員狀態：開放");
-                                    } else {
-                                        $('#memberStatus').text("會員狀態：凍結");
-                                    }
+                                    //if (data.data.memberInfo.memberStatus == true) {
+                                    //    $('#memberStatus').text("會員狀態：開放");
+                                    //} else {
+                                    //    $('#memberStatus').text("會員狀態：凍結");
+                                    //}
 
                                     //============詳細內容
 
-                                    $('#complaintTitle').text("申訴標題：" + data.data.caseTotal.complaintTitle);
+                                    $('#complaintTitle').text(data.data.caseTotal.complaintTitle);
                                     $('#complaintCaseId').text("案件ID：" + data.data.caseTotal.complaintCaseId);
-                                    $('#categoryData').text("申訴類別：" + data.data.categoryData);
-                                    $('#creationTime').text("發問時間：" + data.data.caseTotal.creationTime);
-                                    $('#caseStatusName').text("案件狀態：" + data.data.caseStatusName);
-                                    $('#complaintContent').text(data.data.caseTotal.complaintContent);
+                                    $('#categoryData').text("案件類別：" + data.data.categoryData);
+
+                                    var formattedcreationTime = formatDateTime(data.data.caseTotal.creationTime);
+                                    $('#creationTime').text("發問時間：" + formattedcreationTime);
+
+                                    if (data.data.caseStatusName == "已回覆") {
+                                        $('#caseStatusName').css('color', 'green');
+                                        $('#caseStatusName').text("案件狀態：" + data.data.caseStatusName);
+                                    } else {
+                                        $('#caseStatusName').css('color', 'red');
+                                        $('#caseStatusName').text("案件狀態：" + data.data.caseStatusName);
+                                    }
+
+
+                                    $('#complaintContent').html("<i class='fas fa-question-circle'></i>：" + data.data.caseTotal.complaintContent);
+
 
                                     //===========有可能還沒回覆
                                     if (data.data.replyData != null) {
@@ -422,7 +482,7 @@
 
                                         $('#receiverIdOfficial').text("接收者ID：" + data.data.replyData.receiverIdOfficial);
 
-                                        var messageRecipientContentElement = $("<div id='messageRecipientContent'><i class='far fa-smile'></i>：" + data.data.replyData.messageRecipientContent + "</div>");
+                                        var messageRecipientContentElement = $("<div id='messageRecipientContent'><i class='far fa-smile'></i>：" + data.data.replyData.messageRecipientContent + "</div>" + "<p class='timestamp mt-3'> 回覆時間：" + formattedsentTime + "</p>");
 
                                         $('#parentElement').append(messageRecipientContentElement);
 
