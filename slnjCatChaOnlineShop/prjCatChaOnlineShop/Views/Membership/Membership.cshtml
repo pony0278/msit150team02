@@ -2485,6 +2485,8 @@
                         viewButton.textContent = '客訴內容';
                         viewButton.classList.add('btn', 'btn-warning', 'btn-sm'); // 添加樣式類
                         viewButton.addEventListener('click', function () {
+                            document.querySelector('#answerContent').textContent = "";
+                            document.querySelector('#answerTime').textContent = "";
                             $('#ComplaintModal').modal('show');
                             document.querySelector('#compliantContent').textContent = item.complaintContent;
 
@@ -2501,6 +2503,7 @@
                                     var formattedDate = utcDate.toISOString().split('T')[0];
                                     document.querySelector('#answerTime').textContent = "回覆時間: " + formattedDate;
                                 } else {
+                                    //這一段好像都不會觸發到
                                     document.querySelector('#answerContent').textContent = "無回覆內容";
                                     document.querySelector('#answerTime').textContent = "無回覆時間";
                                 }
