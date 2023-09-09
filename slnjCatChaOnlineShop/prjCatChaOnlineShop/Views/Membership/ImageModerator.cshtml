@@ -107,6 +107,9 @@
                     <h4>圖像識別</h4>
                     <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
                 </div>
+                <div class="my-4" id="myChartDiv">
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
         </div>
     </div>
@@ -126,9 +129,16 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom.js"></script>    
+    <!--新加入sweetalert2的cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 用於chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+
 
     <script type="text/javascript">
+        // 在全局範圍內定義 myChart 變數
 
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
@@ -188,6 +198,17 @@
                                 tagText += tag.name + " / ";
                             });
 
+                            console.log("==================");
+                            console.log(visionResult);
+                            /*
+                            console.log(visionResult['faces'][0]['faceRectangle']['left']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['top']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['width']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['height']);
+                            */
+
+
+                            //=========================================
                             var visionText = "分類: " + visionResult.categories[0].name + "\n" +
                             "特點: " + tagText  + "\n" +
                                 "構成主色: " + visionResult.color.dominantColors + "\n" +
@@ -216,15 +237,55 @@
                                 var Category2 = moderationResult['RacyClassificationScore'];
                                 var Category3 = visionResult.adult.goreScore;
 
-                                var isImageAdultClassified = moderationResult['IsImageAdultClassified'] ? '是' : '非';
-                                var isImageRacyClassified = moderationResult['IsImageRacyClassified'] ? '是' : '非';
-                                var isGoryContent = visionResult.adult.isGoryContent ? '是' : '非';
+                                var isImageAdultClassified = Category1 > 0.7 ? '是' : '非';
+                                var isImageRacyClassified = Category2 > 0.7 ? '是' : '非';
+                                var isGoryContent = Category3 > 0.7 ? '是' : '非';
 
-                                /*
-                                console.log("成人冒犯指數: " + (Category1 * 10000).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容");
-                                console.log("種族冒犯指數: " + (Category2 * 10000).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視");
-                                document.getElementById('checkResults').value = JSON.stringify(moderationResult);
-                                */
+                                $('#myChart').remove();
+                                $('#myChartDiv').append('<canvas id="myChart" > </canvas>');
+                                var backgroundColor1 = (Category1 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var backgroundColor2 = (Category2 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var backgroundColor3 = (Category3 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var borderColor1 = (Category1 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                                var borderColor2 = (Category2 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                                var borderColor3 = (Category3 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+
+                                const ctx = document.getElementById('myChart');
+                                const labels = ['成人內容', '種族歧視', '衝擊畫面'];  // 设置 X 轴上对应的标签
+                                const dataChart = {
+                                    labels: labels,
+                                    datasets: [{
+                                        axis: 'y',
+                                        label: '審核結果圖',
+                                        data: [(Category1 * 100).toFixed(2), (Category2 * 100).toFixed(2), (Category3 * 100).toFixed(2)],
+                                        fill: true,
+                                        backgroundColor: [      // 设置每个柱形图的背景颜色
+                                            backgroundColor1,
+                                            backgroundColor2,
+                                            backgroundColor3,
+                                        ],
+                                        borderColor: [     //设置每个柱形图边框线条颜色
+                                            borderColor1,
+                                            borderColor2,
+                                            borderColor3,
+                                        ],
+                                        borderWidth: 1     // 设置线条宽度
+                                    }]
+                                };
+                                const config = {
+                                    type: 'bar', // 设置图表类型
+                                    data: dataChart,  // 设置数据集
+                                    options: {
+                                        indexAxis: 'y',
+                                        scales: {
+                                            x: {
+                                                max: 100, // 设置 x 轴的最大值为 100
+                                                min: 0,   // 如果需要，也可以设置 x 轴的最小值
+                                            },
+                                        },
+                                    }
+                                };
+                                const myChart = new Chart(ctx, config);
 
                                 var checkText = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容\n" +
                                     "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視\n" +
@@ -253,12 +314,6 @@
                                     fetch('@Url.Content("/Membership/ImageModeratorToMemberInfo?imageUrl=")' + data.url, {
                                     })
                                         .then(response => {
-                                            /*
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: '完成上傳',
-                                            });
-                                            */
 
                                             document.querySelector('#analysingArea').style.display = "none";
                                             document.getElementById('checkResults').value = checkText;
@@ -287,7 +342,7 @@
                         }).fail(function (err) {
                             Swal.fire({
                                 icon: 'error',
-                                title: '您上傳的圖片不符合規格',
+                                title: '您上傳的圖片違反著作或肖像權',
                             });
                             document.querySelector('#analysingArea').style.display = "none";
                         });
@@ -296,7 +351,7 @@
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '您上傳的圖片違反著作或肖像權',
+                            title: '您的圖片不符合規格',
                         });
                         document.querySelector('#analysingArea').style.display = "none";
                     });
@@ -428,9 +483,6 @@
             a.click(); // 模擬點擊 a 標籤，觸發下載
             document.body.removeChild(a);// 移除 a 標籤
         });
-        
     </script>
 
-    <!--新加入sweetalert2的cdn-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }
