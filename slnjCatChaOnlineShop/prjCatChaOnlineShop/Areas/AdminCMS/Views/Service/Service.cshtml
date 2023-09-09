@@ -51,8 +51,14 @@
                 text-decoration: underline;
             }
 
-        ..service-container {
+        .service-container {
             margin-top: 20px;
+        }
+
+        #complaintContent {
+            white-space: pre-wrap;
+            line-height: 35px;
+            letter-spacing: 1px;
         }
     </style>
 }
@@ -513,6 +519,19 @@
                                 success: function (data) {
                                     console.log(data);
 
+
+                                    function formatDateTime(dateTimeString) {
+                                        var dateTime = new Date(dateTimeString);
+                                        var year = dateTime.getFullYear();
+                                        var month = String(dateTime.getMonth() + 1).padStart(2, '0');
+                                        var day = String(dateTime.getDate()).padStart(2, '0');
+                                        var hours = String(dateTime.getHours()).padStart(2, '0');
+                                        var minutes = String(dateTime.getMinutes()).padStart(2, '0');
+                                        var seconds = String(dateTime.getSeconds()).padStart(2, '0');
+
+                                        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes + ':' + seconds;
+                                    }
+
                                     // 抓到資料庫的所有分類名稱並放入option中
                                     var CCselectElement = $("#complaintCategorySelect");
 
@@ -545,7 +564,9 @@
 
                                     //==================案件資料
                                     $('#edit_complaintCaseId').val(data.data.serviceCase.complaintCaseId);
-                                    $('#edit_creationTime').val(data.data.serviceCase.creationTime);
+
+                                    var formatcreationTime = formatDateTime(data.data.serviceCase.creationTime)
+                                    $('#edit_creationTime').val(formatcreationTime);
                                     $('#edit_complaintTitle').val(data.data.serviceCase.complaintTitle);
                                     $('#edit_complaintContent').val(data.data.serviceCase.complaintContent);
                                     $('#edit_recipientContent').val(data.data.recipientContent);

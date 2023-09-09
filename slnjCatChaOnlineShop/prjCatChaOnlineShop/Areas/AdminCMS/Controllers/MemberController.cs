@@ -20,6 +20,7 @@ using System.Net.Mime;
 using System.Drawing;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.Web;
+using System.Security.Cryptography;
 //using prjCatChaOnlineShop.Areas.AdminCMS.Util;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
@@ -266,7 +267,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     await _context.SaveChangesAsync();
 
                     // 成功保存數據後，調用發送郵件的 API
-                    sendTest(newAnnounce.NewsletterId, recipientEmail); // 傳遞新插入的Newsletter的ID和收件人郵箱
+                    sendMailLetter(newAnnounce.NewsletterId, recipientEmail); // 傳遞新插入的Newsletter的ID和收件人郵箱
                 }
             }
             catch
@@ -281,7 +282,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return imageUrls;
         }
         [HttpPost]
-        public IActionResult sendTest(int newsletterId, string recipientEmailAddress)
+        public IActionResult sendMailLetter(int newsletterId, string recipientEmailAddress)
         {
             string senderEmail = "rong502njc@gmail.com"; //寄件人mail
             string senderPassword = "wdyhdmvdwniptybf"; //應用程式密碼： 如果您的 Gmail 帳號啟用了雙重驗證，您需要使用應用程式密碼而不是您的 Gmail 登錄密碼。您可以在 Google 帳號的安全性設置中建立一個應用程式密碼，然後將它用作您的密碼。
@@ -319,8 +320,14 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                 foreach (string emailAddress in emailAddresses)
                 {
-                    // 為每個收件人生成取消訂閱連結
-                    string unsubscribeUrl = $"https://localhost:7218/AdminCMS/Unsubscribe/UnsubscribeView?email={emailAddress.Trim()}";
+                    // 為每個收件人生成取消訂閱連結（直接顯示mail在網址上，不好的安全性）
+                    //string unsubscribeUrl = $"https://localhost:7218/AdminCMS/Unsubscribe/UnsubscribeView?email={emailAddress.Trim()}";
+
+                    // 用隨機生成的token或哈希值來隱藏電子郵件地址方法生成token，用於取消訂閱連結
+                    string token = GenerateUnsubscribeToken(emailAddress);
+
+                    // 生成取消訂閱連接，包含token
+                    string unsubscribeUrl = $"https://localhost:7218/AdminCMS/Unsubscribe/UnsubscribeView?token={token}";
 
                     // 創建郵件並設置其内容
                     MailMessage mailMessage = new MailMessage(senderEmail, emailAddress)
@@ -343,6 +350,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     catch (Exception ex)
                     {
                         Console.WriteLine("郵件發送失敗：" + ex.Message);
+                    }
+                }
+
+                // 生成取消訂閱token
+                static string GenerateUnsubscribeToken(string emailAddress)
+                {
+                    // 使用安全的方式生成token，例如哈希電子郵件地址
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(emailAddress));
+                        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
                     }
                 }
 
@@ -372,7 +390,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     </div>
                         <a href='{imageLink}' style='display: block;background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top: 30px;margin-bottom: 30px;'>前往選購</a>
                     <img src = '{imgFooter}' alt ='Image' style='max-width: 100%;' />
-                    <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
+                    <div style='background-color: #f0eff0;padding: 30px; text-align: center;color: #000;'>
                         <!-- 在這裡插入取消訂閱連結 -->
                         <p>隱私條款 | 服務使用規範 | <a href='{unsubscribeUrl}'>取消訂閱電子報</a></p>
                         <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>

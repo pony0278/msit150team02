@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
 {
@@ -17,45 +19,62 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             return View();
         }
         [HttpPost]
-        public IActionResult Unsubscribe(string emails)
+        public IActionResult Unsubscribe(string token)
         {
             try
             {
-                // 驗證郵箱參數，並將字符串分割成郵件地址的列表
-                if (!string.IsNullOrEmpty(emails))
+                if (!string.IsNullOrEmpty(token))
                 {
-                    List<string> emailList = emails.Split(',').Select(email => email.Trim()).ToList();
+                    //====================將token與並比較哈希值以查找匹配的電子郵件地址
 
-                    foreach (var email in emailList)
+                    // 撈出電子郵件以及訂閱狀態是否為 "是" 的email，
+                    string[] emailAddresses = _context.ShopMemberInfo.Where(member => member.Subscribe == true).Select(member => member.Email).ToArray();
+
+                    foreach (var emailAddress in emailAddresses)
                     {
-                        // 驗證郵箱參數，並從數據庫中查找會員
-                        var member = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == email);
+                        string generatedToken = GenerateUnsubscribeToken(emailAddress);
 
-                        if (member != null)
+                        if (token.Equals(generatedToken, StringComparison.OrdinalIgnoreCase))
                         {
-                            // 更新會員訂閱字段為 false
-                            member.Subscribe = false;
-                            _context.SaveChanges();
+                            // token匹配，找到相應的電子郵件地址
+                            var member = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == emailAddress);
 
-                            // 返回取消訂閱成功的JSON結果
-                            return Json(new { success = true, message = "取消訂閱成功！" });
+                            if (member != null)
+                            {
+                                // 更新會員訂閱欄位為 false
+                                member.Subscribe = false;
+                                _context.SaveChanges();
+
+                                // 返回取消訂閱成功的JSON結果
+                                return Json(new { success = true, message = "取消訂閱成功" });
+                            }
                         }
                     }
 
-                    // 如果未找到相關會員，返回取消訂閱失敗的JSON結果或錯誤消息
-                    return Json(new { success = false, message = "未找到符合的會員！" });
+                    // 如果未找到相應的電子郵件地址，返回取消訂閱失敗的JSON結果或錯誤消息
+                    return Json(new { success = false, message = "未找到符合的會員" });
                 }
                 else
                 {
-                    // 如果 emails 為空，返回相應的錯誤消息
-                    return Json(new { success = false, message = "email參數為空！" });
+                    // 如果 token 為空，返回相應的錯誤消息
+                    return Json(new { success = false, message = "token參數為空" });
                 }
             }
             catch (Exception ex)
             {
                 // 在發生異常時捕獲並處理異常情況
-                // 這裡您可以記錄日誌或者返回一個錯誤消息
+                // 這裡可以記錄日誌或者返回一個錯誤消息
                 return Json(new { success = false, message = "取消訂閱時發生錯誤：" + ex.Message });
+            }
+        }
+
+        // 生成取消訂閱 token（與前面的代碼一致）
+        static string GenerateUnsubscribeToken(string emailAddress)
+        {
+            using (SHA256 sha256 = SHA256.Create())
+            {
+                byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(emailAddress));
+                return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
             }
         }
     }

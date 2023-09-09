@@ -288,14 +288,14 @@
                                 <p id="order_orderId"></p>
                                 <p id="order_paymentMethod"></p>
                                 <p id="order_shippment"></p>
-                                <p id="order_totalPrice"></p>
                                 <p id="order_lastUpdateTime"></p>
+                                <p id="order_orderStatus"></p>
                             </div>
                             <div class="col-12 col-lg-6">
                                 <p id="order_orderCreationDate"></p>
                                 <p id="order_shippingMethod"></p>
                                 <p id="order_couponContent"></p>
-                                <p id="order_orderStatus"></p>
+                                <p id="order_totalPrice"></p>
                             </div>
                             <div class="col-12">
                                 <!--下拉卷軸-->
@@ -647,8 +647,19 @@
 
                             PTContainer.html(tableHTML);
 
+                            //計算這筆訂單的總金額
+                            if (data.data.orderTotal.resultPrice != null && data.data.shippment != null) {
+                                $("#order_totalPrice").text(`總金額：NT＄${data.data.orderTotal.resultPrice.toLocaleString()} (已含運費)`);
+                            } else if (data.data.shippment != null && data.data.orderTotal.resultPrice == null) {
+                                var totalPrice_includefreight = totalPrice + data.data.shippment
+                                // 將總金額填入指定的元素中
+                                $("#order_totalPrice").text(`總金額：NT＄${totalPrice_includefreight.toLocaleString()} (已含運費)`);
+                            } else if (data.data.shippment == null && data.data.orderTotal.resultPrice != null) {
+                                $("#order_totalPrice").text(`總金額：NT＄${data.data.orderTotal.resultPrice.toLocaleString()}`);
+                            }
+
                             // 將總金額填入指定的元素中
-                            $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                            // $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
                         } else {
                             PTContainer.text("沒有可顯示的產品明細");
                         }
