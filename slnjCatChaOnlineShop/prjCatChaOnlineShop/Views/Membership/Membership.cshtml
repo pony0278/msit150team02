@@ -162,7 +162,7 @@
                                                         <div class="col-md-6">
                                                             <label class="fs-6">姓名</label>
                                                             <input type="text" placeholder="姓名" id="nameInput" name="Name"
-                                                                   class="form-control" required="required" />
+                                                                   class="form-control" required />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="fs-6">生日</label>
@@ -171,14 +171,16 @@
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">電子信箱</label>
-                                                            <input type="email" class="form-control" id="emailInput" name="Email"
-                                                                   placeholder="電子信箱" required />
-                                                        </div>
-                                                        <div class="col-md-6">
                                                             <label class="fs-6">手機號碼</label>
                                                             <input type="tel" pattern="^\d{10}$" placeholder="手機號碼" id="phoneNumberInput" name="PhoneNumber"
                                                                    class="form-control" required />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="fs-6">訂閱電子報</label>
+                                                            <select class="form-control form-select" id="subscribeInput" name="Subscribe" required>
+                                                                <option value="false">不了，忍痛放棄</option>
+                                                                <option value="true">是的，我想收到最新資訊</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <!--住址-->
@@ -186,7 +188,7 @@
                                                         <div class="col-md-12">
                                                             <label class="fs-6">住址</label>
                                                             <div class="input-group">
-                                                                <input type="text" placeholder="姓名" id="addressInput" name="address"
+                                                                <input type="text" placeholder="住址" id="addressInput" name="Address"
                                                                        class="form-control" required="required" />
                                                                 <div class="input-group-append">
                                                                     <button class="btn  btn-warning mx-2 btn-sm fs-5" type="button" data-bs-toggle="modal" data-bs-target="#mapModal">+</button>
@@ -813,24 +815,6 @@
         <!--4.收藏紀錄的內容-->
         <div class="tab-pane fade" id="collect" role="tabpanel" aria-labelledby="collect-tab">
             <section class="my-5">
-                <!--
-                <div class="btn-group d-flex" role="group" aria-label="Button group with nested dropdown">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <a class="btn-white" href="#btnGroupDrop1"><i class="bi bi-share ic-t"></i>分享</a>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1&amp;src=sdkpreparse">
-                            <i class="bi bi-facebook"></i> Facebook
-                        </a>
-                        <a class="dropdown-item" href="https://social-plugins.line.me/lineit/share?url=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1"
-                           target="_blank" onclick="LineIt.loadButton()"><i class="bi bi-line"></i> LINE</a>
-                        <a id="gmail" class="dropdown-item" href="javascript:void(0)"><i class="bi bi-envelope"></i> Gmail</a>
-                        <a class="dropdown-item" href="javascript:copyUrl();"><i class="bi bi-link"></i> 複製連結</a>
-                        <button type="button" id="docSave">下載pdf</button>
-                        <button onclick="downloadPDF()">下載表格為 PDF</button>
-                    </div>
-                </div>
-                -->
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
@@ -1060,26 +1044,30 @@
                 .then(response => response.json())
                 .then(data => {
                     //這裡抓資料也要寫成三元判斷式
-                    $('#emailInput').val(data.email);
-                    $('#passwordInput').val(data.password);
-                    $('#nameInput').val(data.name);
-                    $('#phoneNumberInput').val(data.phoneNumber);
+                    $('#emailInput').val(data.email  ? data.email : "seoari@gmail.com");
+                    $('#passwordInput').val(data.password  ? data.password : "a12345");
+                    $('#nameInput').val(data.name  ? data.name : "安安");
+                    $('#phoneNumberInput').val(data.phoneNumber ? data.phoneNumber : "0912345678");
+                    document.getElementById("subscribeInput").value = data.subscribe ? data.subscribe : "false";
                     $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
-                    $('#addressInput').val(data.address);
+                    $('#addressInput').val(data.address ? data.address : "台北市大安區信義路三段185號");
 
-                    $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點`);
-                    $('#moneyPointShow').text(`( ${Math.floor(data.loyaltyPoints / 100)}元 )`);
-                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
+                    $('#summonName').text(`會員：${data.name ? data.name : "安安"}`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints ? data.loyaltyPoints : "0"}點`);
+                    $('#moneyPointShow').text(`( ${data.loyaltyPoints ? Math.floor(data.loyaltyPoints / 100) : "0"}元 )`);
+                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity ? data.catCoinQuantity : "0"}`);
 
-                    var dateParts = data.birthday.split('-');
+                    // var dateParts = data.birthday.split('-');
+                    var dateParts2 = "1993-04-12T00:00:00";
+                    var dateParts = data.birthday ? data.birthday.split('-') : dateParts2.split('-');
                     var year = parseInt(dateParts[0], 10);
                     var month = parseInt(dateParts[1], 10) - 1;
                     var day = parseInt(dateParts[2], 10);
                     var utcDate = new Date(Date.UTC(year, month, day));
                     var formattedDate = utcDate.toISOString().split('T')[0];
                     $('#birthdayInput').val(formattedDate);
+
                 });
 
         });

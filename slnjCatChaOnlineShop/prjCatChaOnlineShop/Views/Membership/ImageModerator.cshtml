@@ -14,9 +14,14 @@
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 
     <style>
-        #loading {
-            display: none
-            /*剛開始載入時，先將照片隱藏none起來*/
+        #analysingArea {
+            display: none/*剛開始載入時，先將照片隱藏none起來*/
+        }
+
+        #analysing {
+            border: none; /* 移除边框 */
+            background-color: transparent; /* 设置背景为透明 */
+            outline: none; /* 移除聚焦时的外边框 */
         }
     </style>
 }
@@ -52,6 +57,15 @@
 <!-- End All Title Box -->
 <!-- Start Shop Detail  -->
 
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-outline-secondary my-1" onclick="goBack()">回上一頁</button>
+        </div>
+    </div>
+</div>
+
+
 <div class="shop-detail-box-main">
     <div class="container">
         <div class="row">
@@ -60,9 +74,11 @@
                 <form method="post" enctype="multipart/form-data" id="imgForm" class="d-flex flex-column align-items-center">
                     <div class="d-flex justify-content-center align-items-center">
                         <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
-                        <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
+                        <div class="mx-1" id="analysingArea">
+                                <input id="analysing" value="分析中" class="text-center font-weight-bold fs-5" />
+                                <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
+                         </div>
                     </div>
-
                     <div class="my-3">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                         <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
@@ -117,7 +133,7 @@
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
                 event.preventDefault();
-                document.querySelector('#loading').style.display = "inline";
+                document.querySelector('#analysingArea').style.display = "inline";
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -221,7 +237,7 @@
                                     var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
                                     var ans = Category1ans + Category2ans + Category3ans;
 
-                                    document.querySelector('#loading').style.display = "none";
+                                    document.querySelector('#analysingArea').style.display = "none";
                                     document.getElementById('checkResults').value = checkText;
                                     document.getElementById('visionResults').value = visionText;
                                     document.getElementById('descriptionResults').value = descriptionText;
@@ -237,12 +253,14 @@
                                     fetch('@Url.Content("/Membership/ImageModeratorToMemberInfo?imageUrl=")' + data.url, {
                                     })
                                         .then(response => {
+                                            /*
                                             Swal.fire({
                                                 icon: 'success',
                                                 title: '完成上傳',
                                             });
+                                            */
 
-                                            document.querySelector('#loading').style.display = "none";
+                                            document.querySelector('#analysingArea').style.display = "none";
                                             document.getElementById('checkResults').value = checkText;
                                             document.getElementById('visionResults').value = visionText;
                                             document.getElementById('descriptionResults').value = descriptionText;
@@ -255,7 +273,7 @@
                                         })
                                         .catch(error => {
                                             console.log(error);
-                                            document.querySelector('#loading').style.display = "none";
+                                            document.querySelector('#analysingArea').style.display = "none";
                                         });
                                 }
 
@@ -264,14 +282,14 @@
                                     icon: 'error',
                                     title: '您上傳的圖片違反平台政策',
                                 });
-                                document.querySelector('#loading').style.display = "none";
+                                document.querySelector('#analysingArea').style.display = "none";
                             });
                         }).fail(function (err) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '您上傳的圖片不符合規格',
                             });
-                            document.querySelector('#loading').style.display = "none";
+                            document.querySelector('#analysingArea').style.display = "none";
                         });
 
                     })
@@ -280,11 +298,8 @@
                             icon: 'error',
                             title: '您上傳的圖片違反著作或肖像權',
                         });
-                        document.querySelector('#loading').style.display = "none";
+                        document.querySelector('#analysingArea').style.display = "none";
                     });
-                    
-
-                    
             });
 
 
@@ -382,6 +397,12 @@
 
         }
 
+        //回到上一頁:回到會員中心
+        function goBack() {
+            var baseUrl = new URL(window.location.href);
+            baseUrl.pathname = "/Membership/Membership";
+            window.location.href = baseUrl;
+        }
 
         //Demo鍵:載入壞狗狗的圖片
         $('#demoB').click(function (event) {

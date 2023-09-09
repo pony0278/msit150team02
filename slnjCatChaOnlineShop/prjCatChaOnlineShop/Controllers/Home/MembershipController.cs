@@ -380,11 +380,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
             try
             {
                 var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
-                
-                //這邊加入其他可以改的
-                memberToUpdate.Password = member.Password;
-                memberToUpdate.PhoneNumber = member.PhoneNumber;
-                memberToUpdate.Birthday = member.Birthday;
+
+                memberToUpdate.Password = member.Password;//
+                memberToUpdate.Name = member.Name;//
+                memberToUpdate.Birthday = member.Birthday;//
+                memberToUpdate.PhoneNumber = member.PhoneNumber;//
+                memberToUpdate.Subscribe = member.Subscribe;
+                memberToUpdate.Address = member.Address;//
 
                 _context.SaveChanges();
 
@@ -400,7 +402,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //前往圖片審核的頁面
         public IActionResult ImageModerator()
         {
-            //ViewBag.memberIdForMembership = memberIdForMembership;
+            //傳遞會員資料
+            string userName = HttpContext.Session.GetString("UserName");
+            ViewBag.UserName = userName;//把使用者名字傳給_Layout
+            ViewBag.memberIdForMembership = memberIdForMembership;
             ViewBag.Categories = _productService.getAllCategories();//把類別傳給_Layout
             return View();
         }
@@ -992,12 +997,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //return Content(storeid + "/" + storename + "/" + storeaddress);
             //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
             //return RedirectToAction("membership", "membership", null);
-            return Content("hi");
-        }
-
-        public IActionResult share()
-        {
-
             return Content("hi");
         }
     }
