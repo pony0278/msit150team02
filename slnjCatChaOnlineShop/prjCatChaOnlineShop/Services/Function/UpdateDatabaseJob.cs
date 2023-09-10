@@ -24,9 +24,8 @@ namespace prjCatChaOnlineShop.Services.Function
             {
                 _logger.LogInformation("Execute method started."); // 记录信息
 
-                var targetDate = DateTime.Parse("2023-01-01"); // 這裡使用你想要的日期
 
-                var data = _cachaContext.ShopMemberInfo.Where(x => x.UnBannedTime > targetDate).ToList();
+                var data = _cachaContext.ShopMemberInfo.Where(x => x.UnBannedTime >= DateTime.Now).ToList();
 
 
                 if (data.Count > 0)
