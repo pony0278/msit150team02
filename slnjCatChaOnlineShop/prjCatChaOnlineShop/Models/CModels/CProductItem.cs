@@ -82,6 +82,7 @@ namespace prjCatChaOnlineShop.Models.CModels
         public GameShopBanner banner { get { return _banr; } set { _banr = value; } }
         public string Link { get { return _banr.Link; } set { _banr.Link = value; } }
         public bool? Display { get { return _banr.Display; } set { _banr.Display = value; } }
-
+        public string ToPage { get { return _banr.ToPage; } set { _banr.ToPage = value; } }
+        public string BannerName { get { return _banr.Banner; } set { _banr.Banner = value; } }
     }
 }

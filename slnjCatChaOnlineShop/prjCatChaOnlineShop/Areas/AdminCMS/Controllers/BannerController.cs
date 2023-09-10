@@ -42,6 +42,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 Banner=x.Banner,
                 BannerId=x.BannerId,
                 PublishDate=x.PublishDate,
+                ToPage = x.ToPage,
                 Link=x.Link,
                 Display=x.Display
             }).ToList();
@@ -131,6 +132,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         editBanner.Banner = cBanner.Banner;
                     if (cBanner.PublishDate != null)
                         editBanner.PublishDate = cBanner.PublishDate;
+                    if (cBanner.ToPage != null)
+                        editBanner.ToPage = cBanner.ToPage;
 
                     _cachaContext.Update(editBanner);
                     _cachaContext.SaveChanges();
@@ -169,6 +172,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 BannerId = cBanner.BannerId,
                 Banner = cBanner.Banner,
                 PublishDate = cBanner.PublishDate,
+                ToPage = cBanner.ToPage,
                 Display = cBanner.Display,
                 Link = imageURL
             };

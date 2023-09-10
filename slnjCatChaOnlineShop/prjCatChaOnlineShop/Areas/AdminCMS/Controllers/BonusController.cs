@@ -6,6 +6,7 @@ using NETCore.MailKit.Core;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Services.Function;
+using System.Drawing;
 using System.Net.Mail;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
@@ -275,7 +276,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         string subject = "CatCha 優惠券到期提醒";
                         string image = newsletterTemplete.HeaderImage;
                         string body = $@"
-                            <html>
+<html>
 <head>
     <meta charset=""UTF-8"">
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
@@ -323,6 +324,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             margin-top: 20px;
             text-align: center;
             color: #777;
+            font-size: 18px;
+            font-weight:bold;
         }}
 
         /* 新增的樣式用於顯示圖片 */
@@ -342,6 +345,22 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             margin-top: 20px;
         }}
 
+        .btnhome {{
+            background-color: #DE9E4F;
+            margin: 10px;
+            padding: 10px 30px 10px 30px;
+            border-radius: 12px;
+            text-decoration: none;
+            color: #fff3e6            
+        }}
+
+        .btnhome:visited {{
+            color: #fff3e6;
+        }}
+
+        .btnhome:link {{color: #fff3e6;
+        }}
+        
     </style>
 </head>
 
@@ -361,6 +380,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         </div>
         <p>提醒您於到期日前使用完畢唷！</p>
         <div class=""footer"">
+            <p><a class=""btnhome"" href=""https://localhost:7218/"">前往購物</a></p>
             <p>CatCha貓抓抓感謝您的支持，祝您購物愉快</p>
         </div>
     </div>
