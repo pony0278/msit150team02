@@ -131,11 +131,13 @@
         @foreach (var banner in ViewBag.Banners)
         {
             <li class="text-center">
-                <img src="@banner.Link" alt="" style="object-fit:cover" />
+                <a href="@banner.ToPage">
+                    <img src="@banner.Link" alt="" style="object-fit:cover" />
+                </a>
                 <div class="container">
                     <div class="row d-flex justify-content-center align-items-end mb-5">
                         <div class="col-md-12 ">
-                            <p><a class="btn hvr-hover" asp-controller="Index" asp-action="Shop">來去逛逛</a></p>
+                            <p><a class="btn hvr-hover" href="@banner.ToPage">@banner.BannerName</a></p>
                         </div>
                     </div>
                 </div>
