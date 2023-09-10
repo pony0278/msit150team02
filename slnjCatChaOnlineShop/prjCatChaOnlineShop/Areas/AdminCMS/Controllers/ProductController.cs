@@ -478,6 +478,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         existingProduct.ProductDescription = describe;
                         existingProduct.ProductPrice = parsedPrice;
                         existingProduct.RemainingQuantity = parseRemian;
+                        existingProduct.ReleaseDate = parseDateTime;
                         existingProduct.Size = size;
                         existingProduct.Weight = weight;
                         existingProduct.Discontinued = parseDiscontinued;
@@ -509,6 +510,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                             ProductDescription = describe,
                             ProductPrice = parsedPrice,
                             RemainingQuantity = parseRemian,
+                            ReleaseDate = parseDateTime,
                             Size = size,
                             Weight = weight,
                             Discontinued = parseDiscontinued,

@@ -214,50 +214,50 @@
             @{
                 foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4).ToList())
                 {
-                    <!-- start prod  -->
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        @if (item.p優惠價格 != null)
+                            <!-- start prod  -->
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                @if (item.p優惠價格 != null)
                                         {
-                                            <p class="sale">Sale</p>
+                                                    <p class="sale">Sale</p>
                                         }
+                                            </div>
+                                            <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                        @if (item.pDiscount != null)
+                                {
+                                            <h5>$ @item.p優惠價格</h5>
+                                            <del>$ @item.pPrice</del>
+                                }
+                                else
+                                {
+                                            <h5>$ @item.pPrice</h5>
+                                }
+                                        <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </a>
+                                        @if (item.p是否加入收藏)
+                                {
+                                            <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                }
+                                else
+                                {
+                                            <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                }
                                     </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                 </div>
-                            </a>
-                            <div class="why-text">
-                                <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
-                                @if (item.pDiscount != null)
-                                {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
-                                }
-                                else
-                                {
-                                    <h5>$ @item.pPrice</h5>
-                                }
-                                <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-                                @if (item.p是否加入收藏)
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                }
                             </div>
-                        </div>
-                    </div>
-                    <!-- end prod  -->
+                            <!-- end prod  -->
                 }
             }
         </div>
@@ -287,51 +287,51 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4).ToList())
                 {
-                    <div class="col-lg-3 col-md-6 special-grid best-seller">
-                        <div class="products-single-custom fix">
-                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                <div class="box-img-hover">
-                                    <div class="type-lb">
-                                        @if (item.p優惠價格 != null)
+                            <div class="col-lg-3 col-md-6 special-grid best-seller">
+                                <div class="products-single-custom fix">
+                                    <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                        <div class="box-img-hover">
+                                            <div class="type-lb">
+                                                @if (item.p優惠價格 != null)
                                         {
-                                            <p class="sale">Sale</p>
+                                                    <p class="sale">Sale</p>
                                         }
+                                            </div>
+                                            <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
+                                        </div>
+                                    </a>
+                                    <div class="why-text">
+                                        <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                        @if (item.pDiscount != null)
+                                {
+                                            <h5>$ @item.p優惠價格</h5>
+                                            <del>$ @item.pPrice</del>
+                                }
+                                else
+                                {
+                                            <h5>$ @item.pPrice</h5>
+                                }
+                                        <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                            <i class="fa-solid fa-cart-plus"></i>
+                                        </a>
+
+                                        @if (item.p是否加入收藏)
+                                {
+                                            <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                }
+                                else
+                                {
+                                            <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                                <i class="far fa-heart"></i>
+                                            </a>
+                                }
+
                                     </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                 </div>
-                            </a>
-                            <div class="why-text">
-                                <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
-                                @if (item.pDiscount != null)
-                                {
-                                    <h5>$ @item.p優惠價格</h5>
-                                    <del>$ @item.pPrice</del>
-                                }
-                                else
-                                {
-                                    <h5>$ @item.pPrice</h5>
-                                }
-                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                    <i class="fa-solid fa-cart-plus"></i>
-                                </a>
-
-                                @if (item.p是否加入收藏)
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                }
-                                else
-                                {
-                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                        <i class="far fa-heart"></i>
-                                    </a>
-                                }
-
                             </div>
-                        </div>
-                    </div>
-                    <!-- end prod1  -->
+                            <!-- end prod1  -->
                 }
             }
 
@@ -396,6 +396,9 @@
             <div class="animate animate01">
                 <div class="catAnimate"></div>
             </div>
+        </div>
+        <div class="position-absolute top-0 end-0">
+        <button class="btn btn-primary" id="skip"> Skip </button>
         </div>
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="popup" id="my-popup">
@@ -937,6 +940,10 @@
             connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
             $(data).prev().val("");
         }
+        $(document).on('click', '#skip', function () {
+            const url = '@Url.Action("Index" , "Game")';
+            location.href = url;
+        })
 
     </script>
 
