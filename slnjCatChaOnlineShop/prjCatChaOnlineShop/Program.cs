@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using OfficeOpenXml;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
+
 builder.Services.AddSession(options => {
     // 設定 Session 的過期時間（以分為單位）
     options.IdleTimeout = TimeSpan.FromDays(3); // 測試:這裡設定為 3 天
@@ -26,6 +28,8 @@ builder.Services.AddHttpContextAccessor();
 string randomKey = CKeyGenerator.GenerateRandomKey();
 // 將隨機金鑰設置到 IConfiguration 裡
 builder.Configuration["ForgetPassword:SecretKey"] = randomKey;
+System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial; 
 
 //==============解決 json too big 問題（Mandy需要的請勿刪~桑Q）
 builder.Services.AddControllers().AddJsonOptions(options =>

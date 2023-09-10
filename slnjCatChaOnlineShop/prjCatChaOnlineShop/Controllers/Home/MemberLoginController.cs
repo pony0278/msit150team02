@@ -386,7 +386,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
             string NewPwd = inModel.NewUserPwd;
 
             //使用cachaContext更新到資料庫
-            var resetMember = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == resetPwdUserId);
+            var resetMember = _context.ShopMemberInfo.OrderBy(m=>m.MemberId).LastOrDefault(m => m.Email == resetPwdUserId);
 
             if (resetMember != null)
             {
@@ -606,7 +606,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 .Where(mem => mem.Email == payload.Email && mem.EmailVerified == true)
                                 .OrderByDescending(mem => mem.MemberId)
                                 .LastOrDefault();
-                    if (existingMember == null)
+                    if (existingMember == null) //從來沒有註冊過的會員，直接用google登入會走這邊
                     {
                         var newMember = new ShopMemberInfo
                         {
@@ -631,7 +631,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                         
                     }
-                    else
+                    else//有註冊過會員，但又按google登入(第一次)走這邊
                     {
                         string json = JsonSerializer.Serialize(existingMember);
                         HttpContext.Session.SetString(CDictionary.SK_LOINGED_USER, json);//Session-登入狀態紀錄
@@ -639,7 +639,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
                         string userName = HttpContext.Session.GetString("UserName");
                         ViewBag.UserName = userName;//把使用者名字傳給_Layout
                         ViewBag.Categories = _productService.getAllCategories(); //把類別傳給_Layout
-                        dealWithTaskForOldUser();
+                        dealWithTaskForNewUser();
                     }
                 }
             }
@@ -730,7 +730,7 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //如果中間有橫跨午夜12點，設定progress=0，completeTime = null
         //如果沒有則不動作
         //====================================
-        private void dealWithTaskForNewUser()//只發生在使用者的首次登入
+        private void dealWithTaskForNewUser()//發生在使用者的首次登入or曾經註冊過但又使用google登入
         {
             var availibaleTask = _context.GameTaskList.Where(x => x.TaskConditionId == 1).ToList();//選出目前啟用的任務
             var taskIdList = availibaleTask.Select(task => task.TaskId).ToList();

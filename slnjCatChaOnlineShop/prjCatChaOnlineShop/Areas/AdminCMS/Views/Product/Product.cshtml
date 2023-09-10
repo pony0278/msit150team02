@@ -76,8 +76,9 @@
 
     <div class="container-fluid">
         <label for="excel" class="form-label">批次匯入</label>
+        <a href="https://docs.google.com/spreadsheets/d/1yCuigS66mjcwfBNEYdFIFNba0FtEz2o2ziHq6K3rZnE/edit?usp=sharing"> 查看上傳範例 </a>
         <div class="col-md-6 d-flex">
-            <input class="form-control w-50" type="file" id="excel" accept=".csv,.xls" />
+            <input class="form-control w-50" type="file" id="excel"  accept=".xlsx"/>
             <button class="btn btn-primary" id="upload">上傳</button>
         </div>
         <label for="pickdate" class="form-label">上架日期篩選</label>
@@ -398,7 +399,7 @@
     <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    @*    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />*@
+    <script src="https://cdn.jsdelivr.net/npm/axios@1.1.2/dist/axios.min.js"></script>
 
     <!---File export--->
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.dataTables.min.css">
@@ -425,12 +426,19 @@
                 }
             });
         });
+        let now = new Date();
+        let year = now.getFullYear();
+        let month = String(now.getMonth() + 1).padStart(2, '0'); // months are 0-based
+        let day = String(now.getDate()).padStart(2, '0');
+        let hours = String(now.getHours()).padStart(2, '0');
+        let minutes = String(now.getMinutes()).padStart(2, '0');
+        let dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
         $(document).on("click", '#demoBtn', function () {
             const name = $('#name').val('好好吃的貓食')
             const price = $('#price').val('100')
             const remain = $('#remainingquantity').val('100')
             const select = $('#category').val('1')
-            const relesedate = $('#releasedate').val('2023-09-15T13:00');
+            const relesedate = $('#releasedate').val(dateTimeString);
             const offdate = $('#offdate').val('2023-09-16T13:00')
             const size = $('#size').val('30cm*30cm')
             const weight = $('#weight').val('1kg')
@@ -954,25 +962,30 @@
                 }
             });
         }
-        function generateArticles() {
+        async function generateArticles() {
             const keyword1 = $("#keyword01").val();
             const keyword2 = $("#keyword02").val();
             const keyword3 = $("#keyword03").val();
 
-            $.ajax({
-                url: "/AdminCMS/Product/GenerateArticle",
-                method: "POST",
-                data: { keyword1, keyword2, keyword3 },
-                contentType: "application/x-www-form-urlencoded",
-                dataType: "json",
-                success: function (data) {
-                    $("#description").val(data.article);
-                },
-                error: function (error) {
-                    console.error("Error:", error);
-                }
-            });
+            
+            $("#description").val("等待中...");
+
+            try {
+                const response = await axios.post("/AdminCMS/Product/GenerateArticle", {
+                    keyword1,
+                    keyword2,
+                    keyword3
+                });
+
+                
+                $("#description").val(response.data.article);
+            } catch (error) {
+                
+                $("#description").val("產生失敗，請更換金鑰");
+                console.error("Error:", error);
+            }
         }
+
         $(document).on("click", "#submitButtonCompany", function () {
             const companyName = $("#companyName").val();
             const contactPhone = $("#contactPhone").val();
@@ -1053,6 +1066,8 @@
                         contentType: false,
                         success: function (data) {
                             swal.fire("成功", "成功匯入", "success");
+                            $('#excel').val("");
+                            $('#Product-table').DataTable().ajax.reload();
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             swal.fire("失敗", "匯入失敗", "error");

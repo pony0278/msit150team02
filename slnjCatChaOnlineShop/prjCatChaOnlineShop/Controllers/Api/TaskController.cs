@@ -117,38 +117,10 @@ namespace prjCatChaOnlineShop.Controllers.Api
             }
         }
 
-        //任務確認機
-        //public IActionResult CheckMachine(CMemberTask f)
-        //{
-        //    try
-        //    {//選出目前啟用的任務
-        //        var thisTask = (from p in _context.GameMemberTask
-        //                    .Where(x => x.TaskId == f.fTaskId)
-        //                              join i in _context.GameTaskList on p.TaskId equals i.TaskId
-        //                              orderby p.TaskId descending
-        //                              select new
-        //                              {
-        //                                  p.TaskId,
-        //                                  p.TaskProgress,
-        //                                  i.TaskRequireTime,
-        //                              }).ToList();
-        //        if (thisTask.Any())
-        //        {
-
-        //            return new JsonResult(thisTask);
-        //        }
-
-        //        return NotFound();
-        //    }
-        //    catch
-        //    {
-        //        return View();
-        //    }
-        //}
 
         //更新任務狀態
         [HttpPost]
-        public IActionResult UpdteTask([FromBody]GameMemberTask g) 
+        public IActionResult UpdateTask([FromBody]GameMemberTask g) 
         {
         
             try
@@ -223,6 +195,49 @@ namespace prjCatChaOnlineShop.Controllers.Api
             {
                 return View();
             }
+        }
+
+
+        public IActionResult demoRest([FromBody] GameMemberTask g) {
+            try
+            {
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
+
+                var thismember = _context.ShopMemberInfo.OrderBy(x => x.MemberId).LastOrDefault(x => x.MemberId == _memberId);
+
+                thismember.LastLoginTime = DateTime.Now.AddDays(-1);
+                _context.SaveChanges();
+                    return new JsonResult(thismember.LastLoginTime);   
+            }
+            catch
+            {
+                return View();
+            }
+
+        }
+
+
+        public IActionResult showTutorial([FromBody] GameMemberTask g)
+        {
+            try
+            {
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                var memberInfo = JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                int _memberId = memberInfo.MemberId;
+
+                var thismember = _context.ShopMemberInfo.OrderBy(x => x.MemberId).LastOrDefault(x => x.MemberId == _memberId);
+
+                if (thismember.RunGameHighestScore==0)
+                    return new JsonResult(true);
+                return new JsonResult(false);
+            }
+            catch
+            {
+                return View();
+            }
+
         }
 
     }

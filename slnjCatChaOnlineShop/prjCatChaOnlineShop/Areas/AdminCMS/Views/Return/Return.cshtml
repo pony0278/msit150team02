@@ -240,7 +240,7 @@
                         <button class="nav-link active" id="nav-home-tab"
                                 data-bs-toggle="tab" data-bs-target="#nav-home" type="button"
                                 role="tab">
-                            訂購人 / 收件人資料
+                            退換貨明細
                         </button>
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-profile" type="button"
@@ -250,69 +250,13 @@
                         <button class="nav-link" id="nav-profile-tab" data-bs-toggle="tab"
                                 data-bs-target="#nav-product" type="button"
                                 role="tab">
-                            退換貨明細
+                            訂購人 / 收件人資料
                         </button>
                     </div>
                 </nav>
                 <div class="tab-content mt-3" id="nav-tabContent">
                     <div class="tab-pane fade show active" id="nav-home" role="tabpanel"
                          aria-labelledby="nav-home-tab">
-                        <div class="row">
-                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
-                                <h5><strong>訂購人(會員)</strong></h5>
-                                <p id="order_memberId"></p>
-                                <p id="order_name"></p>
-                                <p id="order_memberAccount"></p>
-                                <p id="order_gender"></p>
-                                <p id="order_birthday"></p>
-                                <p id="order_email"></p>
-                                <p id="order_phoneNumber"></p>
-                                <p id="order_address"></p>
-                                <p id="order_registrationTime"></p>
-                                <p id="order_lastLoginTime"></p>
-                                <p id="order_memberStatus"></p>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <h5><strong>收件人</strong></h5>
-                                <p id="order_recipientName"></p>
-                                <p id="order_recipientPhone"></p>
-                                <p id="order_recipientAddress"></p>
-                            </div>
-                        </div>
-                    </div>
-                    <!--訂單明細-->
-                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
-                        <div class="row">
-                            <div class="col-12 col-lg-6">
-                                <p id="order_orderId"></p>
-                                <p id="order_paymentMethod"></p>
-                                <p id="order_shippment"></p>
-                                <p id="order_totalPrice"></p>
-                                <p id="order_lastUpdateTime"></p>
-                            </div>
-                            <div class="col-12 col-lg-6">
-                                <p id="order_orderCreationDate"></p>
-                                <p id="order_shippingMethod"></p>
-                                <p id="order_couponContent"></p>
-                                <p id="order_orderStatus"></p>
-                            </div>
-                            <div class="col-12">
-                                <!--下拉卷軸-->
-                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrderExample" aria-expanded="false" aria-controls="collapseExample">
-                                    訂購產品明細
-                                </button>
-                                <!--訂購產品明細-->
-                                <div class="collapse show" id="collapseOrderExample">
-                                    <div class="card card-body">
-                                        <div id="ProductTotalContainer"></div>
-                                    </div>
-                                </div>
-                                <!--下拉卷軸-->
-                            </div>
-                        </div>
-                    </div>
-                    <!--退換貨明細-->
-                    <div class="tab-pane fade" id="nav-product" role="tabpanel">
                         <div class="row">
                             <div class="col-12 col-lg-6">
                                 <p id="return_returnId"></p>
@@ -336,6 +280,63 @@
                                 <!--下拉卷軸-->
                             </div>
                         </div>
+                    </div>
+                    <!--訂單明細-->
+                    <div class="tab-pane fade mt-3" id="nav-profile" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12 col-lg-6">
+                                <p id="order_orderId"></p>
+                                <p id="order_paymentMethod"></p>
+                                <p id="order_shippment"></p>
+                                <p id="order_lastUpdateTime"></p>
+                                <p id="order_orderStatus"></p>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <p id="order_orderCreationDate"></p>
+                                <p id="order_shippingMethod"></p>
+                                <p id="order_couponContent"></p>
+                                <p id="order_totalPrice"></p>
+                            </div>
+                            <div class="col-12">
+                                <!--下拉卷軸-->
+                                <button class="create_btn" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOrderExample" aria-expanded="false" aria-controls="collapseExample">
+                                    訂購產品明細
+                                </button>
+                                <!--訂購產品明細-->
+                                <div class="collapse show" id="collapseOrderExample">
+                                    <div class="card card-body">
+                                        <div id="ProductTotalContainer"></div>
+                                    </div>
+                                </div>
+                                <!--下拉卷軸-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--退換貨明細-->
+                    <div class="tab-pane fade" id="nav-product" role="tabpanel">
+                        <div class="row">
+                            <div class="col-12 col-lg-6" style="border-right: 1px solid #aaa;">
+                                <h5><strong>訂購人(會員)</strong></h5>
+                                <p id="order_memberId"></p>
+                                <p id="order_name"></p>
+                                <p id="order_memberAccount"></p>
+                                <p id="order_gender"></p>
+                                <p id="order_birthday"></p>
+                                <p id="order_email"></p>
+                                <p id="order_phoneNumber"></p>
+                                <p id="order_address"></p>
+                                <p id="order_registrationTime"></p>
+                                <p id="order_lastLoginTime"></p>
+                                <p id="order_memberStatus"></p>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <h5><strong>收件人</strong></h5>
+                                <p id="order_recipientName"></p>
+                                <p id="order_recipientPhone"></p>
+                                <p id="order_recipientAddress"></p>
+                            </div>
+                        </div>
+
                     </div>
                     <!--退換貨明細-->
                 </div>
@@ -559,11 +560,11 @@
                         var formattedlastLoginTime = formatDateTime(data.data.memberInfo.lastLoginTime);
                         $('#order_lastLoginTime').text("最後登入：" + formattedlastLoginTime);
 
-                        if (data.data.memberInfo.memberStatus == true) {
-                            $('#order_memberStatus').text("會員狀態：開放");
-                        } else {
-                            $('#order_memberStatus').text("會員狀態：凍結");
-                        }
+                        //if (data.data.memberInfo.memberStatus == true) {
+                        //    $('#order_memberStatus').text("會員狀態：開放");
+                        //} else {
+                        //    $('#order_memberStatus').text("會員狀態：凍結");
+                        //}
 
                         //============收件人資料
                         $('#order_recipientName').text("收件人：" + data.data.orderTotal.recipientName);
@@ -586,7 +587,7 @@
                             $('#order_couponContent').text("優惠券內容：" + data.data.couponContent);
                         }
 
-                        if (data.data.couponContent == null) {
+                        if (data.data.shippingMethod == null) {
                             $('#order_shippingMethod').text("配送方式：無");
                         } else {
                             $('#order_shippingMethod').text("配送方式：" + data.data.shippingMethod);
@@ -646,15 +647,28 @@
 
                             PTContainer.html(tableHTML);
 
+                            //計算這筆訂單的總金額
+                            if (data.data.orderTotal.resultPrice != null && data.data.shippment != null) {
+                                $("#order_totalPrice").text(`總金額：NT＄${data.data.orderTotal.resultPrice.toLocaleString()} (已含運費)`);
+                            } else if (data.data.shippment != null && data.data.orderTotal.resultPrice == null) {
+                                var totalPrice_includefreight = totalPrice + data.data.shippment
+                                // 將總金額填入指定的元素中
+                                $("#order_totalPrice").text(`總金額：NT＄${totalPrice_includefreight.toLocaleString()} (已含運費)`);
+                            } else if (data.data.shippment == null && data.data.orderTotal.resultPrice != null) {
+                                $("#order_totalPrice").text(`總金額：NT＄${data.data.orderTotal.resultPrice.toLocaleString()}`);
+                            }
+
                             // 將總金額填入指定的元素中
-                            $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
+                            // $("#order_totalPrice").text(`總金額：NT＄${totalPrice.toLocaleString()} (未含運費)`);
                         } else {
                             PTContainer.text("沒有可顯示的產品明細");
                         }
 
                         //==================退換貨明細
                         $('#return_returnId').text("ID：" + data.data.returnData.id);
-                        $('#return_returnDate').text("申請日期：" + data.data.returnData.returnDate);
+
+                        var formattedreturnDate = formatDateTime(data.data.returnData.returnDate);
+                        $('#return_returnDate').text("申請日期：" + formattedreturnDate);
                         $('#return_returnReason').text("退換貨原因：" + data.data.returnReason);
                         $('#return_returnStatus').text("申請狀態：" + data.data.returnStatus);
 

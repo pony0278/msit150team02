@@ -21,7 +21,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             //判斷是否有登入
             if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
-                return RedirectToAction("Member", "Member");
+                return RedirectToAction("Dashboard", "Dashboard");
             }
             return View();
         }
@@ -38,7 +38,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 // 將管理員姓名用session存起來
                 HttpContext.Session.SetString("AdminName", user.AdminUsername);
 
-                return RedirectToAction("Member", "Member");
+                return RedirectToAction("Dashboard", "Dashboard");
             }
             else
             {

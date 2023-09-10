@@ -14,9 +14,14 @@
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 
     <style>
-        #loading {
-            display: none
-            /*剛開始載入時，先將照片隱藏none起來*/
+        #analysingArea {
+            display: none/*剛開始載入時，先將照片隱藏none起來*/
+        }
+
+        #analysing {
+            border: none; /* 移除边框 */
+            background-color: transparent; /* 设置背景为透明 */
+            outline: none; /* 移除聚焦时的外边框 */
         }
     </style>
 }
@@ -52,6 +57,15 @@
 <!-- End All Title Box -->
 <!-- Start Shop Detail  -->
 
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <button class="btn btn-outline-secondary my-1" onclick="goBack()">回上一頁</button>
+        </div>
+    </div>
+</div>
+
+
 <div class="shop-detail-box-main">
     <div class="container">
         <div class="row">
@@ -60,9 +74,11 @@
                 <form method="post" enctype="multipart/form-data" id="imgForm" class="d-flex flex-column align-items-center">
                     <div class="d-flex justify-content-center align-items-center">
                         <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
-                        <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
+                        <div class="mx-1" id="analysingArea">
+                                <input id="analysing" value="分析中" class="text-center font-weight-bold fs-5" />
+                                <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
+                         </div>
                     </div>
-
                     <div class="my-3">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                         <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
@@ -74,6 +90,8 @@
                     <h4>審核結果</h4>
                     <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
                 </div>
+                <button class="btn hvr-hover mx-2" id="demoB" type="button">demoB</button>
+                <button class="btn hvr-hover mx-2" id="demoG" type="button">demoG</button>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
@@ -88,6 +106,9 @@
                 <div class="my-4">
                     <h4>圖像識別</h4>
                     <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
+                </div>
+                <div class="my-4" id="myChartDiv">
+                    <canvas id="myChart"></canvas>
                 </div>
             </div>
         </div>
@@ -108,14 +129,21 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    <script src="~/js/custom.js"></script>    
+    <!--新加入sweetalert2的cdn-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- 用於chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+
 
     <script type="text/javascript">
+        // 在全局範圍內定義 myChart 變數
 
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
                 event.preventDefault();
-                document.querySelector('#loading').style.display = "inline";
+                document.querySelector('#analysingArea').style.display = "inline";
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -170,6 +198,17 @@
                                 tagText += tag.name + " / ";
                             });
 
+                            console.log("==================");
+                            console.log(visionResult);
+                            /*
+                            console.log(visionResult['faces'][0]['faceRectangle']['left']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['top']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['width']);
+                            console.log(visionResult['faces'][0]['faceRectangle']['height']);
+                            */
+
+
+                            //=========================================
                             var visionText = "分類: " + visionResult.categories[0].name + "\n" +
                             "特點: " + tagText  + "\n" +
                                 "構成主色: " + visionResult.color.dominantColors + "\n" +
@@ -198,15 +237,55 @@
                                 var Category2 = moderationResult['RacyClassificationScore'];
                                 var Category3 = visionResult.adult.goreScore;
 
-                                var isImageAdultClassified = moderationResult['IsImageAdultClassified'] ? '是' : '非';
-                                var isImageRacyClassified = moderationResult['IsImageRacyClassified'] ? '是' : '非';
-                                var isGoryContent = visionResult.adult.isGoryContent ? '是' : '非';
+                                var isImageAdultClassified = Category1 > 0.7 ? '是' : '非';
+                                var isImageRacyClassified = Category2 > 0.7 ? '是' : '非';
+                                var isGoryContent = Category3 > 0.7 ? '是' : '非';
 
-                                /*
-                                console.log("成人冒犯指數: " + (Category1 * 10000).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容");
-                                console.log("種族冒犯指數: " + (Category2 * 10000).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視");
-                                document.getElementById('checkResults').value = JSON.stringify(moderationResult);
-                                */
+                                $('#myChart').remove();
+                                $('#myChartDiv').append('<canvas id="myChart" > </canvas>');
+                                var backgroundColor1 = (Category1 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var backgroundColor2 = (Category2 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var backgroundColor3 = (Category3 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                                var borderColor1 = (Category1 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                                var borderColor2 = (Category2 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                                var borderColor3 = (Category3 * 100) >= 70 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+
+                                const ctx = document.getElementById('myChart');
+                                const labels = ['成人內容', '種族歧視', '衝擊畫面'];  // 设置 X 轴上对应的标签
+                                const dataChart = {
+                                    labels: labels,
+                                    datasets: [{
+                                        axis: 'y',
+                                        label: '審核結果圖',
+                                        data: [(Category1 * 100).toFixed(2), (Category2 * 100).toFixed(2), (Category3 * 100).toFixed(2)],
+                                        fill: true,
+                                        backgroundColor: [      // 设置每个柱形图的背景颜色
+                                            backgroundColor1,
+                                            backgroundColor2,
+                                            backgroundColor3,
+                                        ],
+                                        borderColor: [     //设置每个柱形图边框线条颜色
+                                            borderColor1,
+                                            borderColor2,
+                                            borderColor3,
+                                        ],
+                                        borderWidth: 1     // 设置线条宽度
+                                    }]
+                                };
+                                const config = {
+                                    type: 'bar', // 设置图表类型
+                                    data: dataChart,  // 设置数据集
+                                    options: {
+                                        indexAxis: 'y',
+                                        scales: {
+                                            x: {
+                                                max: 100, // 设置 x 轴的最大值为 100
+                                                min: 0,   // 如果需要，也可以设置 x 轴的最小值
+                                            },
+                                        },
+                                    }
+                                };
+                                const myChart = new Chart(ctx, config);
 
                                 var checkText = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容\n" +
                                     "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視\n" +
@@ -219,7 +298,7 @@
                                     var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
                                     var ans = Category1ans + Category2ans + Category3ans;
 
-                                    document.querySelector('#loading').style.display = "none";
+                                    document.querySelector('#analysingArea').style.display = "none";
                                     document.getElementById('checkResults').value = checkText;
                                     document.getElementById('visionResults').value = visionText;
                                     document.getElementById('descriptionResults').value = descriptionText;
@@ -235,12 +314,8 @@
                                     fetch('@Url.Content("/Membership/ImageModeratorToMemberInfo?imageUrl=")' + data.url, {
                                     })
                                         .then(response => {
-                                            Swal.fire({
-                                                icon: 'success',
-                                                title: '完成上傳',
-                                            });
 
-                                            document.querySelector('#loading').style.display = "none";
+                                            document.querySelector('#analysingArea').style.display = "none";
                                             document.getElementById('checkResults').value = checkText;
                                             document.getElementById('visionResults').value = visionText;
                                             document.getElementById('descriptionResults').value = descriptionText;
@@ -253,7 +328,7 @@
                                         })
                                         .catch(error => {
                                             console.log(error);
-                                            document.querySelector('#loading').style.display = "none";
+                                            document.querySelector('#analysingArea').style.display = "none";
                                         });
                                 }
 
@@ -262,27 +337,24 @@
                                     icon: 'error',
                                     title: '您上傳的圖片違反平台政策',
                                 });
-                                document.querySelector('#loading').style.display = "none";
+                                document.querySelector('#analysingArea').style.display = "none";
                             });
                         }).fail(function (err) {
                             Swal.fire({
                                 icon: 'error',
-                                title: '您上傳的圖片不符合規格',
+                                title: '您上傳的圖片違反著作或肖像權',
                             });
-                            document.querySelector('#loading').style.display = "none";
+                            document.querySelector('#analysingArea').style.display = "none";
                         });
 
                     })
                     .catch(error => {
                         Swal.fire({
                             icon: 'error',
-                            title: '您上傳的圖片違反著作或肖像權',
+                            title: '您的圖片不符合規格',
                         });
-                        document.querySelector('#loading').style.display = "none";
+                        document.querySelector('#analysingArea').style.display = "none";
                     });
-                    
-
-                    
             });
 
 
@@ -379,8 +451,38 @@
         
 
         }
+
+        //回到上一頁:回到會員中心
+        function goBack() {
+            var baseUrl = new URL(window.location.href);
+            baseUrl.pathname = "/Membership/Membership";
+            window.location.href = baseUrl;
+        }
+
+        //Demo鍵:載入壞狗狗的圖片
+        $('#demoB').click(function (event) {
+            console.log("hi");
+            const imageUrl = '/images/baddog.jpg';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = 'baddog.jpg'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
+
+        //Demo鍵:載入好貓咪的圖片
+        $('#demoG').click(function (event) {
+            const imageUrl = '/images/goodcat.png';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = 'goodcat.png'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
     </script>
 
-    <!--新加入sweetalert2的cdn-->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 }

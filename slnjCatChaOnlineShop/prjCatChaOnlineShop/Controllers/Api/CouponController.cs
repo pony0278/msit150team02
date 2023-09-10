@@ -4,6 +4,7 @@ using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CDictionary;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
+using System.Drawing;
 using System.Text.Json;
 
 
@@ -69,18 +70,17 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
             //計算最終的總金額
             int finalTotalPrice = ((int)(cartItem.Sum(item => item.c小計) - couponBonus - loyaltyPointsDiscount + shippingfee));
-            HttpContext.Session.SetString("FinalTotalPrice", Convert.ToString(finalTotalPrice));
+            HttpContext.Session.SetString(CDictionary.SK_FINALTOTALPRICE,finalTotalPrice.ToString());
+            
 
-            CPayModel payModel = new CPayModel
-            {
-                subtotal=firstPrice,
-                shippingFee = shippingfee,
-                finalBonus = finalBonus,
-                finalAmount = finalTotalPrice,
-            };
-            string json = JsonSerializer.Serialize(payModel);
-            HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, json);
-
+            string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+            CPayModel payModel=JsonSerializer.Deserialize<CPayModel>(json);
+            payModel.subtotal = firstPrice;
+            payModel.shippingFee = shippingfee;
+            payModel.finalBonus=finalBonus;
+            payModel.finalAmount = finalTotalPrice;
+            string newJson = JsonSerializer.Serialize(payModel);
+            HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
 
             //創建一個匿名對象，商品更新後的總金額
             var response = new

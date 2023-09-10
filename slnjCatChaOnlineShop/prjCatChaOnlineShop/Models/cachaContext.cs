@@ -1010,9 +1010,8 @@ public partial class cachaContext : DbContext
             entity.Property(e => e.PaymentMethodId).HasColumnName("Payment Method ID");
             entity.Property(e => e.RecipientAddress).HasColumnName("Recipient Address");
             entity.Property(e => e.RecipientName).HasColumnName("Recipient Name");
-            entity.Property(e => e.RecipientPhone)
-                .HasMaxLength(10)
-                .HasColumnName("Recipient Phone");
+            entity.Property(e => e.RecipientPhone).HasColumnName("Recipient Phone");
+            entity.Property(e => e.ResultPrice).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.ShippingMethodId).HasColumnName("Shipping Method ID");
 
             entity.HasOne(d => d.Address).WithMany(p => p.ShopOrderTotalTable)

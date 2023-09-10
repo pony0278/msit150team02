@@ -317,9 +317,12 @@
 <button type="submit" id="testDBlogin" style="display:none">測試資料庫登入</button>
 
 <button type="submit" id="testTask" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;top: 770px;
-    left: 677px;
-}">
-    DEMO跨日重置
+    left: 677px;}">
+    DEMO跨日重置 
+</button>
+<button type="submit" id="makemoney" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;top: 770px;
+    left: 800px;}">
+    DEMO增加錢錢
 </button>
 
 <div id="sidebar">
@@ -363,10 +366,13 @@
     <script src="~/js/game/instructions.js"></script>
     <script src="~/js/game/catFeed.js"></script>
     <script src="~/js/game/taskFunction.js"></script>
-        
 
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--排行榜測試資料-->
     <script>
+
+
         $('#toggleSidebar').click(function () {
             var right = $('#sidebar').css('right') === '0px' ? '-400px' : '0px';
             $('#sidebar').animate({ right: right });
@@ -421,6 +427,61 @@
         };
         fetchDataAndProcess();
         initialize();
+
+
+        $('#testTask').click(function () {
+            
+            demoRestTask();
+            Swal.fire({
+                title: "日期已更新，請重新登入",
+                customClass: {
+                    confirmButton: 'alert-btn-login'
+                },
+                confirmButtonText: '確定'
+            }).then(() => {
+                $.ajax({
+                    type: "post",
+                    url: "/MemberLogout/Logout", // API 的 URL
+                    contentType: 'application/json', // 指定資料類型為 JSON
+                    success: function () {
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        console.log("登出失敗", error);
+                    }
+
+                });
+            });
+            
+        });
+
+
+        $('#makemoney').click(function () {
+
+            updateCCoint(10000);
+            fetchDataAndProcess();
+            initialize();
+        });
+
+        //function showTutorial(){
+           
+
+        //    $.ajax({
+        //        type: "post",
+        //        url: "/MemberLogout/Logout", // API 的 URL
+        //        contentType: 'application/json', // 指定資料類型為 JSON
+        //        success: function (data) {
+        //            if (data[0] == true)
+        //                tutorial.style.display = "block"
+        //        },
+        //        error: function (error) {
+        //            console.log("登出失敗", error);
+        //        }
+
+        //    });
+        //}
+
+        //showTutorial()
     </script>
 
         }

@@ -40,10 +40,10 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h2>結帳完成</h2>
+                <h2>去結帳</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a asp-controller="Index" asp-action="Index">首頁</a></li>
-                    <li class="breadcrumb-item active">結帳完成</li>
+                    <li class="breadcrumb-item active">去結帳</li>
                 </ul>
             </div>
         </div>
@@ -53,6 +53,7 @@
 <!--中間主畫面Start-->
 <div class="cart-box-main">
     <div class="container" style="max-width: 800px; margin: 0 auto;">
+        <h3 class="d-flex justify-content-center" style="color:#DE9E4F">請貓奴們確認訂單明細後再前往結帳喔</h3>
         <div class="row">
             <div class="odr-box">
                 <div class="title-left">
@@ -78,24 +79,24 @@
                 </div>
             </div>
         </div>
-        @if (Model != null && Model.getFinalPriceData !=null)
+        @if (Model != null && Model.getFinalShippmentData !=null)
         {
             <div class="row mt-3">
                 <div class="col-6">
                     <div class="title-left">
                         <h3>付款方式</h3> 
                     </div>
-                    <h4> @Model.getFinalPriceData.paymentMethod </h4>
+                    <h4> @Model.getFinalShippmentData.paymentMethod </h4>
                 </div>
                 <div class="col-6">
                     <div class="title-left">
                         <h3>運送方式</h3>
                     </div>
                     <div>
-                        <h4> @Model.getFinalPriceData.deliveryMethod </h4>
-                        <div>取件門市： @Model.getFinalPriceData.storeName </div>
-                        <div>取件姓名： @Model.getFinalPriceData.name </div>
-                        <div>取件人電話： @Model.getFinalPriceData.phone </div>
+                        <h4> @Model.getFinalShippmentData.deliveryMethod </h4>
+                        <span>取件門市：</span><div id="caddress" style="display: inline;"> @Model.getFinalShippmentData.storeName </div><br>
+                        <span>取件姓名：</span><div id="cname" style="display: inline;"> @Model.getFinalShippmentData.name</div><br> 
+                        <span>取件人電話：</span><div id="cphone" style="display: inline;"> @Model.getFinalShippmentData.phone</div>
                     </div>
                 </div>
             </div>
@@ -107,22 +108,22 @@
 
                     <div class="order-box">
                         <div class="d-flex">
-                            <h4>小計</h4>
-                            <div class="ml-auto font-weight-bold" id="finalSubtotal"> NT @Model.getFinalPriceData.subtotal  </div>
+                            <h4 class="mr-auto">小計</h4>
+                            <span class="mr-2 font-weight-bold">NT</span><div class=" font-weight-bold" id="finalSubtotal">@Model.getFinalPriceData.subtotal</div>
                         </div>
                         <div class="d-flex">
-                            <h4>運費</h4>
-                            <div class="ml-auto font-weight-bold" id="finalShippingFee"> +NT @Model.getFinalPriceData.shippingFee  </div>
+                            <h4 class="mr-auto">運費</h4>
+                            <span class="mr-2 font-weight-bold">+NT</span><div class=" font-weight-bold" id="finalShippingFee">@Model.getFinalPriceData.shippingFee</div>
                         </div>
                         <hr class="my-1">
                         <div class="d-flex">
-                            <h4>總折扣</h4>
-                            <div class="ml-auto font-weight-bold" id="finalTotalDiscount"> -NT @Model.getFinalPriceData.finalBonus  </div>
+                            <h4 class="mr-auto">總折扣</h4>
+                            <span class="mr-2 font-weight-bold">-NT</span><div class=" font-weight-bold" id="finalTotalDiscount">@Model.getFinalPriceData.finalBonus</div>
                         </div>
                         <hr>
                         <div class="d-flex gr-total">
-                            <h5>總計</h5>
-                            <div class="ml-auto h4" style="color:red" id="allTotalPrice"> NT @Model.getFinalPriceData.finalAmount  </div>
+                            <h5 class="mr-auto">總計</h5>
+                            <span class="mr-2 font-weight-bold" style="color:red">NT</span><div class=" h4" style="color:red" id="allTotalPrice">@Model.getFinalPriceData.finalAmount</div>
                         </div>
                         <hr>
 
@@ -144,7 +145,7 @@
                     去結帳
                 </button>
             </div>
-            <div>
+            <div >
                 @if (Model != null)
                 {
                     <input type="text" name="MerchantTradeNo" value="@Model.keyValuePairs["MerchantTradeNo"]" />
@@ -182,6 +183,7 @@
 <!--中間主畫面End-->
 @section Scripts{
     <!-- ALL JS FILES -->
+    
     <!--引用Bundle，這樣nav導覽與頁籤就可以使用-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
@@ -195,9 +197,10 @@
             crossorigin="anonymous"></script>
     <!---->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/jquery-3.2.1.min.js"></script>
+    @*<script src="~/js/jquery-3.2.1.min.js"></script>*@
     <script src="~/js/popper.min.js"></script>
     <script src="~/js/bootstrap.min.js"></script>
+    
     <!-- ALL PLUGINS -->
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
@@ -209,16 +212,16 @@
     <script src="~/js/baguetteBox.min.js"></script>
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
     <!--nav導覽與頁籤使用-->
-    <script src="~/js/myScript.js"></script>
+    @*<script src="~/js/myScript.js"></script>*@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-    <script src="~/js/pay.js"></script>
     <script>
+
         // 監聽送出訂單按鈕的點擊事件
-        $('#gotopay').on('click', (e) => {  
-            /* e.preventDefault();*/  /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+        $('#gotopay').on('click', (e) => {
+             /*e.preventDefault();*/  /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
             console.log("嚴重折壽耶^_^")
             let formData = $("#ecpayform").serializeArray();
             var json = {};
@@ -234,19 +237,30 @@
                 data: JSON.stringify(json),
                 success: function (res) {
                     console.log(res);
+                    console.log("存回我們自己的資料庫囉")
                     var memberId = $("#MemberId").text();
+                    var totalPrice = $("#allTotalPrice").text()
+                    var caddress=$("#caddress").text()
+                    var cname = $("#cname").text()
+                    var cphone = $("#cphone").text()
                     console.log("會員ID", memberId)
+                    console.log("會員價格", totalPrice)
+                    console.log("會員價格", cname)
+                    console.log("會員價格", cphone)
                     $.ajax({
                         type: 'POST',
                         url: '/CheckOut/AddNewOrder',
                         data:
                         {
                             MemberId: memberId,
-
+                            ResultPrice: totalPrice,
+                            RecipientAddress: caddress,
+                            RecipientName: cname,
+                            RecipientPhone: cphone,     
                         },
-                        success: function (res) {
+                        success: function (response) {
                         },
-                        error: function (err) {
+                        error: function (response) {
                             // 處理錯誤回應
                         },
                     });

@@ -188,6 +188,7 @@ $(document).ready(async function () {
                     $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                     $('.toast-body strong').text(response.message);
                     $('#shop-toast').toast('show');
+                    showCartBouble();
                 }
                 else {
                     if (response.messageNoQuantity) {

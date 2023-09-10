@@ -98,7 +98,7 @@
                     <h2>@Model.selectedProduct.pName</h2>
                     @if (Model.selectedProduct.pDiscount != null)
                     {
-                        <h5><del>$ @Model.selectedProduct.p優惠價格</del>$ @Model.selectedProduct.pPrice</h5>
+                        <h5><del>$ @Model.selectedProduct.pPrice</del>$ @Model.selectedProduct.p優惠價格</h5>
                     }
                     else
                     {
@@ -135,7 +135,7 @@
                                 <select id="attr" class="form-control">
                                     @{
 
-                                                @if (Model.selectedProduct.p子項目.Count() != 0)
+                                        @if (Model.selectedProduct.p子項目.Count() != 0)
                                         {
                                             foreach (var attr in Model.selectedProduct.p子項目)
                                             {
@@ -144,7 +144,7 @@
                                         }
                                         else
                                         {
-                                                    <option value="商品" selected>商品</option>
+                                            <option value="" selected>商品</option>//空字串=>null
                                         }
                                     }
 
@@ -296,18 +296,18 @@
                                 {
                                             <h5>$ @a.pPrice</h5>
                                 }
-                                        <a href="#" data-product-id=@a.pId type="button" class="add-to-cart-coustom">
+                                        <a href="#" data-product-id=@a.pId class="add-to-cart-coustom">
                                             <i class="fa-solid fa-cart-plus"></i>
                                         </a>
                                         @if (a.p是否加入收藏 == true)
                                 {
-                                            <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom favorited">
+                                            <a href="#" data-product-id=@a.pId class="add-to-wishlist-coustom favorited">
                                                 <i class="far fa-heart"></i>
                                             </a>
                                 }
                                 else
                                 {
-                                            <a href="#" data-product-id=@a.pId type="button" class="add-to-wishlist-coustom">
+                                            <a href="#" data-product-id=@a.pId class="add-to-wishlist-coustom">
                                                 <i class="far fa-heart"></i>
                                             </a>
                                 }
@@ -331,7 +331,7 @@
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
     <script src="~/js/inewsticker.js"></script>
-    <script src="~/js/bootsnav.js."></script>
+    <script src="~/js/bootsnav.js"></script>
     <script src="~/js/images-loded.min.js"></script>
     <script src="~/js/isotope.min.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
@@ -339,7 +339,7 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
-
+    
     <script>
         var rating = $('#review-avg-rating');
         var ratingAvg = $('#review-avg-rating').data('rating');
@@ -405,6 +405,7 @@
                             $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                             $('.toast-body strong').text(response.message);
                             $('#detail-toast').toast('show');
+                            showCartBouble();
                         }
                         else {
                             //購物車商品將超過可購買數量
@@ -478,6 +479,7 @@
                         $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                         $('.toast-body strong').text(response.message);
                         $('#detail-toast').toast('show');
+                        showCartBouble();
                     }
                     else {
                         if (response.messageNoQuantity) {
@@ -530,7 +532,6 @@
                 }
             });
         });
-
 
     </script>
 }

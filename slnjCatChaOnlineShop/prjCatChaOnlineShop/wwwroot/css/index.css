@@ -1,11 +1,6 @@
 body {
     font-family: 'Noto Sans TC', sans-serif;
     height: 100%;
-    font-size: 18px !important;
-}
-
-.all-content {
-    max-height: 100vh;
 }
 
 .close-icon {
@@ -153,6 +148,7 @@ body {
     background-color: #b95756;
     z-index: 1000;
     font-size: 18px;
+    margin-bottom: 0; /*這裡要加才不會讓解析度變高時下面跑版*/
 }
 
 .SideBar_Suppiler {
@@ -271,12 +267,7 @@ td .fas {
 }
 
 #messageRecipientContent {
-    border: 2px solid #000000;
-    border-radius: 6px;
-    padding: 10px;
     line-height: 35px;
-    color: #ffffff;
-    background-color: #b95756;
 }
 
 .time-colored-text {

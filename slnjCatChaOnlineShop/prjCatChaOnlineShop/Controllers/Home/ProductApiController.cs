@@ -38,8 +38,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         {
             return View();
         }
-        
 
+        #region 加入收藏
         public IActionResult AddToWishlist(int? pId)
         {
             if (_productService.GetCurrentMemberId() != null)
@@ -73,8 +73,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             //未登入的情況
             return Json(new { success = false, message = "請先登入!" });
         }
+        #endregion
 
-        #region 購物車
+        #region 加入購物車
         //修改數量
         [HttpPost]
         public IActionResult CartEditQuantity(int newQuantity, int pId, string attr) 
@@ -195,14 +196,19 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return Json(new { success = false, message = "請先登入!" });
 
         }
+        //得到購物車商品數量(非總商品數)
+        public IActionResult GetCartItemsCount()
+        {
+            int cartCount = GetCartFromSession().Count();
+            return Json(cartCount);
+        }
 
         //找到存取購物車的session
         private List<CCartItem> GetCartFromSession()
         {
-            string json = "";
             if (HttpContext.Session.Keys.Contains(CDictionary.SK_PURCHASED_PRODUCTS_LIST))
             {
-                json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
+                string json = HttpContext.Session.GetString(CDictionary.SK_PURCHASED_PRODUCTS_LIST);
                 return JsonSerializer.Deserialize<List<CCartItem>>(json);
             }
             else
@@ -218,6 +224,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
         }
 
         #endregion
+
+        #region 多重篩選
         public IActionResult MultipleFilter(int optionOrder, string? optionBrand, string? catName, int itemPerPage)
         {
             var prods = _productService.getProductItems();
@@ -263,19 +271,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return Json(prods.Take(itemPerPage));
             
         }
+        #endregion
 
-        //public IActionResult GetDetails(int? pId)
-        //{
-        //    var prodItem = _productService.getProductById(pId);
-
-        //    var cart = GetCartFromSession();
-
-
-        //    // 調用簡化方法，傳入產品物件和數量
-        //    _productService.addCartItem(cart, prodItem, 1);
-        //    SaveCart(cart);
-        //    return Json(new { success = true });
-        //}
+        //置頂公告
         public IActionResult GetTopAnnouncement()
         {
             var data = _context.GameShopAnnouncement

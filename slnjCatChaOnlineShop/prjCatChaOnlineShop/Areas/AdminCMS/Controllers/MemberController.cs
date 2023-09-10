@@ -19,6 +19,8 @@ using static System.Net.Mime.MediaTypeNames;
 using System.Net.Mime;
 using System.Drawing;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.Web;
+using System.Security.Cryptography;
 //using prjCatChaOnlineShop.Areas.AdminCMS.Util;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
@@ -265,7 +267,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     await _context.SaveChangesAsync();
 
                     // 成功保存數據後，調用發送郵件的 API
-                    sendTest(newAnnounce.NewsletterId, recipientEmail); // 傳遞新插入的Newsletter的ID和收件人郵箱
+                    sendMailLetter(newAnnounce.NewsletterId, recipientEmail); // 傳遞新插入的Newsletter的ID和收件人郵箱
                 }
             }
             catch
@@ -280,7 +282,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             return imageUrls;
         }
         [HttpPost]
-        public IActionResult sendTest(int newsletterId, string recipientEmailAddress)
+        public IActionResult sendMailLetter(int newsletterId, string recipientEmailAddress)
         {
             string senderEmail = "rong502njc@gmail.com"; //寄件人mail
             string senderPassword = "wdyhdmvdwniptybf"; //應用程式密碼： 如果您的 Gmail 帳號啟用了雙重驗證，您需要使用應用程式密碼而不是您的 Gmail 登錄密碼。您可以在 Google 帳號的安全性設置中建立一個應用程式密碼，然後將它用作您的密碼。
@@ -302,36 +304,6 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 string imageLink = insertedNewsletter.ImageUrl;
                 string imgFooter = newsletterTemplete.FooterImage;
 
-                // 構建HTML郵件內容，包含圖片
-                string htmlBody = $@"
-    <html>
-    <body>
-        <table align='center' cellspacing='0' cellpadding='0' width='80%'>
-            <tr>
-                <td style='padding: 0 2rem;'>
-                </td>
-                <td style='text-align: center;'>
-                    <p style='font-size: 14px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
-                    <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
-                    <div>
-                        <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='max-width: 100%;' /></a>
-                    </div>
-                        <a href='{imageLink}'>
-                    <button style='background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top:30px;margin-bottom: 30px;cursor: pointer;'>前往選購</button>
-</a>
-                    <img src = '{imgFooter}' alt = 'Image' style = 'max-width: 100%;' />
-                    <div style='background-color: #f0eff0;padding: 30px; text-align: center;' >
-                        <p>隱私條款 | 服務使用規範 | 取消訂閱電子報 </p>
-                        <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>
-                    </div>
-                </td>
-                <td style = 'padding: 0 2rem;' >
-                </td>
-            </tr>
-        </table>
-    </body>
-    </html>";
-
                 // 設置發件人的名稱和郵箱地址
                 MailAddress fromAddress = new MailAddress(senderEmail, "catCha 貓抓抓"); // 後面的參數是想要顯示的姓名
 
@@ -343,24 +315,98 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     EnableSsl = true,
                 };
 
-                // 創建郵件
-                MailMessage mailMessage = new MailMessage(senderEmail, recipientEmail)
-                {
-                    From = fromAddress, // 設置發件人
-                    Subject = mailSubject,
-                    Body = htmlBody,
-                    IsBodyHtml = true
-                };
+                // 將多個收件人拆分為單獨的電子郵件地址
+                string[] emailAddresses = recipientEmail.Split(',');
 
-                try
+                foreach (string emailAddress in emailAddresses)
                 {
-                    // 發送郵件
-                    smtpClient.Send(mailMessage);
-                    Console.WriteLine("郵件發送成功！");
+                    // 為每個收件人生成取消訂閱連結（直接顯示mail在網址上，不好的安全性）
+                    //string unsubscribeUrl = $"https://localhost:7218/AdminCMS/Unsubscribe/UnsubscribeView?email={emailAddress.Trim()}";
+
+                    // 用隨機生成的token或哈希值來隱藏電子郵件地址方法生成token，用於取消訂閱連結
+                    string token = GenerateUnsubscribeToken(emailAddress);
+
+                    // 生成取消訂閱連接，包含token
+                    string unsubscribeUrl = $"https://localhost:7218/AdminCMS/Unsubscribe/UnsubscribeView?token={token}";
+
+                    // 創建郵件並設置其内容
+                    MailMessage mailMessage = new MailMessage(senderEmail, emailAddress)
+                    {
+                        From = fromAddress,
+                        Subject = mailSubject,
+                        Body = GenerateEmailBody(unsubscribeUrl),
+                        IsBodyHtml = true
+                    };
+
+                    // 添加CC收件人
+                    mailMessage.CC.Add(new MailAddress("rong502njc@gmail.com", "貓抓抓管理員")); // CC收件人mail和姓名
+
+                    // 發送郵件...
+                    try
+                    {
+                        smtpClient.Send(mailMessage);
+                        Console.WriteLine("郵件發送成功！");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("郵件發送失敗：" + ex.Message);
+                    }
                 }
-                catch (Exception ex)
+
+                // 生成取消訂閱token
+                static string GenerateUnsubscribeToken(string emailAddress)
                 {
-                    Console.WriteLine("郵件發送失敗：" + ex.Message);
+                    // 使用安全的方式生成token，例如哈希電子郵件地址
+                    using (SHA256 sha256 = SHA256.Create())
+                    {
+                        byte[] hashBytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(emailAddress));
+                        return BitConverter.ToString(hashBytes).Replace("-", "").ToLower();
+                    }
+                }
+
+                // 生成郵件的 HTML 内容
+                string GenerateEmailBody(string unsubscribeUrl)
+                {
+                    string htmlBody = $@"
+    <html>
+    <head>
+        <link rel='stylesheet' type='text/css' href='/css/newsletter.css'>
+    </head>
+    <body>
+        <table align='center' cellspacing='0' cellpadding='0' width='80%'>
+            <tr>
+                <td style='padding: 0 2rem;'>
+                </td>
+                <td style='text-align: center;'>
+                    <p style='font-size: 14px;font-weight: 600;color: #595a5c;text-align: center;'>【此信件為系統自動發送，請勿直接回覆】</p>
+                    <img src='{imgHeader}' alt='Image' style='max-width: 100%;' />
+
+                <h1 style='margin-bottom: 28px;color: #000;'>mao&kou | 實木貓爬架</h1>
+                <h2 style='background-color: #dc143c;display: inline;padding: 10px 15px 10px 15px;border-radius: 34px;color: #FFF;'>現正特惠中</h2>
+                <h2 style='margin-top: 30px;color: #000;'>寵愛價<span style='font-size: 45px;color: crimson;'>79</span>折起</h2>
+                
+                    <div>
+                        <a href='{imageLink}'><img src='{imageSrc}' alt='Image' style='width: 500px;' /></a>
+                    </div>
+                        <a href='{imageLink}' style='display: block;background-color: #b95756;border-radius: 0px;color: #ffffff;display: inline-block;font-size: 18px;line-height: 48px;text-align: center;text-decoration: none;width: 185px;font-weight: 900;border: 4px solid #b95756;margin-top: 30px;margin-bottom: 30px;'>前往選購</a>
+                    <img src = '{imgFooter}' alt ='Image' style='max-width: 100%;' />
+                    <div style='background-color: #f0eff0;padding: 30px; text-align: center;color: #000;'>
+                        <!-- 在這裡插入取消訂閱連結 -->
+                        <p>隱私條款 | 服務使用規範 | <a href='{unsubscribeUrl}'>取消訂閱電子報</a></p>
+                        <p>106 台北市大安區復興南路一段 390 號 2 樓 © 2023 catCha Taiwan</p>
+                    </div>
+                </td>
+                <td style = 'padding: 0 2rem;' >
+                </td>
+            </tr>
+        </table>
+    </body>
+    </html>";
+
+                    // 將取消訂閱連結插入到 HTML 内容中
+                    htmlBody = htmlBody.Replace("{UnsubscribeLink}", unsubscribeUrl);
+
+                    return htmlBody;
                 }
             }
             else

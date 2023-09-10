@@ -32,7 +32,7 @@
 </head>
 
 <body>
-    <div class="d-flex all-content">
+    <div class="d-flex">
 
         <ul class="SideBar text-white">
 
@@ -52,20 +52,38 @@
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
+
+            <li class="nav-item active">
+                <a class="nav-link" asp-area="AdminCMS" asp-controller="Dashboard" asp-action="Dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="title">儀表板</span>
+                </a>
+            </li>
+
             <li class="nav-item active">
                 <a class="nav-link" asp-area="AdminCMS" asp-controller="DataAnalysis" asp-action="DataAnalysis">
-
                     <i class="fas fa-chart-pie"></i>
                     <span class="title">數據分析</span>
                 </a>
             </li>
+
+           @*  <li class="nav-item active">
+                <a class="nav-link" asp-area="AdminCMS" asp-controller="Dashboard" asp-action="Dashboard">
+                    <i class="fas fa-chart-pie"></i>
+                    <span class="title">儀表板</span>
+                </a>
+                <a class="nav-link" asp-area="AdminCMS" asp-controller="DataAnalysis" asp-action="DataAnalysis">
+                    <i class="fas fa-chart-pie"></i>
+                    <span class="title">數據分析</span>
+                </a>
+            </li> *@
 
             <!-- Divider -->
             <hr class="sidebar-divider my-0">
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item active">
-                <a class="nav-link" href="/AdminCMS/Member/Member">
+                <a class="nav-link" asp-area="AdminCMS" asp-controller="Member" asp-action="Member">
                     <i class="fas fa-user"></i>
                     <span class="title">會員管理</span>
                 </a>
@@ -118,7 +136,7 @@
             <li class="nav-item">
                 <a class="nav-link" asp-area="AdminCMS" asp-controller="Service" asp-action="Service">
                     <i class="fas fa-headset"></i>
-                    <span class="title">客訴回覆</span>
+                    <span class="title">客服回覆</span>
                 </a>
             </li>
 

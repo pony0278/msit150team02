@@ -244,10 +244,10 @@
             success: function (response) {
                 console.log(response)
                 // 更新頁面上的相關信息，例如折扣金額和總金額
-                $('#couponBonus').text("- NT" + response.couponBonus); // 優惠券折扣金額
-                $('#loyaltyPointsBonus').text("- NT" + response.loyaltypoints); // 紅利折扣金額
-                $('#shippingFee').text("+ NT" + response.shippingfee);//運費
-                $('#allTotalPrice').text("NT" + response.finalTotalPrice); // 總金額
+                $('#couponBonus').text(response.couponBonus); // 優惠券折扣金額
+                $('#loyaltyPointsBonus').text( response.loyaltypoints); // 紅利折扣金額
+                $('#shippingFee').text(response.shippingfee);//運費
+                $('#allTotalPrice').text(response.finalTotalPrice); // 總金額
 
                 // 使用jQuery选择器找到TotalAmount输入框，并设置其值
                 /*$('input[name="TotalAmount"]').val(response.finalTotalPrice);*/
@@ -317,6 +317,7 @@
         });
     });
 
+    
 
     //監聽checkbox變更事件
     //同意退換貨條款的選項為必勾選的項目，若沒有勾選擇無法送出訂單

@@ -101,7 +101,7 @@ function loadTask() {
 function updateTaskProgress(TaskId) {
     $.ajax({
         type: "POST",
-        url: "/Task/UpdteTask", // API 的 URL
+        url: "/Task/UpdateTask", // API 的 URL
         contentType: 'application/json', // 指定資料類型為 JSON
         data: JSON.stringify({ TaskId: TaskId }),
         success: function (data) {
@@ -115,10 +115,7 @@ function updateTaskProgress(TaskId) {
 }
 
 
-$('#testTask').click(function () {
-    console.log('執行任務12')
-    complteTaskReward()
-});
+
 
 
 function complteTaskReward(taskid) {//任務完成獲得貓幣的方法
@@ -149,3 +146,22 @@ function ResetTaskAfterReward(TaskId) {
         }
     });
 } 
+
+//DEMO用重置日期
+
+function demoRestTask() {
+    $.ajax({
+        type: "GET",
+        url: "/Task/demoRest", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        success: function (data) {
+            loadTask()
+            console.log(data);
+        },
+        error: function (error) {
+            console.log("資料更新失敗", error);
+        }
+
+    });
+
+}

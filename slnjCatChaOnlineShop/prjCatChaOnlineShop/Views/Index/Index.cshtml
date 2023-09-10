@@ -106,8 +106,9 @@
         .swiper-member-say {
             color: #818181;
         }
-        .hideID{
-            display:none;
+
+        .hideID {
+            display: none;
         }
     </style>
 }
@@ -213,50 +214,50 @@
             @{
                 foreach (var item in Model.OrderByDescending(p => p.p上架時間).Take(4).ToList())
                 {
-                        <!-- start prod  -->
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
-                                        <div class="type-lb">
+                    <!-- start prod  -->
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId = item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
+                                    <div class="type-lb">
                                         @if (item.p優惠價格 != null)
                                         {
                                             <p class="sale">Sale</p>
                                         }
-                                        </div>
-                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                     </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
-                                    @if (item.pDiscount != null)
-                                {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
-                                }
-                                else
-                                {
-                                        <h5>$ @item.pPrice</h5>
-                                }
-                                    <a data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
-                                    @if (item.p是否加入收藏)
-                                {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                }
-                                else
-                                {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                }
+                                    <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
                                 </div>
+                            </a>
+                            <div class="why-text">
+                                <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                @if (item.pDiscount != null)
+                                {
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
+                                }
+                                else
+                                {
+                                    <h5>$ @item.pPrice</h5>
+                                }
+                                <a data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+                                @if (item.p是否加入收藏)
+                                {
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                }
                             </div>
                         </div>
-                        <!-- end prod  -->
+                    </div>
+                    <!-- end prod  -->
                 }
             }
         </div>
@@ -286,10 +287,10 @@
             @{
                 foreach (var item in Model.OrderBy(p => p.p剩餘庫存).Take(4).ToList())
                 {
-                        <div class="col-lg-3 col-md-6 special-grid best-seller">
-                            <div class="products-single-custom fix">
-                                <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
-                                    <div class="box-img-hover">
+                    <div class="col-lg-3 col-md-6 special-grid best-seller">
+                        <div class="products-single-custom fix">
+                            <a href="@Url.Action("ShopDetail", new {pId =  item.pId })" class="shop-prod-click" title="@item.pName">
+                                <div class="box-img-hover">
                                     <div class="type-lb">
                                         @if (item.p優惠價格 != null)
                                         {
@@ -297,40 +298,40 @@
                                         }
                                     </div>
                                     <img src="@item.p圖片路徑.ToList().FirstOrDefault()" class="index-prod-img" alt="Image" />
-                                    </div>
-                                </a>
-                                <div class="why-text">
-                                    <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
-                                    @if (item.pDiscount != null)
-                                {
-                                        <h5>$ @item.p優惠價格</h5>
-                                        <del>$ @item.pPrice</del>
-                                }
-                                else
-                                {
-                                        <h5>$ @item.pPrice</h5>
-                                }
-                                    <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
-                                        <i class="fa-solid fa-cart-plus"></i>
-                                    </a>
-
-                                    @if (item.p是否加入收藏)
-                                {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                }
-                                else
-                                {
-                                        <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
-                                            <i class="far fa-heart"></i>
-                                        </a>
-                                }
-
                                 </div>
+                            </a>
+                            <div class="why-text">
+                                <h4 class="for-quantity" data-quantity=@item.p剩餘庫存>@item.pName</h4>
+                                @if (item.pDiscount != null)
+                                {
+                                    <h5>$ @item.p優惠價格</h5>
+                                    <del>$ @item.pPrice</del>
+                                }
+                                else
+                                {
+                                    <h5>$ @item.pPrice</h5>
+                                }
+                                <a href="#" data-product-id=@item.pId class="add-to-cart-coustom">
+                                    <i class="fa-solid fa-cart-plus"></i>
+                                </a>
+
+                                @if (item.p是否加入收藏)
+                                {
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom favorited">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                }
+                                else
+                                {
+                                    <a href="#" data-product-id=@item.pId class="add-to-wishlist-coustom">
+                                        <i class="far fa-heart"></i>
+                                    </a>
+                                }
+
                             </div>
                         </div>
-                        <!-- end prod1  -->
+                    </div>
+                    <!-- end prod1  -->
                 }
             }
 
@@ -382,7 +383,7 @@
         </div>
         <div class="chat-input">
             <input type="text" id="chat-input" placeholder="輸入訊息" />
-            
+
         </div>
     </div>
 </div>
@@ -398,7 +399,7 @@
         </div>
         <div class="position-absolute top-50 start-50 translate-middle">
             <div class="popup" id="my-popup">
-                <img src="https://i.imgur.com/Db9cwjE.png" alt="Popup Image" class="popup-image">
+                <img src="https://i.imgur.com/z3dc846.png" alt="Popup Image" class="popup-image">
             </div>
             <div class="animate animate02">
                 <div class="catAnimate "></div>
@@ -433,7 +434,7 @@
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
     <script src="~/js/inewsticker.js"></script>
-    <script src="~/js/bootsnav.js."></script>
+    <script src="~/js/bootsnav.js"></script>
     <script src="~/js/images-loded.min.js"></script>
     <script src="~/js/isotope.min.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
@@ -447,48 +448,17 @@
         var productIndexNew = $('#productIndexNew');
         var productIndexSale = $('#productIndexSale');
 
-        // 點擊商品時獲取識別ID
-        // productIndexNew.on('click', '.shop-prod-click', function () {
-        //     var productId = $(this).data('product-id');
-        //     $.ajax({
-        //         url: '/ProductApi/GetDetail',
-        //         type: 'GET',
-        //         data: { pId: productId },
-        //         dataType: 'html',
-        //         success: function (response) {
-        //             console.log('GoToDetail:', response.message);
-        //         },
-        //         error: function (error) {
-        //             console.error('Ajax Error:', error);
-        //         }
-        //     });
-        // });
-        // productIndexSale.on('click', '.shop-prod-click', function () {
-        //     var productId = $(this).data('product-id');
-        //     $.ajax({
-        //         url: '/ProductApi/GetDetail',
-        //         type: 'GET',
-        //         data: { pId: productId },
-        //         dataType: 'html',
-        //         success: function (response) {
-        //             console.log('Added to Cart:', response.message);
-        //         },
-        //         error: function (error) {
-        //             console.error('Ajax Error:', error);
-        //         }
-        //     });
-        // });
         //加入購物車:獲取id---------------------------------------------------------
 
         productIndexNew.on('click', '.add-to-cart-coustom', function (e) {
             e.preventDefault(); // 阻止<a>標籤的點擊預設行為
-            
+
             var productId = $(this).data('product-id');
             var count = parseInt($(".for-quantity").data('quantity'));
             console.log(count);
-
+            //缺貨
             if (isNaN(count) || count == 0) {
-                //缺貨
+                
                 $('.toast-body i').removeClass();
                 $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
                 $('.toast-body strong').text('缺貨中');
@@ -502,19 +472,23 @@
                     data: { pId: productId },
                     dataType: 'json',
                     success: function (response) {
+                        //成功加入
                         if (response.success) {
                             $('.toast-body i').removeClass();
                             $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                             $('.toast-body strong').text(response.message);
                             $('#live-toast').toast('show');
+                            showCartBouble();
                         }
                         else {
+                            //購物車商品將超過可購買數量
                             if (response.messageNoQuantity) {
                                 $('.toast-body i').removeClass();
                                 $('.toast-body i').addClass('toast-err fa-solid fa-circle-xmark fa-fade fa-lg');
                                 $('.toast-body strong').text(response.messageNoQuantity);
                                 $('#live-toast').toast('show');
                             }
+                            //未登入
                             else {
                                 $('.toast-body i').removeClass();
                                 $('.toast-body i').addClass('toast-warn fa-solid fa-triangle-exclamation fa-fade fa-lg');
@@ -557,6 +531,8 @@
                             $('.toast-body i').addClass('toast-added fa-regular fa-circle-check fa-beat fa-lg');
                             $('.toast-body strong').text(response.message);
                             $('#live-toast').toast('show');
+                            showCartBouble();
+
                         }
                         else {
                             if (response.messageNoQuantity) {
@@ -890,8 +866,8 @@
             const userClass = (messages.includes("客服")) ? "other-message" : "own-message";
 
             const newMessage = $(`<div class="message ${userClass}">
-                                                    <span class="username"><strong></strong></span> ${message}
-                                          </div>`);
+                                                            <span class="username"><strong></strong></span> ${message}
+                                                  </div>`);
 
             chatWindow.prepend(newMessage);
         });
@@ -901,16 +877,16 @@
             var admiin = $('.chat-input');
             var chat = $('#chating')
             chat.html("")
-            var hasAdminOnline = false;  
+            var hasAdminOnline = false;
             $.each(users, function (index, value) {
                 if (value.Name == "客服人員") {
-                    hasAdminOnline = true; 
+                    hasAdminOnline = true;
                     var btn = $(`<button class="chat-submit" connectionId="${value.ConnectionID}" id="chat-submit" onclick="sendMessages(this)"><i class="material-icons">送出</i></button>`);
                     admiin.append(btn);
-                    return false;  
+                    return false;
                 }
             });
-            if (hasAdminOnline !== true) {  
+            if (hasAdminOnline !== true) {
                 const word = $(`<p>客服人員不在線上</p>`);
                 chat.append(word);
             }

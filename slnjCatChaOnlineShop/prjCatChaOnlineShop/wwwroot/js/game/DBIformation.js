@@ -124,9 +124,7 @@ async function fetchDataAndProcess() {
         const information = await fetchDBData();
         const userData = await initialize();
         //多加入一個用來判斷要不要自動開啟遊戲說明
-        if (information[0].RunGameHighestScore == 0) {
-            tutorial.style.display = "block"
-        }
+        
         
 
 
@@ -171,4 +169,5 @@ async function fetchDataAndProcess() {
         console.error('錯誤:', error);
     }
 }
+
 

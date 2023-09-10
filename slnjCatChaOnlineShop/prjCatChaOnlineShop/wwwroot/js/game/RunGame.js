@@ -24,7 +24,7 @@
 
     let userScore = 0
     let blockCycle = 0;
-    const speedupPara = 5
+    const speedupPara = 3
 
 
     class ScoreDisplay {

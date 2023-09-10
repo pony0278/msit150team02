@@ -13,52 +13,33 @@ namespace prjCatChaOnlineShop.Controllers.Api
     {
         private readonly cachaContext _context;
         public CheckOutController(cachaContext context)
-        { 
-        _context = context;
+        {
+            _context = context;
         }
 
-        public IActionResult paymentSelected([FromBody] CPayModel requestData)
+        //儲存使用者的付款方式、運送方式、取件門市、姓名、電話
+        public IActionResult paymentSelected([FromBody] CShippmentModel requestData)
         {
-            string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
-            CPayModel PayModel = JsonSerializer.Deserialize<CPayModel>(json);
-            PayModel.paymentMethod = requestData.paymentMethod;
-            PayModel.deliveryMethod = requestData.deliveryMethod;
-            PayModel.storeName = requestData.storeName;
-            PayModel.name = requestData.name;
-            PayModel.phone = requestData.phone;
-            string newJson = JsonSerializer.Serialize(PayModel);
-            HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
-            //CPayModel payModel = new CPayModel
-            //{
-            //    paymentMethod = paymentMethod,
-            //};
-            //var json = JsonSerializer.Serialize(payModel);
-            //HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
+            CShippmentModel shippment = new CShippmentModel
+            {
+                paymentMethod = requestData.paymentMethod,
+                deliveryMethod = requestData.deliveryMethod,
+                storeName = requestData.storeName,
+                name = requestData.name,
+                phone = requestData.phone,
+            };
+            string json = JsonSerializer.Serialize(shippment);
+            HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
 
             return RedirectToAction("Pay", "Cart");
         }
-        //public IActionResult paymentSelected(string paymentMethod)
-        //{
-        //    string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
-        //    CPayModel PayModel = JsonSerializer.Deserialize<CPayModel>(json);
-        //    PayModel.paymentMethod = paymentMethod;
-        //    string newJson = JsonSerializer.Serialize(PayModel);
-        //    HttpContext.Session.SetString(CDictionary.SK_PAY_MODEL, newJson);
-        //    //CPayModel payModel = new CPayModel
-        //    //{
-        //    //    paymentMethod = paymentMethod,
-        //    //};
-        //    //var json = JsonSerializer.Serialize(payModel);
-        //    //HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
 
-        //    return View();
-        //}
 
         public IActionResult StoreCouponId([FromBody] CSelectedCouponId selectedCouponId)
         {
             int Id = selectedCouponId.CouponId;
             HttpContext.Session.SetInt32("CouponId", Id);
-            return View(); 
+            return View();
         }
         public IActionResult AddNewOrder([FromForm] CAddorderViewModel addOrder)
         {
@@ -67,7 +48,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 try
                 {
                     //會員最後使用的優惠券ID
-                    int couponID = HttpContext.Session.GetInt32("CouponId")??0;
+                    int couponID = HttpContext.Session.GetInt32("CouponId") ?? 0;
 
                     // 新建訂單
                     ShopOrderTotalTable neworder = new ShopOrderTotalTable
@@ -76,7 +57,12 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         OrderCreationDate = DateTime.Now,
                         OrderStatusId = 2,
                         PaymentMethodId = 2,
+                        ShippingMethodId = 2,
                         CouponId = couponID,
+                        RecipientAddress = addOrder.RecipientAddress,
+                        RecipientName = addOrder.RecipientName,
+                        RecipientPhone = addOrder.RecipientPhone,
+                        ResultPrice = addOrder.ResultPrice,
                     };
                     _context.Add(neworder);
                     _context.SaveChanges(); // 
@@ -109,6 +95,15 @@ namespace prjCatChaOnlineShop.Controllers.Api
                             _context.SaveChanges();
                         }
                     }
+
+                    //把該次訂單使用的優惠券CouponStatusID更新為1
+                    var updateCouponStatus = _context.ShopMemberCouponData.FirstOrDefault(item => item.MemberId == addOrder.MemberId && item.CouponId == couponID);
+                    if (updateCouponStatus != null)
+                    {
+                        updateCouponStatus.CouponStatusId = true;
+                        _context.SaveChanges();
+                    }
+
                     transaction.Commit(); // 提交事務
                     return View();
                 }

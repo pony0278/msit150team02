@@ -509,3 +509,6 @@ const dailyMissionBTN = new mainpageButton(15, 140, 40, 40, dailyMissionBTNimg);
 
     }
     animate();
+if (hightestScore == 0) {
+    tutorial.style.display = "block"
+}

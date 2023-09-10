@@ -55,11 +55,11 @@
                         <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login" onsubmit="return validateForm()">
                             <div class="user">
                                 <div class="form-group mb-4">
-                                    <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" value="catcha" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
+                                    <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
                                 </div>
                                 <div class="form-group mb-4">
                                     <div class="password-container">
-                                        <input type="password" name="AdminPassword" class="form-control form-control-user" value="catcha123" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
+                                        <input type="password" name="AdminPassword" class="form-control form-control-user" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
                                         <span id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></span>
                                     </div>
                                 </div>
@@ -75,6 +75,9 @@
                             <p id="ViewBag_ErrorMessage" style="color:red;">@ViewBag.ErrorMessage</p>
                         }
                     <!--右側區塊-->
+                    <button class="btn btn-danger" onclick="setAdminValue()">管理員demo</button>
+                    <button class="btn btn-dark" onclick="setErrorValue()">驗證demo1</button>
+                    <button class="btn btn-dark" onclick="setEmptyValue()">驗證demo2</button>
                 </div>
             </div>
         </div>
@@ -84,6 +87,21 @@
 <script src="~/js/jquery-3.2.1.min.js"></script>
 
 <script>
+    //==============demo鍵
+    function setAdminValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("catcha123");
+    }
+
+    function setErrorValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("catch");
+    }
+
+    function setEmptyValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("");
+    }
     //==============密碼眼睛
     $('#togglePassword').click(function () {
         if ($('#InputPassword').attr('type') === 'password') {

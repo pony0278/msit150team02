@@ -1,0 +1,274 @@
+﻿@{
+    ViewData["Title"] = "儀表板 (Dashboard)";
+    Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
+}
+
+@section Styles{
+    <style>
+        .border-left-primary {
+            border-left: 0.25rem solid #4e73df !important;
+        }
+
+        .border-left-success {
+            border-left: 0.25rem solid #1cc88a !important;
+        }
+
+        .border-left-info {
+            border-left: 0.25rem solid #ff6200 !important;
+        }
+
+        .border-left-danger {
+            border-left: 0.25rem solid #bb2d3b !important;
+        }
+
+        .text-xs {
+            font-size: 2rem;
+        }
+
+        .font-weight-bold {
+            font-weight: 700 !important;
+        }
+
+        .text-gray-300 {
+            color: #dddfeb !important;
+        }
+
+        .star-rating {
+            font-size: 40px; /* 調整星星的大小 */
+            display: inline-block;
+            vertical-align: middle; /* 垂直居中對齊 */
+        }
+
+        .star {
+            color: gold;
+            display: inline-block; /* 使星星內容以行內元素方式顯示 */
+            line-height: 1; /* 避免星星之間有多餘的間距 */
+        }
+
+        .decimal-star {
+            font-size: 40px; /* 調整小數部分星星的大小 */
+            color: transparent;
+            overflow: hidden;
+            display: inline-block;
+            vertical-align: middle; /* 垂直居中對齊 */
+            line-height: 1; /* 避免星星之間有多餘的間距 */
+            margin-left: -5px;
+        }
+
+        .decimal-star-fill {
+            color: gold;
+            display: inline-block;
+            width: 0;
+            overflow: hidden;
+            transition: width 1s ease;
+        }
+    </style>
+}
+
+<div class="middle-content">
+    <h2 class="mt-3">儀表板 (Dashboard)</h2>
+    <div class="container-fluid mt-4">
+        <div class="row">
+            <div class="row">
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        本月新加入會員總數量
+                                    </div>
+                                    <div class="h1 mb-0 font-weight-bold text-gray-800" id="thisMonthRegistrations"></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                        本月單筆訂單金額最高會員
+                                    </div>
+                                    <div class="h1 mb-0 font-weight-bold text-gray-800" id="topMember"></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        本月訂單總數量
+                                    </div>
+                                    <div class="h1 mb-0 font-weight-bold text-gray-800" id="orderCompletedTotal"></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        本月已成交訂單總金額
+                                    </div>
+                                    <div class="h1 mb-0 font-weight-bold text-gray-800" id="totalResultPrice"></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-uppercase mb-3" style="color: #ff6200;">
+                                        本月銷售 TOP 1 <i class="fas fa-trophy"></i> 產品
+                                    </div>
+                                    <div class="h3 mb-0 font-weight-bold text-gray-800" id="allProductTotal"></div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-6 col-md-12 mb-4">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-uppercase mb-1" style="color: #ff6200;">
+                                        產品總平均評分
+                                    </div>
+                                    <div class="star-rating">
+                                        <!-- 五顆星星 -->
+                                        <span class="star">★</span>
+                                        <span class="star">★</span>
+                                        <span class="star">★</span>
+                                        <span class="star">★</span>
+                                        <!-- 小數部分星星 -->
+                                        <span class="decimal-star">
+                                            <span class="decimal-star-fill">★</span>
+                                        </span>
+                                    </div>
+                                    <span class="h1 mb-0 font-weight-bold text-gray-800" id="starAverageScore" style="display: inline-block;vertical-align: middle;"></span>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Card Example -->
+                    <div class="col-xl-6 col-md-12 mb-4">
+                        <a asp-area="AdminCMS" asp-controller="Service" asp-action="Service" style="text-decoration: none;">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-danger text-uppercase mb-1">
+                                            客服待處理案件
+                                        </div>
+                                        <div class="h1 mb-0 font-weight-bold text-gray-800" id="memberComplaintCase"></div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                    </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            $.ajax({
+                url: '/AdminCMS/Dashboard/GetApiData', // 相对路径
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    console.log(data);
+
+                    // 設定平均評分
+                    const averageRating = data.data.starAverageScore;
+                    const integerPart = Math.floor(averageRating);
+                    const decimalPart = averageRating - integerPart;
+
+                    // 填充整數部分的星星
+                    for (let i = 0; i < integerPart; i++) {
+                        $('.star:eq(' + i + ')').css('color', 'gold');
+                    }
+
+                    // 如果有小數部分，創建一個新的span表示小數星星
+                    if (decimalPart > 0) {
+                        const decimalStar = $('<span>').addClass('decimal-star');
+                        const decimalStarFill = $('<span>').addClass('decimal-star-fill').text('★');
+                        decimalStar.append(decimalStarFill);
+                        $('.star-rating').append(decimalStar);
+
+                        // 使用CSS動畫設定小數星星的填充
+                        decimalStarFill.css('width', (decimalPart * 100) + '%');
+                    }
+
+                    // 在頁面上更新數據
+                    $('#topMember').text(data.data.topMember);
+                    $('#thisMonthRegistrations').text(data.data.thisMonthRegistrations);
+                    $('#orderCompletedTotal').text(data.data.totalOrdersCompleted);
+                    $('#totalResultPrice').text(data.data.totalOrdersPriceCompleted);
+                    $('#allProductTotal').text(data.data.allProductTotal);
+                    $('#starAverageScore').text(data.data.starAverageScore);
+                    $('#memberComplaintCase').text(data.data.memberComplaintCase);
+                },
+                error: function (error) {
+                    // 處理錯誤
+                    console.error('發生錯誤：', error);
+                }
+            });
+        });
+
+
+    </script>
+}

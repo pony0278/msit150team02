@@ -143,9 +143,9 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">帳號</label>
-                                                            <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
-                                                                   class="form-control" readonly />
+                                                            <label class="fs-6">電子信箱</label>
+                                                            <input type="email" class="form-control" id="emailInput" name="Email"
+                                                                   placeholder="電子信箱" readonly />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <div class="d-flex justify-content-between">
@@ -162,7 +162,7 @@
                                                         <div class="col-md-6">
                                                             <label class="fs-6">姓名</label>
                                                             <input type="text" placeholder="姓名" id="nameInput" name="Name"
-                                                                   class="form-control" required="required" />
+                                                                   class="form-control" required />
                                                         </div>
                                                         <div class="col-md-6">
                                                             <label class="fs-6">生日</label>
@@ -171,14 +171,16 @@
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">電子信箱</label>
-                                                            <input type="email" class="form-control" id="emailInput" name="Email"
-                                                                   placeholder="電子信箱" required />
-                                                        </div>
-                                                        <div class="col-md-6">
                                                             <label class="fs-6">手機號碼</label>
                                                             <input type="tel" pattern="^\d{10}$" placeholder="手機號碼" id="phoneNumberInput" name="PhoneNumber"
                                                                    class="form-control" required />
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <label class="fs-6">訂閱電子報</label>
+                                                            <select class="form-control form-select" id="subscribeInput" name="Subscribe" required>
+                                                                <option value="false">不了，忍痛放棄</option>
+                                                                <option value="true">是的，我想收到最新資訊</option>
+                                                            </select>
                                                         </div>
                                                     </div>
                                                     <!--住址-->
@@ -186,7 +188,7 @@
                                                         <div class="col-md-12">
                                                             <label class="fs-6">住址</label>
                                                             <div class="input-group">
-                                                                <input type="text" placeholder="姓名" id="addressInput" name="address"
+                                                                <input type="text" placeholder="住址" id="addressInput" name="Address"
                                                                        class="form-control" required="required" />
                                                                 <div class="input-group-append">
                                                                     <button class="btn  btn-warning mx-2 btn-sm fs-5" type="button" data-bs-toggle="modal" data-bs-target="#mapModal">+</button>
@@ -496,7 +498,8 @@
                     <div class="modal-header d-flex justify-content-between">
                         <div>
                             <input id="locationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
-                            <button onclick="searchLocation()">搜尋</button>
+                            <button onclick="searchLocation()" class="btn-sm add-address ">搜尋</button>
+                            <button id="nightMarket" class="btn-sm add-address ">demo</button>
                         </div>
                         <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
                     </div>
@@ -524,6 +527,7 @@
                                                 <td><input type="text" id="orderMin" name="orderMin"></td>
                                                 <td>查詢迄日:</td>
                                                 <td><input type="text" id="orderMax" name="orderMax"></td>
+                                                <td><button class="btn hvr-hover mx-2" id="shitDownload" type="button">demo圖片</button></td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -536,6 +540,7 @@
                                                 <th scope="col">收件電話</th>
                                                 <th scope="col">付款方式</th>
                                                 <th scope="col">訂單狀態</th>
+                                                <th scope="col">付款金額</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -555,13 +560,10 @@
             <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
-                        <div class="col d-flex justify-content-end">
-                            <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">
+                        <div class="col d-flex justify-content-end my-2">
+                            <button type="button" class="btn btn-warning px-2" data-bs-dismiss="modal">
                                 X
                             </button>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label class="font-weight-bold fs-5">消費總額: <span id="consumptionAmount"></span></label>
                         </div>
                         <div class="container">
                             <table class="table  table-bordered " id="orderDetailTable">
@@ -632,6 +634,9 @@
                                     附上圖片
                                     <input type="file" name="image" id="returnImageInput" accept="image/*" style="display: none;">
                                 </label>
+                                <button class="btn btn-warning btn-sm my-2" id="catShitReturn" type="button">
+                                    demo備註
+                                </button>
                                 <div class="text-center">
                                     <img id="uploadReturnImagePreview" src='' alt="" class="mx-auto" style="max-width: 200px; max-height: 200px;">
                                 </div>
@@ -650,7 +655,6 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -701,13 +705,18 @@
                                 </div>
                                 <div class="container">
                                     <div class="row">
-                                        <div class="col-md-4 mx-auto">
+                                        <div class="col-md-3 mx-auto">
                                             <button type="submit" class="btn btn-danger btn-block" id="saveComment">送出</button>
                                         </div>
-                                        <div class="col-md-4 mx-auto">
+                                        <div class="col-md-3 mx-auto">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
                                                     data-bs-dismiss="modal">
                                                 取消
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 mx-auto">
+                                            <button type="button" class="btn btn-outline-secondary btn-block" id="commentDemo">
+                                                demo評論
                                             </button>
                                         </div>
                                     </div>
@@ -806,24 +815,6 @@
         <!--4.收藏紀錄的內容-->
         <div class="tab-pane fade" id="collect" role="tabpanel" aria-labelledby="collect-tab">
             <section class="my-5">
-                <!--
-                <div class="btn-group d-flex" role="group" aria-label="Button group with nested dropdown">
-                    <button id="btnGroupDrop1" type="button" class="btn btn-secondary" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <a class="btn-white" href="#btnGroupDrop1"><i class="bi bi-share ic-t"></i>分享</a>
-                    </button>
-                    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-                        <a class="dropdown-item fb-xfbml-parse-ignore" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1&amp;src=sdkpreparse">
-                            <i class="bi bi-facebook"></i> Facebook
-                        </a>
-                        <a class="dropdown-item" href="https://social-plugins.line.me/lineit/share?url=https%3a%2f%2fkaramucho.asuscomm.com%2fstore%2fRestaurant%2f1"
-                           target="_blank" onclick="LineIt.loadButton()"><i class="bi bi-line"></i> LINE</a>
-                        <a id="gmail" class="dropdown-item" href="javascript:void(0)"><i class="bi bi-envelope"></i> Gmail</a>
-                        <a class="dropdown-item" href="javascript:copyUrl();"><i class="bi bi-link"></i> 複製連結</a>
-                        <button type="button" id="docSave">下載pdf</button>
-                        <button onclick="downloadPDF()">下載表格為 PDF</button>
-                    </div>
-                </div>
-                -->
                 <div class="container">
                     <div class="row">
                         <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
@@ -894,7 +885,7 @@
 
         <!--彈跳視窗:客訴內容-->
         <div class="modal fade" id="ComplaintModal">
-            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="col d-flex justify-content-end">
@@ -962,7 +953,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <h4 class="font-weight-bold">內容</h4>
-                                    <textarea class="form-control" id="ComplaintContent" rows="4" name="ComplaintContent"
+                                    <textarea class="form-control" id="ComplaintContent" rows="6" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
                                 </div>
                                 <div class="form-group" id="aiCheck" style="display: none;">
@@ -972,11 +963,14 @@
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
+                                    <!--
                                     <button class="btn hvr-hover mx-2" id="foodDemo" type="button">食品安全</button>
                                     <button class="btn hvr-hover mx-2" id="gameDemo" type="button">遊戲道具</button>
                                     <button class="btn hvr-hover mx-2" id="addressDemo" type="button">收件地址</button>
                                     <button class="btn hvr-hover mx-2" id="emailDemo" type="button">更改信箱</button>
                                     <button class="btn hvr-hover mx-2" id="newsletterDemo" type="button">訂電子報</button>
+                                    -->
+                                    <button class="btn hvr-hover mx-2" id="totalDemo" type="button">demo訊息</button>
                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
                                     <div class="clearfix"></div>
                                 </div>
@@ -1049,27 +1043,31 @@
             fetch('@Url.Content("~/membership/getmemberinfo")')
                 .then(response => response.json())
                 .then(data => {
-                    $('#memberAccountInput').val(data.memberAccount);
-                    $('#passwordInput').val(data.password);
-                    $('#nameInput').val(data.name);
-                    $('#emailInput').val(data.email);
-                    $('#phoneNumberInput').val(data.phoneNumber);
+                    //這裡抓資料也要寫成三元判斷式
+                    $('#emailInput').val(data.email  ? data.email : "seoari@gmail.com");
+                    $('#passwordInput').val(data.password  ? data.password : "a12345");
+                    $('#nameInput').val(data.name  ? data.name : "安安");
+                    $('#phoneNumberInput').val(data.phoneNumber ? data.phoneNumber : "0912345678");
+                    document.getElementById("subscribeInput").value = data.subscribe ? data.subscribe : "false";
                     $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
-                    $('#addressInput').val(data.address);
+                    $('#addressInput').val(data.address ? data.address : "台北市大安區信義路三段185號");
 
-                    $('#summonName').text(`會員：${data.name}`);
-                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints}點`);
-                    $('#moneyPointShow').text(`( ${Math.floor(data.loyaltyPoints / 100)}元 )`);
-                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity}`);
+                    $('#summonName').text(`會員：${data.name ? data.name : "安安"}`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints ? data.loyaltyPoints : "0"}點`);
+                    $('#moneyPointShow').text(`( ${data.loyaltyPoints ? Math.floor(data.loyaltyPoints / 100) : "0"}元 )`);
+                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity ? data.catCoinQuantity : "0"}`);
 
-                    var dateParts = data.birthday.split('-');
+                    // var dateParts = data.birthday.split('-');
+                    var dateParts2 = "1993-04-12T00:00:00";
+                    var dateParts = data.birthday ? data.birthday.split('-') : dateParts2.split('-');
                     var year = parseInt(dateParts[0], 10);
                     var month = parseInt(dateParts[1], 10) - 1;
                     var day = parseInt(dateParts[2], 10);
                     var utcDate = new Date(Date.UTC(year, month, day));
                     var formattedDate = utcDate.toISOString().split('T')[0];
                     $('#birthdayInput').val(formattedDate);
+
                 });
 
         });
@@ -1544,6 +1542,17 @@
 
     <!--google地圖-->
     <script>
+        $(document).ready(function () {
+            $('#mapModal').on('shown.bs.modal', function () {
+                initMap();
+            });
+
+            //Demo鍵:載入總客訴-->其他事項
+            $('#nightMarket').click(function (event) {
+                $('#locationInput').val("逢甲夜市");
+            });
+        });
+
         // 初始化地址的地圖
         var map;
         var geocoder;
@@ -1784,7 +1793,9 @@
                             row.insertCell().textContent = item.recipientName ? item.recipientName : '徐雅莉';
                             row.insertCell().textContent = item.recipientPhone ? item.recipientPhone : '0912345678';
                             row.insertCell().textContent = item.paymentMethodName ? item.paymentMethodName : '信用卡';
-                            row.insertCell().textContent = item.statusName ? item.statusName : '已確認';
+                            row.insertCell().textContent = item.statusName ? item.statusName : '處理中';
+                            row.insertCell().textContent = item.resultPrice ? "NT$ " + item.resultPrice : "NT$ 1250";
+
 
                             var buttonContainer = document.createElement('div');
                             buttonContainer.classList.add('d-flex', 'flex-column');
@@ -1851,7 +1862,7 @@
                                         } else {
                                             row.insertCell().textContent = item.size;
                                         }
-                                        totalAmount += item.productQuantity * item.productPrice;
+                                        // totalAmount += item.productQuantity * item.productPrice;
                                         row.insertCell().textContent =  'NT$ ' + item.productPrice;
                                         //===============================
                                         
@@ -1890,7 +1901,7 @@
                                     });
                                     
 
-                                    document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
+                                    // document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                                 });
 
                             });
@@ -2141,7 +2152,7 @@
             const form = document.querySelector('#returnForm');
 
             const formData = new FormData(form);
-            fetch('@Url.Content("/ImageTest/UploadImage")', {
+            fetch('@Url.Content("/ImageTest/UploadImageToImageModerator")', {
                 body: formData,
                 method: 'POST'
             })
@@ -2156,7 +2167,29 @@
             });
         });
 
+        //Demo鍵:下載貓咪拉肚子的圖片
+        document.getElementById('shitDownload').addEventListener('click', function () {
+            const imageUrl = '/images/catshit.jpg';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = '貓咪拉肚子.jpg'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
 
+        //Demo鍵:載入退換貨的備註
+        $('#catShitReturn').click(function (event) {
+            $('#returnTextarea').val("貓咪在食用產品後，出現了身體不適、腹痛、噁心、嘔吐的狀況，詳如附件照片");
+        });
+
+
+        //Demo鍵:載入商品評價的評論
+        $('#commentDemo').click(function (event) {
+            // $('#commentTextarea').val("貓咪在食用產品後，出現了身體不適的狀況，購買的人需要三思產品是否合毛小孩的胃!");
+            $('#commentTextarea').val("貓咪在食用產品後，出現了身體極不適的狀況，欲購買者請打消念頭! 😡");
+        });
     </script>
 
     <!--用於dataTables搜尋關鍵字採ajax-->
@@ -2193,8 +2226,8 @@
                 language: {
                     url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
                 },
-                pageLength: 5,
-                lengthMenu: [5, 10, 15],
+                pageLength: 10,
+                lengthMenu: [10, 20, 30],
                 retrieve: true,
             });
             
@@ -2314,10 +2347,10 @@
                         imgContainer.appendChild(imagePopup);
                         imgCell.appendChild(imgContainer);
 
-                        
-                        row.insertCell().textContent = item.productName;
-                        row.insertCell().textContent = item.remainingQuantity;
-                        row.insertCell().textContent = 'NT$ ' + item.productPrice + " / 份";
+
+                        row.insertCell().textContent = item.productName ? item.productName : "毛寵物用品";
+                        row.insertCell().textContent = item.remainingQuantity ? item.remainingQuantity : "1";
+                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice + " / 份" : "NT$ 350 / 份";
 
                         var cartCell = row.insertCell();
                         var deleteCell = row.insertCell();
@@ -2452,6 +2485,8 @@
                         viewButton.textContent = '客訴內容';
                         viewButton.classList.add('btn', 'btn-warning', 'btn-sm'); // 添加樣式類
                         viewButton.addEventListener('click', function () {
+                            document.querySelector('#answerContent').textContent = "";
+                            document.querySelector('#answerTime').textContent = "";
                             $('#ComplaintModal').modal('show');
                             document.querySelector('#compliantContent').textContent = item.complaintContent;
 
@@ -2468,6 +2503,7 @@
                                     var formattedDate = utcDate.toISOString().split('T')[0];
                                     document.querySelector('#answerTime').textContent = "回覆時間: " + formattedDate;
                                 } else {
+                                    //這一段好像都不會觸發到
                                     document.querySelector('#answerContent').textContent = "無回覆內容";
                                     document.querySelector('#answerTime').textContent = "無回覆時間";
                                 }
@@ -2487,7 +2523,7 @@
 
     </script>
 
-    <!--6.載入: 導入客服中心。點擊: 送出填寫資料到控制台-->
+    <!--6.載入時: 導入客服中心-->
     <script>
         $(document).ready(function () {
             //拿取客訴類型數據
@@ -2556,7 +2592,7 @@
                         $('#checkComplaint').val(`成人內容：${(Category1 * 100).toFixed(2)}%, 色情內容：${(Category2 * 100).toFixed(2)}%, 冒犯語言：${(Category3 * 100).toFixed(2)}%`);
                         document.getElementById('aiCheck').style.display = 'block';
 
-                        if (Category1 > 0.6 || Category2 > 0.6 || Category3 > 0.6) {
+                        if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '系統判讀',
@@ -2674,35 +2710,18 @@
                 }
             });
 
-            //Demo鍵:載入食安問題-->商品問題
-            $('#foodDemo').click(function (event) {
-                $('#ComplaintTitle').val("產品很有問題");
-                $('#ComplaintContent').val("貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit!!");
+            //Demo鍵:載入總客訴-->其他事項
+            $('#totalDemo').click(function (event) {
+                $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
+                $('#ComplaintContent').val(
+                    "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
+                    "2.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
+                    "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
+                    "4.請問我在9 / 15從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
+                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。" 
+                );
             });
 
-            //Demo鍵:載入遊戲道具-->遊戲檢舉
-            $('#gameDemo').click(function (event) {
-                $('#ComplaintTitle').val("遊戲道具無法使用");
-                $('#ComplaintContent').val("請問我的訂單於8/28成立後付款，能於3日內收到貨嗎?貴公司是否能用急件處理，讓我能在月底收到商品呢?");
-            });
-
-            //Demo鍵:載入變更地址-->會員權益
-            $('#addressDemo').click(function (event) {
-                $('#ComplaintTitle').val("請幫我修改住家地址");
-                $('#ComplaintContent').val("因工作搬到新的住處，網站上的個人住址需要修改，新的住址為台中市西屯區臺灣大道三段99號。");
-            });
-
-            //Demo鍵:載入變更信箱-->會員權益
-            $('#emailDemo').click(function (event) {
-                $('#ComplaintTitle').val("請幫我修改電子信箱");
-                $('#ComplaintContent').val("原電子信箱容納空間已滿，新信箱為abcd1234@gmail.com，請幫我做更新");
-            });
-
-            //Demo鍵:載入訂閱電子報-->其他事項
-            $('#newsletterDemo').click(function (event) {
-                $('#ComplaintTitle').val("想訂閱電子報，來了解最新活動");
-                $('#ComplaintContent').val("最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱");
-            });
         });
 
     </script>
