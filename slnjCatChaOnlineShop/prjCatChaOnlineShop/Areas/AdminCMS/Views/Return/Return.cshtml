@@ -119,30 +119,13 @@
         </div>
     </div>
 
-    @*<a data-bs-toggle="modal" href="#modal1" class="btn btn-primary">Launch modal</a>
-
-    <!-- 第一个模态框 -->
-    <div class="modal fade" id="modal1" tabindex="-1" aria-labelledby="modal1Label" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modal1Label">第一个模态框</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <!-- 添加触发SweetAlert的按钮 -->
-                    <button type="button" class="btn btn-primary" id="openSweetAlert">打开SweetAlert</button>
-                </div>
-            </div>
-        </div>
-    </div>*@
-
     <!---新增退換貨狀態 modal-->
     <div class="modal fade" id="editStatusModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">新增退換貨原因</h5>
+                    <button type="button" class="ms-2 btn btn-danger" onclick="SetReasonDemo()">demo</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
@@ -393,12 +376,16 @@
     <script>
         $('input[name="dates"]').daterangepicker();
 
+
+        //=================新增原因demo鍵
+        function SetReasonDemo() { 
+            $('.newadd').val("其他原因");
+        }
+
         $(".testBtn").on("click", function () {
             // 在按钮点击时触发showRemark()函数
             showRemark();
         });
-
-       
 
 
         function showRemark() {
@@ -409,8 +396,6 @@
         }
 
         $(document).ready(function () {
-
-            
 
             $.ajax({
                 url: '@Url.Action("ReasonList", "Return")',

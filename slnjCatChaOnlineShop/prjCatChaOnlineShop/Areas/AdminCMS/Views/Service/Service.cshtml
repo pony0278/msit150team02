@@ -55,7 +55,7 @@
             margin-top: 20px;
         }
 
-        #complaintContent {
+        #complaintContent, #edit_complaintContent, #messageRecipientContent {
             white-space: pre-wrap;
             line-height: 35px;
             letter-spacing: 1px;
@@ -177,15 +177,22 @@
                                         </div>
 
 
-
-                                        <div class="form-group mb-3">
-                                            <label for="w3review">內容：</label>
-                                            <textarea class="form-control" id="edit_complaintContent" rows="4" cols="50" readonly disabled></textarea>
+                                        <div class="service-container">
+                                            <div class="question" id="edit_complaintContent">
+                                            </div>
                                         </div>
 
+                                        @* <div class="form-group mb-3">
+                                            <label for="w3review">內容：</label>
+                                            <textarea class="form-control" id="edit_complaintContent" rows="4" cols="50" readonly disabled></textarea>
+                                        </div> *@
+
                                         <div class="form-group mb-3">
-                                            <label for="exampleFormControlTextarea1" class="form-label">回覆：<button class="btn btn-danger" onclick="demo1()">範本1</button><button class="btn btn-danger ms-2" onclick="demo2()">範本2</button><button class="btn btn-danger ms-2" onclick="demo3()">範本3</button></label>
-                                            <textarea class="form-control" id="edit_recipientContent" rows="3"></textarea>
+                                            <label for="exampleFormControlTextarea1" class="form-label">回覆：</label>
+                                                <button class="btn btn-danger" onclick="demo1()">demo</button>
+@*                                                 <button class="btn btn-danger ms-2" onclick="demo2()">範本2</button>
+                                                <button class="btn btn-danger ms-2" onclick="demo3()">範本3</button> *@
+                                            <textarea class="form-control" id="edit_recipientContent" rows="10"></textarea>
                                         </div>
 
 
@@ -206,7 +213,7 @@
                 <!--回覆彈出視窗-->
                 <!---詳細資料model-->
                 <div class="modal fade" id="detailModalToggle" tabindex="-1">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-dialog modal-xl modal-dialog-centered">
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="exampleModalToggleLabel">
@@ -298,17 +305,33 @@
                         });
                         //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
 
+                        // "修改收件人信息：\n" +
+                            // "感謝您提供新的收件人信息。我們已經更新您的訂單，將新的收件人曾聰明添加到送貨清單中。如果您有任何其他關於訂單的問題或特殊要求，請隨時告訴我們。\n\n" +
+
                         function demo1() {
-                            $('#edit_recipientContent').val("謝謝您的反映，我們請客服立即為您處理退貨，等退貨完成後，可以麻煩您再給我們 3 分鐘時間，讓我們瞭解一下不適合的原因嗎？我們希望可以好好改進，下一次還有為您服務的機會。");
+                            var replyText = "貓咪身體不適：\n" +
+                                "我們非常關心您的貓咪的健康。如果您的貓咪在食用我們的產品後出現了這些症狀，請提供產品的批次號碼和購買日期，以便我們進行內部調查並確保產品質量。\n\n" +
+
+                                "生日信息更正：\n" +
+                                "很抱歉您填寫了錯誤的生日信息。我們已將您的生日更正為2000年1月1日。如果您需要對賬戶信息進行其他更改，請隨時告訴我們。\n\n" +
+
+                                "訂閱電子報：\n" +
+                                "我們感謝您對我們的電子報感興趣。我們已經將您的註冊信息進行了更新，您將從現在開始收到每期的電子報到您的信箱。如果您有其他訂閱相關的問題或特殊需求，請不要猶豫與我們聯系。\n\n" +
+
+                                "未收到扭蛋抽獎道具：\n" +
+                                "對於您在9月15日抽中的遊戲道具未能及時送達的問題，我們深感抱歉。請提供您的訂單號碼或其他相關信息，以便我們核實並解決問題。我們會盡快處理並確保您收到您應得的獎勵。";
+
+                            // 将文本填入textarea并确保换行
+                            $("#edit_recipientContent").val(replyText);
                         }
 
-                        function demo2() {
-                            $('#edit_recipientContent').val("謝謝您的反映，很抱歉不符合您的期待，想請問您是指哪一部份沒有效果呢？讓我們有機會可以瞭解改進，並請讓我們為您做退貨全額退款服務。");
-                        }
+                        // function demo2() {
+                        //     $('#edit_recipientContent').val("謝謝您的反映，很抱歉不符合您的期待，想請問您是指哪一部份沒有效果呢？讓我們有機會可以瞭解改進，並請讓我們為您做退貨全額退款服務。");
+                        // }
 
-                        function demo3() {
-                            $('#edit_recipientContent').val("謝謝您的指教，我們一直在努力做出更好的產品，如果目前產品未達您心中的期待，您可以進行退換貨服務，也歡迎您提供產品的建議，好讓我們知道如何改進，未來希望還有機會能提供讓您滿意的產品。");
-                        }
+                        // function demo3() {
+                        //     $('#edit_recipientContent').val("謝謝您的指教，我們一直在努力做出更好的產品，如果目前產品未達您心中的期待，您可以進行退換貨服務，也歡迎您提供產品的建議，好讓我們知道如何改進，未來希望還有機會能提供讓您滿意的產品。");
+                        // }
                         //==================datatable
                         var table = $('#case-table').DataTable({
                             "ajax": '@Url.Action("ShowComplaintCase", "Service")',
@@ -568,7 +591,7 @@
                                     var formatcreationTime = formatDateTime(data.data.serviceCase.creationTime)
                                     $('#edit_creationTime').val(formatcreationTime);
                                     $('#edit_complaintTitle').val(data.data.serviceCase.complaintTitle);
-                                    $('#edit_complaintContent').val(data.data.serviceCase.complaintContent);
+                                    $('#edit_complaintContent').html(data.data.serviceCase.complaintContent);
                                     $('#edit_recipientContent').val(data.data.recipientContent);
 
                                 },

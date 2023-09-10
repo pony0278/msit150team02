@@ -187,6 +187,16 @@
             color: #ffffff;
         }
 
+        .fa-transgender-alt {
+            font-size: 30px;
+            background-color: #bc4aec;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            color: #ffffff;
+        }
+
         #commonaddressContainer {
             display: flex;
             justify-content: center;
@@ -525,6 +535,9 @@
                     <div class="selectall-checkbox-group mt-2">
                         <input type="checkbox" id="select-all" />
                         <label for="select-all" class="checkbox-label">全選訂閱電子報的會員</label>
+                        <button type="button" class="btn btn-danger" onclick="setSearchValue()" style="margin-left: auto;background-color: #b95756;color: #FFF;">
+                            關鍵字
+                        </button>
                     </div>
                 </div>
                 <!--表格-->
@@ -560,6 +573,7 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">編輯會員資料</h5>
+                    <button type="button" class="ms-2 btn btn-danger" onclick="setBirthdayValue()">更改生日&訂閱狀態</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
@@ -760,13 +774,14 @@
                                     </div>
                                     <div class="profile-info">
                                         <p id="memberAccount"><strong></strong></p>
-                                        <p id="birthday"><strong></strong></p>
+                                        <p style="color: red; font-weight: bold;" id="birthday"><strong></strong></p>
                                         <p id="phoneNumber"><strong></strong> </p>
                                         <p id="email"><strong></strong></p>
                                         <p id="registrationTime"><strong></strong></p>
                                         <p id="memberStatus"><strong></strong> <span class="status-open"></span></p>
                                         <p id="address"><strong></strong></p>
                                         <p id="lastLoginTime"><strong></strong></p>
+                                        <p style="color: red; font-weight: bold;" id="memberSub"><strong></strong></p>
                                     </div>
                                 </div>
                             </div>
@@ -824,6 +839,19 @@
         let isVaild = ""; //驗證bool
         let isVaild_mail = "";
         let isVaild_acc = "";
+
+        //==========關鍵字搜尋demo鍵
+        function setSearchValue() {
+            var inputValue = "雅莉";
+            $("input[type='search']").eq(0).val(inputValue).focus();
+        }
+
+        //==========更改生日與電子報demo鍵
+        function setBirthdayValue() {
+            $('#birthday_edit').val("2000-01-01");
+            $('#memberSubscribe_edit').val("true");
+        }
+
         //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
         $(document).ready(function () {
             $.ajax({
@@ -1279,6 +1307,9 @@
                     if (data.data.gender == "女") {
                         var html = '<i class="fas fa-venus"></i>';
                         $('#info_gender').html(html);
+                    } else if (data.data.gender == "其他") {
+                        var html = '<i class="fas fa-transgender-alt"></i>';
+                        $('#info_gender').html(html);
                     } else {
                         var html = '<i class="fas fa-mars"></i>';
                         $('#info_gender').html(html);
@@ -1298,6 +1329,13 @@
 
                     var formattedlastLoginTime = formatDateTime(data.data.lastLoginTime);
                     $('#lastLoginTime').text("最後登入：" + formattedlastLoginTime);
+
+                    if (data.data.subscribe == true) {
+                        $('#memberSub').text("訂閱電子報：是");
+                    } else { 
+                        $('#memberSub').text("訂閱電子報：否");
+                    }
+                    
 
                     //if (data.data.memberStatus == true) {
                     //    $('#memberStatus').text("會員狀態：開放");
