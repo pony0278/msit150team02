@@ -1,54 +1,82 @@
+ï»¿using Hangfire;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Services.Function;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Quartz.Impl;
+using Quartz;
+using Quartz.Spi;
 using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using Hangfire.SqlServer;
+using Microsoft.Extensions.Configuration;
+using System.IO;
+using Hangfire.MemoryStorage;
+using Autofac.Core;
 
 var builder = WebApplication.CreateBuilder(args);
-
+var configuration = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+    .Build();
+string dbConnectionString = configuration.GetConnectionString("CachaConnection");
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
+builder.Services.AddHangfire(config =>
+{
+    config.UseMemoryStorage(); // ä½¿ç”¨å†…å­˜å­˜å„²ï¼Œè«‹æ ¹æ“šæ‚¨çš„éœ€æ±‚æ›´æ”¹å­˜å„²å¾Œç«¯
+});
+builder.Services.AddTransient<UpdateDatabaseJob>();
 
+
+
+
+builder.Services.AddLogging(logging =>
+{
+    logging.AddConsole();
+    logging.AddDebug();
+});
 builder.Services.AddSession(options => {
-    // ³]©w Session ªº¹L´Á®É¶¡¡]¥H¤À¬°³æ¦ì¡^
-    options.IdleTimeout = TimeSpan.FromDays(3); // ´ú¸Õ:³o¸Ì³]©w¬° 3 ¤Ñ
+    // è¨­å®š Session çš„éæœŸæ™‚é–“ï¼ˆä»¥åˆ†ç‚ºå–®ä½ï¼‰
+    options.IdleTimeout = TimeSpan.FromDays(3); // æ¸¬è©¦:é€™è£¡è¨­å®šç‚º 3 å¤©
 });
 builder.Services.AddScoped<ProductService>();
-// µù¥U CheckoutService ªA°È
+// è¨»å†Š CheckoutService æœå‹™
 builder.Services.AddScoped<CheckoutService>();
 
-//³X°İ·í«e HTTP ­n¨Dªº¬ÛÃö¸ê°T¡A¨Ò¦p HTTP ¤W¤U¤å¡BSession¡BCookies
+//è¨ªå•ç•¶å‰ HTTP è¦æ±‚çš„ç›¸é—œè³‡è¨Šï¼Œä¾‹å¦‚ HTTP ä¸Šä¸‹æ–‡ã€Sessionã€Cookies
 builder.Services.AddHttpContextAccessor();
 
-// ¥Í¦¨¤@­Ó·sªºÀH¾÷ª÷Æ_
+// ç”Ÿæˆä¸€å€‹æ–°çš„éš¨æ©Ÿé‡‘é‘°
 string randomKey = CKeyGenerator.GenerateRandomKey();
-// ±NÀH¾÷ª÷Æ_³]¸m¨ì IConfiguration ¸Ì
+// å°‡éš¨æ©Ÿé‡‘é‘°è¨­ç½®åˆ° IConfiguration è£¡
 builder.Configuration["ForgetPassword:SecretKey"] = randomKey;
 System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 ExcelPackage.LicenseContext = LicenseContext.NonCommercial; 
 
-//==============¸Ñ¨M json too big °İÃD¡]Mandy»İ­nªº½Ğ¤Å§R~®áQ¡^
+//==============è§£æ±º json too big å•é¡Œï¼ˆMandyéœ€è¦çš„è«‹å‹¿åˆª~æ¡‘Qï¼‰
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
     options.JsonSerializerOptions.WriteIndented = true;
 });
-//==============¸Ñ¨M json too big °İÃD¡]Mandy»İ­nªº½Ğ¤Å§R~®áQ¡^
+//==============è§£æ±º json too big å•é¡Œï¼ˆMandyéœ€è¦çš„è«‹å‹¿åˆª~æ¡‘Qï¼‰
 
-//µù¥Usession­n¥[³o­Ó
+//è¨»å†Šsessionè¦åŠ é€™å€‹
 builder.Services.AddSession();
 
-//Åıºô­¶¥i¥H¸ÑªRDB¸ê®Æ®w
+//è®“ç¶²é å¯ä»¥è§£æDBè³‡æ–™åº«
 
 builder.Services.AddDbContext<cachaContext>(
  options => options.UseSqlServer(builder.Configuration.GetConnectionString("CachaConnection")));
+
 var app = builder.Build();
-
-
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -63,6 +91,8 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseSession();
 app.UseAuthorization();
+app.UseHangfireServer();
+RecurringJob.AddOrUpdate<UpdateDatabaseJob>("jobId", x => x.Execute(), Cron.Minutely);
 
 
 

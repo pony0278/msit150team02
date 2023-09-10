@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Services.Function;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels;
 using prjCatChaOnlineShop.Areas.AdminCMS.Models;
+using Hangfire;
+using Microsoft.Extensions.Hosting;
 
 namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
 {
@@ -12,10 +14,11 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
     public class BanUserController : Controller
     {
         private readonly cachaContext _cachaContext;
-
-        public BanUserController(cachaContext cachaContext)
+        private readonly IBackgroundJobClient _backgroundJobClient;
+        public BanUserController(cachaContext cachaContext, IBackgroundJobClient backgroundJobClient)
         {
             _cachaContext = cachaContext;
+            _backgroundJobClient = backgroundJobClient;
         }
         public IActionResult Index()
         {
@@ -64,6 +67,13 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 return Json(new { success = true, message = "成功禁言" });
             }
             return Json(new { success = false, message = "未找到成員" });
+        }
+        public IActionResult ScheduleUpdateJob()
+        {
+            // 調度後台作業
+            _backgroundJobClient.Enqueue<UpdateDatabaseJob>(x => x.Execute());
+
+            return RedirectToAction("Index");
         }
     }
 }

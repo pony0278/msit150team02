@@ -16,6 +16,7 @@ using Microsoft.DotNet.Scaffolding.Shared.Messaging;
 using ChatGPT.Net.DTO.ChatGPTUnofficial;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using Hangfire;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
