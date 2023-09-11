@@ -136,7 +136,7 @@
                                 <input type="checkbox" class="custom-control-input" id="useLoyalityPoint">
                                 <label class="custom-control-label" for="useLoyalityPoint" id="loyalityPointBonus">使用 @Model.getCouponPrice.finalBonus 紅利折抵NT @Model.getCouponPrice.finalPrice</label>
                             </div>
-                            <div class="ml-4 mb-2 small">您有<a class="ml-1 mb-2 small" style="color:#DE9E4F"> @memberinfo.LoyaltyPoints</a> 個紅利，單筆訂單最多可折抵10%商品金額</div>
+                            <div class="ml-4 mb-2 small">您有<a class="ml-1 mb-2 small" style="color:#DE9E4F"> @Model.getCouponPrice.firstloyaltyPoints</a> 個紅利，單筆訂單最多可折抵10%商品金額</div>
                         </form>
                     }
                 </div>
@@ -1241,9 +1241,12 @@
                         <hr>
                     }
                 </div>
-                <div class=" coupon-box-btn col-12 d-flex shopping-box ">
+                <div class="col-12 d-flex ">
+                    <a class="ml-auto mr-2" style="color:#DE9E4F">可獲得的紅利</a>
+                    <a class="mr-2" style="color:#DE9E4F">200</a>
+                    <a class="mr-2" style="color:#DE9E4F">點</a>
                     <button type="submit" id="submit-order-btn"
-                            class=" checkout-btn ml-auto btn hvr-hover">
+                            class="checkout-btn btn hvr-hover ">
                         確認訂單
                     </button>
                 </div>
