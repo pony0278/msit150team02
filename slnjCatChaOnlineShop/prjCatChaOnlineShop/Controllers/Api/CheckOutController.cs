@@ -20,6 +20,11 @@ namespace prjCatChaOnlineShop.Controllers.Api
         //儲存使用者的付款方式、運送方式、取件門市、姓名、電話
         public IActionResult paymentSelected([FromBody] CShippmentModel requestData)
         {
+            //找到使用者選的付款方式的ID
+            var paymentMethodID = _context.ShopPaymentMethodData.FirstOrDefault(m => m.PaymentMethodName == requestData.paymentMethod)?.PaymentMethodId;
+            //找到使用者選的運送方式
+            var deliveryMethodID = _context.ShopShippingMethod.FirstOrDefault(m => m.ShippingMethodName == requestData.deliveryMethod)?.ShippingMethodId;
+
             CShippmentModel shippment = new CShippmentModel
             {
                 paymentMethod = requestData.paymentMethod,
@@ -27,12 +32,19 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 storeName = requestData.storeName,
                 name = requestData.name,
                 phone = requestData.phone,
-            };
+                paymentMethodId = paymentMethodID.ToString(),
+                deliveryMethodId=deliveryMethodID.ToString(),
+        };
+
+
             string json = JsonSerializer.Serialize(shippment);
             HttpContext.Session.SetString(CDictionary.SK_PAYMEMENT_MODEL, json);
 
+            
+
             return RedirectToAction("Pay", "Cart");
         }
+
 
 
         public IActionResult StoreCouponId([FromBody] CSelectedCouponId selectedCouponId)
@@ -49,15 +61,17 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 {
                     //會員最後使用的優惠券ID
                     int couponID = HttpContext.Session.GetInt32("CouponId") ?? 0;
-
+                    //會員選擇的付款方式及運送方式
+                    string payJson = HttpContext.Session.GetString(CDictionary.SK_PAYMEMENT_MODEL);
+                    var paymentData=JsonSerializer.Deserialize<CShippmentModel>(payJson);
                     // 新建訂單
                     ShopOrderTotalTable neworder = new ShopOrderTotalTable
                     {
                         MemberId = addOrder.MemberId,
                         OrderCreationDate = DateTime.Now,
                         OrderStatusId = 2,
-                        PaymentMethodId = 2,
-                        ShippingMethodId = 2,
+                        PaymentMethodId = Convert.ToInt32(paymentData.paymentMethodId),
+                        ShippingMethodId = Convert.ToInt32(paymentData.deliveryMethodId),
                         CouponId = couponID,
                         RecipientAddress = addOrder.RecipientAddress,
                         RecipientName = addOrder.RecipientName,

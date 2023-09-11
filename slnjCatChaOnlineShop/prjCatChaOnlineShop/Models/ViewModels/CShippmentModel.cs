@@ -7,5 +7,7 @@
         public string storeName { get; set; }
         public string name { get; set; }
         public string phone { get; set; }
+        public string paymentMethodId { get; set; }
+        public string deliveryMethodId { get; set; }
     }
 }
