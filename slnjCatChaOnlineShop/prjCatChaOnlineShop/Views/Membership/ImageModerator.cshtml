@@ -74,6 +74,7 @@
                 <form method="post" enctype="multipart/form-data" id="imgForm" class="d-flex flex-column align-items-center">
                     <div class="d-flex justify-content-center align-items-center">
                         <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
+                        @* <canvas id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" /> *@
                         <div class="mx-1" id="analysingArea">
                                 <input id="analysing" value="分析中" class="text-center font-weight-bold fs-5" />
                                 <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
@@ -92,6 +93,12 @@
                 </div>
                 <button class="btn hvr-hover mx-2" id="demoB" type="button">demoB</button>
                 <button class="btn hvr-hover mx-2" id="demoG" type="button">demoG</button>
+                <div class="my-1 d-flex justify-content-center align-items-center">
+                    @* <img id="image" src="https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg" alt="Image" style="max-width: 100%;"> *@
+                    @* <img id="image" width="220" height="277" src="https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg" alt="The Scream"> *@
+                    <canvas id="canvas"></canvas>
+                   @* <canvas id="canvas" width="500" height="500"></canvas> *@
+                </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
@@ -101,7 +108,7 @@
                 </div>
                 <div class="my-4">
                     <h4>圖像描述</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="2" readonly></textarea>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="3" readonly></textarea>
                 </div>
                 <div class="my-4">
                     <h4>圖像識別</h4>
@@ -114,6 +121,7 @@
         </div>
     </div>
 </div>
+
 
 @section Scripts{
     <!-- ALL JS FILES -->
@@ -135,7 +143,9 @@
     <!-- 用於chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
-
+    <!-- 引入 Google Cloud Vision API JavaScript 客戶端庫 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
 
     <script type="text/javascript">
         // 在全局範圍內定義 myChart 變數
@@ -143,7 +153,14 @@
         $(document).ready(function () {
             $('#imgChangeUrl').click(function () {
                 event.preventDefault();
-                document.querySelector('#analysingArea').style.display = "inline";
+                
+                document.querySelector('#analysingArea').style.display = "inline";//顯示解析中的那張圖
+                //清空textarea的內文
+                document.getElementById('imageResults').value = "";
+                document.getElementById('checkResults').value = "";
+                document.getElementById('descriptionResults').value = "";
+                document.getElementById('visionResults').value = "";
+
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -157,7 +174,6 @@
                     .then(data => {
                         //取到照片連結了
                         console.log(data.url);
-
 
                         // 圖片辨識的地方
                         var visionParams = {
@@ -184,7 +200,30 @@
 
                             var text = visionResult['description']['captions'][0]['text'];
                             var confidence = visionResult['description']['captions'][0]['confidence'];
-                            var descriptionText = `內容:${text}\n準確度:${(confidence * 100).toFixed(2)}%`;
+                            var descriptionText = "";
+                            /*
+                            var translateText = translateEnToChinese(text);
+                            if (translateText) { 
+                                var descriptionText = `原文:${text}\n翻譯:${translateText}\n準確度: ${(confidence * 100).toFixed(2)}% `;
+                            }else {
+                                var descriptionText = `內容:${text}\n準確度: ${(confidence * 100).toFixed(2)}% `;
+                            }
+                            */
+                            translateEnToChinese(text)
+                            .then(translateText => {
+                                if (translateText) {
+                                    descriptionText = `【原文】:${text}\n【Google翻譯】:${translateText}\n準確度: ${(confidence * 100).toFixed(2)}% `;
+                                    console.log(descriptionText);
+                                } else {
+                                    descriptionText = `內容:${text}\n準確度: ${(confidence * 100).toFixed(2)}% `;
+                                    console.log(descriptionText);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('翻譯錯誤:', error);
+                                descriptionText = `內容:${text}\n準確度: ${(confidence * 100).toFixed(2)}% `;
+
+                            });
 
 
                             console.log("\n顏色：");
@@ -215,7 +254,10 @@
                                 "尺寸: 高度 " + visionResult.metadata.height * 0.04 + "公分 、 寬度 " + visionResult.metadata.width * 0.04 + "公分\n" +
                                 "檔案類型: " + visionResult.metadata.format + "檔";
 
-
+                            var canvasForFace = document.getElementById("canvas");
+                            canvasForFace.width = visionResult.metadata.width;
+                            canvasForFace.height = visionResult.metadata.height
+                            detectFaces(data.url);
 
 
                             // 圖片仲裁的地方
@@ -376,13 +418,13 @@
 
         });
 
-        //小c
-        function translateToChinese(text) {
-            const apiKey = 'AIzaSyDjA50x02Nr2jNygjLbdGIa_RPRXuEWEiA';
+
+        //英文翻譯成中文的方法
+        function translateEnToChinese(text) {
             const sourceLang = 'en';
             const targetLang = 'zh-TW';
 
-            const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=$AIzaSyDjA50x02Nr2jNygjLbdGIa_RPRXuEWEiA`;
+            const apiUrl = `https://translation.googleapis.com/language/translate/v2?key=AIzaSyDDZ0Zk6SNEnnlbQDYtOpj3plZVIHSkH8Q`;
             const data = {
                 q: text,
                 source: sourceLang,
@@ -398,58 +440,20 @@
             })
                 .then(response => response.json())
                 .then(result => {
+                    console.log(result);
                     if (result.data && result.data.translations && result.data.translations.length > 0) {
+                        console.log(result.data.translations[0].translatedText);
                         return result.data.translations[0].translatedText;
                     } else {
+                        console.log("hi2");
+
                         return text;
                     }
                 })
                 .catch(error => {
-                    console.error('Translation error:', error);
+                    console.error('翻譯錯誤:', error);
                     return text;
                 });
-        }
-
-
-        translateAndReview("Hello");
-        // 翻譯:英文轉成中文
-        async function translateAndReview(text) {
-            const route = "/translate?api-version=3.0&from=en&to=zh-Hant"; // 將繁體中文翻譯成英文
-            const translateContent = text;
-            const body = [{ text: translateContent }];
-            const requestBody = JSON.stringify(body);
-
-            const endpoint = "https://api.cognitive.microsofttranslator.com";
-            const key = "4292ef86d9a842cca23fadb0bed54d15";
-
-            const headers = {
-                'Ocp-Apim-Subscription-Key': key,
-                'Content-Type': 'application/json'
-            };
-
-            const requestOptions = {
-                method: 'POST',
-                headers: headers,
-                body: requestBody
-            };
-
-            try {
-                const response = await fetch(`${endpoint}${route}`, requestOptions);
-                const data = await response.json();
-
-                // 從 API 響應中獲取翻譯後的文本
-                const translatedText = data[0].translations[0].text;
-
-                // 在這裡可以處理翻譯後的文本，例如進行評論等
-
-                console.log("翻譯後的文本:", translatedText);
-                return translatedText;
-            } catch (error) {
-                console.error("發生錯誤:", error);
-                return null;
-            }
-        
-
         }
 
         //回到上一頁:回到會員中心
@@ -467,7 +471,7 @@
             a.style.display = 'none';
             document.body.appendChild(a);
             a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
-            a.download = 'baddog.jpg'; // 可以自行更改下載的文件名稱
+            a.download = 'demoB.jpg'; // 可以自行更改下載的文件名稱
             a.click(); // 模擬點擊 a 標籤，觸發下載
             document.body.removeChild(a);// 移除 a 標籤
         });
@@ -479,10 +483,262 @@
             a.style.display = 'none';
             document.body.appendChild(a);
             a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
-            a.download = 'goodcat.png'; // 可以自行更改下載的文件名稱
+            a.download = 'demoG.png'; // 可以自行更改下載的文件名稱
             a.click(); // 模擬點擊 a 標籤，觸發下載
             document.body.removeChild(a);// 移除 a 標籤
         });
+
+
+
+        // 翻譯:英文轉成中文
+        async function translateAndReview(text) {
+            const route = "/translate?api-version=3.0&from=en&to=zh-Hant"; // 將繁體中文翻譯成英文
+            const translateContent = text;
+            const body = [{ text: translateContent }];
+            const requestBody = JSON.stringify(body);
+
+            const endpoint = "https://msit150team02translator.cognitiveservices.azure.com";
+            const key = "4292ef86d9a842cca23fadb0bed54d15";
+
+            const headers = {
+                'Ocp-Apim-Subscription-Key': key,
+                'Content-Type': 'application/json'
+            };
+
+            const requestOptions = {
+                method: 'POST',
+                headers: headers,
+                body: requestBody
+            };
+
+            try {
+                // const response = await fetch(`${endpoint} + ${route}`, requestOptions);
+                // const response = await fetch("https://api.cognitive.microsofttranslator.com//translate?api-version=3.0&from=en&to=zh-Hant", requestOptions);
+                const response = await fetch("https://api.cognitive.microsofttranslator.com//translate?api-version=3.0&from=en&to=en", requestOptions);
+
+                const data = await response.json();
+
+                // 從 API 響應中獲取翻譯後的文本
+                // const translatedText = data[0].translations[0].text;
+
+
+                // 在這裡可以處理翻譯後的文本，例如進行評論等
+
+                // console.log("翻譯後的文本:", translatedText);
+                console.log("HELLO");
+                console.log(data);
+
+                // return translatedText;
+            } catch (error) {
+                console.error("發生錯誤:", error);
+                return null;
+            }
+
+
+        }
     </script>
 
+
+    <script>
+        // 使用 Google Cloud Vision API 檢測圖像中的臉部
+        function detectFaces(imgUrlForFaces) {
+                var apiKey = 'AIzaSyDde-nxrODtr304UiNFD1YPjclvwU2s53M';// 替換成您的 Google Cloud Vision API 金鑰
+
+            // var imageUrl = 'https://msit150team02blob.blob.core.windows.net/msit150team02/15025.jpg';
+            var imageUrl = imgUrlForFaces;
+
+
+                // 創建 Vision API 客戶端
+                gapi.load('client', function () {
+                    gapi.client.init({
+                        apiKey: apiKey
+                    });
+
+                    gapi.client.load('vision', 'v1', function () {
+                        // 構建請求參數
+                        var request = {
+                            requests: [
+                                {
+                                    image: {
+                                        source: {
+                                            imageUri: imageUrl
+                                        }
+                                    },
+                                    features: [
+                                        {
+                                            type: 'FACE_DETECTION' // 需要臉部識別功能
+                                        }
+                                    ]
+                                }
+                            ]
+                        };
+
+                        // 執行臉部檢測請求
+                        gapi.client.vision.images.annotate(request).then(function (response) {
+                            // 獲取識別信息
+                            var faceAnnotations = response.result.responses[0].faceAnnotations;
+                            console.log(response.result.responses[0].faceAnnotations);
+
+                            // 獲取 canvas 元素
+                            const ctx = document.getElementById("canvas").getContext("2d");
+                            const img = new Image();
+                            // 設定畫筆顏色
+                            ctx.strokeStyle = 'red';
+                            ctx.lineWidth = 3;
+
+                            if (response.result && response.result.responses && response.result.responses[0]) {
+                                // 獲取人臉的四個頂點坐標
+
+ 
+                                    // 獲取人臉的四個頂點坐標
+                                    var vertices = response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices;
+                            img.onload = () => {
+
+                                    ctx.drawImage(img, 0, 0);
+                                    ctx.beginPath();
+                                    ctx.moveTo(vertices[0].x, vertices[0].y);
+                                    ctx.lineTo(vertices[1].x, vertices[1].y);
+                                    ctx.lineTo(vertices[2].x, vertices[2].y);
+                                    ctx.lineTo(vertices[3].x, vertices[3].y);
+                                    ctx.closePath();
+                                    ctx.stroke();
+                            };
+                            
+                            // img.src = "https://msit150team02blob.blob.core.windows.net/msit150team02/15025.jpg";
+                            img.src = imgUrlForFaces;
+
+                            /*
+                            var vertices = response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices;
+                            console.log(response.result.responses[0].fdBoundingPoly);
+                            console.log(response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices);
+
+                            // 繪製矩形
+                            ctx.beginPath();
+                            ctx.moveTo(vertices[0].x, vertices[0].y);
+                            ctx.lineTo(vertices[1].x, vertices[1].y);
+                            ctx.lineTo(vertices[2].x, vertices[2].y);
+                            ctx.lineTo(vertices[3].x, vertices[3].y);
+                            ctx.closePath();
+                            ctx.stroke();
+                            */
+
+                            } else {
+                                console.log('未獲得有效的 API 回應。');
+                            }
+                        });
+                    });
+                });
+        }
+
+        // 調用臉部檢測函數
+        // detectFaces();
+
+        // 使用 Google Cloud Vision API 檢測圖像中的標籤
+        function detectLabel() {
+            var apiKey = 'AIzaSyDde-nxrODtr304UiNFD1YPjclvwU2s53M'; // 替換成您的 Google Cloud Vision API 金鑰
+
+            // 圖像 URL
+            var imageUrl = 'https://msit150team02blob.blob.core.windows.net/msit150team02/dog.jpg';
+            /*
+            // 創建 Vision API 客戶端
+            gapi.load('client', function () {
+                gapi.client.init({
+                    apiKey: apiKey
+                });
+
+                gapi.client.load('vision', 'v1', function () {
+                    // 構建請求參數
+                    var request = {
+                        requests: [
+                            {
+                                image: {
+                                    source: {
+                                        imageUri: imageUrl
+                                    }
+                                },
+                                features: [
+                                    {
+                                        type: 'LABEL_DETECTION', // 需要標籤識別功能
+                                    }
+                                ],
+                                imageContext: {
+                                    languageHints: ['zh'] // 在這裡指定要識別的語言代碼，例如 'en' 表示英文
+                                }
+                            }
+                        ]
+                    };
+
+                    // 執行標籤識別請求
+                    gapi.client.vision.images.annotate(request).then(function (response) {
+                        // 列印完整回應資料到控制台
+                        console.log(response.result);
+                        var responseJson = response.result;
+                        var labelAnnotations = responseJson.responses[0].labelAnnotations;
+                        for (var i = 0; i < labelAnnotations.length; i++) {
+                            console.log(labelAnnotations[i].description);
+                        }
+                     });
+                });
+            });
+            */
+
+            // 創建 Vision API 客戶端
+            gapi.load('client', function () {
+                gapi.client.init({
+                    apiKey: apiKey
+                });
+
+                gapi.client.load('vision', 'v1', function () {
+                    // 構建標籤識別請求
+                    var request = {
+                        requests: [
+                            {
+                                image: {
+                                    source: {
+                                        imageUri: imageUrl
+                                    }
+                                },
+                                features: [
+                                    {
+                                        type: 'LABEL_DETECTION' // 需要標籤識別功能
+                                    }
+                                ]
+                            }
+                        ]
+                    };
+
+                    // 執行標籤識別請求
+                    gapi.client.vision.images.annotate(request).then(function (response) {
+                        // 獲取識別信息
+                        var labelAnnotations = response.result.responses[0].labelAnnotations;
+
+                        // 列印中文描述
+                        for (var i = 0; i < labelAnnotations.length; i++) {
+                            console.log(labelAnnotations[i].description);
+                        }
+                    });
+                });
+            });
+
+        }
+
+
+        function draw() {
+            const ctx = document.getElementById("canvas").getContext("2d");
+            const img = new Image();
+            img.onload = () => {
+                ctx.drawImage(img, 0, 0);
+                ctx.beginPath();
+                ctx.moveTo(449, 195);
+                ctx.lineTo(769, 195);
+                ctx.lineTo(769, 514);
+                ctx.lineTo(449, 514);
+                ctx.stroke();
+            };
+            img.src = "https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg";
+        }
+
+        // draw();
+
+    </script>
 }
