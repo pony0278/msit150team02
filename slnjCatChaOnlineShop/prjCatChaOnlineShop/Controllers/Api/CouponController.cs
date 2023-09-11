@@ -50,10 +50,17 @@ namespace prjCatChaOnlineShop.Controllers.Api
 
             //計算使用紅利的使用金額
             decimal loyaltyPointsDiscount = 0;
+
             // 使用者選擇使用紅利
             if (useLoyaltyPoints == true)
             {
                 loyaltyPointsDiscount = loyaltyPointsInfo.finalPrice;
+                //把使用多少紅利存在session裡
+                HttpContext?.Session.SetString(CDictionary.SK_FINALUSELOYALTYPOINTS, (loyaltyPointsInfo.finalPrice * 100).ToString());
+            }
+            else 
+            {
+                HttpContext?.Session.Remove(CDictionary.SK_FINALUSELOYALTYPOINTS);
             }
 
             //計算運費

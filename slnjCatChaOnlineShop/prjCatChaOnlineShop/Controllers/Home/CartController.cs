@@ -87,6 +87,9 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 decimal total = (decimal)cartItems.Sum(item => item.c小計);
                 ViewBag.totalPrice = total; //把初始的小計金額傳到checkout頁面
 
+                //會員可以得到多少紅利點數
+                decimal getLoyaltyPoint = total / 20;
+
                 //結帳頁面-購物車初始運費
                 decimal firstFee = 0;
                 if (total < 2000)
@@ -105,9 +108,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 CPayModel paymodel = new CPayModel
                 {
                     subtotal = (int?)total,
-                    shippingFee=firstFee,
-                    finalBonus=0,
-                    finalAmount= (int?)firstTotalPrice,
+                    shippingFee = firstFee,
+                    finalBonus = 0,
+                    finalAmount = (int?)firstTotalPrice,
+                    getLoyaltyPoints = (int?)getLoyaltyPoint,
                 };
                 //轉換成JSON
                 string json = JsonSerializer.Serialize(paymodel);
