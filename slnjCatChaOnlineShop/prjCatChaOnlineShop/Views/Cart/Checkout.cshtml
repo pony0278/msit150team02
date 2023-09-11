@@ -1,4 +1,5 @@
 ﻿@using System.Text.Json;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
 @using prjCatChaOnlineShop.Models.CDictionary;
 @using prjCatChaOnlineShop.Models.ViewModels;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
@@ -14,8 +15,13 @@
 }
 @{
     var json = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
-    var payModel = JsonSerializer.Deserialize<CPayModel>(json);
-    var getMemberLoyaltyPoint = payModel.getLoyaltyPoints;
+    CPayModel payModel = null;
+    if (json != null)
+    {
+        payModel = JsonSerializer.Deserialize<CPayModel>(json);
+        
+    }
+
 }
 @{
     ViewData["Title"] = "Checkout";
@@ -23,12 +29,9 @@
 
 @section Styles{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/style.css">
     <!--myCss-->
@@ -875,16 +878,16 @@
                 <div class="title-left">
                     <h3>付款方式</h3>
                 </div>
-                <!--三種付款方式選項分頁按鈕-->
+                <!--三種付款方式選項分頁按鈕--> 
                 <nav class="customer_info">
                     <div class="nav nav-tabs" id="nav-paymentMethod-tab" role="tablist">
                         <input class="nav-link active" id="nav-credit-tab" type="radio" name="paymentMethod"
-                               data-bs-toggle="tab" data-bs-target="#nav-credit" role="tab" aria-controls="nav-credit"
+                               data-bs-toggle="tab" data-bs-target="#credit" role="tab" aria-controls="nav-credit"
                                aria-selected="true" value="信用卡付款" checked>
                         <label for="nav-credit-tab" class="mb-0">信用卡付款</label>
 
                         <input class="nav-link" id="nav-ATM-tab" type="radio" name="paymentMethod"
-                               data-bs-toggle="tab" data-bs-target="#nav-ATM" role="tab" aria-controls="nav-ATM"
+                               data-bs-toggle="tab" data-bs-target="#ATM" role="tab" aria-controls="nav-ATM"
                                aria-selected="false" value="銀行轉帳">
                         <label for="nav-ATM-tab" class="mb-0">銀行轉帳</label>
 
@@ -897,12 +900,12 @@
                 <!--三種付款方式的分頁-->
                 <div class="tab-content invoice-size" id="nav-invoice-tabContent">
                     <!--信用卡付款分頁內容-->
-                    <div class="tab-pane fade show active" id="nav-credit" role="tabpanel"
+                    <div class="tab-pane fade show active" id="credit" role="tabpanel"
                          aria-labelledby="nav-credit-tab">
-                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label> 
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
                     </div>
                     <!--銀行轉帳分頁內容-->
-                    <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
+                    <div class="tab-pane fade" id="ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
                         <label class="nav-ATM-css">選擇此方式會在送出訂單後會得到一組僅供本次交易使用的轉帳帳號，請在期限內匯款完畢，否則此筆交易將取消。</label>
                         <ul class="nav-ATM-fontSize">
                             <li>以下為範例：</li>
@@ -1232,11 +1235,11 @@
                         <hr class="my-1">
                         <div class="d-flex">
                             <h4 class="mr-auto">優惠券折扣</h4>
-                             <span class="mr-2 font-weight-bold">- NT</span><div class=" font-weight-bold" id="couponBonus"> 0 </div>
+                            <span class="mr-2 font-weight-bold">- NT</span><div class=" font-weight-bold" id="couponBonus"> 0 </div>
                         </div>
                         <div class="d-flex">
                             <h4 class="mr-auto">運費</h4>
-                             <span class="mr-2 font-weight-bold">+ NT</span><div class=" font-weight-bold" id="shippingFee"> @ViewBag.firstFee</div>
+                            <span class="mr-2 font-weight-bold">+ NT</span><div class=" font-weight-bold" id="shippingFee"> @ViewBag.firstFee</div>
                         </div>
                         <hr>
                         <div class="d-flex gr-total">
@@ -1246,9 +1249,15 @@
                         <hr>
                     }
                 </div>
+
+
+
                 <div class="col-12 d-flex align-items-center ">
                     <a class="ml-auto mr-2" style="color:#DE9E4F">可獲得的紅利</a>
-                    <a class="mr-2" style="color:#DE9E4F"> @getMemberLoyaltyPoint </a>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL) != null)
+                    {
+                        <a class="mr-2" style="color:#DE9E4F"> @payModel?.getLoyaltyPoints </a>
+                    }
                     <a class="mr-2" style="color:#DE9E4F">點</a>
                     <button type="submit" id="submit-order-btn"
                             class="checkout-btn btn hvr-hover ">
@@ -1264,31 +1273,15 @@
 <!--中間主畫面End-->
 @section Scripts{
     <!-- ALL JS FILES -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--引用Bundle，這樣nav導覽與頁籤就可以使用-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
             crossorigin="anonymous"></script>
-    <!--引用分離(Separate)-->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
-            integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
-            crossorigin="anonymous"></script>
+
     <!---->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <!-- ALL PLUGINS -->
-    <script src="~/js/jquery.superslides.min.js"></script>
-    <script src="~/js/bootstrap-select.js"></script>
-    <script src="~/js/inewsticker.js"></script>
-    @*<script src="~/js/bootsnav.js."></script>*@
-    <script src="~/js/images-loded.min.js"></script>
-    <script src="~/js/isotope.min.js"></script>
-    <script src="~/js/owl.carousel.min.js"></script>
-    <script src="~/js/baguetteBox.min.js"></script>
-    <script src="~/js/form-validator.min.js"></script>
-    <script src="~/js/contact-form-script.js"></script>
-    <!--nav導覽與頁籤使用-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+
 
     <!--Google Map API-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
@@ -1337,26 +1330,28 @@
         })
 
         //DEMO發票的按鍵
-        $('#invoiceDemo').click(function(){
+        $('#invoiceDemo').click(function () {
             $('#eInvoiceNum').val("/9Qj376W");
         })
 
-        //$('#select-seveneleven').on('input', function () {
-        //    var storeName = $(this).val();
-        //    deliveryInfo.storeName = storeName;
-        //});
+                        //$('#select-seveneleven').on('input', function () {
+                        //    var storeName = $(this).val();
+                        //    deliveryInfo.storeName = storeName;
+                        //});
 
-        //// 當使用者輸入取件姓名時，更新物件中的值
-        //$('#711name').on('input', function () {
-        //    var name = $(this).val();
-        //    deliveryInfo.name = name;
-        //});
+                        //// 當使用者輸入取件姓名時，更新物件中的值
+                        //$('#711name').on('input', function () {
+                        //    var name = $(this).val();
+                        //    deliveryInfo.name = name;
+                        //});
 
-        //// 當使用者輸入取件人電話時，更新物件中的值
-        //$('#711phone').on('input', function () {
-        //    var phone = $(this).val();
-        //    deliveryInfo.phone = phone;
-        //});
+                        //// 當使用者輸入取件人電話時，更新物件中的值
+                        //$('#711phone').on('input', function () {
+                        //    var phone = $(this).val();
+                        //    deliveryInfo.phone = phone;
+                        //});
+
+
 
     </script>
 }

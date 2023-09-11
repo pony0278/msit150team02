@@ -41,6 +41,7 @@
             height: 40px;
         }
 
+
     </style>
 }
 
@@ -57,7 +58,6 @@
             </button>
         </div>
     </div>
-    <img src=""
 
 
     <!---新增優惠券 modal-->
@@ -105,9 +105,9 @@
                              </select>
                         </div>
 
-                    <button type="button" class="mt-3 btn btn-danger" onclick="setCreateCouponValue()">Demo</button>
-                    <button type="submit" class="mt-3 btn btn-danger btn-block create-submitButton" id="create-submitButton"
-                                style="width: 100%;">
+                    <button type="button" class="mt-3 btn " onclick="setCreateCouponValue()" style="background-color: #b95756;color: #FFF;">Demo</button>
+                    <button type="submit" class="mt-3 btn btn-block create-submitButton" id="create-submitButton"
+                            style="width: 100%; background-color: #b95756;color: #FFF;">
                             儲存
                         </button>
                 </div>
@@ -193,8 +193,8 @@
                                                 </select>
                                             </div>
 
-                                            <button type="submit" class="mt-3 btn btn-danger btn-block" name="edit-submitButton" id="edit-submitButton"
-                                                    style="width: 100%;">
+                                            <button type="submit" class="mt-3 btn  btn-block" name="edit-submitButton" id="edit-submitButton"
+                                                    style="width: 100%; background-color: #b95756;color: #FFF;">
                                                 儲存
                                             </button>
                                         </div>
@@ -225,15 +225,15 @@
                                     <!-- 內容表單 -->
                                     <div class="modal-footer">
                                         <div class="form-group">
-                                            <button type="submit" class="mt-3 btn btn-danger" id="SendToMemberByID">發送</button>
+                                            <button type="submit" class="mt-3 btn " id="SendToMemberByID" style="background-color:#b95756;color: #FFF">發送</button>
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="mt-3 btn btn-success btn-block" id="SendCouponToAllMembers">
+                                            <button type="submit" class="mt-3 btn  btn-block" id="SendCouponToAllMembers" style="background-color:#b95756;color: #FFF">
                                                 發送優惠券給所有會員
                                             </button>
                                         </div>
                                         <div class="form-group">
-                                            <button type="submit" class="mt-3 btn btn-success btn-block SendNotify" id="SendNotify">
+                                            <button type="submit" class="mt-3 btn  btn-block SendNotify" id="SendNotify" style="background-color:#b95756;color: #FFF">
                                                 發送到期提醒
                                             </button>
                                         </div>
@@ -329,12 +329,18 @@
                         return containerDiv.innerHTML;
                     }
                 },
-                { "data": "specialOffer" },
+                {
+                    "data": "specialOffer",
+                    "render": function (data, type, row) {
+                        var percentage = (data * 100).toFixed(0) + "%";
+                        return percentage;
+                    }
+                },
                 { "data": "usable" },
                 {
                     "data": "couponId",
                     "render": function (data, type, row) {
-                        return `<button class="btn btn-danger send-button" data-id="${row.couponId}" data-bs-toggle="modal" data-bs-target="#sendtoMember" >發送</button>`
+                        return `<button class="btn send-button" data-id="${row.couponId}" data-bs-toggle="modal" data-bs-target="#sendtoMember" style="background-color:#b95756;color: #FFF" >發送</button>`
                     }
                 },
                 {
@@ -342,7 +348,7 @@
                     "render": function (data, type, row) {
                         var deleteUrl = '@Url.Action("Delete", "Bonus", new { area = "AdminCMS", id = "couponId" })';
                         deleteUrl = deleteUrl.replace('couponId', row.couponId);
-                        return `<button  class="edit-button" data-id="${row.couponId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
+                        return `<button  class="btn btn-icon edit-button" data-id="${row.couponId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
                                                                                                                                 <button class="btn delete-button" data-id="${row.couponId}" ><i class="fas fa-trash-alt"></i></button>`
                     }
                 }

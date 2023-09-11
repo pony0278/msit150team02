@@ -41,6 +41,16 @@
             height: 40px;
         }
 
+        .form-check-input-lg.row-checkbox[type="checkbox"]:checked {
+            background-color: #b95756 !important;
+            border-color: #fff !important;
+        }
+
+        .form-check-input-lg.row-checkbox{
+            width: 18px;
+            height: 18px;
+        }
+
 
     </style>
 }
@@ -135,9 +145,9 @@
                             <input type="text" class="form-control" id="create_rate" name="LotteryProbability">
                         </div>
 
-                        <button type="button" class="mt-3 btn btn-danger" onclick="setCreateProductValue()">Demo</button>
-                        <button class="mt-3 btn btn-danger btn-block create-submitButton" id="create-submitButton"
-                                style="width: 100%;">
+                        <button type="button" class="mt-3 btn " onclick="setCreateProductValue()" style="background-color: #b95756;color: #FFF;">Demo</button>
+                        <button class="mt-3 btn  btn-block create-submitButton" id="create-submitButton"
+                                style="width: 100% ;background-color: #b95756;color: #FFF;;">
                             儲存
                         </button>
                         </div>
@@ -152,8 +162,8 @@
                                     <img id="preview-createimage" src="" class="w-100 border">
                                 </div>
                           
-                            <button class="mt-3 btn btn-danger btn-block create-submitButton" id="create-submitButton"
-                                    style="width: 100%;">
+                            <button class="mt-3 btn  btn-block create-submitButton" id="create-submitButton"
+                                    style="width: 100% ; background-color: #b95756;color: #FFF;;">
                                 儲存
                             </button>
                             </div>
@@ -187,7 +197,7 @@
                     </div>
                     <div class="col">
                         <div class="form-group">
-                            <button type="submit" class="mt-3 btn btn-danger btn-block btnSend" id="btnSend" style="width: 100%;">
+                            <button type="submit" class="mt-3 btn btn-block btnSend" id="btnSend" style="width: 100% ;background-color: #b95756;color: #FFF;;">
                                 發送
                             </button>
                         </div>
@@ -195,7 +205,7 @@
 
                     <div class="col">
                         <div class="form-group">
-                            <button type="button" class="mt-3 btn btn-secondary btn-block" id="clearMemberID" style="width: 100%;">
+                            <button type="button" class="mt-3 btn btn-secondary btn-block" id="clearMemberID" style="width: 100%;background-color: #b95756;color: #FFF;">
                                 清除
                             </button>
                         </div>
@@ -231,7 +241,11 @@
     </div>
     <!---篩選類別-->
     <div style="margin-left:20px">
-        <button class="btn btn-danger selectAllBtn" id="selectAllBtn">全部選擇</button>
+        <button class="btn  selectAllBtn" id="selectAllBtn" style="background-color:#b95756;color: #FFF ; margin-top:15px;" ;>全部選擇</button>
+        <button type="button" class="btn" onclick="setSearchValue()" style="margin-left: auto; margin-top:15px; background-color: #b95756;color: #FFF;">
+            搜尋Demo
+        </button>
+
     </div>
     <div class="container-fluid mt-4">
         <div class="row">
@@ -316,8 +330,8 @@
                                                 <label>抽獎機率：</label>
                                             <input type="text" class="form-control" id="editrate" name="LotteryProbability">
                                         </div>
-                                            <button type="submit" class="mt-3 btn btn-danger btn-block  edit-submitButton" id="edit-submitButton"
-                                                style="width: 100%;">
+                                            <button type="submit" class="mt-3 btn btn-block  edit-submitButton" id="edit-submitButton"
+                                                    style="width: 100%;background-color: #b95756;color: #FFF;">
                                             儲存
                                         </button>
                                     </div>
@@ -333,8 +347,8 @@
                                             </div>
                                         </div>
 
-                                            <button type="submit" class="mt-3 btn btn-danger btn-block  edit-submitButton" id="edit-submitButton"
-                                                style="width: 100%;">
+                                            <button type="submit" class="mt-3 btn btn-block  edit-submitButton" id="edit-submitButton"
+                                                    style="width: 100%; background-color: #b95756;color: #FFF;">
                                             儲存
                                         </button>
                                     </div>
@@ -411,13 +425,19 @@
                             return `<img class="img-thumbnail" src="${data}">`;
                         }
                     },
-                    { "data": "lotteryProbability" },
+                    {
+                        "data": "lotteryProbability" ,
+                        "render": function (data, type, row) {
+                        var percentage = (data * 100).toFixed(1) + "%";
+                        return percentage;
+                    }
+                    },
                     {
                         "data": "productId",
                         "render": function (data, type, row) {
                             var deleteUrl = '@Url.Action("Delete", "GameProduct", new { area = "AdminCMS", id = "productId" })';
                             deleteUrl = deleteUrl.replace('productId', row.productId);
-                            return `<button class="edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
+                        return `<button class="btn btn-icon edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
                                                                                                                         <button class="btn delete-button" data-id="${row.productId}" ><i class="fas fa-trash-alt"></i></button>`;
                         }
                     },
@@ -890,6 +910,12 @@
         $('.create_btn').click(function () {
             clearFormInputs();
         });
+
+                //搜尋demo鍵
+        function setSearchValue() {
+            var inputValue = "中秋";
+            $("input[type='search']").eq(0).val(inputValue).focus();
+        }
 
     </script>
 }
