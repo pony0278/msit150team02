@@ -437,7 +437,7 @@
                         "render": function (data, type, row) {
                             var deleteUrl = '@Url.Action("Delete", "GameProduct", new { area = "AdminCMS", id = "productId" })';
                             deleteUrl = deleteUrl.replace('productId', row.productId);
-                            return `<button class="edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
+                        return `<button class="btn btn-icon edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
                                                                                                                         <button class="btn delete-button" data-id="${row.productId}" ><i class="fas fa-trash-alt"></i></button>`;
                         }
                     },
