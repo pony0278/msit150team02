@@ -14,5 +14,7 @@
         public static readonly string SK_PAYMEMENT_MODEL = "SK_PAYMEMENT_MODEL";
 
         public static readonly string SK_FINALTOTALPRICE = "SK_FinalTotalPrice";
+
+        public static readonly string SK_FINALUSELOYALTYPOINTS = "SK_FINALUSELOYALTYPOINTS";
     }
 }

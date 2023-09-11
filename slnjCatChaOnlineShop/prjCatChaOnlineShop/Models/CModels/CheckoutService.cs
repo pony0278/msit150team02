@@ -125,7 +125,9 @@ namespace prjCatChaOnlineShop.Models.CModels
                 var tenPercentPrice = price * 0.1;
                 //計算折抵金額等於多少紅利點數
                 var priceToLoalty = tenPercentPrice * 100;
-                
+
+                //到底可以使用多少紅利
+                getCouponPrice.finalBonus = 0;
                 //折抵規則
                 if (loyaltyPoints < priceToLoalty)  //如果現有紅利不足以折抵該筆訂單10%，最後可折抵就是以現有紅利為主
                 {
@@ -139,6 +141,8 @@ namespace prjCatChaOnlineShop.Models.CModels
                     getCouponPrice.finalBonus = (int)priceToLoalty;
                     getCouponPrice.finalPrice = (decimal)tenPercentPrice;
                 }
+
+               
             }
             return getCouponPrice;
 
