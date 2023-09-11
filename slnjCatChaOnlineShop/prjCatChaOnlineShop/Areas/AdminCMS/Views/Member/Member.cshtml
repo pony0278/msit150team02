@@ -314,6 +314,12 @@
             #couponContainer .col-lg-6 {
                 padding: 0;
             }
+
+            #runGameHighestScore {
+            font-size: 20px;
+            color: #432e1b;
+            font-weight: bold;
+            }
     </style>
 }
 
@@ -549,9 +555,9 @@
                             <th>ID</th>
                             <th>大頭貼</th>
                             <th>姓名</th>
-                            <th>帳號</th>
+                            @*<th>帳號</th>*@
                             <th>性別</th>
-                            <th>E-mail</th>
+                            <th>E-mail（帳號）</th>
                             <th>電話</th>
                             @*<th>地址</th>*@
                             @*<th>狀態</th>*@
@@ -842,7 +848,7 @@
 
         //==========關鍵字搜尋demo鍵
         function setSearchValue() {
-            var inputValue = "雅莉";
+            var inputValue = "安安";
             $("input[type='search']").eq(0).val(inputValue).focus();
         }
 
@@ -1042,7 +1048,16 @@
                     }
                 },
                 { data: 'name' },
-                { data: 'memberAccount' },
+                //{
+                //    data: 'memberAccount',
+                //    render: function (data, type, row, meta) {
+                //        if (data) {
+                //            return data;
+                //        } else {
+                //            return row.email;
+                //        }
+                //    }
+                //},
                 { data: 'gender' },
                 { data: 'email' },
                 { data: 'phoneNumber' },
@@ -1105,7 +1120,7 @@
             buttons: [
                 'pageLength', 'copy', 'csv', 'excel', 'print'
             ],
-            "order": [[9, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
+            "order": [[2, 'desc']]  // 在這裡指定初始排序的列和順序，0 表示第一列（memberId），'desc' 表示降序
         });
 
 
@@ -1344,11 +1359,22 @@
                     //}
 
                     //============遊戲資料
-                    $('#levelId').text("LEVEL " + data.data.levelId);
+                    if (data.data.levelId == null){
+                        $('#levelId').text("LEVEL 0");
+                    } else {
+                        $('#levelId').text("LEVEL " + data.data.levelId);
+                    }
+
                     $('#characterName').text(data.data.characterName);
                     $('#catCoinQuantity').text("貓幣數量：" + data.data.catCoinQuantity);
                     $('#loyaltyPoints').text("紅利數量：" + data.data.loyaltyPoints);
-                    $('#runGameHighestScore').text("最高分：" + data.data.runGameHighestScore);
+
+                    if (data.data.runGameHighestScore == null) {
+                        $('#runGameHighestScore').text("遊戲最高分：0");
+                    } else {
+                        $('#runGameHighestScore').text("遊戲最高分：" + data.data.runGameHighestScore);
+                    }
+                    
 
                     //===========常用地址
                     var CAContainer = $("#commonaddressContainer");
@@ -1392,7 +1418,7 @@
                     var couponContainer = $("#couponContainer");
                     couponContainer.text("");
 
-                    if (data.data.shopCommonAddressData.length != 0) {
+                    if (data.data.shopMemberCouponData.length != 0) {
                         for (var i = 0; i < data.data.shopMemberCouponData.length; i++) {
 
                             var item = data.data.shopMemberCouponData[i];
