@@ -61,6 +61,8 @@
     <div class="row">
         <div class="col-lg-12">
             <button class="btn btn-outline-secondary my-1" onclick="goBack()">回上一頁</button>
+            <button class="btn btn-outline-warning my-1 mx-2" id="demoB" type="button">demoB</button>
+            <button class="btn btn-outline-warning my-1" id="demoG" type="button">demoG</button>
         </div>
     </div>
 </div>
@@ -73,12 +75,15 @@
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <form method="post" enctype="multipart/form-data" id="imgForm" class="d-flex flex-column align-items-center">
                     <div class="d-flex justify-content-center align-items-center">
-                        <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
-                        @* <canvas id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" /> *@
-                        <div class="mx-1" id="analysingArea">
+                        <div class="col-md-6">
+                            <div id="analysingArea">
                                 <input id="analysing" value="分析中" class="text-center font-weight-bold fs-5" />
-                                <img src="~/images/Walk2.gif" id="loading" style="max-width: 250px; max-height: 250px;" />
-                         </div>
+                            </div>
+                            <img id="imgPreview" src='@Url.Content("~/images/noimage.jpg")' alt="請放入圖片" class="d-block mx-auto" style="max-width: 250px; max-height: 250px;" />
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="canvas"></canvas>
+                        </div>
                     </div>
                     <div class="my-3">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
@@ -88,31 +93,23 @@
                     </div>
                 </form>
                 <div>
-                    <h4>審核結果</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
-                </div>
-                <button class="btn hvr-hover mx-2" id="demoB" type="button">demoB</button>
-                <button class="btn hvr-hover mx-2" id="demoG" type="button">demoG</button>
-                <div class="my-1 d-flex justify-content-center align-items-center">
-                    @* <img id="image" src="https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg" alt="Image" style="max-width: 100%;"> *@
-                    @* <img id="image" width="220" height="277" src="https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg" alt="The Scream"> *@
-                    <canvas id="canvas"></canvas>
-                   @* <canvas id="canvas" width="500" height="500"></canvas> *@
+                    <h4>圖像識別</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
                 </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <div>
-                    <h4>圖像審核</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
-                </div>
-                <div class="my-4">
                     <h4>圖像描述</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="descriptionResults" rows="3" readonly></textarea>
+                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="descriptionResults" rows="3" readonly></textarea>
                 </div>
-                <div class="my-4">
-                    <h4>圖像識別</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
+                <div>
+                    <h4>審核結果</h4>
+                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
+                </div>
+                <div>
+                    <h4>圖像審核</h4>
+                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
                 </div>
                 <div class="my-4" id="myChartDiv">
                     <canvas id="myChart"></canvas>
@@ -154,12 +151,16 @@
             $('#imgChangeUrl').click(function () {
                 event.preventDefault();
                 
-                document.querySelector('#analysingArea').style.display = "inline";//顯示解析中的那張圖
+                document.querySelector('#analysingArea').style.display = "inline";//顯示解析中的字樣
                 //清空textarea的內文
                 document.getElementById('imageResults').value = "";
                 document.getElementById('checkResults').value = "";
                 document.getElementById('descriptionResults').value = "";
                 document.getElementById('visionResults').value = "";
+                // 清空整個 canvas
+                var canvas = document.getElementById('canvas');
+                var ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 
                 // 取得表單元素
@@ -178,7 +179,9 @@
                         // 圖片辨識的地方
                         var visionParams = {
                             "visualFeatures": "Adult,Brands,Categories,Color,Description,Faces,ImageType,Adult,Objects,Tags",
-                            "language": "zh",
+                            // "language": "zh",
+                            "language": "en",
+
                             "model-version": "latest",
                         };
                         var visionData = {
@@ -237,14 +240,7 @@
                                 tagText += tag.name + " / ";
                             });
 
-                            console.log("==================");
                             console.log(visionResult);
-                            /*
-                            console.log(visionResult['faces'][0]['faceRectangle']['left']);
-                            console.log(visionResult['faces'][0]['faceRectangle']['top']);
-                            console.log(visionResult['faces'][0]['faceRectangle']['width']);
-                            console.log(visionResult['faces'][0]['faceRectangle']['height']);
-                            */
 
 
                             //=========================================
@@ -255,8 +251,8 @@
                                 "檔案類型: " + visionResult.metadata.format + "檔";
 
                             var canvasForFace = document.getElementById("canvas");
-                            canvasForFace.width = visionResult.metadata.width;
-                            canvasForFace.height = visionResult.metadata.height
+                            canvasForFace.width = document.getElementById('imgPreview').clientWidth;
+                            canvasForFace.height = document.getElementById('imgPreview').clientHeight;
                             detectFaces(data.url);
 
 
@@ -587,12 +583,9 @@
                             ctx.lineWidth = 3;
 
                             if (response.result && response.result.responses && response.result.responses[0]) {
-                                // 獲取人臉的四個頂點坐標
-
- 
-                                    // 獲取人臉的四個頂點坐標
-                                    var vertices = response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices;
-                            img.onload = () => {
+                                
+                                var vertices = response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices;// 獲取人臉的四個頂點坐標
+                                img.onload = () => {
 
                                     ctx.drawImage(img, 0, 0);
                                     ctx.beginPath();
@@ -602,25 +595,8 @@
                                     ctx.lineTo(vertices[3].x, vertices[3].y);
                                     ctx.closePath();
                                     ctx.stroke();
-                            };
-                            
-                            // img.src = "https://msit150team02blob.blob.core.windows.net/msit150team02/15025.jpg";
-                            img.src = imgUrlForFaces;
-
-                            /*
-                            var vertices = response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices;
-                            console.log(response.result.responses[0].fdBoundingPoly);
-                            console.log(response.result.responses[0].faceAnnotations[0].fdBoundingPoly.vertices);
-
-                            // 繪製矩形
-                            ctx.beginPath();
-                            ctx.moveTo(vertices[0].x, vertices[0].y);
-                            ctx.lineTo(vertices[1].x, vertices[1].y);
-                            ctx.lineTo(vertices[2].x, vertices[2].y);
-                            ctx.lineTo(vertices[3].x, vertices[3].y);
-                            ctx.closePath();
-                            ctx.stroke();
-                            */
+                                };
+                                img.src = imgUrlForFaces;
 
                             } else {
                                 console.log('未獲得有效的 API 回應。');
