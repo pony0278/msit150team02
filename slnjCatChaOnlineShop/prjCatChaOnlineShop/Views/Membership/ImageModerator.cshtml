@@ -103,13 +103,17 @@
                     <h4>圖像描述</h4>
                     <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="descriptionResults" rows="3" readonly></textarea>
                 </div>
-                <div>
+                <div class="my-3">
                     <h4>審核結果</h4>
                     <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
                 </div>
                 <div>
                     <h4>圖像審核</h4>
-                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="checkResults" rows="3" readonly></textarea>
+                    <div class="border d-inline-block fs-5 w-100 rounded mx-2" id="newCheckComplaint">
+                        <div id="checkComplaint1" class="mx-2"></div>
+                        <div id="checkComplaint2" class="mx-2"></div>
+                        <div id="checkComplaint3" class="mx-2"></div>
+                     </div>
                 </div>
                 <div class="my-4" id="myChartDiv">
                     <canvas id="myChart"></canvas>
@@ -154,14 +158,19 @@
                 document.querySelector('#analysingArea').style.display = "inline";//顯示解析中的字樣
                 //清空textarea的內文
                 document.getElementById('imageResults').value = "";
-                document.getElementById('checkResults').value = "";
                 document.getElementById('descriptionResults').value = "";
                 document.getElementById('visionResults').value = "";
-                // 清空整個 canvas
+                //清空整個 canvas
                 var canvas = document.getElementById('canvas');
                 var ctx = canvas.getContext('2d');
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
-
+                //清空圖像審核的內文
+                document.getElementById('checkComplaint1').innerHTML = "";
+                document.getElementById('checkComplaint2').innerHTML = "";
+                document.getElementById('checkComplaint3').innerHTML = "";
+                //移除審核結果的框線顏色
+                document.getElementById('imageResults').classList.remove('is-invalid');//將紅框移除
+                document.getElementById('imageResults').classList.remove('is-valid');//將綠框移除
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -325,9 +334,7 @@
                                 };
                                 const myChart = new Chart(ctx, config);
 
-                                var checkText = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容\n" +
-                                    "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視\n" +
-                                    "暴力攻擊指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面\n";
+
 
 
                                 if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
@@ -336,16 +343,33 @@
                                     var Category3ans = Category3 > 0.7 ? '衝擊畫面' + (Category3 * 100).toFixed(2) + "%" : "";
                                     var ans = Category1ans + Category2ans + Category3ans;
 
+
+                                    //下方為判斷審核結果要出現的紅綠色字體
+                                    document.getElementById('checkComplaint1').innerHTML = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified+ "成人內容";
+                                    if (Category1 > 0.7) {
+                                        document.getElementById('checkComplaint1').style.color = 'red';
+                                    } else {
+                                        document.getElementById('checkComplaint1').style.color = 'green';
+                                    }
+                                    document.getElementById('checkComplaint2').innerHTML = "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視";
+                                    if (Category2 > 0.7) {
+                                        document.getElementById('checkComplaint2').style.color = 'red';
+                                    } else {
+                                        document.getElementById('checkComplaint2').style.color = 'green';
+                                    }
+                                    document.getElementById('checkComplaint3').innerHTML = "暴力攻擊指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面";
+                                    if (Category3 > 0.7) {
+                                        document.getElementById('checkComplaint3').style.color = 'red';
+                                    } else {
+                                        document.getElementById('checkComplaint3').style.color = 'green';
+                                    }
+
                                     document.querySelector('#analysingArea').style.display = "none";
-                                    document.getElementById('checkResults').value = checkText;
                                     document.getElementById('visionResults').value = visionText;
                                     document.getElementById('descriptionResults').value = descriptionText;
 
                                     document.getElementById('imageResults').value = "系統判定" + ans + "指數過高\n無法將您上傳的照片設為頭貼";
-                                    document.getElementById('imageResults').classList.remove('is-valid');//將綠框移除
-                                    document.getElementById('checkResults').classList.remove('is-valid');//將綠框移除
                                     document.getElementById('imageResults').classList.add('is-invalid');//將紅框加入
-                                    document.getElementById('checkResults').classList.add('is-invalid');//將紅框加入
 
                                 } else {
 
@@ -353,15 +377,18 @@
                                     })
                                         .then(response => {
 
+                                            document.getElementById('checkComplaint1').innerHTML = "成人冒犯指數: " + (Category1 * 100).toFixed(2) + "%，平台判斷" + isImageAdultClassified + "成人內容";
+                                            document.getElementById('checkComplaint1').style.color = 'green';
+                                            document.getElementById('checkComplaint2').innerHTML = "種族冒犯指數: " + (Category2 * 100).toFixed(2) + "%，平台判斷" + isImageRacyClassified + "種族歧視";
+                                            document.getElementById('checkComplaint2').style.color = 'green';
+                                            document.getElementById('checkComplaint3').innerHTML = "暴力攻擊指數: " + (Category3 * 100).toFixed(2) + "%，平台判斷" + isGoryContent + "衝擊畫面";
+                                            document.getElementById('checkComplaint3').style.color = 'green';
+
                                             document.querySelector('#analysingArea').style.display = "none";
-                                            document.getElementById('checkResults').value = checkText;
                                             document.getElementById('visionResults').value = visionText;
                                             document.getElementById('descriptionResults').value = descriptionText;
                                             
                                             document.getElementById('imageResults').value = "您上傳的圖片已通過智能審核\n已更新您的頭貼照片";
-                                            document.getElementById('checkResults').classList.remove('is-invalid');//將紅框移除
-                                            document.getElementById('imageResults').classList.remove('is-invalid');//將紅框移除
-                                            document.getElementById('checkResults').classList.add('is-valid'); // 將綠框加入
                                             document.getElementById('imageResults').classList.add('is-valid');//將綠框加入
                                         })
                                         .catch(error => {

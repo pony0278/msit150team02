@@ -957,17 +957,18 @@
                                     <textarea class="form-control" id="ComplaintContent" rows="6" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
                                 </div>
-                                <div class="form-group" id="aiCheck" style="display: none;">
-                                    <h4 class="font-weight-bold">系統審合</h4>
-                                    <textarea class="form-control is-invalid" id="checkComplaint" rows="1"
-                                              data-error="文字判讀" readonly></textarea>
-                                </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
                                     <button class="btn hvr-hover mx-2" id="lookChart" type="button">查閱圖表</button>
                                     <button class="btn hvr-hover mx-2" id="totalDemo" type="button">demo訊息</button>
-@*                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
-                                    <div class="clearfix"></div> *@
+                                </div>
+                                <div class="form-group" id="aiCheck" style="display: none;">
+                                    <h4 class="font-weight-bold">系統審合</h4>
+                                    <div class="border d-inline-block fs-4 w-100 rounded" id="newCheckComplaint">
+                                        <span id="checkComplaint1"></span>
+                                        <span id="checkComplaint2" class="mx-3"></span>
+                                        <span id="checkComplaint3"></span>
+                                    </div>
                                 </div>
                                 <div id="myChartDiv" style="display: none;">
                                     <canvas id="myChart"></canvas>
@@ -1631,135 +1632,6 @@
 
         //進入頁面時，先呼叫方法載入資料
         $(document).ready(function () {
-
-            /*
-            $.getJSON('@Url.Content("~/membership/GetOrders")', function (data) {
-                var tbody = document.querySelector('#orderTable tbody');
-
-                // 清空表格內容
-                tbody.innerHTML = '';
-
-                // 遍歷 JSON 資料並建立表格列
-                data.forEach(function (item) {
-                    var row = tbody.insertRow();
-                    row.insertCell().textContent = item.orderId;
-
-                    //將日期格式化為 "yyyy-mm-dd"
-                    var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
-                    row.insertCell().textContent = formattedDate;
-
-                    row.insertCell().textContent = item.recipientName;
-                    row.insertCell().textContent = item.recipientAddress;
-                    row.insertCell().textContent = item.recipientPhone;
-                    row.insertCell().textContent = item.paymentMethodName;
-                    row.insertCell().textContent = item.statusName;
-
-
-                    var buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('d-flex', 'flex-column');
-
-                    //處理訂單明細的按鈕
-                    var detailButton = document.createElement('button');
-                    detailButton.textContent = '訂單明細';
-                    detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
-                    detailButton.addEventListener('click', function () {
-                        $('#orderDetailModal').modal('show');
-
-                        $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
-                            var orderDetailTbody = document.querySelector('#orderDetailTable tbody');
-
-                            // 清空表格內容
-                            orderDetailTbody.innerHTML = '';
-
-                            var totalAmount = 0;
-                            data.forEach(function (item) {
-                                var row = orderDetailTbody.insertRow();
-                                row.insertCell().textContent = item.productName;
-                                row.insertCell().textContent = item.productQuantity;
-                                if (item.size == null) {
-                                    row.insertCell().textContent = "標準型";
-                                } else {
-                                    row.insertCell().textContent = item.size;
-                                }
-                                row.insertCell().textContent = 'NT$ ' + item.productPrice;
-
-                                totalAmount += item.productQuantity * item.productPrice;
-                            });
-                            document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
-                        });
-
-                    });
-
-                    buttonContainer.appendChild(detailButton);
-
-                    //處理申請退換貨的按鈕
-                    var applyReturnButton = document.createElement('button');
-                    applyReturnButton.textContent = '申請退換貨';
-                    applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
-
-                    applyReturnButton.addEventListener('click', function () {
-                        document.querySelector('#returnSpan').textContent = item.orderId;
-                        $('#returnModal').modal('show');
-
-                        var returnProductElement = document.getElementById('returnProductSelect');
-                        returnProductElement.innerHTML = '';
-                        $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
-
-                            //拿取退貨理由數據
-                            var returnReasonElement = document.getElementById('returnReasonSelect');
-                            returnReasonElement.innerHTML = '';
-                            $.getJSON('@Url.Content("~/membership/GetReturnReasonCategory")', function (data) {
-                                data.forEach(function (item) {
-                                    var option = document.createElement('option');
-                                    option.value = item.returnReasonId;
-                                    option.textContent = item.returnReason;
-                                    returnReasonElement.appendChild(option);
-                                });
-                            });
-
-                            data.forEach(function (item) {
-                                var option = document.createElement('option');
-                                option.value = item.productId;
-                                option.textContent = item.productName;
-                                returnProductElement.appendChild(option);
-                            });
-                        });
-
-                    });
-
-                    buttonContainer.appendChild(applyReturnButton);
-
-                    //處理評論的按鈕
-                    var commentButton = document.createElement('button');
-                    commentButton.textContent = '評論';
-                    commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2');
-                    commentButton.addEventListener('click', function () {
-                        document.querySelector('#orderIdSpan').textContent = item.orderId;
-                        $('#commentModal').modal('show');
-
-                        var selectElement = document.getElementById('productSelect');
-                        selectElement.innerHTML = '';
-                        $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
-                            data.forEach(function (item) {
-                                var option = document.createElement('option');
-                                option.value = item.productId;
-                                option.textContent = item.productName;
-                                selectElement.appendChild(option);
-                            });
-                        });
-                    });
-
-                    buttonContainer.appendChild(commentButton);
-
-                    var buttonCell = row.insertCell();
-                    buttonCell.appendChild(buttonContainer);
-
-                });
-
-                initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
-
-            });
-            */
 
             loadOrderRecords()
         });
@@ -2581,7 +2453,6 @@
                         type: "POST",
                         data: messageValue,
                     }).done(function (data) {
-                        // alert(JSON.stringify(data));
 
                         // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
                         // 數據1 ： 成人內容
@@ -2591,17 +2462,35 @@
                         // // 數據3 ： 冒犯性
                         var Category3 = data['Classification']['Category3']['Score'];
 
-                        $('#checkComplaint').val(`成人內容：${(Category1 * 100).toFixed(2)}%, 色情內容：${(Category2 * 100).toFixed(2)}%, 冒犯語言：${(Category3 * 100).toFixed(2)}%`);
+                        $('#checkComplaint1').text(`成人內容：${(Category1 * 100).toFixed(2)}%`);
+                        if (Category1 > 0.8) {
+                            document.getElementById('checkComplaint1').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint1').style.color = 'green';
+                        }
+                        $('#checkComplaint2').text(`色情內容：${(Category2 * 100).toFixed(2)}%`);
+                        if (Category2 > 0.8) {
+                            document.getElementById('checkComplaint2').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint2').style.color = 'green';
+                        }
+                        $('#checkComplaint3').text(`冒犯語言：${(Category3 * 100).toFixed(2)}%`);
+                        if (Category3 > 0.8) {
+                            document.getElementById('checkComplaint3').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint3').style.color = 'green';
+                        }
+
                         document.getElementById('aiCheck').style.display = 'block';
 
                         $('#myChart').remove();
-                        $('#myChartDiv').append('<canvas id="myChart" > </canvas>');
-                        var backgroundColor1 = Category1 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var backgroundColor2 = Category2 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var backgroundColor3 = Category3 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var borderColor1 = Category1 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
-                        var borderColor2 = Category2 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
-                        var borderColor3 = Category3 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        $('#myChartDiv').append('<canvas id="myChart" height="75"> </canvas>');
+                        var backgroundColor1 = Category1 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor2 = Category2 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor3 = Category3 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var borderColor1 = Category1 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor2 = Category2 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor3 = Category3 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
 
                         const ctx = document.getElementById('myChart');
                         const labels = ['成人內容', '色情內容', '冒犯語言'];  // 设置 X 轴上对应的标签
@@ -2636,19 +2525,23 @@
                                         min: 0,   // 如果需要，也可以设置 x 轴的最小值
                                     },
                                 },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            fontSize: 25, // 設定文字大小為 16 像素
+                                        },
+                                    },
+                                },
                             }
                         };
                         const myChart = new Chart(ctx, config);
 
-                        if (Category1 >= 0.7 || Category2 >= 0.7 || Category3 >= 0.7) {
+                        if (Category1 >= 0.8 || Category2 >= 0.8 || Category3 >= 0.8) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '系統判讀',
                                 text: `冒犯指數過高：${(Category3 * 100).toFixed(2)}%`
                             })
-
-                            document.getElementById('checkComplaint').classList.remove('is-valid');//將綠框移除
-                            document.getElementById('checkComplaint').classList.add('is-invalid'); // 將紅框加入
 
                         } else {
                             const formData = new FormData(document.querySelector('#complaintForm'));
@@ -2661,11 +2554,6 @@
                             })
                                 .then(response => {
                                     if (response.ok) {
-                                        /*
-                                        $('#appealCategorySelect').val('');
-                                        $('#ComplaintTitle').val('');
-                                        $('#ComplaintContent').val('');
-                                        */
                                         return response.text();
                                     } else {
                                         throw new Error('連線有誤，請向客服人員聯繫');
@@ -2677,9 +2565,6 @@
                                         title: '送出成功',
                                         text: '感謝您來信'
                                     });
-
-                                    document.getElementById('checkComplaint').classList.remove('is-invalid');//將紅框移除
-                                    document.getElementById('checkComplaint').classList.add('is-valid'); // 將綠框加入
 
                                     loadComplaintRecords();
                                 })
@@ -2695,66 +2580,10 @@
                     }).fail(function (err) {
                         // alert(err.statusText);
                         document.getElementById('aiCheck').style.display = 'block';
-                        $('#checkComplaint').val(err.statusText);
+                        console.log(err.statusText);
 
                     });
                         
-
-
-
-                   //文字仲裁寫成方法
-                   /*
-                    function reviewText() {
-                        const inputContent = document.getElementById("inputTextContent").value;
-                        var params = {
-                            "autocorrect": true,
-                            "PII": true,
-                            "classify": true,
-                            "language": "eng",
-                        };
-                        $.ajax({
-                            url: "https://msit150team04contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?" + $.param(params),
-                            beforeSend: function (xhrObj) {
-                                // Request headers
-                                xhrObj.setRequestHeader("Content-Type", "text/plain");
-                                xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "52b9f75aaced496eb5fedd064400a63b");
-                            },
-                            type: "POST",
-                            // Request body
-                            data: inputContent, // 使用翻譯後的文字進行仲裁 translatedText
-                        }).done(function (data) {
-                            // alert(JSON.stringify(data));  //可以自行處理仲裁結果
-
-                            // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
-                            // 數據1 ： 成人內容
-                            var Category1 = data['Classification']['Category1']['Score'];
-                            // // 數據2 ： 性暗示
-                            var Category2 = data['Classification']['Category2']['Score'];
-                            // // 數據3 ： 冒犯性
-                            var Category3 = data['Classification']['Category3']['Score'];
-
-                            // alert(`內容:${text}, 信心指數:${(confidence*100).toFixed(2)}%`);
-
-                            if (Category1 > 0.6 || Category2 > 0.6 || Category3 > 0.6) {
-                                Swal.fire({
-                                    icon: 'error',
-                                    title: '要確定耶! 真的要跟客人這樣說?',
-                                    text: `成人內容：${(Category1 * 100).toFixed(2)}%, 性暗示：${(Category2 * 100).toFixed(2)}%, 冒犯性：${(Category3 * 100).toFixed(2)}%,
-                         部分指數過高，請修正！`
-                                })
-                            } else {
-                                Swal.fire({
-                                    position: 'center',
-                                    icon: 'success',
-                                    title: '訊息已發送',
-                                    showConfirmButton: false,
-                                    timer: 1500
-                                })
-
-                            }
-                        }
-                     }
-                     */
                 }
             });
 
@@ -2780,19 +2609,6 @@
                     "5.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"   
                 );
             });
-
-            /*
-            $('#totalDemo').click(function (event) {
-                $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
-                $('#ComplaintContent').val(
-                    "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
-                    "2.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
-                    "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
-                    "4.請問我在9 / 15從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
-                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。"
-                );
-            });
-            */
 
         });
 
