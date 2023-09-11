@@ -19,7 +19,7 @@
     if (json != null)
     {
         payModel = JsonSerializer.Deserialize<CPayModel>(json);
-        
+
     }
 
 }
@@ -878,7 +878,7 @@
                 <div class="title-left">
                     <h3>付款方式</h3>
                 </div>
-                <!--三種付款方式選項分頁按鈕--> 
+                <!--三種付款方式選項分頁按鈕-->
                 <nav class="customer_info">
                     <div class="nav nav-tabs" id="nav-paymentMethod-tab" role="tablist">
                         <input class="nav-link active" id="nav-credit-tab" type="radio" name="paymentMethod"
@@ -1280,9 +1280,6 @@
             crossorigin="anonymous"></script>
 
     <!---->
-
-
-
     <!--Google Map API-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
     <script src="~/js/checkout.js"></script>
@@ -1334,22 +1331,22 @@
             $('#eInvoiceNum').val("/9Qj376W");
         })
 
-                        //$('#select-seveneleven').on('input', function () {
-                        //    var storeName = $(this).val();
-                        //    deliveryInfo.storeName = storeName;
-                        //});
+        //$('#select-seveneleven').on('input', function () {
+        //    var storeName = $(this).val();
+        //    deliveryInfo.storeName = storeName;
+        //});
 
-                        //// 當使用者輸入取件姓名時，更新物件中的值
-                        //$('#711name').on('input', function () {
-                        //    var name = $(this).val();
-                        //    deliveryInfo.name = name;
-                        //});
+        // 當使用者輸入取件姓名時，更新物件中的值
+        $('#711name').on('input', function () {
+            var name = $(this).val();
+            deliveryInfo.name = name;
+        });
 
-                        //// 當使用者輸入取件人電話時，更新物件中的值
-                        //$('#711phone').on('input', function () {
-                        //    var phone = $(this).val();
-                        //    deliveryInfo.phone = phone;
-                        //});
+        // 當使用者輸入取件人電話時，更新物件中的值
+        $('#711phone').on('input', function () {
+            var phone = $(this).val();
+            deliveryInfo.phone = phone;
+        });
 
 
 
