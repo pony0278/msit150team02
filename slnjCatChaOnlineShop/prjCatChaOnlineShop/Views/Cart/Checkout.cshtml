@@ -1,5 +1,6 @@
 ﻿@using System.Text.Json;
 @using prjCatChaOnlineShop.Models.CDictionary;
+@using prjCatChaOnlineShop.Models.ViewModels;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model prjCatChaOnlineShop.Models.ViewModels.CCheckoutViewModel
 @{
@@ -11,7 +12,11 @@
         memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
     }
 }
-
+@{
+    var json = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+    var payModel = JsonSerializer.Deserialize<CPayModel>(json);
+    var getMemberLoyaltyPoint = payModel.getLoyaltyPoints;
+}
 @{
     ViewData["Title"] = "Checkout";
 }
@@ -244,10 +249,10 @@
                     @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
                     {
                         <ul class="customer_info">
-                            <li>姓名: @memberinfo.Name </li>
-                            <li>電話: @memberinfo.PhoneNumber</li>
-                            <li>Email： @memberinfo.Email</li>
-                            <li>地址： @memberinfo.Address</li>
+                            <li>姓名:@memberinfo.Name </li>
+                            <li>電話:@memberinfo.PhoneNumber</li>
+                            <li>Email：@memberinfo.Email</li>
+                            <li>地址：@memberinfo.Address</li>
                         </ul>
                     }
 
@@ -1241,9 +1246,9 @@
                         <hr>
                     }
                 </div>
-                <div class="col-12 d-flex ">
+                <div class="col-12 d-flex align-items-center ">
                     <a class="ml-auto mr-2" style="color:#DE9E4F">可獲得的紅利</a>
-                    <a class="mr-2" style="color:#DE9E4F">200</a>
+                    <a class="mr-2" style="color:#DE9E4F"> @getMemberLoyaltyPoint </a>
                     <a class="mr-2" style="color:#DE9E4F">點</a>
                     <button type="submit" id="submit-order-btn"
                             class="checkout-btn btn hvr-hover ">

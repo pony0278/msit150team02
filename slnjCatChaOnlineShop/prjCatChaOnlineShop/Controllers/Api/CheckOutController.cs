@@ -104,6 +104,19 @@ namespace prjCatChaOnlineShop.Controllers.Api
                         _context.SaveChanges();
                     }
 
+                    //會員可獲得的紅利點數
+                    string json = HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+                    var payModel= JsonSerializer.Deserialize<CPayModel>(json);
+                    int addLoyaltyPoints = (int)payModel.getLoyaltyPoints;
+                    //更新紅利點數回資料庫
+                    int pointJson = Convert.ToInt32(HttpContext.Session.GetString(CDictionary.SK_FINALUSELOYALTYPOINTS));               
+                    var updateLoyaltyPoint = _context.ShopMemberInfo.OrderBy(m => m.MemberId).LastOrDefault(m => m.MemberId == addOrder.MemberId);
+                    if (updateLoyaltyPoint != null)
+                    {
+                        updateLoyaltyPoint.LoyaltyPoints = updateLoyaltyPoint.LoyaltyPoints - pointJson + addLoyaltyPoints;
+                        _context.SaveChanges(); 
+                    }
+
                     transaction.Commit(); // 提交事務
                     return View();
                 }
