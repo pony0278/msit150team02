@@ -253,7 +253,7 @@
                             <div class="card mb-3 border shadow-0">
                                 <div class="card-body text-center">
                                     <div class="avatar text-center">
-                                        <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/toy.png")' alt="" style="width: 200px; height: 200px;">
+                                        <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/whitehead.jpg")' alt="" style="width: 200px; height: 200px;">
                                         <!--
                                         <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
                                                 data-bs-target="#personalPictureModal">
@@ -963,16 +963,13 @@
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
-                                    <!--
-                                    <button class="btn hvr-hover mx-2" id="foodDemo" type="button">食品安全</button>
-                                    <button class="btn hvr-hover mx-2" id="gameDemo" type="button">遊戲道具</button>
-                                    <button class="btn hvr-hover mx-2" id="addressDemo" type="button">收件地址</button>
-                                    <button class="btn hvr-hover mx-2" id="emailDemo" type="button">更改信箱</button>
-                                    <button class="btn hvr-hover mx-2" id="newsletterDemo" type="button">訂電子報</button>
-                                    -->
+                                    <button class="btn hvr-hover mx-2" id="lookChart" type="button">查閱圖表</button>
                                     <button class="btn hvr-hover mx-2" id="totalDemo" type="button">demo訊息</button>
-                                    <div id="msgSubmit" class="h3 text-center hidden"></div>
-                                    <div class="clearfix"></div>
+@*                                     <div id="msgSubmit" class="h3 text-center hidden"></div>
+                                    <div class="clearfix"></div> *@
+                                </div>
+                                <div id="myChartDiv" style="display: none;">
+                                    <canvas id="myChart"></canvas>
                                 </div>
                             </div>
                         </form>
@@ -1026,15 +1023,11 @@
     <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
     <!--用於Maps JavaScript API，有api需替換-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
-    <!--用於Facebook-->
-    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/zh_TW/sdk.js#xfbml=1&version=v16.0" nonce="aqWRwhk5"></script>
-    <!--用於line-->
-    <script src="https://www.line-website.com/social-plugins/js/thirdparty/loader.min.js" async="async" defer="defer"></script>
-    <!--用於jsPDF-->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
     <!-- 用於html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-
+    <!-- 用於chart.js -->
+    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
+    <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
 
     <!--1.載入時，導入基本資料-->
     <script>
@@ -1049,7 +1042,7 @@
                     $('#nameInput').val(data.name  ? data.name : "安安");
                     $('#phoneNumberInput').val(data.phoneNumber ? data.phoneNumber : "0912345678");
                     document.getElementById("subscribeInput").value = data.subscribe ? data.subscribe : "false";
-                    $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/toy.png")');
+                    $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/whitehead.jpg")');
                     $('#uploadImagePreview').attr('src', data.memberImage);
                     $('#addressInput').val(data.address ? data.address : "台北市大安區信義路三段185號");
 
@@ -1535,7 +1528,7 @@
                 };
                 reader.readAsDataURL(selectedImage);
             } else {
-                previewImage.src = '@Url.Content("~/images/toy.png")';
+                previewImage.src = '@Url.Content("~/images/whitehead.jpg")';
             }
         });
     </script>
@@ -2144,7 +2137,7 @@
                 };
                 reader.readAsDataURL(selectedImage);
             } else {
-                previewImage.src = 'https://msit150team02blob.blob.core.windows.net/msit150team02/toy.png';
+                previewImage.src = '@Url.Content("~/images/noimage.jpg")';
             }
 
             event.preventDefault();
@@ -2174,7 +2167,7 @@
             a.style.display = 'none';
             document.body.appendChild(a);
             a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
-            a.download = '貓咪拉肚子.jpg'; // 可以自行更改下載的文件名稱
+            a.download = 'catabdomen.jpg'; // 可以自行更改下載的文件名稱
             a.click(); // 模擬點擊 a 標籤，觸發下載
             document.body.removeChild(a);// 移除 a 標籤
         });
@@ -2592,7 +2585,53 @@
                         $('#checkComplaint').val(`成人內容：${(Category1 * 100).toFixed(2)}%, 色情內容：${(Category2 * 100).toFixed(2)}%, 冒犯語言：${(Category3 * 100).toFixed(2)}%`);
                         document.getElementById('aiCheck').style.display = 'block';
 
-                        if (Category1 > 0.7 || Category2 > 0.7 || Category3 > 0.7) {
+                        $('#myChart').remove();
+                        $('#myChartDiv').append('<canvas id="myChart" > </canvas>');
+                        var backgroundColor1 = Category1 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor2 = Category2 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor3 = Category3 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var borderColor1 = Category1 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor2 = Category2 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor3 = Category3 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+
+                        const ctx = document.getElementById('myChart');
+                        const labels = ['成人內容', '色情內容', '冒犯語言'];  // 设置 X 轴上对应的标签
+                        const dataChart = {
+                            labels: labels,
+                            datasets: [{
+                                axis: 'y',
+                                label: '審核結果圖',
+                                data: [(Category1 * 100).toFixed(2), (Category2 * 100).toFixed(2), (Category3 * 100).toFixed(2)],
+                                fill: true,
+                                backgroundColor: [      // 设置每个柱形图的背景颜色
+                                    backgroundColor1,
+                                    backgroundColor2,
+                                    backgroundColor3,
+                                ],
+                                borderColor: [     //设置每个柱形图边框线条颜色
+                                    borderColor1,
+                                    borderColor2,
+                                    borderColor3,
+                                ],
+                                borderWidth: 1     // 设置线条宽度
+                            }]
+                        };
+                        const config = {
+                            type: 'bar', // 设置图表类型
+                            data: dataChart,  // 设置数据集
+                            options: {
+                                indexAxis: 'y',
+                                scales: {
+                                    x: {
+                                        max: 100, // 设置 x 轴的最大值为 100
+                                        min: 0,   // 如果需要，也可以设置 x 轴的最小值
+                                    },
+                                },
+                            }
+                        };
+                        const myChart = new Chart(ctx, config);
+
+                        if (Category1 >= 0.7 || Category2 >= 0.7 || Category3 >= 0.7) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '系統判讀',
@@ -2710,7 +2749,30 @@
                 }
             });
 
+            //查閱圖表的按鈕鍵:用於秀出和隱藏
+            $('#lookChart').click(function (event) {
+                const myChartDiv = document.getElementById('myChartDiv');
+                if (myChartDiv.style.display === 'none') {
+                    myChartDiv.style.display = 'block';
+                } else {
+                    myChartDiv.style.display = 'none';
+                }
+            });
+
+
             //Demo鍵:載入總客訴-->其他事項
+            $('#totalDemo').click(function (event) {
+                $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
+                $('#ComplaintContent').val(
+                    "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
+                    "2.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。\n" +
+                    "3.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
+                    "4.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
+                    "5.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"   
+                );
+            });
+
+            /*
             $('#totalDemo').click(function (event) {
                 $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
                 $('#ComplaintContent').val(
@@ -2718,9 +2780,10 @@
                     "2.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
                     "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
                     "4.請問我在9 / 15從扭蛋抽獎到的遊戲道具，為何沒有收到呢 ?\n" +
-                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。" 
+                    "5.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。"
                 );
             });
+            */
 
         });
 
