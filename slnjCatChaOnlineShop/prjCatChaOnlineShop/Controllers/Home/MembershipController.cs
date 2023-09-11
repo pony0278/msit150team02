@@ -817,16 +817,16 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 {
                     _context.ShopFavoriteDataTable.Remove(favoriteProduct);
                     _context.SaveChanges();
-                    return Content("移除成功");
+                    return Ok(); // 使用200 OK表示成功
                 }
                 else
                 {
-                    return Content("找不到要刪除的收藏產品");
+                    return NotFound("找不到要刪除的收藏產品"); // 使用404 Not Found表示未找到
                 }
             }
             catch (Exception ex)
             {
-                return Content(ex.Message);
+                return StatusCode(500, ex.Message); // 使用500 Internal Server Error表示伺服器錯誤
             }
         }
 

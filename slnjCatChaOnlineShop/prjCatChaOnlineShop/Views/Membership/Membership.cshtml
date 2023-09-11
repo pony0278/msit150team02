@@ -72,9 +72,10 @@
     <!--用於搜尋關鍵字採ajax-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css" />
-
     <!--用於密碼的眼睛圖案-->
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <!--用於toastr-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
 }
 
 
@@ -1023,11 +1024,13 @@
     <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
     <!--用於Maps JavaScript API，有api需替換-->
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
-    <!-- 用於html2canvas -->
+    <!--用於html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
-    <!-- 用於chart.js -->
-    @* <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> *@
+    <!--用於chart.js -->
     <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+    <!--用於toastr-->
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
     <!--1.載入時，導入基本資料-->
     <script>
@@ -2389,12 +2392,18 @@
 
                         deleteLink.addEventListener('click', function () {
                             fetch('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId)
-                                .then(response => response.json())
-                                .then(data => {
+                                .then(response => {
+                                    if (response.status === 200) {
+                                        // 操作成功
+                                        loadFavoriteData();
+                                        toastr["success"]("移除成功");
+                                    } else if (response.status === 404) {
+                                        console.log("找不到要刪除的收藏產品");
+                                    } else if (response.status === 500) {
+                                        console.log("伺服器錯誤");
+                                    }
                                 })
-                                .catch(error => {
-                                });
-                            loadFavoriteData();
+
                         });
 
                         deleteDiv.appendChild(deleteLink);
