@@ -735,4 +735,26 @@ function resizeCanvas() {
 resizeCanvas();
 
 // 監聽視窗大小改變事件，重新調整 canvas 寬高和縮放比例
-window.addEventListener('resize', resizeCanvas);
+/*window.addEventListener('resize', resizeCanvas);*/
+
+function autoShowTutorial() {
+    $.ajax({
+        url: '/Api/Api/TestDBLogin/玩家資訊數據',
+        contentType: 'application/json',
+        type: 'GET',
+        success: function (data) {
+            if (data.length > 0) {
+                if (data[0].runGameHighestScore == 0) {
+                    tutorial.style.display = "block"
+                    console.log(`最高分是${data[0].runGameHighestScore}`)
+                }
+            }
+           
+            },
+            error: function () {
+                console.error('載入資料失敗');
+            }
+        });
+}
+autoShowTutorial()
+
