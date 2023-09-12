@@ -433,11 +433,12 @@
         let hours = String(now.getHours()).padStart(2, '0');
         let minutes = String(now.getMinutes()).padStart(2, '0');
         let dateTimeString = `${year}-${month}-${day}T${hours}:${minutes}`;
+        let selects = $('#category').val();
         $(document).on("click", '#demoBtn', function () {
             const name = $('#name').val('好好吃的貓食')
             const price = $('#price').val('100')
             const remain = $('#remainingquantity').val('100')
-            const select = $('#category').val('1')
+            selects = $('#category').val('1')
             const relesedate = $('#releasedate').val(dateTimeString);
             const offdate = $('#offdate').val('2023-09-16T13:00')
             const size = $('#size').val('30cm*30cm')
@@ -448,6 +449,7 @@
             const keyword_two = $('#keyword02').val('蛋白質豐富')
             const keyword_three = $('#keyword03').val('膳食纖維')
             const specifications = $('#specifications-0').val('綜合口味')
+            console.log($(selects).val())
         })
 
         let id = 1;
@@ -746,7 +748,8 @@
         $('#editor-category').on('change', function () {
             TypeEditor = parseInt($(this).val(), 10);
         })
-        let Type;
+        let Type = $('#category').val();
+
         $("#category").on("change", function () {
             Type = $(this).val()
         })
@@ -891,7 +894,7 @@
             formData.append("OffDay", offdate)
             formData.append("Discount", discount)
             formData.append("PushToShop", pinToShop)
-            formData.append("ProductCategoryId", Type)
+            formData.append("ProductCategoryId", $(selects).val())
             if (file) {
                 for (let i = 0; i < file.length; i++) {
                     formData.append("ProductPhotos", file[i])
