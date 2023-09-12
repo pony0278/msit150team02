@@ -85,7 +85,7 @@
                             <canvas id="canvas"></canvas>
                         </div>
                     </div>
-                    <div class="my-3">
+                    <div class="my-1">
                         <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
                         <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
                         <input type="file" name="image" id="imageInput" accept="image/*">
@@ -93,19 +93,23 @@
                     </div>
                 </form>
                 <div>
-                    <h4>圖像識別</h4>
-                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="7" readonly></textarea>
+                    <h4>Azure圖像辨識</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionResults" rows="6" readonly></textarea>
+                </div>
+                <div>
+                    <h4>Google臉部辨識</h4>
+                    <textarea class="form-control fs-6 m-lg-1" aria-label="With textarea" id="visionFacesResults" rows="2" readonly></textarea>
                 </div>
             </div>
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <div>
                     <h4>圖像描述</h4>
-                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="descriptionResults" rows="3" readonly></textarea>
+                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="descriptionResults" rows="3" ></textarea>
                 </div>
-                <div class="my-3">
+                <div class="my-1">
                     <h4>審核結果</h4>
-                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="imageResults" rows="2" readonly></textarea>
+                    <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="imageResults" rows="2" ></textarea>
                 </div>
                 <div>
                     <h4>圖像審核</h4>
@@ -115,7 +119,7 @@
                         <div id="checkComplaint3" class="mx-2"></div>
                      </div>
                 </div>
-                <div class="my-4" id="myChartDiv">
+                <div class="my-1" id="myChartDiv">
                     <canvas id="myChart"></canvas>
                 </div>
             </div>
@@ -168,9 +172,15 @@
                 document.getElementById('checkComplaint1').innerHTML = "";
                 document.getElementById('checkComplaint2').innerHTML = "";
                 document.getElementById('checkComplaint3').innerHTML = "";
+                //移除圖像審核的圖表
+                $('#myChart').remove();
+                $('#myChartDiv').append('<canvas id="myChart" height="110"> </canvas>');
                 //移除審核結果的框線顏色
                 document.getElementById('imageResults').classList.remove('is-invalid');//將紅框移除
                 document.getElementById('imageResults').classList.remove('is-valid');//將綠框移除
+                //移除臉部辨識的內文
+                document.getElementById('visionFacesResults').value = "";
+
 
                 // 取得表單元素
                 const form = document.querySelector('#imgForm');
@@ -288,8 +298,7 @@
                                 var isImageRacyClassified = Category2 > 0.7 ? '是' : '非';
                                 var isGoryContent = Category3 > 0.7 ? '是' : '非';
 
-                                $('#myChart').remove();
-                                $('#myChartDiv').append('<canvas id="myChart" > </canvas>');
+
                                 var backgroundColor1 = (Category1 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
                                 var backgroundColor2 = (Category2 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
                                 var backgroundColor3 = (Category3 * 100) >= 70 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
@@ -596,8 +605,18 @@
                             ]
                         };
 
+                    
+
                         // 執行臉部檢測請求
                         gapi.client.vision.images.annotate(request).then(function (response) {
+
+                        document.getElementById('visionFacesResults').value =
+                            "快樂程度: " + translateLikelihood(response.result.responses[0].faceAnnotations[0].joyLikelihood) + "  " +
+                            "悲傷程度: " + translateLikelihood(response.result.responses[0].faceAnnotations[0].sorrowLikelihood) + "  " +
+                            "憤怒程度: " + translateLikelihood(response.result.responses[0].faceAnnotations[0].angerLikelihood) + "\n" +
+                            "驚訝程度: " + translateLikelihood(response.result.responses[0].faceAnnotations[0].surpriseLikelihood) + "  " +
+                            "頭戴帽子: " + translateLikelihood(response.result.responses[0].faceAnnotations[0].headwearLikelihood);
+
                             // 獲取識別信息
                             var faceAnnotations = response.result.responses[0].faceAnnotations;
                             console.log(response.result.responses[0].faceAnnotations);
@@ -632,9 +651,6 @@
                     });
                 });
         }
-
-        // 調用臉部檢測函數
-        // detectFaces();
 
         // 使用 Google Cloud Vision API 檢測圖像中的標籤
         function detectLabel() {
@@ -740,8 +756,24 @@
             };
             img.src = "https://msit150team02blob.blob.core.windows.net/msit150team02/tablet.jpg";
         }
-
         // draw();
 
+
+        function translateLikelihood(likelihood) {
+            switch (likelihood) {
+                case "VERY_UNLIKELY":
+                    return "0%";
+                case "UNLIKELY":
+                    return "30%";
+                case "POSSIBLE":
+                    return "50%";
+                case "LIKELY":
+                    return "80%";
+                case "VERY_LIKELY":
+                    return "100%(非常可能)";
+                default:
+                    return "無法辨識"; // 如果輸入無效，則返回原始值
+            }
+        }
     </script>
 }
