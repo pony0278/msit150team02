@@ -473,7 +473,7 @@
                 formData.append("PublishTime", PublishTime);
                 formData.append("PublishEndTime", PublishEndTime);
                 formData.append("PinToTop", PinToTop);
-                formData.append("AnnouncementTypeId", TypeEditor);
+                formData.append("AnnouncementTypeId", $(TypeEditor).val());
                 if (file) {
                     formData.append("ImageHeader", file);
                 }
