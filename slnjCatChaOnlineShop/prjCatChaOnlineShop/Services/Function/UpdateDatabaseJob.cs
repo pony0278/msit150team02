@@ -25,7 +25,7 @@ namespace prjCatChaOnlineShop.Services.Function
                 _logger.LogInformation("Execute method started."); // 记录信息
 
 
-                var data = _cachaContext.ShopMemberInfo.Where(x => x.UnBannedTime >= DateTime.Now).ToList();
+                var data = _cachaContext.ShopMemberInfo.Where(x => x.UnBannedTime <= DateTime.Now).ToList();
 
 
                 if (data.Count > 0)

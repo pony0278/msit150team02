@@ -45,6 +45,8 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
                 MemberAccount = x.MemberAccount,
                 Name = x.Name,
                 isBanned = x.IsBanned ,
+                EmailVerified = x.EmailVerified == true ? "是" : "否",
+                Email = x.Email,
                 BannedTime = x.BannedTime == null ? "未禁言" : x.BannedTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
                 unBannedTime = x.UnBannedTime == null ? "未禁言" : x.UnBannedTime.Value.ToString("yyyy-MM-dd HH:mm:ss"),
             }).ToList();
