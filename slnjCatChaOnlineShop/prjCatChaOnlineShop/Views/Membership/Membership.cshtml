@@ -66,6 +66,23 @@
         #orderDetailModal td {
             vertical-align: middle;
         }
+
+        /*大頭貼*/
+        #PhotoStickers {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #PhotoStickers img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                background-color: #FFF;
+        }
     </style>
 
 
@@ -253,8 +270,8 @@
                         <div class="col-lg-3 order-1 order-sm-1 order-md-1 order-xs-1">
                             <div class="card mb-3 border shadow-0">
                                 <div class="card-body text-center">
-                                    <div class="avatar text-center">
-                                        <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/whitehead.jpg")' alt="" style="width: 200px; height: 200px;">
+                                    <div class="avatar text-center" id="PhotoStickers">
+                                        <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/whitehead.jpg")' alt="">
                                         <!--
                                         <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
                                                 data-bs-target="#personalPictureModal">
