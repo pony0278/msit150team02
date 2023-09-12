@@ -43,15 +43,13 @@
         <div id="categoryList" class="row">
             @{
 
-                @foreach (var item in Model.DistinctBy(item => item.pCategoryId))
+                @foreach (var item in Model.Where(item =>item.pCategoryName!=null).DistinctBy(item => item.pCategoryId))
                 {
 
                     <div class="col-md-2 col-4">
                         <div class="shop-cat-boxs">
                             <a class="for-ajax" href="/Index/Shop?categoryName=@item.pCategoryName" data-category-name="@item.pCategoryName">
-                                <img class="img-fluid" src="~/images/category_@{
-                                        @item.pCategoryName
-    }.jpg" alt="" />
+                                <img class="img-fluid" src="~/images/category_@{@item.pCategoryName}.jpg" alt="" />
                                 <span>@item.pCategoryName</span>
                             </a>
                         </div>
