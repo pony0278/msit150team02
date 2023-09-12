@@ -94,9 +94,9 @@
                     </div>
                     <div>
                         <h4> @Model.getFinalShippmentData.deliveryMethod </h4>
-                        <span>取件門市：</span><div id="caddress" style="display: inline;"> @Model.getFinalShippmentData.storeName </div><br>
-                        <span>取件姓名：</span><div id="cname" style="display: inline;"> @Model.getFinalShippmentData.name</div><br> 
-                        <span>取件人電話：</span><div id="cphone" style="display: inline;"> @Model.getFinalShippmentData.phone</div>
+                        <span>取件門市：</span><div id="caddress" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.storeName </div><br>
+                        <span>取件姓名：</span><div id="cname" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.name</div><br>
+                        <span>取件人電話：</span><div id="cphone" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.phone</div>
                     </div>
                 </div>
             </div>
@@ -106,24 +106,24 @@
             <div class="row ">
                 <div class="col-md-12 col-lg-12">
 
-                    <div class="order-box">
-                        <div class="d-flex">
+                    <div class="order-box align-items-center">
+                        <div class="d-flex align-items-center">
                             <h4 class="mr-auto">小計</h4>
-                            <span class="mr-2 font-weight-bold">NT</span><div class=" font-weight-bold" id="finalSubtotal">@Model.getFinalPriceData.subtotal</div>
+                            <span class="mr-2 font-weight-bold subprice-font">NT</span><div class=" font-weight-bold subprice-font" id="finalSubtotal">@Model.getFinalPriceData.subtotal</div>
                         </div>
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center">
                             <h4 class="mr-auto">運費</h4>
-                            <span class="mr-2 font-weight-bold">+NT</span><div class=" font-weight-bold" id="finalShippingFee">@Model.getFinalPriceData.shippingFee</div>
+                            <span class="mr-2 font-weight-bold subprice-font">+NT</span><div class=" font-weight-bold subprice-font" id="finalShippingFee">@Model.getFinalPriceData.shippingFee</div>
                         </div>
                         <hr class="my-1">
-                        <div class="d-flex">
+                        <div class="d-flex align-items-center">
                             <h4 class="mr-auto">總折扣</h4>
-                            <span class="mr-2 font-weight-bold">-NT</span><div class=" font-weight-bold" id="finalTotalDiscount">@Model.getFinalPriceData.finalBonus</div>
+                            <span class="mr-2 font-weight-bold subprice-font">-NT</span><div class=" font-weight-bold subprice-font" id="finalTotalDiscount">@Model.getFinalPriceData.finalBonus</div>
                         </div>
                         <hr>
-                        <div class="d-flex gr-total">
+                        <div class="d-flex gr-total align-items-center">
                             <h5 class="mr-auto">總計</h5>
-                            <span class="mr-2 font-weight-bold" style="color:red">NT</span><div class=" h4" style="color:red" id="allTotalPrice">@Model.getFinalPriceData.finalAmount</div>
+                            <span class="mr-2 font-weight-bold" style="color: #CE0000;font-size: 26px;">NT</span><div class=" h3 price-font font-weight-bold" id="allTotalPrice">@Model.getFinalPriceData.finalAmount</div>
                         </div>
                         <hr>
 
