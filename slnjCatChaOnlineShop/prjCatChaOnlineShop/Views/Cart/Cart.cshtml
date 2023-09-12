@@ -52,7 +52,7 @@
                                 foreach (var item in Model)
                                 {
 
-                                    <div class="row gy-3 mb-4" data-cid=" @item.cId">
+                                    <div class="row gy-3 mb-4" data-cid=" @item.cId" data-prospec=" @item.c子項目 ">
                                         <div class="col-lg-6">
                                             <div class="me-lg-5">
                                                 <div class="d-flex">
@@ -96,7 +96,7 @@
                                         </div>
                                         <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
                                             <div class="float-md-end ">
-                                                <button class="trashBtn" id="trashButton" data-cid=" @item.cId">
+                                                <button class="trashBtn" id="trashButton" data-cid=" @item.cId" data-prospec=" @item.c子項目 ">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="35" height="35" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
                                                         <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6Z" />
                                                         <path d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1ZM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118ZM2.5 3h11V2h-11v1Z" />
@@ -206,10 +206,10 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/Cart.js"></script>
-                //sweetalert
+                            //sweetalert
     <!--SWEET ALERT-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <
+                            <
     <script>
         //動作:變更購物車內的數量，傳回值，在後端/ProductApi/CartEditQuantity中更新至session
         var cartItem = $('.shop-prod-click');
@@ -323,25 +323,41 @@
                 if (result.isConfirmed) {
                     //取得該商品id
                     var pId = $button.data('cid');
-                    console.log(pId);
-                    $.ajax({
-                        type: "POST",
-                        url: '/Cart/DeleteCartItem',
-                        data: { id: pId },
-                        success: function (response) {
-                            //同步更新刪除畫面上的商品
-                            var $itemcontainer = $('[data-cid="' + pId + '"]')
-                            $itemcontainer.remove();
-                            //更新因為商品數量變化而改變的小計金額
-                            $('#totalPriceSummary').text('$' + response.total);
-                            console.log(response);
-                            swalWithBootstrapButtons.fire(
-                                '刪掉囉',
-                                'Your file has been deleted.',
-                                'success'
-                            );
-                        }
-                    })
+                    var p子項目 = $button.data('prospec');
+                    console.log("商品的ID",pId);
+                    console.log("商品的子項目名稱",p子項目);
+                    // 檢查是否符合條件
+                    if (pId !== undefined && p子項目 !== undefined) {
+                        console.log(pId);
+                        $.ajax({
+                            type: "POST",
+                            url: '/Cart/DeleteCartItem',
+                            data: {
+                                id: pId,
+                                子項目: p子項目,
+                            },
+                            success: function (response) {
+                                // 同步更新刪除畫面上的商品
+                                var $itemcontainer = $('[data-cid="' + pId + '"][data-prospec="' + p子項目 + '"]');
+                                $itemcontainer.remove();
+                                // 更新因為商品數量變化而改變的小計金額
+                                $('#totalPriceSummary').text('$' + response.total);
+                                console.log(response);
+                                swalWithBootstrapButtons.fire(
+                                    '刪掉囉',
+                                    'Your file has been deleted.',
+                                    'success'
+                                );
+                            }
+                        });
+                    } else {
+                        // 商品id和子項目未定义，不执行删除操作
+                        swalWithBootstrapButtons.fire(
+                            '刪除失敗',
+                            '商品信息不完整，無法刪除.',
+                            'error'
+                        );
+                    }
                 } else if (
                     result.dismiss === Swal.DismissReason.cancel
                 ) {
@@ -354,13 +370,13 @@
             });
         })
 
-                //這樣可以在初始化更新小計金額，但用ViewBag就不用在這邊計算(productApi/AddtoCart)
+                                        //這樣可以在初始化更新小計金額，但用ViewBag就不用在這邊計算(productApi/AddtoCart)
 
-                // // 獲取購物車的總金額
-                /* var initialTotalPrice = */@*Html.Raw(Json.Serialize(Model.Sum(item => item.c小計)));*@
+                                        // // 獲取購物車的總金額
+                                        /* var initialTotalPrice = */@*Html.Raw(Json.Serialize(Model.Sum(item => item.c小計)));*@
 
-                // // 金總金額更新到畫面上
-                // $('#totalPriceSummary').text('$' + initialTotalPrice.toFixed(2));
+                                        // // 金總金額更新到畫面上
+                                        // $('#totalPriceSummary').text('$' + initialTotalPrice.toFixed(2));
 
 
     </script>
