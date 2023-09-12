@@ -62,7 +62,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult ShowMemeberInfo()
         {
-            var data = _context.ShopMemberInfo;
+            var data = _context.ShopMemberInfo.Where(m=> m.EmailVerified == true);
 
             return Json(new { data });
         }
