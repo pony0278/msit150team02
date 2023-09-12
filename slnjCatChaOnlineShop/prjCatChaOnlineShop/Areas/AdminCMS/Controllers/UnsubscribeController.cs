@@ -36,8 +36,12 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
 
                         if (token.Equals(generatedToken, StringComparison.OrdinalIgnoreCase))
                         {
+
+                            var sortedMembers = _context.ShopMemberInfo.OrderBy(member => member.MemberId); // 根據需要的屬性進行排序
+                            var member = sortedMembers.LastOrDefault(m => m.Email == emailAddress);
+
                             // token匹配，找到相應的電子郵件地址
-                            var member = _context.ShopMemberInfo.FirstOrDefault(m => m.Email == emailAddress);
+                            //var member = _context.ShopMemberInfo.LastOrDefault(m => m.Email == emailAddress);
 
                             if (member != null)
                             {
