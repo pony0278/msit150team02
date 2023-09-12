@@ -144,7 +144,7 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">電子信箱</label>
+                                                            <label class="fs-6">電子信箱<i class="fas fa-envelope"></i></label>
                                                             <input type="email" class="form-control" id="emailInput" name="Email"
                                                                    placeholder="電子信箱" readonly />
                                                         </div>
@@ -899,13 +899,13 @@
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客訴內文 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="3" readonly></textarea>
+                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="5" readonly></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客服回覆 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="3" readonly></textarea> 
+                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="2" readonly></textarea> 
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
@@ -1723,15 +1723,15 @@
                                         imgCell.appendChild(imgContainer);
 
 
-                                        row.insertCell().textContent = item.productName;
-                                        row.insertCell().textContent = item.productQuantity;
+                                        row.insertCell().textContent = item.productName ? item.productName : "毛小孩專屬用品";
+                                        row.insertCell().textContent = item.productQuantity ? item.productQuantity : "1";;
                                         if (item.size == null) {
                                             row.insertCell().textContent = "標準型";
                                         } else {
                                             row.insertCell().textContent = item.size;
                                         }
                                         // totalAmount += item.productQuantity * item.productPrice;
-                                        row.insertCell().textContent =  'NT$ ' + item.productPrice;
+                                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice : 'NT$ 1280';
                                         //===============================
                                         
                                         var cell = row.insertCell();
@@ -2603,10 +2603,9 @@
                 $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
                 $('#ComplaintContent').val(
                     "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
-                    "2.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。\n" +
+                    "2.最近才發現網站有寄送電子報的服務，想請客服人員改成寄送每期電子報到信箱。\n" +
                     "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
-                    "4.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
-                    "5.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"   
+                    "4.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"   
                 );
             });
 
