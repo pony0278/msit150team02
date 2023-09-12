@@ -176,31 +176,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
             }
         }
 
-        //新增常用地址資料:單個參數版
-        /*
-        public IActionResult CreateCommonAddress(string commonAddress)
-        {
-            try
-            {
-                ShopCommonAddressData address = new ShopCommonAddressData();
-
-                address.MemberId = memberIdForMembership;
-                address.RecipientAddress = commonAddress;
-
-
-                _context.ShopCommonAddressData.Add(address);
-                _context.SaveChanges();
-
-                return Content("新增成功");
-            }
-            catch (Exception ex)
-            {
-                return Content(ex.Message);
-            }
-        }
-        */
-
-        //刪除常用地址資料
         public IActionResult DeleteCommonAddress(int addressid)
         {
             try
@@ -538,12 +513,18 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //加入購物車1:若採用ProductApiController的方式會自動導回shop頁面，故改用寫在下方維持原頁面
         public IActionResult AddToCart(int pId)
         {
-            var prodItem = _productService.getProductById(pId);
-            var cart = GetCartFromSession();
-            _productService.addCartItem(cart, prodItem, 1);
-            SaveCart(cart);
-            
-            return null;
+            try 
+            {
+                var prodItem = _productService.getProductById(pId);
+                var cart = GetCartFromSession();
+                _productService.addCartItem(cart, prodItem, 1);
+                SaveCart(cart);
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return Content(ex.Message);
+            }
         }
         //加入購物車2
         private void SaveCart(List<CCartItem> cart)
@@ -953,13 +934,20 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //取得會員id的方法
         private int? GetCurrentMemberId()
         {
-            var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
-            if (memberInfoJson != null)
-            {
-                var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
-                return memberInfo.MemberId;
+            try 
+            { 
+                var memberInfoJson = _httpContextAccessor.HttpContext?.Session.GetString(CDictionary.SK_LOINGED_USER);
+                if (memberInfoJson != null)
+                {
+                    var memberInfo = System.Text.Json.JsonSerializer.Deserialize<ShopMemberInfo>(memberInfoJson);
+                    return memberInfo.MemberId;
+                }
+                return null;
             }
-            return null;
+            catch(System.Text.Json.JsonException ex) 
+            {
+                return null;
+            }
         }
 
         
@@ -984,20 +972,5 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
         }
 
-        public IActionResult SlectOtherShop(IFormCollection ShopDetail)
-        {
-
-            //var storeid = ShopDetail["storeid"];
-            //string storename = ShopDetail["storename"];
-            //string storeaddress = ShopDetail["storeaddress"];
-
-            //TempData["storename"] = storename;
-            //TempData["storeaddress"] = storeaddress;
-
-            //return Content(storeid + "/" + storename + "/" + storeaddress);
-            //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
-            //return RedirectToAction("membership", "membership", null);
-            return Content("hi");
-        }
     }
 }

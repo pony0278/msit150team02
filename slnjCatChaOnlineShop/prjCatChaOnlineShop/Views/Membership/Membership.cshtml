@@ -144,7 +144,7 @@
                                                 <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label class="fs-6">電子信箱</label>
+                                                            <label class="fs-6">電子信箱 <i class="fas fa-envelope"></i></label>
                                                             <input type="email" class="form-control" id="emailInput" name="Email"
                                                                    placeholder="電子信箱" readonly />
                                                         </div>
@@ -899,13 +899,13 @@
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客訴內文 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="3" readonly></textarea>
+                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="4" readonly></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <label class="font-weight-bold">客服回覆 </label>
                                     <div>
-                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="3" readonly></textarea> 
+                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="2" readonly></textarea> 
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
@@ -954,7 +954,7 @@
                             <div class="col-md-12">
                                 <div class="form-group">
                                     <h4 class="font-weight-bold">內容</h4>
-                                    <textarea class="form-control" id="ComplaintContent" rows="6" name="ComplaintContent"
+                                    <textarea class="form-control" id="ComplaintContent" rows="4" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
                                 </div>
                                 <div class="submit-button text-center">
@@ -1723,15 +1723,15 @@
                                         imgCell.appendChild(imgContainer);
 
 
-                                        row.insertCell().textContent = item.productName;
-                                        row.insertCell().textContent = item.productQuantity;
+                                        row.insertCell().textContent = item.productName ? item.productName : "毛小孩專屬用品";
+                                        row.insertCell().textContent = item.productQuantity ? item.productQuantity : "1";;
                                         if (item.size == null) {
                                             row.insertCell().textContent = "標準型";
                                         } else {
                                             row.insertCell().textContent = item.size;
                                         }
                                         // totalAmount += item.productQuantity * item.productPrice;
-                                        row.insertCell().textContent =  'NT$ ' + item.productPrice;
+                                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice : 'NT$ 1280';
                                         //===============================
                                         
                                         var cell = row.insertCell();
@@ -2463,19 +2463,19 @@
                         var Category3 = data['Classification']['Category3']['Score'];
 
                         $('#checkComplaint1').text(`成人內容：${(Category1 * 100).toFixed(2)}%`);
-                        if (Category1 > 0.8) {
+                        if (Category1 > 0.7) {
                             document.getElementById('checkComplaint1').style.color = 'red';
                         } else {
                             document.getElementById('checkComplaint1').style.color = 'green';
                         }
                         $('#checkComplaint2').text(`色情內容：${(Category2 * 100).toFixed(2)}%`);
-                        if (Category2 > 0.8) {
+                        if (Category2 > 0.7) {
                             document.getElementById('checkComplaint2').style.color = 'red';
                         } else {
                             document.getElementById('checkComplaint2').style.color = 'green';
                         }
                         $('#checkComplaint3').text(`冒犯語言：${(Category3 * 100).toFixed(2)}%`);
-                        if (Category3 > 0.8) {
+                        if (Category3 > 0.7) {
                             document.getElementById('checkComplaint3').style.color = 'red';
                         } else {
                             document.getElementById('checkComplaint3').style.color = 'green';
@@ -2485,12 +2485,12 @@
 
                         $('#myChart').remove();
                         $('#myChartDiv').append('<canvas id="myChart" height="75"> </canvas>');
-                        var backgroundColor1 = Category1 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var backgroundColor2 = Category2 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var backgroundColor3 = Category3 >= 0.8 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
-                        var borderColor1 = Category1 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
-                        var borderColor2 = Category2 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
-                        var borderColor3 = Category3 >= 0.8 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var backgroundColor1 = Category1 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor2 = Category2 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor3 = Category3 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var borderColor1 = Category1 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor2 = Category2 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor3 = Category3 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
 
                         const ctx = document.getElementById('myChart');
                         const labels = ['成人內容', '色情內容', '冒犯語言'];  // 设置 X 轴上对应的标签
@@ -2536,7 +2536,7 @@
                         };
                         const myChart = new Chart(ctx, config);
 
-                        if (Category1 >= 0.8 || Category2 >= 0.8 || Category3 >= 0.8) {
+                        if (Category1 >= 0.7 || Category2 >= 0.7 || Category3 >= 0.7) {
                             Swal.fire({
                                 icon: 'error',
                                 title: '系統判讀',
@@ -2603,10 +2603,9 @@
                 $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
                 $('#ComplaintContent').val(
                     "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
-                    "2.最近才發現網站有寄送電子報的服務，因為註冊沒有申請，想請客服人員改成寄送每期電子報到信箱。\n" +
+                    "2.最近才發現網站有寄送電子報的服務，想請客服人員改成寄送每期電子報到信箱。\n" +
                     "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
-                    "4.因工作搬到新的住處，最新訂單的收件人需要修改，新的收件人為曾聰明。\n" +
-                    "5.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"   
+                    "4.為何我參加多次扭蛋抽獎都抽不到貓咪呢 ?"
                 );
             });
 

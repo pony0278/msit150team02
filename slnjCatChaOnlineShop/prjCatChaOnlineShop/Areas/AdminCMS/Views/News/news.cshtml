@@ -411,7 +411,7 @@
             $('#announcementTypeSelect').on('change', function () {
                 Type = parseInt($(this).val(), 10);
             })
-            let TypeEditor;
+            let TypeEditor = parseInt($('#editor-type').val(), 10);
             $('#editor-type').on('change', function () {
                 TypeEditor = parseInt($(this).val(), 10);
             })

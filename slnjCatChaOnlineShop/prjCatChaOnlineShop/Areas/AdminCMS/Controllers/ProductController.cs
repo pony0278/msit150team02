@@ -469,6 +469,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
                     // 查询数据库，看商品名是否已存在
                     var existingProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == parseId);
+                    var existingProductName = _cachaContext.ShopProductTotal.FirstOrDefault(p=>p.ProductName == productName);
 
                     if (existingProduct != null)  // 如果已存在，则更新商品数据
                     {
@@ -500,7 +501,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         }
                         
                     }
-                    else  // 如果不存在，则新增商品数据
+                    else  if(!string.IsNullOrEmpty(productName))// 如果不存在，则新增商品数据
                     {
                         var product = new ShopProductTotal
                         {
