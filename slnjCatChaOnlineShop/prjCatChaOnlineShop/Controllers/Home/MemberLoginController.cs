@@ -448,10 +448,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
 
                 // 信件內容範本
                 string mailContent = "請點擊以下連結，返回網站重新設定密碼，逾期 30 分鐘後，此連結將會失效。<br><br>";
-                mailContent = mailContent + $"<a href='{webPath}/{receivePage}?verify={encryptedVerify}' target='_blank'>點此連結</a>";
+                mailContent = mailContent + $"<a href='{webPath}/{receivePage}?verify={encryptedVerify}' target='_blank'>點此連結修改密碼</a>";
 
                 // 信件主題
-                string mailSubject = "[測試] 重設密碼申請信";
+                string mailSubject = "[CatCha貓抓抓購物] 重設密碼申請信";
 
                 // Google 發信帳號密碼
                 string GoogleMailUserID = _configuration["ForgetPassword:GoogleMailUserID"];
