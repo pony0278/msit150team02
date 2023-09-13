@@ -313,11 +313,11 @@
                         containerDiv.appendChild(document.createTextNode(formattedDate + ' '));
 
                         // 如果日期差小於10天，添加圖像
-                        if (daysDifference < 10) {
+                        if (daysDifference < 14) {
                             // 創建一個圖像元素
                             var image = document.createElement('img');
                             image.src = '/images/CouponAlert.jpg'; // 圖像檔案的路徑
-                            image.alt = '將在10日內到期';
+                            image.alt = '將在14日內到期';
                             image.height = 20;
                             image.width = 20;
 
@@ -670,7 +670,7 @@
                 console.log("memberId:", memberId);
 
                 // 檢查 memberId 是否為空值或不是整數
-                if (!memberId ) {
+                if (!memberId) {
                     Swal.fire({
                         title: '請輸入會員ID',
                         icon: 'error',
@@ -678,7 +678,7 @@
                     return;
                 }
 
-                if ( isNaN(parseInt(memberId))) {
+                if (isNaN(parseInt(memberId))) {
                     Swal.fire({
                         title: '會員編號僅可輸入數字',
                         icon: 'error',
@@ -686,40 +686,53 @@
                     return;
                 }
 
-                // 透過 AJAX 向後端檢查會員是否存在
-                $.ajax({
-                    url: "/AdminCMS/Bonus/SendCouponToMembersByID",
-                    type: "POST",
-                    data: { id: couponIdToSend, memberId: memberId },
-                    success: function (response) {
-                        if (response.success) {
-                            console.log("發送成功");
-                            Swal.fire({
-                                title: '發送成功',
-                                text: '優惠券已成功發送',
-                                icon: 'success',
-                            });
-                            $('#sendtoMember').modal('hide');
-                        } else {
-                            console.log("發送失敗");
-                            Swal.fire({
-                                title: '會員不存在',
-                                text: '發送失敗',
-                                icon: 'error',
-                            });
-                        }
-                    },
-                    error: function (error) {
-                        console.log("發生錯誤：", error);
-                        Swal.fire({
-                            title: '發生錯誤',
-                            text: '發生錯誤，請重試',
-                            icon: 'error',
+                // 使用 SweetAlert 的確認對話框
+                Swal.fire({
+                    title: '確認發送',
+                    text: '您確定要將優惠券發送給會員嗎？',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: '確定',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // 透過 AJAX 向後端檢查會員是否存在
+                        $.ajax({
+                            url: "/AdminCMS/Bonus/SendCouponToMembersByID",
+                            type: "POST",
+                            data: { id: couponIdToSend, memberId: memberId },
+                            success: function (response) {
+                                if (response.success) {
+                                    console.log("發送成功");
+                                    Swal.fire({
+                                        title: '發送成功',
+                                        text: '優惠券已成功發送',
+                                        icon: 'success',
+                                    });
+                                    $('#sendtoMember').modal('hide');
+                                } else {
+                                    console.log("發送失敗");
+                                    Swal.fire({
+                                        title: '會員不存在',
+                                        text: '發送失敗',
+                                        icon: 'error',
+                                    });
+                                }
+                            },
+                            error: function (error) {
+                                console.log("發生錯誤：", error);
+                                Swal.fire({
+                                    title: '發生錯誤',
+                                    text: '發生錯誤，請重試',
+                                    icon: 'error',
+                                });
+                            }
                         });
                     }
                 });
             });
         });
+
 
         //發送到期提醒
 
@@ -729,7 +742,7 @@
 
                 Swal.fire({
                     title: '確定要發送到期提醒嗎?',
-                    icon: 'warning',
+                    icon: 'question',
                     showCancelButton: true,
                     confirmButtonColor: '#3085d6',
                     cancelButtonColor: '#d33',
