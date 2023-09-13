@@ -283,7 +283,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
     <title>優惠券到期提醒</title>
     <style>
         body {{
-            font-family: Dosis, sans-serif;
+            font-family: ""微軟正黑體"", sans-serif;
             font-weight: bold;
             background-color: #ffffff;
             margin: 0;
@@ -380,7 +380,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         </div>
         <p>提醒您於到期日前使用完畢唷！</p>
         <div class=""footer"">
-            <p><a class=""btnhome"" href=""https://localhost:7218/"">前往購物</a></p>
+            <p><a class=""btnhome"" href=""https://localhost:7218/"" style=""color: #FFF;"">前往購物</a></p>
             <p>CatCha貓抓抓感謝您的支持，祝您購物愉快</p>
         </div>
     </div>
