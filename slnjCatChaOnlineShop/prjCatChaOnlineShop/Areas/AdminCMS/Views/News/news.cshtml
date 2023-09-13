@@ -174,8 +174,8 @@
                     <label class="col-form-label">公告標題：</label>
                     <div class="d-inline-flex">
                         <input type="text" id="editor-newsTitle" class="form-control w-100" name="AnnouncementTitle">
-                        <select class="form-select" id="editor-type" name="AnnouncementTypeId">
-                            <option selected>請選擇公告類型</option>
+                        <select class="form-select" id="editor-type">
+                            <option value="0" selected>請選擇公告類型</option>
                             @foreach (var News in Model.NewsType)
                             {
                                 <option value="@News.AnnouncementTypeId">@News.AnnouncementTypeName</option>
@@ -411,9 +411,9 @@
             $('#announcementTypeSelect').on('change', function () {
                 Type = parseInt($(this).val(), 10);
             })
-            let TypeEditor = parseInt($('#editor-type').val(), 10);
+            let TypeEditor = $('#editor-type').val('1');
             $('#editor-type').on('change', function () {
-                TypeEditor = parseInt($(this).val(), 10);
+                TypeEditor = $(this).val()
             })
 
             $('#submitButton').click(function () {
