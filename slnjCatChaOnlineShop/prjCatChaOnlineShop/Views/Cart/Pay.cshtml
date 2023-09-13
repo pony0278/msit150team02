@@ -1,5 +1,6 @@
 ﻿@using System.Text.Json;
 @using prjCatChaOnlineShop.Models.CDictionary;
+@using prjCatChaOnlineShop.Models.ViewModels;
 @inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
 @model prjCatChaOnlineShop.Models.ViewModels.CCheckoutViewModel
 @{
@@ -9,8 +10,15 @@
     {
         memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
     }
+}
+@{
+    var json = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+    CPayModel payModel = null;
+    if (json != null)
+    {
+        payModel = JsonSerializer.Deserialize<CPayModel>(json);
 
-
+    }
 }
 @{
     ViewData["Title"] = "Pay";
@@ -139,9 +147,15 @@
         <!--導至綠界付款的隱藏頁面-->
         <form id="ecpayform" name="form" method="POST" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
             <!--step2 : 收到後端的值印出來-->
-            <div class=" coupon-box-btn col-12 d-flex shopping-box ">
+            <div class="coupon-box-btn col-12 d-flex shopping-box align-items-center">
+                <a class="ml-auto mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px">可獲得的紅利</a>
+                @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL) != null)
+                {
+                    <a class="mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px"> @payModel?.getLoyaltyPoints </a>
+                }
+                <a class="mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px">點</a>
                 <button type="submit" id="gotopay"
-                        class=" checkout-btn ml-auto btn hvr-hover">
+                        class=" checkout-btn  btn hvr-hover">
                     去結帳
                 </button>
             </div>
