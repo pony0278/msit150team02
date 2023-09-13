@@ -18,7 +18,7 @@ namespace prjCatChaOnlineShop.Services.Function
             _cachaContext = cachaContext;
             _logger = logger;
         }
-        public  Task Execute()
+        public Task Execute()
         {
             try
             {
@@ -27,16 +27,20 @@ namespace prjCatChaOnlineShop.Services.Function
                 var currentDateTime = DateTime.Now;
 
                 var data = _cachaContext.ShopMemberInfo
+                    .Where(x => x.UnBannedTime != null)
                     .Where(x => x.UnBannedTime <= currentDateTime)
                     .ToList();
 
 
                 foreach (var item in data)
+                {
+                    if (item.UnBannedTime <= currentDateTime)
                     {
                         item.IsBanned = false;
                     }
+                }
 
-                    _cachaContext.SaveChanges();
+                _cachaContext.SaveChanges();
 
 
             }
