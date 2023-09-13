@@ -106,9 +106,9 @@ function showGachaResult(scaledProbability, allImages, allItemName) {
     // 檢查是否有 SS 等級的獎項，如果有則設置動畫等級為 'SS'
     if (scaledProbability <=1) {
         animationLevel = 'SS';
-    } else if (scaledProbability<= 4) {
+    } else if (scaledProbability<= 10) {
         animationLevel = 'CATS';
-    } else if (scaledProbability <= 8) {
+    } else if (scaledProbability <= 40) {
         animationLevel = 'S';
     } else {
         animationLevel = 'A';
