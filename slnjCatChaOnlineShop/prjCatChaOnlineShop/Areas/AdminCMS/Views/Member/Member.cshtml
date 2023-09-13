@@ -33,9 +33,9 @@
         }
 
         /*         #member-table_filter {
-                                                                                                    display: inline-block;
-                                                                                                    margin-bottom: 10px;
-                                                                                                } */
+                                                                                                            display: inline-block;
+                                                                                                            margin-bottom: 10px;
+                                                                                                        } */
 
         paginate_button:hover {
             background-color: unset !important;
@@ -320,6 +320,13 @@
             color: #432e1b;
             font-weight: bold;
         }
+
+        #showSelectNum {
+            font-weight: bold;
+            margin-left: 10px;
+            color: red;
+            font-size: 20px;
+        }
     </style>
 }
 
@@ -541,6 +548,7 @@
                     <div class="selectall-checkbox-group mt-2">
                         <input type="checkbox" id="select-all" />
                         <label for="select-all" class="checkbox-label">全選訂閱電子報的會員</label>
+                        <span id="showSelectNum"></span>
                         <button type="button" class="btn btn-danger" onclick="setSearchValue()" style="margin-left: auto;background-color: #b95756;color: #FFF;">
                             關鍵字
                         </button>
@@ -1006,7 +1014,7 @@
             var filterOption1 = $(this).val();
 
             // 使用DataTable的column().search()方法進行過濾
-            dataTable.column(9).search(filterOption1).draw();
+            dataTable.column(8).search(filterOption1).draw();
         });
 
 
@@ -1144,6 +1152,13 @@
                 var email = $(this).data('email'); //獲取 data - email 屬性的值
                 selectedEmails.push(email); // 將 email 值添加到陣列中
             });
+
+            if (selectedEmails.length != 0) {
+                $('#showSelectNum').text("已選取" + selectedEmails.length + "個會員");
+            } else {
+                $('#showSelectNum').text("");
+            }
+
             console.log(selectedEmails);
         });
 
@@ -1390,13 +1405,13 @@
                             var addressNumber = i + 1; //計算幾筆資料的數字
 
                             itemDiv.innerHTML = `
-                                                                                                                                                                                                                                                                                    <h5 class="Address-title"><b>常用地址 ${addressNumber}</b></h5>
-                                                                                                                                                                                                                                                                                    <div class="address-text-content">
-                                                                                                                                                                                                                                                                                    <p>收件人姓名: ${item.recipientName}</p>
-                                                                                                                                                                                                                                                                                    <p>連絡電話: ${item.recipientPhone}</p>
-                                                                                                                                                                                                                                                                                    <p>收件地址: ${item.recipientAddress}</p>
-                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                                                            <h5 class="Address-title"><b>常用地址 ${addressNumber}</b></h5>
+                                                                                                                                                                                                                                                                                            <div class="address-text-content">
+                                                                                                                                                                                                                                                                                            <p>收件人姓名: ${item.recipientName}</p>
+                                                                                                                                                                                                                                                                                            <p>連絡電話: ${item.recipientPhone}</p>
+                                                                                                                                                                                                                                                                                            <p>收件地址: ${item.recipientAddress}</p>
+                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                `;
                             CAContainer.append(itemDiv);
                         }
                     } else {
@@ -1405,11 +1420,11 @@
                         itemDiv.className = "profile-card";
 
                         itemDiv.innerHTML = `
-                                                                                                                                                                                                                                                                                            <h5 class="Address-title"><b>常用地址</b></h5>
-                                                                                                                                                                                                                                                                                            <div class="address-text-content">
-                                                                                                                                                                                                                                                                                                    <p>此會員尚未新增任何常用地址</p>
-                                                                                                                                                                                                                                                                                    </div>
-                                                                                                                                                                                                                                                                                `;
+                                                                                                                                                                                                                                                                                                    <h5 class="Address-title"><b>常用地址</b></h5>
+                                                                                                                                                                                                                                                                                                    <div class="address-text-content">
+                                                                                                                                                                                                                                                                                                            <p>此會員尚未新增任何常用地址</p>
+                                                                                                                                                                                                                                                                                            </div>
+                                                                                                                                                                                                                                                                                        `;
                         CAContainer.append(itemDiv);
                     }
 
@@ -1438,22 +1453,22 @@
                             $('#couponContainer').css('height', '500px');
                             itemDiv.innerHTML = `
 
-                                                                                    <div class="coupon">
-                                                            <div class="left-coupon">
-                                                                                <div>第${couponNumber}張<p>ID ${item.couponId}</p></div>
-                                                            </div>
-                                                            <div class="center-coupon">
-                                                                <div>
-                                                                            <h2>${item.couponStatusId}</h2>
-                                                                    <h3>${item.coupon.couponContent}</h3>
-                                                                            <small>有效日期 ${formattedExpiryDate}</small>
+                                                                                            <div class="coupon">
+                                                                    <div class="left-coupon">
+                                                                                        <div>第${couponNumber}張<p>ID ${item.couponId}</p></div>
+                                                                    </div>
+                                                                    <div class="center-coupon">
+                                                                        <div>
+                                                                                    <h2>${item.couponStatusId}</h2>
+                                                                            <h3>${item.coupon.couponContent}</h3>
+                                                                                    <small>有效日期 ${formattedExpiryDate}</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="right">
+                                                                    </div>
                                                                 </div>
-                                                            </div>
-                                                            <div class="right">
-                                                            </div>
-                                                        </div>
 
-                                                                                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                                                `;
                             couponContainer.append(itemDiv);
                         }
                     } else {
@@ -1462,11 +1477,11 @@
                         itemDiv.className = "profile-card";
 
                         itemDiv.innerHTML = `
-                                                                                                                                                                                                                                                                                                    <h5 class="Address-title"><b>優惠券</b></h5>
-                                                                                                                                                                                                                                                                                                    <div class="address-text-content">
-                                                                                                                                                                                                                                                                                                                    <p>此會員未持有優惠券</p>
-                                                                                                                                                                                                                                                                                            </div>
-                                                                                                                                                                                                                                                                                        `;
+                                                                                                                                                                                                                                                                                                            <h5 class="Address-title"><b>優惠券</b></h5>
+                                                                                                                                                                                                                                                                                                            <div class="address-text-content">
+                                                                                                                                                                                                                                                                                                                            <p>此會員未持有優惠券</p>
+                                                                                                                                                                                                                                                                                                    </div>
+                                                                                                                                                                                                                                                                                                `;
                         couponContainer.append(itemDiv);
                     }
                 },
