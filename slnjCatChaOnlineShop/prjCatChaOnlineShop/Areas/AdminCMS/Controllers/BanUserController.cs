@@ -38,7 +38,7 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
         [HttpGet]
         public IActionResult GetMember()
         {
-            var rawData = _cachaContext.ShopMemberInfo.ToList();
+            var rawData = _cachaContext.ShopMemberInfo.Where(x=>x.EmailVerified == true).ToList();
             var data = rawData.Select(x => new
             {
                 MemberId = x.MemberId,
