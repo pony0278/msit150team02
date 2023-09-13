@@ -104,7 +104,7 @@
             <!--右邊文字審核區-->
             <div class="col-xl-6 col-lg-6 col-md-6">
                 <div>
-                    <h4>圖像描述</h4>
+                    <h4>Azure圖像描述</h4>
                     <textarea class="form-control fs-6 m-lg-1 mx-2" aria-label="With textarea" id="descriptionResults" rows="3" ></textarea>
                 </div>
                 <div class="my-1">
@@ -510,12 +510,12 @@
 
         //Demo鍵:載入好貓咪的圖片
         $('#demoG').click(function (event) {
-            const imageUrl = '/images/goodcat.png';
+            const imageUrl = '/images/allun.png';
             const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
             a.style.display = 'none';
             document.body.appendChild(a);
             a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
-            a.download = 'demoG.png'; // 可以自行更改下載的文件名稱
+            a.download = 'allun.png'; // 可以自行更改下載的文件名稱
             a.click(); // 模擬點擊 a 標籤，觸發下載
             document.body.removeChild(a);// 移除 a 標籤
         });

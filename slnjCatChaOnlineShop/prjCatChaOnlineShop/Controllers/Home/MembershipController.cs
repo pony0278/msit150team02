@@ -393,6 +393,8 @@ namespace prjCatChaOnlineShop.Controllers.Home
             {
                 var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
                 memberToUpdate.MemberImage = imageUrl;
+                //memberToUpdate.MemberImage = "https://msit150team02blob.blob.core.windows.net/msit150team02/allun.png";
+
                 _context.SaveChangesAsync();
 
                 //return new JsonResult(datas);
