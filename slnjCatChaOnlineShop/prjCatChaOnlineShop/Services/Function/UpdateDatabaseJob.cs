@@ -24,26 +24,21 @@ namespace prjCatChaOnlineShop.Services.Function
             {
                 _logger.LogInformation("Execute method started."); // 记录信息
 
+                var currentDateTime = DateTime.Now;
 
-                var data = _cachaContext.ShopMemberInfo.Where(x => x.UnBannedTime <= DateTime.Now).ToList();
+                var data = _cachaContext.ShopMemberInfo
+                    .Where(x => x.UnBannedTime <= currentDateTime)
+                    .ToList();
 
 
-                if (data.Count > 0)
-                {
-                    _logger.LogInformation($"Found {data.Count} records to update."); // 如果找到数据则记录信息
-
-                    foreach (var item in data)
+                foreach (var item in data)
                     {
                         item.IsBanned = false;
                     }
 
                     _cachaContext.SaveChanges();
 
-                }
-                else
-                {
-                    _logger.LogInformation("No records found to update."); // 如果没有找到数据则记录信息
-                }
+
             }
             catch (Exception ex)
             {
