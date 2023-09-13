@@ -380,7 +380,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
         </div>
         <p>提醒您於到期日前使用完畢唷！</p>
         <div class=""footer"">
-            <p><a class=""btnhome"" href=""https://localhost:7218/"" style=""color: #FFF;"">前往購物</a></p>
+            <p><a class=""btnhome"" href=""https://localhost:7218/"" style=""color: #fff3e6;"">前往購物</a></p>
             <p>CatCha貓抓抓感謝您的支持，祝您購物愉快</p>
         </div>
     </div>
