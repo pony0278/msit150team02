@@ -503,19 +503,15 @@
             var file = fileInput.files[0];
 
             //驗證非空值
-            if (!ProductName || !ProductDescription || !ProductPrice || !ProductCategoryId) {
+            if (!ProductName || !ProductDescription  || !ProductCategoryId) {
                 showErrorMessage("錯誤", "名稱、類別、價格為必填欄位，請再次檢查。");
                 return;
             }
 
             // 驗證必為數字
-            if (!isNumeric(ProductPrice) ||  !isDecimal(LotteryProbability)) {
-                showErrorMessage("錯誤", "價格、抽獎機率僅可輸入數字，請再次檢查。");
+            if (!isDecimal(LotteryProbability)) {
+                showErrorMessage("錯誤", "抽獎機率僅可輸入數字，請再次檢查。");
                 return;
-            }
-
-            function isNumeric(value) {
-                return /^\d+$/.test(value);
             }
             function isDecimal(value) {
                 return /^(\d+\.\d+|\.\d+|\d+)$/.test(value);
