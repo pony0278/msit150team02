@@ -28,7 +28,6 @@ namespace prjCatChaOnlineShop.Services.Function
 
                 var data = _cachaContext.ShopMemberInfo
                     .Where(x => x.UnBannedTime != null)
-                    .Where(x => x.UnBannedTime <= currentDateTime)
                     .ToList();
 
 
