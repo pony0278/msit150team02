@@ -66,12 +66,14 @@
         connection.on("GetUsers", function (data) {
             var users = JSON.parse(data);
             var userList = $("#users");
+            console.log(users)
             userList.empty();  // 清空 userList
             $.each(users, function (index, user) {
                 if (user.Name === "客服人員") {
                     return true;  // 跳过当前迭代，继续下一个
                 }
-                var userHtml = $('<li class="list-group-item">').html('訪客： ' + user.Name + '<input type="button" class="btn btnUser shadow ms-3" Name="' + user.Name + ' " connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="回覆" onclick="userChat(this)"/>');
+                var userHtml = $('<li class="list-group-item">').html('訪客：<span id="' + user.Name + '"> ' + user.Name + ' </span> <input type="button" class="btn btnUser shadow ms-3" name="' + user.Name + '" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '"  value="回覆" onclick="userChat(this)"/>');
+
                 userList.append(userHtml);
             });
         });
@@ -82,8 +84,6 @@
         });
 
         connection.start().then(function () {
-            // var userName = prompt('请输入您的名称', '');
-            // document.getElementById("userName").textContent = userName;
             var userName = "客服人員"
             document.getElementById("userName").textContent = userName;
             connection.invoke("GetName", userName);
@@ -94,11 +94,11 @@
 
         function userChat(obj) {
             var connectionId = $(obj).attr('connectionId');
-            var anotherAttribute = $(obj).attr('Name');
-            showWin(connectionId, anotherAttribute);
+            showWin(connectionId);
         }
 
-        function showWin(connectionId, anotherAttribute) {
+
+        function showWin(connectionId) {
             clients.push(connectionId);
 
             var div = $('<div>')
@@ -113,10 +113,11 @@
                     'padding': '20px',
                 })
                 .attr('id', connectionId)
-                .attr('connectionId', connectionId);
+                .attr('connectionId', connectionId)
+
 
             var header = $('<span>')
-                .text(anotherAttribute + '顧客訊息紀錄');
+                .text('安安' + '顧客訊息紀錄');
 
             var exitBtn = $('<button class="border-0 shadow">')
                 .css({
