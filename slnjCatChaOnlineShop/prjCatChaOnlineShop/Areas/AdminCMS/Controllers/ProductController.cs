@@ -332,7 +332,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 string keyword2 = keywords.GetValueOrDefault("keyword2", "Keyword2");
                 string keyword3 = keywords.GetValueOrDefault("keyword3", "Keyword3");
 
-                var prompt = $"請依照這3個關鍵字'營養貓食'、'蛋白質豐富'、'膳食纖維'，請幫我產生商品介紹，使用條列式，說明前面請幫我帶上我設定的關鍵字";
+                var prompt = $"請依照這3個關鍵字'1.營養貓食'、'2.蛋白質豐富'、'3.膳食纖維'，請幫我產生商品介紹，使用條列式，說明前面請幫我帶上我設定的關鍵字";
 
                 var apiKey = _configuration["OpenAI_API_Key"];
 
