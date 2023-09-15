@@ -36,6 +36,7 @@
     <link rel="stylesheet" href="~/css/style.css">
     <!--myCss-->
     <link rel="stylesheet" href="~/css/myCss.css">
+    <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css" />
     <style>
         .input-group {
             position: relative;
@@ -161,7 +162,7 @@
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
-                            <a class="ml-3" style="color:#DE9E4F" asp-controller="game" asp-action="index">沒有優惠券?點擊此連結玩貓貓大進擊抽優惠券！</a>
+                            <a class="ml-3" id="playGame"　style="color:#DE9E4F" asp-controller="game" asp-action="index">沒有優惠券?點擊此連結玩貓貓大進擊抽優惠券！</a>
                             <div class="input-group mb-2">
                                 <input id="CouponId" value="" hidden></input>
                                 <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
@@ -1348,7 +1349,76 @@
             deliveryInfo.phone = phone;
         });
 
+        const fullScreenContainer = document.getElementById('fullScreenContainer');
+        document.getElementById("playGame").addEventListener("click", function (event) {
+            //修復遊戲側邊按鈕
+            event.preventDefault();
+            //動畫內容
+            main();
+            $("#fullScreenContainer").addClass("fullscreen")
+            $(".animate01").addClass("NyanCat-container01");
+            $(".animate02").addClass("NyanCat-container02");
 
+            $(".animate03").one("animationend", function () {
+                $("#my-popup").addClass("show");
+                setTimeout(function () {
+                    $("#my-popup").removeClass("show");
+                    window.location.href = '/Game/Index';
+                }, 3000);
+            })
+                .addClass("NyanCat-container03");
+
+            const nyanCats = document.querySelectorAll('.animate');
+            if (nyanCats.length > 0) {
+                nyanCats.forEach((cat) => {
+                    cat.classList.add('NyanCat-container');
+                });
+            }
+
+            const catAnimate = document.querySelectorAll('.catAnimate');
+            if (catAnimate.length > 0) {
+                catAnimate.forEach((cat) => {
+                    cat.classList.add('NyanCat');
+                });
+            }
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+
+            function createLine() {
+                const line = document.createElement('div');
+                line.classList.add('line');
+                line.style.width = `${getRandomInt(20, 100)}px`
+                line.style.right = `${getRandomInt(window.innerWidth, 100)}px`;
+                line.style.top = `${getRandomInt(0, window.innerHeight)}px`;
+                fullScreenContainer.appendChild(line);
+                return line;
+            }
+
+
+            function updateLine(line) {
+                const newX = parseInt(line.style.right) + 10;
+                if (newX > window.innerWidth) {
+                    line.style.right = `${getRandomInt(0, -100)}px`;
+                } else {
+                    line.style.right = `${newX}px`;
+                }
+            }
+
+            function main() {
+                const lines = [];
+
+                for (let i = 0; i < 100; i++) {
+                    lines.push(createLine());
+                }
+
+                setInterval(() => {
+                    lines.forEach(updateLine);
+                }, 40);
+            }
+        });
 
     </script>
 }
