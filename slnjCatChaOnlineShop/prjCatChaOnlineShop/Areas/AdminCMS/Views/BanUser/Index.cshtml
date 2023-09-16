@@ -383,7 +383,6 @@
                 }
             });
         });
-        //客服
 
 
             var clients = [];
@@ -412,7 +411,7 @@
                 userList.innerHTML = "";
                 users.forEach(function (user) {
                     var userHtml = document.createElement("li");
-                    userHtml.innerHTML = '用户名: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
+                    userHtml.innerHTML = '訪客: ' + user.Name + '<input type="button" connectionId="' + user.ConnectionID + '" id="' + user.ConnectionID + '" value="聊天" onclick="userChat(this)"/>';
                     userList.appendChild(userHtml);
                 });
             });
@@ -444,17 +443,16 @@
 
         function exitChat(btnObj) {
             $(btnObj).parent().remove();
-            connection.invoke("ExitChat", connectionId); // 修改為使用invoke
+            connection.invoke("ExitChat", connectionId); 
         }
 
-        //发送消息
         function sendMessage(data) {
             var message = $(data).prev().val();
             var userObj = $(data).parent();
             var username = $("#userName").html();
             message = username + ":" + message;
             var targetConnectionId = $(userObj).attr("connectionId");
-            connection.invoke("SendMessage", targetConnectionId, message); // 修改為使用invoke
+            connection.invoke("SendMessage", targetConnectionId, message); 
             $(data).prev().val("");
         }
 

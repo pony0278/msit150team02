@@ -24,13 +24,13 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
     .Build();
 string dbConnectionString = configuration.GetConnectionString("CachaConnection");
-// Add services to the container.
+
 builder.Services.AddControllersWithViews();
 builder.Services.AddSignalR();
 builder.Services.AddScoped<ImageService>();
 builder.Services.AddHangfire(config =>
 {
-    config.UseMemoryStorage(); // 使用内存存儲，請根據您的需求更改存儲後端
+    config.UseMemoryStorage(); 
 });
 builder.Services.AddTransient<UpdateDatabaseJob>();
 

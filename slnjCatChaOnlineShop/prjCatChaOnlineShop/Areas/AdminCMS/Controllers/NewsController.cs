@@ -66,7 +66,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 return BadRequest("Error uploading the image.");
             }
 
-            // 检查是否已经存在置顶公告
+            
             bool hasTopAnnouncement = await _cachaContext.GameShopAnnouncement.AnyAsync(x => x.PinToTop == true);
 
             if (hasTopAnnouncement == cAnnounce.PinToTop)

@@ -442,8 +442,8 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                 for (int row = 2; row <= rowCount; row++)
                 {
                     var productId = worksheet.Cells[row, 1].Text;
-                    var categoryName = worksheet.Cells[row, 6].Text;  // 分類名稱在第一列
-                    var productName = worksheet.Cells[row, 2].Text;  // 商品名稱在第二列
+                    var categoryName = worksheet.Cells[row, 6].Text;  
+                    var productName = worksheet.Cells[row, 2].Text;  
                     var describe = worksheet.Cells[row, 3].Text;
                     var price = worksheet.Cells[row, 4].Text;
                     var remain = worksheet.Cells[row, 5].Text;
@@ -467,11 +467,11 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     int? parseRemian = int.TryParse(remain, out int tempRemain) ? tempRemain : (int?)null;
                     bool? parsePush = bool.TryParse(PushToShop , out bool tempPush) ? tempPush : (bool?)null;
 
-                    // 查询数据库，看商品名是否已存在
+                    
                     var existingProduct = _cachaContext.ShopProductTotal.FirstOrDefault(p => p.ProductId == parseId);
                     var existingProductName = _cachaContext.ShopProductTotal.FirstOrDefault(p=>p.ProductName == productName);
 
-                    if (existingProduct != null)  // 如果已存在，则更新商品数据
+                    if (existingProduct != null)  
                     {
                         existingProduct.ProductName = productName;
                         existingProduct.ProductCategoryId = GetOrCreateCategory(categoryName);
@@ -488,10 +488,10 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         var existingImg = _cachaContext.ShopProductImageTable.FirstOrDefault(s => s.ProductImageId == imgID);
                         if (existingSpecification != null)
                         {
-                            // 手动附加现有实体
+                            
                             _cachaContext.Attach(existingSpecification);
 
-                            // 现在可以使用现有实体进行操作
+                            
                             existingProduct.ShopProductSpecification.Add(existingSpecification);
                         }
                         if(existingImg != null)
@@ -501,7 +501,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                         }
                         
                     }
-                    else  if(!string.IsNullOrEmpty(productName))// 如果不存在，则新增商品数据
+                    else  if(!string.IsNullOrEmpty(productName))
                     {
                         var product = new ShopProductTotal
                         {

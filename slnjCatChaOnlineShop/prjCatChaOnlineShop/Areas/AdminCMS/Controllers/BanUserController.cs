@@ -70,12 +70,5 @@ namespace prjCatChaOnlineShop.Areas.AdminCMS.Controllers
             }
             return Json(new { success = false, message = "未找到成員" });
         }
-        public IActionResult ScheduleUpdateJob()
-        {
-            // 調度後台作業
-            _backgroundJobClient.Enqueue<UpdateDatabaseJob>(x => x.Execute());
-
-            return RedirectToAction("Index");
-        }
     }
 }
