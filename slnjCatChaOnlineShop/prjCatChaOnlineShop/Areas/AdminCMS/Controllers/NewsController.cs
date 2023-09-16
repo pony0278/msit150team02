@@ -1,5 +1,4 @@
-﻿using CKSource.CKFinder.Connector.Config.Nodes;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using prjCatChaOnlineShop.Models;
 using prjCatChaOnlineShop.Models.ViewModels;
 using prjCatChaOnlineShop.Models.CModels;
@@ -10,6 +9,7 @@ using DataTables.AspNet.Core;
 using Microsoft.EntityFrameworkCore;
 using DataTables.AspNet.AspNetCore;
 using System.Data;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 
 namespace prjCatChaOnlineShop.Controllers.CMS
 {
@@ -27,13 +27,23 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
         public IActionResult News()
         {
-
-            var NewsViewModel = new CNewsModel
+            //判斷是否有登入
+            if (HttpContext.Session.Keys.Contains(CAdminLogin.SK_LOGINED_USER))
             {
-                NewsType = _cachaContext.AnnouncementTypeData.ToList(),
-                NewsContent = _cachaContext.GameShopAnnouncement.ToList()
-            };
-            return View(NewsViewModel);
+                // 讀取管理員姓名
+                string adminName = HttpContext.Session.GetString("AdminName");
+
+                // 將管理員姓名傳給view
+                ViewBag.AdminName = adminName;
+
+                var NewsViewModel = new CNewsModel
+                {
+                    NewsType = _cachaContext.AnnouncementTypeData.ToList(),
+                    NewsContent = _cachaContext.GameShopAnnouncement.ToList()
+                };
+                return View(NewsViewModel);
+            }
+            return RedirectToAction("Login", "CMSHome");
         }
         [HttpPost]
         [Consumes("multipart/form-data")]
@@ -43,7 +53,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
 
             if (image == null || image.Length == 0)
             {
-                return BadRequest("No image provided.");
+                return BadRequest("沒有加上標題圖片");
             }
 
             string imageUrl;
@@ -53,9 +63,17 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-
                 return BadRequest("Error uploading the image.");
             }
+
+            
+            bool hasTopAnnouncement = await _cachaContext.GameShopAnnouncement.AnyAsync(x => x.PinToTop == true);
+
+            if (hasTopAnnouncement == cAnnounce.PinToTop)
+            {
+                return BadRequest("已有置頂公告。");
+            }
+
             var newAnnounce = new GameShopAnnouncement
             {
                 AnnouncementImageHeader = imageUrl,
@@ -74,12 +92,13 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             catch
             {
-                return BadRequest("Error saving the announcement.");
+                return BadRequest("儲存公告失敗");
             }
 
             return Json(new { success = true, message = "Content saved!" });
-
         }
+
+
 
         [HttpPost]
         public async Task<IActionResult> UploadImage(IFormFile image)
@@ -138,7 +157,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
                     AnnouncementType = x.AnnouncementType,
                     AnnouncementImageContent = x.AnnouncementImageContent,
                     PublishEndTime = formattedDateTime,
-                    displayOrNot = x.DisplayOrNot == null ? "未設定" :
+                    displayOrNot = x.DisplayOrNot == null ? "否" :
                                    x.DisplayOrNot == true ? "是" : "否",
                 };
         }).ToList();
@@ -194,6 +213,7 @@ namespace prjCatChaOnlineShop.Controllers.CMS
             }
             if (editorNews != null)
             {
+                editorNews.AnnouncementTypeId = cAnnounce.AnnouncementTypeId;
                 editorNews.AnnouncementTitle = cAnnounce.AnnouncementTitle;
                 editorNews.AnnouncementContent = cAnnounce.AnnouncementContent;
                 if(imageUrl!= null)

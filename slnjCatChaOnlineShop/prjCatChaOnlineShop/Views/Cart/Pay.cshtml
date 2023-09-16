@@ -1,0 +1,289 @@
+﻿@using System.Text.Json;
+@using prjCatChaOnlineShop.Models.CDictionary;
+@using prjCatChaOnlineShop.Models.ViewModels;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model prjCatChaOnlineShop.Models.ViewModels.CCheckoutViewModel
+@{
+    var jsonString = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
+    ShopMemberInfo memberinfo = null;
+    if (jsonString != null)
+    {
+        memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
+    }
+}
+@{
+    var json = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+    CPayModel payModel = null;
+    if (json != null)
+    {
+        payModel = JsonSerializer.Deserialize<CPayModel>(json);
+
+    }
+}
+@{
+    ViewData["Title"] = "Pay";
+    Layout = "~/Views/Shared/CatCha_Layout.cshtml";
+}
+
+@section Styles{
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <link rel="stylesheet" href="~/css/bootstrap.min.css">
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="~/css/style.css">
+    <!-- Responsive CSS -->
+    <link rel="stylesheet" href="~/css/responsive.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/custom.css">
+    <!--myCss-->
+    <link rel="stylesheet" href="~/css/myCss.css">
+}
+
+<!-- Start All Title Box -->
+<div class="all-title-box-picture all-title-box">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <h2>去結帳</h2>
+                <ul class="breadcrumb">
+                    <li class="breadcrumb-item"><a asp-controller="Index" asp-action="Index">首頁</a></li>
+                    <li class="breadcrumb-item active">去結帳</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End All Title Box -->
+<!--中間主畫面Start-->
+<div class="cart-box-main">
+    <div class="container" style="max-width: 800px; margin: 0 auto;">
+        <h3 class="d-flex justify-content-center" style="color:#DE9E4F">請貓奴們確認訂單明細後再前往結帳喔</h3>
+        <div class="row">
+            <div class="odr-box">
+                <div class="title-left">
+                    <h3>購物明細</h3>
+                </div>
+                <div class="rounded p-2 bg-light">
+                    @{
+                        if (Model != null && Model.cartItems != null)
+                        {
+                            foreach (var item in Model.cartItems)
+                            {
+                                <div class="media mb-2 border-bottom d-flex justify-content-between">
+                                    <div class="media-body">
+                                        <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
+                                    </div>
+                                    <div class="small text-muted" style="font-size:14px">
+                                        數量: @item.c數量 <span class="mx-2">|</span> 小計: NT @item.c小計
+                                    </div>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+        @if (Model != null && Model.getFinalShippmentData !=null)
+        {
+            <div class="row mt-3">
+                <div class="col-6">
+                    <div class="title-left">
+                        <h3>付款方式</h3> 
+                    </div>
+                    <h4> @Model.getFinalShippmentData.paymentMethod </h4>
+                </div>
+                <div class="col-6">
+                    <div class="title-left">
+                        <h3>運送方式</h3>
+                    </div>
+                    <div>
+                        <h4> @Model.getFinalShippmentData.deliveryMethod </h4>
+                        <span>取件門市：</span><div id="caddress" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.storeName </div><br>
+                        <span>取件姓名：</span><div id="cname" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.name</div><br>
+                        <span>取件人電話：</span><div id="cphone" style="display: inline;" class="font-weight-bold"> @Model.getFinalShippmentData.phone</div>
+                    </div>
+                </div>
+            </div>
+        }
+        @if (Model != null && HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL) != null)
+        {
+            <div class="row ">
+                <div class="col-md-12 col-lg-12">
+
+                    <div class="order-box align-items-center">
+                        <div class="d-flex align-items-center">
+                            <h4 class="mr-auto">小計</h4>
+                            <span class="mr-2 font-weight-bold subprice-font">NT</span><div class=" font-weight-bold subprice-font" id="finalSubtotal">@payModel.subtotal</div>
+                        </div>
+                        <div class="d-flex align-items-center">
+                            <h4 class="mr-auto">運費</h4>
+                            <span class="mr-2 font-weight-bold subprice-font">+NT</span><div class=" font-weight-bold subprice-font" id="finalShippingFee">@payModel.shippingFee</div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex align-items-center">
+                            <h4 class="mr-auto">總折扣</h4>
+                            <span class="mr-2 font-weight-bold subprice-font">-NT</span><div class=" font-weight-bold subprice-font" id="finalTotalDiscount">@payModel.finalBonus</div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total align-items-center">
+                            <h5 class="mr-auto">總計</h5>
+                            <span class="mr-2 font-weight-bold" style="color: #CE0000;font-size: 26px;">NT</span><div class=" h3 price-font font-weight-bold" id="allTotalPrice">@payModel.finalAmount</div>
+                        </div>
+                        <hr>
+
+                    </div>
+                </div>
+            </div>
+        }
+        @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null && Model != null)
+        {
+            <div id="MemberId" hidden> @memberinfo.MemberId </div>
+
+        }
+        <!--導至綠界付款的隱藏頁面-->
+        <form id="ecpayform" name="form" method="POST" action="https://payment-stage.ecpay.com.tw/Cashier/AioCheckOut/V5">
+            <!--step2 : 收到後端的值印出來-->
+            <div class="coupon-box-btn col-12 d-flex shopping-box align-items-center">
+                <a class="ml-auto mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px">可獲得的紅利</a>
+                @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL) != null)
+                {
+                    <a class="mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px"> @payModel?.getLoyaltyPoints </a>
+                }
+                <a class="mr-2" style="color:#DE9E4F;font-size:18px;background-color:#FFFFFF;padding:10px 5px">點</a>
+                <button type="submit" id="gotopay"
+                        class=" checkout-btn  btn hvr-hover">
+                    去結帳
+                </button>
+            </div>
+            <div hidden>
+                @if (Model != null)
+                {
+                    <input type="text" name="MerchantTradeNo" value="@Model.keyValuePairs["MerchantTradeNo"]" />
+                    <input type="text" name="MerchantTradeDate" value="@Model.keyValuePairs["MerchantTradeDate"]" />
+                    <input type="text" name="TotalAmount" value="@Model.keyValuePairs["TotalAmount"]" />
+                    <input type="text" name="TradeDesc" value="@Model.keyValuePairs["TradeDesc"]" />
+                    <input type="text" name="ItemName" value="@Model.keyValuePairs["ItemName"]" />
+                    <input type="text" name="ExpireDate" value="@Model.keyValuePairs["ExpireDate"]" />
+                    <input type="text" name="CustomField1" value="@Model.keyValuePairs["CustomField1"]" />
+                    <input type="text" name="CustomField2" value="@Model.keyValuePairs["CustomField2"]" />
+                    <input type="text" name="CustomField3" value="@Model.keyValuePairs["CustomField3"]" />
+                    <input type="text" name="CustomField4" value="@Model.keyValuePairs["CustomField4"]" />
+                    <input type="text" name="ReturnURL" value="@Model.keyValuePairs["ReturnURL"]" />
+                    <input type="text" name="OrderResultURL" value="@Model.keyValuePairs["OrderResultURL"]" />
+                    <input type="text" name="PaymentInfoURL" value="@Model.keyValuePairs["PaymentInfoURL"]" />
+                    <input type="text" name="ClientRedirectURL" value="@Model.keyValuePairs["ClientRedirectURL"]" />
+                    <input type="text" name="MerchantID" value="@Model.keyValuePairs["MerchantID"]" />
+                    <input type="text" name="IgnorePayment" value="@Model.keyValuePairs["IgnorePayment"]" />
+                    <input type="text" name="PaymentType" value="@Model.keyValuePairs["PaymentType"]" />
+                    <input type="text" name="ChoosePayment" value="@Model.keyValuePairs["ChoosePayment"]" />
+                    <input type="text" name="EncryptType" value="@Model.keyValuePairs["EncryptType"]" />
+                    <input type="text" name="CheckMacValue" value="@Model.keyValuePairs["CheckMacValue"]" />
+                    @* @foreach (var key in @Model.keyValuePairs.Keys.ToList())
+                {
+                @(key) <input type="text" name="@key" value="@Model.keyValuePairs[key]" />
+
+                <br />
+                }
+                @*<button type="submit" id="checkoutBtn">送出</button>*@
+                }
+            </div>
+        </form>
+    </div>
+</div>
+<!--中間主畫面End-->
+@section Scripts{
+    <!-- ALL JS FILES -->
+    
+    <!--引用Bundle，這樣nav導覽與頁籤就可以使用-->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+            crossorigin="anonymous"></script>
+    <!--引用分離(Separate)-->
+    @*  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
+        integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
+        crossorigin="anonymous"></script> *@
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
+            crossorigin="anonymous"></script>
+    <!---->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    @*<script src="~/js/jquery-3.2.1.min.js"></script>*@
+    <script src="~/js/popper.min.js"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    
+    <!-- ALL PLUGINS -->
+    <script src="~/js/jquery.superslides.min.js"></script>
+    <script src="~/js/bootstrap-select.js"></script>
+    <script src="~/js/inewsticker.js"></script>
+    <script src="~/js/bootsnav.js."></script>
+    <script src="~/js/images-loded.min.js"></script>
+    <script src="~/js/isotope.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/baguetteBox.min.js"></script>
+    <script src="~/js/form-validator.min.js"></script>
+    <script src="~/js/contact-form-script.js"></script>
+    @*<script src="~/js/custom.js"></script>*@
+    <!--nav導覽與頁籤使用-->
+    @*<script src="~/js/myScript.js"></script>*@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script>
+
+        // 監聽送出訂單按鈕的點擊事件
+        $('#gotopay').on('click', (e) => {
+             /*e.preventDefault();*/  /*因為送出就跳轉到綠界，這個可以停住確認自己的console.log的內容*/
+            console.log("嚴重折壽耶^_^")
+            let formData = $("#ecpayform").serializeArray();
+            var json = {};
+            $.each(formData, function () {
+                json[this.name] = this.value || "";
+            });
+            console.log(json); /*F12 -> console*/
+            //step3 : 新增訂單到資料庫
+            $.ajax({
+                type: 'POST',
+                url: 'https://localhost:7218/Ecpay/AddOrders',
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(json),
+                success: function (res) {
+                    console.log(res);
+                    console.log("存回我們自己的資料庫囉")
+                    var memberId = $("#MemberId").text();
+                    var totalPrice = $("#allTotalPrice").text()
+                    var caddress=$("#caddress").text()
+                    var cname = $("#cname").text()
+                    var cphone = $("#cphone").text()
+                    console.log("會員ID", memberId)
+                    console.log("會員價格", totalPrice)
+                    console.log("會員價格", cname)
+                    console.log("會員價格", cphone)
+                    $.ajax({
+                        type: 'POST',
+                        url: '/CheckOut/AddNewOrder',
+                        data:
+                        {
+                            MemberId: memberId,
+                            ResultPrice: totalPrice,
+                            RecipientAddress: caddress,
+                            RecipientName: cname,
+                            RecipientPhone: cphone,     
+                        },
+                        success: function (response) {
+                        },
+                        error: function (response) {
+                            // 處理錯誤回應
+                        },
+                    });
+                },
+                error: function (err) { console.log(err); },
+            });
+
+        })
+
+    </script>
+}
+

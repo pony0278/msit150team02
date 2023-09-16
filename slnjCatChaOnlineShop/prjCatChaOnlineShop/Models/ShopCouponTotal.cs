@@ -19,5 +19,9 @@ public partial class ShopCouponTotal
 
     public bool? Usable { get; set; }
 
+    public decimal? SpecialOffer { get; set; }
+
+    public string Image { get; set; }
+
     public virtual ICollection<ShopMemberCouponData> ShopMemberCouponData { get; set; } = new List<ShopMemberCouponData>();
 }

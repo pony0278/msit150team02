@@ -5,6 +5,91 @@ function isInBtnRange(btn, x, y)//判斷滑鼠點到哪一個按鈕，參數btn�
     return x >= btn.x && x <= btn.x + btn.width && y >= btn.y && y <= btn.y + btn.height;
 }
 
+//載入排行榜資料
+function loadRankData() {
+
+    $.ajax({
+        type: "POST",
+        url: "/api/GetUserId", // API 的 URL
+        contentType: 'application/json', // 指定資料類型為 JSON
+        success: async function (data) {
+            
+          await getRankDataBeforeGetID(data);
+        },
+        error: function (error) {
+            console.log("抓取ID失敗", error);
+        }
+    });
+
+    
+}
+
+
+function getRankDataBeforeGetID(id) {
+    $.ajax({
+        url: '/Api/Rank',
+        type: 'GET',
+        contentType: 'application/json', // 指定資料類型為 JSON
+        success: function (data) {
+            const topTenData = data.slice(0, 10);//取出前十名
+            const thisPlayerData = data.filter((item) => item.memberId === id);//取出目前玩家
+            if (topTenData.length > 0) {
+                console.log(data);
+                const top10Rank = {
+                    "排名": topTenData.map((item) => ({
+                        "id": item.memberId,
+                        "name": item.characterName,
+                        "排名": item.rank,
+                        "分數": item.runGameHighestScore
+                    }))
+                };
+
+                const thisPlayerRank = {
+                    "排名": thisPlayerData.map((item) => ({
+                        "name": item.characterName,
+                        "排名": item.rank,
+                        "分數": item.runGameHighestScore
+                    }))
+                };
+
+                const rankDatas = top10Rank.排名.map(r => `
+                                            <tr>
+                                                 <td class="_${r.id}">${r.排名}</td>
+                                                 <td class="_${r.id}">${r.name}</td>
+                                                 <td class="_${r.id}">${r.分數}</td>
+                                            </tr>
+                                            ` );
+                const user = thisPlayerRank.排名.map(r => `
+                                            <tr>
+                                            <td></td><td>...</td><td></td>
+                                            </tr>
+                                            <tr>
+                                                 <td style="color:red;">${r.排名}</td>
+                                                 <td style="color:red;">${r.name}</td>
+                                                 <td style="color:red;">${r.分數}</td>
+                                            </tr>
+                                            ` );
+                let combinedRankDatas = rankDatas;
+                if (!topTenData.some(item => item.memberId === id)) {
+                    combinedRankDatas = rankDatas.concat(user);
+                }
+                document.querySelector('#emTable > tbody').innerHTML = combinedRankDatas.join("")
+                //設定目前腳色排行榜中的文字顏色
+                const targetClass = `_${id}`;
+                const targetElements = document.querySelectorAll(`.${targetClass}`);
+                targetElements.forEach(element => {
+                    element.style.color = 'red';
+                });
+
+            }
+        },
+        error: function () {
+            console.error('抓取排行榜失敗');
+        }
+    });
+
+}
+
 CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後詢問頁面
     const rect = CanvasDoubleCheck.getBoundingClientRect();
     const x = event.clientX - rect.left;
@@ -27,7 +112,6 @@ CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後
 
     if (isPause == false) { //玩家腳色死亡
         if (isInBtnRange(yesBTN, x, y)) { //玩家選擇是
-            console.log("1")
             CanvasDoubleCheck.style.display = "none" //隱藏詢問視窗
             resetRunGame();//重置遊戲+重新開始遊戲
             return;
@@ -35,6 +119,7 @@ CanvasDoubleCheck.addEventListener('click', (event) => { //跑步遊戲結束後
         if (isInBtnRange(cancelBTN, x, y)) {//玩家選擇否
             CanvasDoubleCheck.style.display = "none"//隱藏詢問視窗
             pagesControl(Canvaslobby); //畫面返回大廳
+            showRank();
             return;
         }
     }
@@ -87,26 +172,25 @@ canvas.addEventListener('click', (event) => {
 
     //主功能按鈕
 
-    if (isInBtnRange(helpBTN, x, y)) { //問號
-        // 發起 GET 請求並處理 JSON 數據
-        fetch('Api/gameapi')  // 請確保這個路徑是正確的
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('網絡錯誤');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log(data); // 在控制台輸出 JSON 數據
-                // 在這裡進行數據處理
-            })
-            .catch(error => {
-                console.error('無法獲取 JSON 數據', error);
-            });
+    if (isInBtnRange(helpBTN, x, y)) { //遊戲說明
+        tutorial.style.display = "block"
+        return;
+  
+    }
 
+    if (isInBtnRange(dailyMissionBTN, x, y)) { //每日任務
+        loadTask()
+        Mission.style.display = "block"
         return;
     }
 
+
+    if (isInBtnRange(editNameBTN, x, y)) { //更改名字
+        changeUserName()
+    }
+  
+
+    
 
     if (isInBtnRange(gotoRunGame, x, y)) { //小遊戲
         popup.style.display = "block"
@@ -116,14 +200,16 @@ canvas.addEventListener('click', (event) => {
 
     if (isInBtnRange(gotoGacha, x, y)) { //轉蛋
         pagesControl(CatchaGatCha);
-        console.log('HI');
         return;
     }
 
     if (isInBtnRange(rankBTN, x, y)) { //Rank
         pagesControl(CanvasRank);
         Canvaslobby.style.display = "block"
-        console.log('HI');
+
+
+        //載入資料庫排行榜資料
+        loadRankData();
         return;
     }
 

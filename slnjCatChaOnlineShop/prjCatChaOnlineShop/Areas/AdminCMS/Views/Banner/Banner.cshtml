@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "Banner";
+    ViewData["Title"] = "網頁Banner管理";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
 }
 
@@ -40,6 +40,16 @@
             width: 200px;
             height: 40px;
         }
+
+        .custom-swal {
+            width: 100%;
+        }
+
+        .form-check-input[type="checkbox"]:checked {
+            background-color: #b95756;
+            border-color: #fff;
+        }
+
 </style>
 }
 
@@ -49,53 +59,76 @@
 
             <div class="row align-items-center">
                 <div class="col-6">
-                    <h2 class="mt-3">Banner管理</h2>
+                    <h2 class="mt-3">橫幅管理</h2>
                 </div>
                 <div class="col-6 text-end mt-3">
-                    <button class="btn btn-primary" data-bs-toggle="modal" href="#addBannerModalToggle"
+            <button class="create_btn" data-bs-toggle="modal" href="#addBannerModalToggle"
                             role="button">
-                        新增Banner
+                新增橫幅
                     </button>
-                </div>
+            </div>
             </div>
 
+    <div class="row mt-3">
+        <div class="col-6 offset-6 text-end">
+            <button type="button" class="create_btn" onclick="showPreviewAlert()">
+                預覽首頁
+            </button>
+        </div>
+    </div>
+
+        </div>
             <!---新增Banner modal-->
             <div class="modal fade" id="addBannerModalToggle" aria-hidden="true"
-                 aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+                 aria-labelledby="addBannerModalToggleLabel" tabindex="-1">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalToggleLabel">新增Banner</h5>
+                    <h5 class="modal-title" id="addBannerModalToggleLabel">新增橫幅</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form>
-                                <div class="form-group">
-                                    <!-- <label>ID：</label> -->
-                                    <input type="hidden" class="form-control" disabled readonly>
-                                </div>
-
                                 <div class="form-group">
                                     <label>名稱：</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" id="create-name" name="Banner">
                                 </div>
 
                                 <div class="form-group">
-                                    <label>類型：</label>
-                                    <select class="form-control">
-                                        <option value="BannerCatgory1">主頁</option>
-                                        <option value="BannerCatgory2">促銷</option>
+                                    <label>發佈日期：</label>
+                                <input type="date" id="create-date" class="form-control" name="PublishDate">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>連結：</label>
+                                    <input type="text" class="form-control" id="create-topage" name="ToPage">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>是否顯示：</label>
+                                    <select class="form-select" id="create-display" name="Display">
+                                        <option value="" selected disabled>請選擇狀態</option>
+                                        <option value="true">是</option>
+                                        <option value="false">否</option>
                                     </select>
                                 </div>
 
                                 <div class="col-md-12">
                                     <label>圖片：</label>
-                                    <input type="file" class="form-control">
+                                    <input type="file" class="form-control" id="create-image" name="Image" accept="image/*" />
                                 </div>
 
-                                <button class="btn btn-danger btn-block" style="width: 100%;">儲存</button>
-                            </form>
+                                <div class=" mb-3 align-items-center mt-3">
+                                    <label>目前圖片：</label>
+                                    <div class="d-flex justify-content-center">
+                                        <img id="preview-createimage" src="" class="w-100 border">
+                                    </div>
+                                </div>
+                        <button type="button" class="mt-3 btn " onclick="setCreateBannerValue()" style="background-color: #b95756;color: #FFF;">Demo</button>
+                        <button type="submit" class="mt-3 btn  btn-block" name="submitButton" id="submitButton"
+                        style="width: 100%; background-color: #b95756;color: #FFF;">
+                            儲存
+                        </button>
                         </div>
                     </div>
                 </div>
@@ -103,7 +136,7 @@
             <!---新增Banner modal-->
 
             <!---篩選Banner類型-->
-    <div class="container-fluid mt-4 mb-3">
+@*     <div class="container-fluid mt-4 mb-3">
         <div class="row align-items-center mb-2">
             類別篩選：
             <div class="col d-flex justify-content-between">
@@ -115,7 +148,7 @@
                 </select>
             </div>
         </div>
-    </div>
+    </div> *@
             <!---篩選Banner類型-->
 
             <div class="container-fluid mt-4">
@@ -125,120 +158,70 @@
                 <table id="Banner-table" class="table table-striped nowrap" style="width:100%">
                             <thead>
                                 <tr>
-                                    <!-- <th>序號</th> -->
-                                    <th>ID</th>
+                                    <th>編號</th>
                                     <th>名稱</th>
-                                    <th>類型</th>
+                                    <th>發佈時間</th>
+                                    <th>連結</th>
                                     <th>圖片</th>
                                     <th>編輯/刪除</th>
+                                    <th>顯示</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <!-- <td>1</td> -->
-                                    <td>1</td>
-                                    <td>Banner1</td>
-                                    <td>主頁</td>
-                                    <td class="test">
-                                <img src="~/images/home-slide-2.jpg"
-                                             width="200" height="100" class="thumbnail-image">
-                                        <!-- 原始圖片的視窗 -->
-                                        <div class="image-popup">
-                                    <img src="~/images/home-slide-2.jpg"
-                                                 alt="Original Image">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <button class="btn" data-bs-toggle="modal"
-                                                    href="#exampleModalToggle" role="button">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </a> | <button class="btn"
-                                                       onclick="userDelete()">
-                                            <a href="#" id="b5">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </button>
-                                    </td>
-                                </tr>
-
-                                <tr>
-                                    <!-- <td>2</td> -->
-                                    <td>2</td>
-                                    <td>Banner2</td>
-                                    <td>促銷</td>
-                                    <td class="test">
-                                <img src="~/images/home-slide-1.jpg"
-                                             width="200" height="100" class="thumbnail-image">
-                                        <!-- 原始圖片的視窗 -->
-                                        <div class="image-popup">
-                                    <img src="~/images/home-slide-1.jpg"
-                                                 alt="Original Image">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a href="#">
-                                            <button class="btn" data-bs-toggle="modal"
-                                                    href="#exampleModalToggle" role="button">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </a> | <button class="btn"
-                                                       onclick="userDelete()">
-                                            <a href="#" id="b5">
-                                                <i class="fas fa-trash-alt"></i>
-                                            </a>
-                                        </button>
-                                    </td>
-                                </tr>
-
-
-
-                                <!--編輯彈出視窗-->
-                                <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-                                     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                                    <div class="modal-dialog modal-dialog-centered">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="exampleModalToggleLabel">編輯 Edit</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                        aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <!--內容表單-->
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <label>ID</label>
-                                                        <input type="text" class="form-control" readonly disabled>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label>名稱</label>
-                                                        <input type="text" class="form-control">
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <label>類型</label>
-                                                        <select class="form-control">
-                                                            <option value="BannerCatgory1">主頁</option>
-                                                            <option value="BannerCatgory2">促銷</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-md-12">
-                                                        <label>圖片</label>
-                                                        <input type="file" class="form-control">
-                                                    </div>
-
-                                                    <button type="submit" class="mt-3 btn btn-primary btn-block"
-                                                            style="width: 100%;">
-                                                        儲存
-                                                    </button>
-                                                </div>
-                                                <!--內容表單-->
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!--編輯彈出視窗-->
                             </tbody>
+                    <!--編輯彈出視窗-->
+                    <div class="modal fade" id="EditBannerModalToggle" aria-hidden="true"
+                         aria-labelledby="EditBannerModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="EditBannerModalToggleLabel">編輯橫幅</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <!--內容表單-->
+                                    <div class="row">
+                                        <div class="form-group">
+                                            <label>編號：</label>
+                                            <input type="text" class="form-control" readonly disabled id="editor-id" name="BannerId">
+                                        </div>
+                                        <div class="form-group">
+                                        <label>名稱：</label>
+                                            <input type="text" class="form-control" id="editor-name" name="Banner">
+                                        </div>
+                                        <div class="form-group">
+                                        <label>發佈日期：</label>
+                                            <input type="date" class="form-control" id="editor-date" name="PublishDate">
+                                        </div>
+
+                                    <div class="form-group">
+                                        <label>連結：</label>
+                                        <input type="text" class="form-control" id="editor-topage" name="ToPage">
+                                    </div>
+
+                                        <div class="form-group">
+                                        <label>圖片：</label>
+                                            <input type="file" class="form-control" id="editor-img" name="Image" accept="image/*">
+                                        </div>
+
+                                        <div class=" mb-3 align-items-center mt-3">
+                                            <label>目前圖片：</label>
+                                            <div class="d-flex justify-content-center">
+                                                <img id="previewImage" src="" alt="Image Preview" class="w-100 border">
+                                            </div>
+                                        </div>
+                                    <button type="submit" class="mt-3 btn btn-danger btn-block" name="submitButton-edior" id="submitButton-edior"
+                                            style="width: 100%;background-color: #b95756;color: #FFF;">
+                                        儲存
+                                    </button>
+                                    </div>
+                                    <!--內容表單-->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--編輯彈出視窗-->
                         </table>
                         <!--表格-->
                     </div>
@@ -251,69 +234,424 @@
     
 
 @section Scripts{
+    <!--Moment.js-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment-with-locales.min.js"></script>
 
     <script>
-
-        //篩選類別
+        //確認JSon資料============================
         $(document).ready(function () {
-            var table = $('#Banner-table').DataTable({
-                responsive: true,
-                // 在這裡指定需要過濾的列，商品類別為第三列->索引2
-                columnDefs: [
-                    { targets: 2, searchable: true }
-                ]
-            });
-            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-            $('#payList').on('change', function () {
-                var filterOption1 = $(this).val();
-
-                // 使用DataTable的column().search()方法進行過濾
-                table.column(2).search(filterOption1).draw();
-            });
-        });
-
-
-
-        // 當頁面載入完成後執行
-        document.addEventListener("DOMContentLoaded", function () {
-            // 獲取所有包含縮略圖片和視窗的元素
-            const thumbnailImages = document.querySelectorAll(".thumbnail-image");
-            const imagePopups = document.querySelectorAll(".image-popup");
-
-            // 對每個圖片進行事件處理
-            thumbnailImages.forEach((thumbnailImage, index) => {
-                // 當滑鼠懸停在圖片上時
-                thumbnailImage.addEventListener("mouseover", function () {
-                    // 顯示對應的原始圖片的視窗
-                    imagePopups[index].style.display = "block";
-                });
-
-                // 當滑鼠移開圖片時
-                thumbnailImage.addEventListener("mouseout", function () {
-                    // 隱藏對應的原始圖片的視窗
-                    imagePopups[index].style.display = "none";
-                });
-            });
-        });
-
-        function userDelete() {
-            Swal.fire({
-                title: '確定要刪除嗎?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
+            $.ajax({
+                url: '@Url.Action("LoadDataTable", "Banner")',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.log(error);
                 }
-            })
+            });
+        });
+
+        //初始化表格==================================================
+        $('#Banner-table').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+            },
+            responsive: true,
+            "searching": true,
+            "processing": true,
+            "serverSide": false,
+            "paging": true,
+            "pagingType": "full_numbers",
+            "pageLength": 10,
+            "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "全部"]],
+            "info": true,
+            "ajax": {
+                "url": "@Url.Action("LoadDataTable", "Banner" , new{ area="AdminCMS"})",
+                type: 'GET',
+            },
+            "columns": [
+                { "data": "bannerId" },
+                { "data": "banner" },
+                {
+                    "data": "publishDate",
+                    "render": function (data) {
+                        // 將日期格式轉換為 JavaScript Date 物件
+                        var date = new Date(data);
+                        // 格式化日期為 yyyy-MM-dd 格式，使用 Moment.js
+                        var formattedDate = moment(date).format("YYYY-MM-DD");
+                        return formattedDate;
+                    }                
+                },
+                { "data": "toPage" },
+                {
+                    "data": "link",
+                    render: function (data, type, row) {
+                        return `<img class="img-thumbnail" src="${data}" style="width: 200px; height: 150px;" >`;
+                    }
+                },
+                {
+                    "data": "bannerId",
+                    "render": function (data, type, row) {
+                        var deleteUrl = '@Url.Action("Delete", "Banner", new { area = "AdminCMS", id = "bannerId" })';
+                        deleteUrl = deleteUrl.replace('bannerId', row.bannerId);
+                        return `<button class="btn btn-icon edit-button" data-id="${row.bannerId}" data-bs-toggle="modal" data-bs-target="#EditBannerModalToggle"><i class="fas fa-edit"></i></button> |
+                                                                                                                                                        <button class="btn delete-button" data-id="${row.bannerId}" ><i class="fas fa-trash-alt"></i></button>`
+                    }
+                    },
+                   {
+                    "data": "display",
+                    "render": function (data, type, row) {
+                        var isChecked = data === true ? 'checked' : '';
+                        return `<div class="form-check form-switch">
+                                          <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault" ${isChecked}  data-id="${row.bannerId}">
+                                </div>`;
+                    }
+                },
+                
+            ]
+        });
+        //編輯按鈕==============================================
+        $('#Banner-table').on('click', '.edit-button', function () {
+            let id = $(this).data('id')
+            $.ajax({
+                url: '/AdminCMS/Banner/EditBanner?id=' + id,
+                type: 'GET',
+                success: function (response) {
+                    if (response.success) {
+                        $('#editor-id').val(response.data.bannerId);
+                        $('#editor-name').val(response.data.banner);
+
+                        //日期轉換：use Moment.js
+                        var date = moment(response.data.publishDate);
+                        // 格式化日期為 yyyy-MM-dd 格式
+                        var formattedDate = date.format("YYYY-MM-DD");
+                        $('#editor-date').val(formattedDate);
+
+                        $('#previewImage').attr('src', response.data.link)
+                        $('#editor-topage').val(response.data.toPage);
+                        console.log(response.data)
+                       
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        });
+
+        //編輯圖片部分======================================
+        $('#editor-img').on('change', function () {
+            const file = this.files[0];
+
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    $('#previewImage').attr('src', e.target.result);
+                };
+
+                reader.readAsDataURL(file);
+            } else {
+                alert('請選擇圖片.');
+            }
+        });
+
+        //儲存按鈕==============================
+        $('#submitButton-edior').click(function () {
+            var id = $('#editor-id').val();
+            var name = $('#editor-name').val()
+            var date = $('#editor-date').val()
+            var topage = $('#editor-topage').val()
+            var fileInput = $('#editor-img')[0];
+            var file = fileInput.files[0];
+
+            var formData = new FormData();
+            formData.append("BannerId", id);
+            formData.append("Banner", name);
+            formData.append("PublishDate", date);
+            formData.append("ToPage", topage);
+            if (file) {
+                formData.append("Image", file)
+            }
+
+
+            //驗證非空值
+            if (!name || !date ) {
+                showErrorMessage("錯誤", "名稱、上架日期為必填欄位，請再次檢查。");
+                return;
+            }
+
+
+
+
+            $.ajax({
+                url: "@Url.Action("EditBanner","Banner" , new { area="AdminCMS" })",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showSuccessMessage("編輯成功", "橫幅內容已儲存");
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("編輯失敗", "請再次確認");
+                    }
+                },
+                error: function (error) {
+                    console.error("AJAX Request Error:", error);
+                }
+            });
+
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#EditBannerModalToggle').modal('hide');
+                $('#Banner-table').DataTable().ajax.reload();
+            }
+        });
+
+        //新增==================================
+        $(document).ready(function () {
+            // 當選擇圖片時，顯示圖片預覽
+            $('#create-image').on('change', function () {
+                const file = this.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#preview-createimage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    alert('請選擇圖片.');
+                }
+            });
+        });
+
+        $('#submitButton').click(function () {
+            $('#preview-createimage').attr('src', '');
+            const name = $("#create-name").val();
+            const publishdate = $("#create-date").val();
+            const display = $('#create-display').val();
+            const topage = $('#create-topage').val();
+            var fileInput = $('#create-image')[0];
+            var file = fileInput.files[0];
+
+
+            //驗證非空值
+            if (!name || !publishdate || !display || !topage || !file) {
+                showErrorMessage("錯誤", "名稱、連結、上架日期、是否顯示、圖片為必填欄位，請再次檢查。");
+                return;
+            }
+
+
+
+            var formData = new FormData();
+            formData.append("Banner", name)
+            formData.append("PublishDate", publishdate);
+            formData.append("ToPage", topage);
+            formData.append("display", display);
+            if (file) {
+                formData.append("Image", file)
+            }
+
+
+            // 新增-Ajax=============================
+                $.ajax({
+                    url: "@Url.Action("CreateBanner","Banner" , new { area="AdminCMS" })",
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if (response.success) {
+                            showSuccessMessage("新增成功", "橫幅已新增");
+                            closeModalAndReloadTable();
+                        } else {
+                        showErrorMessage("新增失敗", "請再次確認");
+                        }
+                    },
+                    error: function (error) {
+                        console.error("AJAX Request Error:", error);
+                    }
+                });
+
+                function showSuccessMessage(title, message) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: title,
+                        text: message
+                    });
+                }
+
+                function showErrorMessage(title, message) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: title,
+                        text: message
+                    });
+                }
+
+                function closeModalAndReloadTable() {
+                    $('#addBannerModalToggle').modal('hide');
+                    $('#Banner-table').DataTable().ajax.reload();
+                }
+            });
+
+        //刪除================================================
+
+        $(document).ready(function () {
+            $(document).on("click", ".delete-button", function () {
+                var bannerId = $(this).data("id");
+
+                Swal.fire({
+                    title: '確定要刪除嗎?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '確認刪除',
+                    cancelButtonText:'取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var deleteButton = $(this);
+                        $.ajax({
+                            url: "/AdminCMS/Banner/Delete",
+                            type: "POST",
+                            data: { id: bannerId },
+                            success: function (response) {
+                                if (response.success) {
+                                    console.log("項目已成功刪除");
+                                    deleteButton.closest("tr").remove();
+                                    $('#Banner-table').DataTable().ajax.reload();
+                                    showSuccessMessage("刪除成功", "橫幅已刪除");
+                                } else {
+                                    console.log("刪除項目失敗。");
+                                    showErrorMessage("刪除失敗", "請再次確認");
+                                }
+                            },
+                            error: function (error) {
+                                console.log("刪除項目時發生錯誤：", error);
+                                showErrorMessage("刪除時發生錯誤", "請稍後再試。");
+                            }
+                        });
+                        function showSuccessMessage(title, message) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: title,
+                                text: message
+                            });
+                        }
+
+                        function showErrorMessage(title, message) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: title,
+                                text: message
+                            });
+                        }
+                    }
+                });
+            });
+        });
+
+        //顯示、隱藏按鈕
+        $(document).ready(function () {
+            $('#Banner-table').on('change', '.form-check-input', function () {
+                var isChecked = $(this).prop('checked');
+                var bannerId = $(this).data("id");
+                updateDisplay(isChecked, bannerId);
+            });
+
+            function updateDisplay(isChecked, bannerId) {
+                //檢查載入資料
+                console.log("isChecked:", isChecked);
+                console.log("bannerId:", bannerId);
+                $.ajax({
+                    url: "/AdminCMS/Banner/UpdateDisplay",
+                    type: "POST",
+                    data: { isChecked: isChecked, bannerId: bannerId },
+                    //contentType: "application/json",
+                    success: function (response) {
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '顯示狀態已更新'
+                            });
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '顯示狀態更新失敗',
+                                text: '已設定為隱藏',
+                            });
+                        }
+                    },
+                    error: function (error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '發生錯誤',
+                            text: '更新過程中發生錯誤',
+                        });
+                        console.log("發生錯誤：", error);
+                    }
+                });
+            }
+        });
+
+    //預覽首頁Alert
+        function showPreviewAlert() {
+            Swal.fire({
+                title: '首頁預覽',
+                html: '<iframe src="/" width="100%" height="800" frameborder="0"></iframe>',
+                showCloseButton: true,
+                showConfirmButton: false,
+                focusConfirm: false,
+                customClass: {
+                    popup: 'custom-swal', // 自定義的 CSS 類名
+                },
+            });
         }
+
+        //新增Demo按鍵
+        function setCreateBannerValue() {
+            $("#create-name").val("開服限定召喚");
+            $("#create-date").val("2023-09-01");
+            $("#create-topage").val("https://localhost:7218/Game/Index");
+            $('#create-display').val("true");
+        }
+
+        // 再次新增時清空表單輸入值
+        function clearFormInputs() {
+            $('#create-name').val('');
+            $('#create-date').val('');
+            $('#create-display').val('');
+            $('#create-topage').val('');
+            $('#create-image').val('');
+            $('#preview-createimage').val('');
+        }
+
+        // 點擊關閉按鈕時清空表單
+        $('.create_btn').click(function () {
+            clearFormInputs();
+        });
+
     </script>
 }
 

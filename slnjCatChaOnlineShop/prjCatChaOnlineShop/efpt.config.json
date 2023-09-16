@@ -20,7 +20,7 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Game.1on1MessageData]",
+         "Name": "[dbo].[EcpayOrders]",
          "ObjectType": 0
       },
       {
@@ -29,6 +29,10 @@
       },
       {
          "Name": "[dbo].[Game.Achievement Reward List]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Game.BanUser]",
          "ObjectType": 0
       },
       {
@@ -65,6 +69,10 @@
       },
       {
          "Name": "[dbo].[Game.Message Data]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Game.MessageDatas]",
          "ObjectType": 0
       },
       {
@@ -113,6 +121,14 @@
       },
       {
          "Name": "[dbo].[Message Type Data]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Newsletter]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[NewsletterTemplate]",
          "ObjectType": 0
       },
       {
@@ -224,6 +240,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Shop.ProductSpecification]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Shop.Reply Data]",
          "ObjectType": 0
       },
@@ -248,7 +268,7 @@
          "ObjectType": 0
       }
    ],
-   "UiHint": "msit150team02.msit150team02resouce.dbo",
+   "UiHint": "msit150team02resoucegroup.msit150team02resoucegroup.dbo",
    "UncountableWords": null,
    "UseBoolPropertiesWithoutDefaultSql": false,
    "UseDatabaseNames": false,

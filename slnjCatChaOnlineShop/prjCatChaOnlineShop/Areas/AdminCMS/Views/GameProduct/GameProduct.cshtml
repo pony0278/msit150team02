@@ -1,6 +1,6 @@
-﻿
+﻿@model prjCatChaOnlineShop.Areas.AdminCMS.Models.ViewModels.GameProductVM
 @{
-    ViewData["Title"] = "GameProduct";
+    ViewData["Title"] = "遊戲產品管理";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
 }
 
@@ -40,6 +40,18 @@
             width: 200px;
             height: 40px;
         }
+
+        .form-check-input-lg.row-checkbox[type="checkbox"]:checked {
+            background-color: #b95756 !important;
+            border-color: #fff !important;
+        }
+
+        .form-check-input-lg.row-checkbox{
+            width: 18px;
+            height: 18px;
+        }
+
+
     </style>
 }
 
@@ -50,11 +62,21 @@
             <h2 class="mt-3">遊戲商品管理</h2>
         </div>
         <div class="col-6 text-end mt-3">
-            <button class="btn btn-primary" data-bs-toggle="modal" href="#addGProductModalToggle" role="button">
+            <button class="create_btn" data-bs-toggle="modal" href="#addGProductModalToggle" role="button">
                 新增遊戲商品
             </button>
         </div>
     </div>
+
+    <div class="row mt-3">
+        <div class="col-6 offset-6 text-end">
+            <button type="submit" class="create_btn" data-bs-toggle="modal"  role="button" id="sendtoMemberModalBtn">
+                補發遊戲商品
+            </button>
+        </div>
+    </div>
+</div>
+
 
     <!---新增遊戲商品 modal-->
     <div class="modal fade" id="addGProductModalToggle" aria-hidden="true"
@@ -62,89 +84,169 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalToggleLabel">新增遊戲商品</h5>
+                    <h5 class="modal-title" id="addGProductModalToggleLabel">新增遊戲商品</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <button class="nav-link active" id="nav-home-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#gproduct-create-nav-home" type="button"
+                                    role="tab">
+                                基本資料
+                            </button>
+                            <button class="nav-link" id="nav-profile-tab"
+                                    data-bs-toggle="tab"
+                                    data-bs-target="#gproduct-create-nav-pic" type="button"
+                                    role="tab">
+                                圖片
+                            </button>
+                        </div>
+                    </nav>
+                    <div class="tab-content mt-3" id="nav-tabContent">
+                        <div class="tab-pane fade show active"
+                             id="gproduct-create-nav-home">
                         <div class="form-group">
                             <!-- <label>ID：</label> -->
-                            <input type="hidden" class="form-control" disabled
+                            <input type="hidden" class="form-control" disabled id="create_id" name="ProductId"
                                    readonly>
                         </div>
 
                         <div class="form-group">
                             <label>名稱：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="create_name" name="ProductName">
                         </div>
 
                         <div class="form-group">
                             <label>描述：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="create_description" name="ProductDescription">
                         </div>
 
                         <div class="form-group">
                             <label>類別：</label>
-                            <select class="form-control">
-                                <option value="GameProductCatgory1">貓咪</option>
-                                <option value="GameProductCatgory2">道具</option>
+                            <select class="form-control" id="create_categoryid" name="ProductCategoryId">
+                                <option value="" selected disabled>請選擇類別</option>
+                                @foreach (var category in Model.GameProductCategory)
+                                {
+                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                }
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label>價格：</label>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>已被購買數量：</label>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <div class="form-group">
-                            <label>剩餘數量：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="create_price" name="ProductPrice">
                         </div>
 
                         <div class="form-group">
                             <label>抽獎機率：</label>
-                            <input type="text" class="form-control">
+                            <input type="text" class="form-control" id="create_rate" name="LotteryProbability">
                         </div>
 
-
-                        <div class="col-md-12">
-                            <label>圖片</label>
-                            <input type="file" class="form-control">
-                        </div>
-
-                        <button class="btn btn-danger btn-block"
-                                style="width: 100%;">
+                        <button type="button" class="mt-3 btn " onclick="setCreateProductValue()" style="background-color: #b95756;color: #FFF;">Demo</button>
+                        <button class="mt-3 btn  btn-block create-submitButton" id="create-submitButton"
+                                style="width: 100% ;background-color: #b95756;color: #FFF;;">
                             儲存
                         </button>
-                    </form>
+                        </div>
+                        <div class="tab-pane fade mt-3" id="gproduct-create-nav-pic">
+                            <div class="col-md-12">
+                                <label>圖片</label>
+                                <input type="file" class="form-control" id="create_image" name="Image">
+                            </div>
+                            <div class=" mb-3 align-items-center mt-3">
+                                <label>目前圖片：</label>
+                                <div class="d-flex justify-content-center">
+                                    <img id="preview-createimage" src="" class="w-100 border">
+                                </div>
+                          
+                            <button class="mt-3 btn  btn-block create-submitButton" id="create-submitButton"
+                                    style="width: 100% ; background-color: #b95756;color: #FFF;;">
+                                儲存
+                            </button>
+                            </div>
                 </div>
             </div>
+                </div>
         </div>
     </div>
+    </div>
     <!---新增遊戲商品 modal-->
+<!--補發遊戲商品-->
+<div class="modal fade" id="sendtoMember" aria-hidden="true"
+     aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalToggleLabel">補發遊戲商品</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!--內容表單-->
+                <div class="row">
+                        <div class="form-group">
+                        <label>會員編號：</label>
+                            <input type="text" class="form-control" id="send-memberID" name="MemberID">
+                        </div>
+                    <div class="form-group">
+                        <label>數量：</label>
+                        <input type="text" class="form-control" id="send-quantity" value="1">
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <button type="submit" class="mt-3 btn btn-block btnSend" id="btnSend" style="width: 100% ;background-color: #b95756;color: #FFF;;">
+                                發送
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="col">
+                        <div class="form-group">
+                            <button type="button" class="mt-3 btn btn-secondary btn-block" id="clearMemberID" style="width: 100%;background-color: #b95756;color: #FFF;">
+                                清除
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+            <!--內容表單-->
+        </div>
+    </div>
+</div>
+
+<!--補發遊戲商品-->
+
+
+
 
     <!---篩選類別-->
     <div class="container-fluid mt-4 mb-3">
-        <div class="row align-items-center">
-            類別篩選：
+    <div class="row align-items-center" style="margin-left:20px">
+              類別篩選：
             <div class="col d-flex justify-content-between">
-                <select class="form-select" id="payList">
+                <select class="form-select" id="categoryList">
                     <option value="" selected disabled>請選擇類別</option>
-                    <option value="">全部訂單</option>
-                    <option value="貓咪">貓咪</option>
-                    <option value="道具">道具</option>
+                    <option value="" selected>全部商品</option>
+                                @foreach (var category in Model.GameProductCategory)
+                                {
+                        <option value="@category.CategoryName">@category.CategoryName</option>
+                                }
                 </select>
-            </div>
         </div>
     </div>
     <!---篩選類別-->
+    <div style="margin-left:20px">
+        <button class="btn  selectAllBtn" id="selectAllBtn" style="background-color:#b95756;color: #FFF ; margin-top:15px;" ;>全部選擇</button>
+        <button type="button" class="btn" onclick="setSearchValue()" style="margin-left: auto; margin-top:15px; background-color: #b95756;color: #FFF;">
+            搜尋Demo
+        </button>
 
+    </div>
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-12">
@@ -153,226 +255,663 @@
                     <thead>
                         <tr>
                             <!-- <th>序號</th> -->
-                            <th>ID</th>
+                            <th> </th>
+                            <th>勾選</th>
+                            <th>商品編號</th>
                             <th>名稱</th>
                             <th>類別</th>
                             <th>描述</th>
                             <th>價格</th>
                             <th>圖片</th>
-                            <th>已被購買數量</th>
-                            <th>剩餘數量</th>
                             <th>抽獎機率</th>
                             <th>編輯/刪除</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <!-- <td>1</td> -->
-                            <td>1</td>
-                            <td>貓咪一號</td>
-                            <td>貓咪</td>
-                            <td></td>
-                            <td></td>
-                            <td class="test">
-                                <img src="~/images/game/gacha/kittenBB.png"
-                                     width="100" height="100" class="thumbnail-image">
-                                <!-- 原始圖片的視窗 -->
-                                <div class="image-popup">
-                                    <img src="~/images/game/gacha/kittenBB.png"
-                                         alt="Original Image">
+                    </tbody>
+                    <!--編輯彈出視窗-->
+                    <div class="modal fade" id="EditModalToggle" aria-hidden="true"
+                         aria-labelledby="EditProductModalToggleLabel" tabindex="-1">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="EditProductModalToggleLabel">編輯遊戲商品資料</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                            aria-label="Close"></button>
                                 </div>
-                            </td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td>35%</td>
-                            <td>
-                                <a href="#">
-                                    <button class="btn" data-bs-toggle="modal"
-                                            href="#exampleModalToggle" role="button">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </a> | <button class="btn"
-                                               onclick="userDelete()">
-                                    <a href="#" id="b5">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <!-- <td>2</td> -->
-                            <td>2</td>
-                            <td>飼料</td>
-                            <td>道具</td>
-                            <td></td>
-                            <td></td>
-                            <td class="test">
-                                <img src="~/images/game/gacha/P_bowl.png"
-                                     width="100" height="100" class="thumbnail-image">
-                                <!-- 原始圖片的視窗 -->
-                                <div class="image-popup">
-                                    <img src="~/images/game/gacha/P_bowl.png"
-                                         alt="Original Image">
-                                </div>
-                            </td>
-                            <td>5</td>
-                            <td>10</td>
-                            <td>35%</td>
-                            <td>
-                                <a href="#">
-                                    <button class="btn" data-bs-toggle="modal"
-                                            href="#exampleModalToggle" role="button">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </a> | <button class="btn"
-                                               onclick="userDelete()">
-                                    <a href="#" id="b5">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
-
-
-
-                        <!--編輯彈出視窗-->
-                        <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
-                             aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalToggleLabel">編輯 Edit</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <!--內容表單-->
-                                        <div class="row">
-                                            <div class="col-md-6">
-                                                <label>ID</label>
-                                                <input type="text" class="form-control" readonly disabled>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>名稱</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>類別</label>
-                                                    <select class="form-control">
-                                                        <option value="GameProductCatgory1">貓咪</option>
-                                                        <option value="GameProductCatgory2">道具</option>
-                                                    </select>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>描述</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>價格</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-
-                                            <div class="col-md-6">
-                                                <label>已被購買數量</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>剩餘數量</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            <div class="col-md-6">
-                                                <label>抽獎機率</label>
-                                                <input type="text" class="form-control">
-                                            </div>
-                                            <div class="col-md-12">
-                                                <label>圖片</label>
-                                                <input type="file" class="form-control">
-                                            </div>
-
-                                            <button type="submit" class="mt-3 btn btn-primary btn-block"
-                                                    style="width: 100%;">
-                                                儲存
+                                <div class="modal-body">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-home-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#gproduct-edit-nav-home" type="button"
+                                                    role="tab">
+                                                基本資料
                                             </button>
+                                            <button class="nav-link" id="nav-profile-tab"
+                                                    data-bs-toggle="tab"
+                                                    data-bs-target="#gproduct-edit-nav-pic" type="button"
+                                                    role="tab">
+                                                圖片
+                                            </button>
+                                    </nav>
+                                    <!--內容表單-->
+                                    <div class="tab-content mt-3" id="nav-tabContent">
+                                        <div class="tab-pane fade show active"
+                                             id="gproduct-edit-nav-home">
+                                        <div class="col-md-6">
+                                                <label>編號：</label>
+                                        <input type="text" class="form-control" id="editid" readonly disabled name="ProductId">
                                         </div>
-                                        <!--內容表單-->
+                                        <div class="col-md-6">
+                                                <label>名稱：</label>
+                                            <input type="text" class="form-control" id="editname" name="ProductName">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>類別：</label>
+                                            <select class="form-control" id="editcategoryid" name="ProductCategoryId">
+                                                <option value="" selected disabled>請選擇類別</option>
+                                                @foreach (var category in Model.GameProductCategory)
+                                                {
+                                                    <option value="@category.ProductCategoryId">@category.CategoryName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>描述：</label>
+                                            <input type="text" class="form-control" id="editdescription" name="ProductDescription">
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label>價格：</label>
+                                            <input type="text" class="form-control" id="editprice" name="ProductPrice ">
+                                        </div>
+
+                                        <div class="col-md-6">
+                                                <label>抽獎機率：</label>
+                                            <input type="text" class="form-control" id="editrate" name="LotteryProbability">
+                                        </div>
+                                            <button type="submit" class="mt-3 btn btn-block  edit-submitButton" id="edit-submitButton"
+                                                    style="width: 100%;background-color: #b95756;color: #FFF;">
+                                            儲存
+                                        </button>
                                     </div>
+                                        <div class="tab-pane fade mt-3" id="gproduct-edit-nav-pic">
+                                        <div class="form-group mb-3">
+                                                <label>圖片：</label>
+                                            <input type="file"  accept="image/*" class="form-control" id="editimage" name="Image">
+                                        </div>
+                                        <div class=" mb-3 align-items-center mt-3">
+                                            <label>目前圖片：</label>
+                                            <div class="d-flex justify-content-center">
+                                                <img id="previewImage" src="" class="w-100 border">
+                                            </div>
+                                        </div>
+
+                                            <button type="submit" class="mt-3 btn btn-block  edit-submitButton" id="edit-submitButton"
+                                                    style="width: 100%; background-color: #b95756;color: #FFF;">
+                                            儲存
+                                        </button>
+                                    </div>
+                                    <!--內容表單-->
                                 </div>
                             </div>
                         </div>
-                        <!--編輯彈出視窗-->
-                    </tbody>
+                    </div>
+                    <!--編輯彈出視窗-->
                 </table>
                 <!--表格-->
             </div>
         </div>
     </div>
-
 </div>
+
+
 
 @section Scripts{
     <script>
-        //篩選類別
+        //確認JSon資料============================
         $(document).ready(function () {
-            var table = $('#GProduct-table').DataTable({
-                responsive: true,
-                // 在這裡指定需要過濾的列，商品類別為第三列->索引2
-                columnDefs: [
-                    { targets: 2, searchable: true }
-                ]
-            });
-
-            // 綁定select元素的change事件，當選擇條件改變時，重新過濾表格資料
-            $('#payList').on('change', function () {
-                var filterOption1 = $(this).val();
-
-                // 使用DataTable的column().search()方法進行過濾
-                table.column(2).search(filterOption1).draw();
-            });
-        });
-
-
-
-        //圖片縮放設定  當頁面載入完成後執行
-        document.addEventListener("DOMContentLoaded", function () {
-            // 獲取所有包含縮略圖片和視窗的元素
-            const thumbnailImages = document.querySelectorAll(".thumbnail-image");
-            const imagePopups = document.querySelectorAll(".image-popup");
-
-            // 對每個圖片進行事件處理
-            thumbnailImages.forEach((thumbnailImage, index) => {
-                // 當滑鼠懸停在圖片上時
-                thumbnailImage.addEventListener("mouseover", function () {
-                    // 顯示對應的原始圖片的視窗
-                    imagePopups[index].style.display = "block";
-                });
-
-                // 當滑鼠移開圖片時
-                thumbnailImage.addEventListener("mouseout", function () {
-                    // 隱藏對應的原始圖片的視窗
-                    imagePopups[index].style.display = "none";
-                });
-            });
-        });
-
-
-        function userDelete() {
-            Swal.fire({
-                title: '確定要刪除嗎?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Yes, delete it!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    Swal.fire(
-                        'Deleted!',
-                        'Your file has been deleted.',
-                        'success'
-                    )
+            $.ajax({
+                url: '@Url.Action("LoadDataTable", "GameProduct")',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.log(error);
                 }
-            })
+            });
+        });
+        //初始化表格===============================
+        var table = $('#GProduct-table').DataTable({
+                language: {
+                    url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                },
+                "responsive": true,
+                "searching": true,
+                "processing": true,
+                "serverSide": false,
+                "paging": true,
+                "pagingType": "full_numbers",
+                "pageLength": 10,
+                "lengthMenu": [[10, 25, 50, -1], [10, 25, 50, "全部"]],
+                "info": true,
+                "ajax": {
+                    "url": "@Url.Action("LoadDataTable", "GameProduct" , new{ area="AdminCMS"})",
+                    type: 'GET',
+                },
+                //載入欄位資料=================================
+                "columns": [
+                    {
+                    data: null,
+                    render: function (data, type, row, meta) {
+                        return '';
+                    }
+                    },
+                    {
+                    "data": null,
+                    "render": function (data, type, row, meta) {
+                        return `<input class="form-check-input-lg row-checkbox" type="checkbox" data-id="${row.productId}">`;
+                    }
+                    },
+                    { "data": "productId" },
+                    { "data": "productName" },
+                    { "data": "productCategoryId" },
+                    { "data": "productDescription" },
+                    { "data": "productPrice" },
+                    {
+                        "data": "productImage",
+                        "render": function (data, type, row) {
+                            return `<img class="img-thumbnail" src="${data}">`;
+                        }
+                    },
+                    {
+                        "data": "lotteryProbability" ,
+                        "render": function (data, type, row) {
+                        var percentage = (data * 100).toFixed(1) + "%";
+                        return percentage;
+                    }
+                    },
+                    {
+                        "data": "productId",
+                        "render": function (data, type, row) {
+                            var deleteUrl = '@Url.Action("Delete", "GameProduct", new { area = "AdminCMS", id = "productId" })';
+                            deleteUrl = deleteUrl.replace('productId', row.productId);
+                        return `<button class="btn btn-icon edit-button" data-id="${row.productId}" data-bs-toggle="modal" data-bs-target="#EditModalToggle"><i class="fas fa-edit"></i></button> |
+                                                                                                                        <button class="btn delete-button" data-id="${row.productId}" ><i class="fas fa-trash-alt"></i></button>`;
+                        }
+                    },
+                ],
+             //類別篩選
+            columnDefs: [
+                { targets: 4, searchable: true },  //第五欄，索引4
+            ],
+            });
+        //篩選功能=====================
+            $('#categoryList').on('change', function () {
+                var filterOption1 = $(this).val();
+                table.column(4).search(filterOption1).draw();
+            });
+        //編輯============================================
+            $('#GProduct-table').on('click', '.edit-button', function () {
+                let id = $(this).data('id')
+                $.ajax({
+                url: '/AdminCMS/GameProduct/EditProduct?id=' + id,
+                    type: 'GET',
+                    success: function (response) {
+                        if (response.success) {
+                            $('#editid').val(response.data.productId);
+                            $('#editname').val(response.data.productName);
+                            $('#editdescription').val(response.data.productDescription);
+                            $('#editcategoryid').val(response.data.productCategoryId);
+                            $('#editprice').val(response.data.productPrice);
+                            $('#editrate').val(response.data.lotteryProbability);
+                            $('#previewImage').attr('src', response.data.productImage)
+                            console.log(response.data)
+                        }
+                        else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+        //編輯圖片部分======================================
+            $('#editimage').on('change', function () {
+                const file = this.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = function (e) {
+                        $('#previewImage').attr('src', e.target.result);
+                    };
+
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('請選擇圖片.');
+                }
+            });
+        //儲存按鈕==============================
+            $('.edit-submitButton').click(function () {
+            var ProductId = $('#editid').val()
+            var ProductName = $('#editname').val();
+            var ProductDescription = $('#editdescription').val();
+            var ProductCategoryId = $('#editcategoryid').val();
+            var ProductPrice = $('#editprice').val();
+            var LotteryProbability = $('#editrate').val();
+            var fileInput = $('#editimage')[0];
+            var file = fileInput.files[0];
+
+            //驗證非空值
+            if (!ProductName || !ProductDescription  || !ProductCategoryId) {
+                showErrorMessage("錯誤", "名稱、類別、價格為必填欄位，請再次檢查。");
+                return;
+            }
+
+            // 驗證必為數字
+            if (!isDecimal(LotteryProbability)) {
+                showErrorMessage("錯誤", "抽獎機率僅可輸入數字，請再次檢查。");
+                return;
+            }
+            function isDecimal(value) {
+                return /^(\d+\.\d+|\.\d+|\d+)$/.test(value);
+            }
+
+            var formData = new FormData();
+            formData.append("ProductId", ProductId);
+            formData.append("Productname", ProductName);
+            formData.append("ProductDescription", ProductDescription);
+            formData.append("ProductCategoryId", ProductCategoryId);
+            formData.append("ProductPrice", ProductPrice);
+            formData.append("LotteryProbability", LotteryProbability);
+            if (file) {
+                formData.append("Image", file)
+            }
+
+            $.ajax({
+                url: "@Url.Action("EditProduct","GameProduct" , new { area="AdminCMS" })",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showSuccessMessage("編輯成功", "商品內容已儲存");
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("編輯失敗", "請再次檢查");
+                    }
+                },
+                error: function (error) {
+                    console.error("AJAX Request Error:", error);
+                }
+            });
+
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#EditModalToggle').modal('hide');
+                $('#GProduct-table').DataTable().ajax.reload();
+            }
+        });
+        //新增商品====================
+        //圖片
+        $(document).ready(function () {
+            // 當選擇圖片時，顯示圖片預覽
+            $('#create_image').on('change', function () {
+                const file = this.files[0];
+
+                if (file && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#preview-createimage').attr('src', e.target.result);
+                    };
+                    reader.readAsDataURL(file);
+                }
+                else {
+                    alert('請選擇圖片.');
+                }
+            });
+        });
+            $('.create-submitButton').click(function () {
+            // 清除圖片預覽
+            $('#preview-createimage').attr('src', '');
+            const ProductId = $('#create_id').val()
+            const ProductName = $('#create_name').val();
+            const ProductDescription = $('#create_description').val();
+            const ProductCategoryId = $('#create_categoryid').val();
+            const ProductPrice = $('#create_price').val();
+            const LotteryProbability = $('#create_rate').val();
+            var fileInput = $('#create_image')[0];
+            var file = fileInput.files[0];
+
+            //驗證非空值
+            if (!ProductName || !ProductDescription || !ProductPrice || !file || !ProductCategoryId) {
+                showErrorMessage("錯誤", "名稱、類別、價格、圖片為必填欄位，請再次檢查。");
+                return;
+            }
+
+            // 驗證必為數字
+            if (!isNumeric(ProductPrice) ||  !isDecimal(LotteryProbability)) {
+                showErrorMessage("錯誤", "價格、抽獎機率僅可輸入數字，請再次檢查。");
+                return;
+            }
+
+            function isNumeric(value) {
+                return /^\d+$/.test(value);
+            }
+            function isDecimal(value) {
+                return /^(\d+\.\d+|\.\d+|\d+)$/.test(value);
+            }
+
+
+            var formData = new FormData();
+            formData.append("ProductId", ProductId);
+            formData.append("Productname", ProductName);
+            formData.append("ProductDescription", ProductDescription);
+            formData.append("ProductCategoryId", ProductCategoryId);
+            formData.append("ProductPrice", ProductPrice);
+            formData.append("LotteryProbability", LotteryProbability);
+            if (file) {
+                formData.append("Image", file)
+            }
+
+            //CreateProduct-Ajax
+            $.ajax({
+                url: "@Url.Action("CreateProduct","GameProduct" , new { area="AdminCMS" })",
+                type: 'POST',
+                data: formData,
+                processData: false,
+                contentType: false,
+                success: function (response) {
+                    if (response.success) {
+                        showSuccessMessage("新增成功", "商品已新增");
+                        closeModalAndReloadTable();
+                    } else {
+                        showErrorMessage("新增失敗", "請再次檢查");
+                    }
+                },
+                error: function (error) {
+                    console.error("AJAX Request Error:", error);
+                }
+            });
+
+            function showSuccessMessage(title, message) {
+                Swal.fire({
+                    icon: 'success',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function showErrorMessage(title, message) {
+                Swal.fire({
+                    icon: 'error',
+                    title: title,
+                    text: message
+                });
+            }
+
+            function closeModalAndReloadTable() {
+                $('#addGProductModalToggle').modal('hide');
+                $('#GProduct-table').DataTable().ajax.reload();
+            }
+
+            });
+
+        //刪除=======================================
+
+        $(document).ready(function () {
+            $(document).on("click", ".delete-button", function () {
+                var productId = $(this).data("id");
+
+                Swal.fire({
+                    title: '確定要刪除嗎?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: '確認刪除',
+                    cancelButtonText: '取消'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var deleteButton = $(this);
+                        $.ajax({
+                            url: "/AdminCMS/GameProduct/Delete",
+                            type: "POST",
+                            data: { id: productId },
+                            success: function (response) {
+                                if (response.success) {
+                                    console.log("項目已成功刪除");
+                                    deleteButton.closest("tr").remove();
+                                    $('#GProduct-table').DataTable().ajax.reload();
+                                    showSuccessMessage("刪除成功", "所選商品已刪除");
+                                } else {
+                                    console.log("刪除項目失敗。");
+                                    showErrorMessage("刪除失敗", "請再次確認");
+                                }
+                            },
+                            error: function (error) {
+                                console.log("刪除項目時發生錯誤：", error);
+                                showErrorMessage("刪除時發生錯誤", "請稍後再試。");
+                            }
+                        });
+                        function showSuccessMessage(title, message) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: title,
+                                text: message
+                            });
+                        }
+
+                        function showErrorMessage(title, message) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: title,
+                                text: message
+                            });
+                        }
+                    }
+                });
+            });
+        });
+        //發送商品至會員==============================================
+        $(document).ready(function () {
+             var selectedProductId = null;
+              var selectedids = [];
+
+
+            // 全選及單選按鈕的點擊事件
+
+            $('#selectAllBtn').on('click', function () {
+                var $checkboxes = $('.row-checkbox');
+                var isCheckedAll = $checkboxes.not(':checked').length === 0;
+
+                if (isCheckedAll) {
+                    $checkboxes.prop('checked', false);
+                    selectedids = [];
+                    selectedProductId = null;
+                } else {
+                    $checkboxes.prop('checked', true);
+                    selectedids = $checkboxes.map(function () {
+                        return $(this).data('id');
+                    }).get();
+                    selectedProductId = selectedids.length > 0 ? selectedids[0] : null;
+                }
+
+                console.log('選擇的商品id:', selectedids);
+            });
+
+            $('#selectAllBtn, #GProduct-table tbody').on('change', '.row-checkbox', function () {
+                var isChecked = $(this).is(':checked');
+                var $row = $(this).closest('tr');
+                var idValue = $(this).data('id');
+
+                if (isChecked) {
+                    $row.find('td').addClass('selected-cell');
+                    selectedids.push(idValue);
+                    selectedProductId = idValue;
+                } else {
+                    $row.find('td').removeClass('selected-cell');
+                    var index = selectedids.indexOf(idValue);
+                    if (index !== -1) {
+                        selectedids.splice(index, 1);
+                    }
+                    if (selectedProductId === idValue) {
+                        selectedProductId = null;
+                    }
+                }
+
+                console.log('選擇的商品id:', selectedids);
+            });
+
+
+            // 補發遊戲商品=======================================
+            $('#sendtoMemberModalBtn').on('click', function () {
+                var memberId = $("#send-memberID").val();
+                var shouldShowModal = selectedids.length > 0;
+
+                if (!shouldShowModal) {
+                    console.log('未選擇商品或會員ID為空');
+                    Swal.fire({
+                        icon: 'error',
+                        title: '您未選擇商品',
+                        text: '請先選擇要發送的商品',
+                    });
+                }
+
+                $('#sendtoMemberModalBtn').attr('href', shouldShowModal ? '#sendtoMember' : '');
+                if (shouldShowModal) {
+                    $('#sendtoMember').modal('show');
+                }
+                //每次點擊時清空input
+                $("#send-memberID").val('');
+
+            });
+
+
+            // 發送按鈕
+            $('#btnSend').on('click', function () {
+                var memberId = $("#send-memberID").val();
+                var quantity = $("#send-quantity").val();
+                console.log('memberId:', memberId);
+                console.log('selectedids:', selectedids);
+                console.log('quantity:', quantity);
+
+                //驗證非空值
+                if (!memberId) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '未輸入會員編號',
+                        text: '請輸入會員編號',
+                    });
+                    return;
+                }
+
+                if (!quantity) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '未輸入商品數量',
+                        text: '請輸入商品數量',
+                    });
+                    return;
+                }
+                //驗證會員編號不存在
+                if (selectedids.length > 0 ) {
+                    $.ajax({
+                        url: "/AdminCMS/GameProduct/SendProductsToMemberByID",
+                        type: "POST",
+                        data: { ids: selectedids, memberId: memberId, quantity: quantity },
+                        success: function (response) {
+                            if (response.success) {
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '發送成功',
+                                    text: '商品已成功發送至會員',
+                                }).then(function () {
+                                    $('#sendtoMember').modal('hide');
+                                });
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: '會員編號不存在',
+                                    text: '請輸入正確的會員編號',
+                                });
+                            }
+                        },
+                        error: function (error) {
+                            console.log("發生錯誤：", error);
+                            Swal.fire({
+                                icon: 'error',
+                                title: '發送錯誤',
+                                text: '商品發送錯誤，請再次確認',
+                            });
+                        }
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '未輸入會員編號或會員編號不存在',
+                        text: '請輸入正確的會員編號。',
+                    });
+                }
+            });
+        });
+
+
+        //清除鍵
+        $('#clearMemberID').on('click', function () {
+            $('#send-memberID').val('');
+            $('#send-quantity').val('');// 清空輸入框的值
+        });
+
+
+        //新增Demo按鍵
+        function setCreateProductValue() {
+             $('#create_name').val("中秋節特別折價券");
+             $('#create_description').val("與實體商店共用的1折折價券");
+             $('#create_categoryid').val("");
+            $('#create_price').val("100");
+            $('#create_rate').val("0.05");
         }
+
+        // 再次新增時清空表單輸入值
+        function clearFormInputs() {
+            $('#create_name').val('');
+            $('#create_description').val('');
+            $('#create_categoryid').val('');
+            $('#create_price').val('');
+            $('#create_rate').val('');
+            $('#create_price').val('');
+            $('#create_image').val('');
+            $('#preview-createimage').val('');
+            $('#send-quantity').val('1');
+        } 
+
+        // 點擊關閉按鈕時清空表單
+        $('.create_btn').click(function () {
+            clearFormInputs();
+        });
+
+                //搜尋demo鍵
+        function setSearchValue() {
+            var inputValue = "中秋";
+            $("input[type='search']").eq(0).val(inputValue).focus();
+        }
+
     </script>
 }

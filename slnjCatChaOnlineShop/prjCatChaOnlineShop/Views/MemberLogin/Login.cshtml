@@ -21,11 +21,21 @@
     <link rel="stylesheet" href="~/css/custom.css">
     <!--myCss-->
     <link rel="stylesheet" href="~/css/myCss.css">
-
+ 
     <style>
         .logo-wrapper:hover {
             transform: scale(1.1); /* 放大 10% */
             transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+        }
+
+        .alert-btn-login {
+            background-color: #DE9E4F !important;
+            color: white; 
+        }
+
+        .main-top .formain-topSpan {
+            color: #ffffff;
+            letter-spacing: 2px;
         }
     </style>
 
@@ -36,7 +46,7 @@
         <div class="d-flex justify-content-center p-2">
             <ul>
                 <li>
-                    <i class="fab fa-opencart"><span class="formain-topSpan">貓抓抓購物</span></i>
+                    <i class="fab fa-opencart" style="color:#ffff"><span class="formain-topSpan"></span></i>
                 </li>
             </ul>
         </div>
@@ -55,26 +65,27 @@
                 <div class="row justify-content-md-center">
                     <div class="col-10">
                         <div class="container-fluid">
-                             @using (Html.BeginForm("Login", "MemberLogin", FormMethod.Post))
-                            {
-                                <div class="row">
+                            @*@using (Html.BeginForm("Login", "MemberLogin", FormMethod.Post, new { id = "loginForm" }))
+                            {*@
+
+                            <div class="row" id="loginForm">
                                     <div>
                                         <label for="txtEmail">電子信箱：</label>
-                                        <input type="text" class="form-control" name="txtEmail"
-                                               placeholder="email" value="seoari@gmail.com" required>
+                                        <input type="email" class="form-control" id="txtEmail" name="txtEmail"
+                                           placeholder="email" value="ocarina51006@gmail.com" required>
                                         <div class="invalid-feedback"> 請輸入電子信箱</div>
                                     </div>
                                     <div>
                                         <label for="txtPassword">密碼：</label>
-                                        <input type="text" class="form-control" name="txtPassword"
-                                               placeholder="password" value="123" required>
+                                        <input type="password" class="form-control" id="txtPassword" name="txtPassword"
+                                           placeholder="password" value="aaa1234" required>
                                         <div class="invalid-feedback"> 請輸入密碼 </div>
                                     </div>
                                 </div>
-
                                 <div class="d-grid gap-2 mt-3">
-                                    <input class="btn btn-light" type="submit" value="登入">
+                                    <input class="btn btn-light" type="submit" id="loginButton" value="登入">
                                 </div>
+                           
                                 <div>
                                     <div class="d-flex justify-content-between align-items-center mb-4 mt-2">
                                         <div class="d-flex justify-content-between">
@@ -94,21 +105,26 @@
                                 <div class="d-grid gap-2">
                                     <a asp-controller="memberlogin" asp-action="registermember" class="btn btn-light" type="button">加入會員</a>
                                 </div>
+                                <button class="btn btn-danger" id="unverifiedLogin">DEMO未驗證</button>
+
                                 <div class="mt-2 text-center">
                                     <a>或用其他社群登入</a>
                                 </div>
-                                <div class="mt-3 text-center">
-                                    <a href="#" style="margin:15px">
-                                        <span><img src="~/images/CatCha/facebook_icon.png"></span>
-                                    </a>
-                                    <a href="#" style="margin:15px">
-                                        <span><img src="~/images/CatCha/google.png"></span>
-                                    </a>
-                                    <a href="#" style="margin:15px">
-                                        <span> <img src="~/images/CatCha/twitter.png"></span>
-                                    </a>
-                                </div>
-                            }
+                                <div class="mt-3 text-center justify-content-center d-flex" >
+                                    <div id="g_id_onload"
+                                         data-client_id="572000494003-padpmen83rqinfo8tjq6d5tu653d69m2.apps.googleusercontent.com"
+                                         data-login_uri="https://localhost:7218/MemberLogin/ValidGoogleLogin"
+                                         data-auto_prompt="false">
+                                    </div>
+                                    <div class="g_id_signin"
+                                         data-type="standard"
+                                         data-size="large"
+                                         data-theme="outline"
+                                         data-text="sign_in_with"
+                                         data-shape="rectangular"
+                                         data-logo_alignment="left">
+                                    </div>                                 
+                                </div>                                 
                         </div>
                     </div>
                 </div>
@@ -230,7 +246,7 @@
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
     <script src="~/js/inewsticker.js"></script>
-    <script src="~/js/bootsnav.js."></script>
+   @* <script src="~/js/bootsnav.js."></script>*@
     <script src="~/js/images-loded.min.js"></script>
     <script src="~/js/isotope.min.js"></script>
     <script src="~/js/owl.carousel.min.js"></script>
@@ -239,8 +255,139 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
     <!--nav導覽與頁籤使用-->
-    <script src="~/js/myScript.js"></script>
+    @*<script src="~/js/myScript.js"></script>*@
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script type="text/javascript">
+        //DEMO未信箱驗證會員
+        //DEMO按鈕
+        $('#unverifiedLogin').click(function () {
+            $('#txtEmail').val("allun51006@gmail.com");
+            $('#txtPassword').val("aaa1234");
+        });
+
+        //const divElement = document.getElementById('g_id_onload');
+
+        //divElement.addEventListener('click', function () {
+        //    alert('Div被点击了！');
+        //});
+
+        //新版登入
+        
+            const loginButton = document.getElementById("loginButton"); // 登入按鈕
+            loginButton.addEventListener("click", function (e) {
+                e.preventDefault(); // 防止表單自動提交
+
+                 //發送 AJAX 請求到 API 以驗證登入
+                $.ajax({
+                    url: '/MemberLogin/Login',
+                    type: 'POST', 
+                    data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                    success: function (data) {
+                    //寫入任務資料
+                        //定義api傳回來的資料
+                    var userName = data.userName;
+                    var success = data.success;
+                    var exist = data.accountExist;
+                    var mess = data.message;
+
+                    if (userName && success==true) {
+                        setTask();
+                        Swal.fire({
+                            icon: 'success',
+                            title: '歡迎回來',
+                            text: `歡迎回來~ ${userName}`,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        }).then(() => {
+                            window.location.href = '/';
+                        });
+                    }
+                    else if (userName && status == false) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                    }
+                    else if (exist==false){
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+                    } 
+                    else 
+                        Swal.fire({
+                            icon: 'error',
+                            title: '登入失敗',
+                            text: mess,
+                            customClass: {
+                                confirmButton: 'alert-btn-login'
+                            },
+                            confirmButtonText: '確定'
+                        });
+        },
+                    error: function (err) {
+                        $('#ErrorMsg').html(err.responseText);
+                        $('#ErrorAlert').modal('toggle');
+                        return false; // 失敗時返回 false
+                    }
+                });
+
+            });
+     
+
+      
+           function setTask(){
+            $.ajax({
+                url: '/Task/Create',
+                type: 'GET',
+                data: { txtEmail: $('#txtEmail').val(), txtPassword: $('#txtPassword').val() },
+                success: function () {
+                    console.log("更新任務成功") 
+                },
+                error: function (err) {
+                    $('#ErrorMsg').html(err.responseText);
+                    $('#ErrorAlert').modal('toggle');
+                    return false; // 失敗時返回 false
+                }
+            }); 
+           }
+        var topAnnouncement = $('.formain-topSpan');
+        console.log(topAnnouncement);
+        $.ajax({
+            url: '@Url.Action("GetTopAnnouncement","ProductApi")',
+            type: 'GET',
+            dataType: 'json',
+            success: function (data) {
+                if (data.success) {
+                    topAnnouncement.text(data.message);
+                }
+                else {
+                    topAnnouncement.text(data.messageWelcome);
+                }
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+
+
+    </script>
 </body>
 </html>

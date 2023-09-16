@@ -49,7 +49,7 @@ function doubleCheckLoad() { //載入確認視窗方法
 }
 
 
-function gamePause() { //載入確認視窗方法
+function gamePause() { //遊戲暫停方法
 
     requestAnimationFrame(gamePause);
 

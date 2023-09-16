@@ -26,7 +26,7 @@
 @import url(bootsnav.css);
 @import url(owl.carousel.min.css);
 @import url(jquery-ui.css);
-@import url(nice-select.css);
+/*@import url(nice-select.css); 目前不會用到暫時註解*/
 @import url(baguetteBox.min.css);
 
 /*------------------------------------------------------------------
@@ -127,10 +127,10 @@ a, .btn {
     padding: 0;
 }
 
-blockquote {
+/*blockquote {
     margin: 20px 0 20px;
     padding: 30px;
-}
+}*/
 
 ul, li, ol {
     list-style: none;
@@ -190,6 +190,7 @@ p {
 
     .main-top .formain-topSpan {
         color: #ffffff;
+        font-family: 'Dosis', sans-serif;
     }
 
 .custom-select-box {
@@ -873,7 +874,7 @@ ul.cart-list > li.total > .btn:hover {
 }
 /*------------------------------------------------------------------ Slider -------------------------------------------------------------------*/
 .cover-slides {
-    height: 100vh;
+    height: 580px !important;
 }
 
 .slides-navigation a {
@@ -3050,4 +3051,34 @@ ul.cart-list > li.total > .btn:hover {
     font-weight: 700;
     padding: 12px 25px;
     border: none;
+}
+
+#navbar-right-heart {
+    margin-right: 20px !important;
+}
+
+#navbar-right-side-menu {
+    margin-right: 20px !important;
+}
+
+/* 改變網頁的scrollbar */
+/*資料來源https://stackoverflow.com/questions/18871519/how-to-customize-scroll-bars-with-html-and-css*/
+::-webkit-scrollbar {
+    width: 12px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    /*-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.8);*/
+    -webkit-border-radius: 10px;
+    background-color: #fff;
+    border-radius: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    -webkit-border-radius: 10px;
+    border-radius: 10px;
+    background: #666;
+    -webkit-box-shadow: inset 0 0 6px rgba(222,158,79,0.5);
 }

@@ -1,0 +1,58 @@
+﻿
+@{
+    ViewData["Title"] = "驗證身分";
+}
+
+<style>
+    .logo-wrapper:hover {
+        transform: scale(1.1); /* 放大 10% */
+        transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+    }
+
+    .alert-btn-login {
+        background-color: #DE9E4F !important;
+        color: white;
+    }
+</style>
+<!--SWEET ALERT-->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!--jQuery-->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+<script>
+   
+        //alert("註冊成功!")
+    CompleteEmailVerify();
+    Swal.fire({
+        icon: 'success',
+        title: "註冊成功!",
+        text: '即將返回登入頁面',
+        customClass: {
+            confirmButton: 'alert-btn-login'
+        },
+        confirmButtonText: '確定'
+    }).then(() => {
+        window.location.href = '/MemberLogin/Login'
+    });
+
+        function CompleteEmailVerify() {
+
+        $.ajax({
+            url: '@Url.Content("~/MemberLogin/VerifyEmail")',
+            method: 'POST',
+            success: function (result) {
+                if (result) {
+                    console.log('會員狀態啟動') 
+                } else {
+                    console.log('會員狀態啟動失敗')
+
+                }
+            }
+        }).catch(function (error) {
+            console.error(error); // 處理Ajax錯誤
+        });
+        
+        }
+   
+
+</script>

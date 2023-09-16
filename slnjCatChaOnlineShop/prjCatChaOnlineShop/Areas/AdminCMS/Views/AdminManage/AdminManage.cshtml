@@ -1,11 +1,33 @@
 ﻿@{
-    ViewData["Title"] = "AdminManage";
+    ViewData["Title"] = "管理員管理系統";
     Layout = "~/Areas/AdminCMS/Views/Shared/CMS_Layout.cshtml";
 }
 
 
 @section Styles{
+    <style>
+        .RequiredText, .error-message {
+            color: #b95756;
+        }
 
+        .toggle-password {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        /*密碼眼睛位置*/
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* 調整此值以控制圖標與輸入框的距離 */
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 }
 
 <div class="middle-content">
@@ -27,42 +49,41 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalToggleLabel">新增管理員</h5>
+                    <button class="btn btn-danger ms-2" onclick="setValue()">demo</button>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                             aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                            <!-- <label>[Admin ID]：</label> -->
-                            <input type="hidden" class="form-control" disabled
-                                   readonly>
-                        </div>
+                    <div class="form-group mb-2">
+                        <label>管理員姓名：</label><span class="RequiredText"> *必填</span>
+                        <input type="text" class="form-control" id="AddAdminUsername" name="AdminUsername" onblur="CheckDuplicateAccount()" onfocus="hideErrorMessage()">
+                        <span id="duplicateNameMessage" style="display:none;color:red;" class="alert alert-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label>管理員姓名：</label>
-                            <input type="text" class="form-control">
-                        </div>
+                    <div class="form-group mb-2">
+                        <label>帳號：</label><span class="RequiredText"> *必填</span>
+                        <input type="text" class="form-control" id="AddAdminAccount" name="AdminAccount" onblur="CheckDuplicateAccount()" onfocus="hideErrorMessage()">
+                        <span id="duplicateMessage" style="display:none;color:red;" class="alert alert-danger"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label>帳號：</label>
-                            <input type="text" class="form-control">
+                    <div class="form-group mb-2">
+                        <label>密碼：</label><span class="RequiredText"> *必填</span>
+                        <div class="password-container">
+                            <input type="password" class="form-control" id="AddAdminPassword" name="AdminPassword">
+                            <span id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></span>
                         </div>
+                        <span id="errorPwd" class="error-message"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label>密碼：</label>
-                            <input type="text" class="form-control">
-                        </div>
+                    <div class="form-group mb-2">
+                        <label>確認密碼：</label><span class="RequiredText"> *必填</span>
+                        <input type="password" class="form-control" id="AddCheckAdminPassword">
+                        <span id="errorCheckPwd" class="error-message"></span>
+                    </div>
 
-                        <div class="form-group">
-                            <label>確認密碼：</label>
-                            <input type="text" class="form-control">
-                        </div>
-
-                        <button class="btn btn-danger btn-block"
-                                style="width: 100%;">
-                            儲存
-                        </button>
-                    </form>
+                    <button id="AddAdminManage" class="btn btn-danger btn-block mt-2" style="width: 100%;">
+                        儲存
+                    </button>
                 </div>
             </div>
         </div>
@@ -77,35 +98,17 @@
                 <table id="admin-table" class="table table-striped nowrap" style="width:100%">
                     <thead>
                         <tr>
-                            <!-- <th>序號</th> -->
                             <th>ID</th>
                             <th>姓名</th>
                             <th>帳號</th>
-                            <th>最後登入</th>
-                            <th>編輯</th>
+                            <th>密碼</th>
+                            @*<th>編輯</th>*@
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <!-- <td>1</td> -->
-                            <td>1</td>
-                            <td>管理員1</td>
-                            <td>admin@yahoo.com.tw</td>
-                            <td>2023-06-29</td>
-                            <td>
-                                <a href="#">
-                                    <button class="btn" data-bs-toggle="modal"
-                                            href="#exampleModalToggle" role="button">
-                                        <i class="fas fa-edit"></i>
-                                    </button>
-                                </a>
-                            </td>
-                        </tr>
-                    </tbody>
                 </table>
                 <!--表格-->
                 <!--編輯彈出視窗-->
-                <div class="modal fade" id="exampleModalToggle" aria-hidden="true"
+                <div class="modal fade" id="editAdminModalToggle" aria-hidden="true"
                      aria-labelledby="exampleModalToggleLabel" tabindex="-1">
                     <div class="modal-dialog modal-dialog-centered">
                         <div class="modal-content">
@@ -155,22 +158,227 @@
 
 @section Scripts{
     <script>
-        new DataTable('#admin-table', {
-            responsive: true,
-            "searching": false, //隱藏搜尋框
+        var isVaild = ""; //驗證bool
+        //==========丟資料給DataTables前先console.log json 出來看結構是長怎樣
+        $(document).ready(function () {
+            $.ajax({
+                url: '@Url.Action("ShowAdminManage", "AdminManage")',
+                type: 'GET',
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            })
 
-            //========隱藏某一欄
-            // columnDefs: [
-            // {
-            //     target: 10,
-            //     visible: false,
-            //     searchable: false
-            // },
-            // {
-            //     target: 11,
-            //     visible: false
-            // }
-            // ]
+            //==============密碼眼睛
+            $('#togglePassword').click(function () {
+                if ($('#AddAdminPassword').attr('type') === 'password') {
+                    $('#AddAdminPassword').attr('type', 'text');
+                } else {
+                    $('#AddAdminPassword').attr('type', 'password');
+                }
+            });
+        });
+
+
+        //==================驗證密碼
+        function checkPassword() {
+            var password = $('#AddAdminPassword').val();
+            const containsLetter = /[a-zA-Z]/.test(password);
+            const containsNumber = /\d/.test(password);
+
+            if (password.length < 8 || (!containsLetter) || (!containsNumber)) {
+                $('#errorPwd').text("密碼需包含至少一個英文字母和一個數字，且長度至少8字元");
+                isVaild = false;
+            } else {
+                $('#errorPwd').text("");
+                isVaild = true;
+            }
+        }
+
+        //=======================驗證確認密碼
+        function isValidCheckPassword() {
+            var check_password = $('#AddCheckAdminPassword').val();
+            var password = $('#AddAdminPassword').val();
+
+            if (check_password !== password) {
+                $('#errorCheckPwd').text("密碼與確認密碼不相符");
+                isVaild = false;
+            } else {
+                $('#errorCheckPwd').text("");
+                isVaild = true;
+            }
+        }
+
+        function validatePassword(input, error) {
+            input.on("blur", function () {
+                checkPassword();
+            });
+        }
+
+        function validateCheckPassword(input, error) {
+            input.on("blur", function () {
+                isValidCheckPassword();
+            });
+        }
+
+        validatePassword($("#AddAdminPassword"), $("#errorPwd"));
+        validateCheckPassword($("#AddCheckAdminPassword"), $("#errorCheckPwd"));
+
+
+        //==================datatable
+        $('#admin-table').DataTable({
+            "ajax": '@Url.Action("ShowAdminManage", "AdminManage")',
+            "columns": [
+                //這裡要注意json裡面是大寫還是小寫
+                { data: 'adminId' },
+                { data: 'adminUsername' },
+                { data: 'adminAccount' },
+                { data: 'adminPassword' },
+            ],
+            "paging": true, //分頁功能
+            responsive: true, //RWD
+            "searching": false, //隱藏搜尋框
+        });
+
+        var CheckAccResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+        var CheckNameResult = ""; //將帳號是否已存在的結果，設成全域變數給儲存按鈕做驗證
+
+        //====================離開input 驗證帳號是否重複
+        function CheckDuplicateAccount() {
+            var account = $('#AddAdminAccount').val(); //抓到使用者輸入的帳號
+            var name = $('#AddAdminUsername').val();
+
+            if (account === "") { //當輸入框為空時，隱藏錯誤消息
+                hideErrorMessage();
+                CheckAccResult = "";
+                CheckNameResult = "";
+                return;
+            }
+
+            //===============打API驗證管理員帳號是否已存在
+            $.ajax({
+                url: '/AdminCMS/AdminManage/CheckDuplicateAccount',
+                type: 'GET',
+                data: { 
+                    account: account,
+                    name: name,
+                },
+                success: function (result) {
+                    console.log(result)
+                    CheckAccResult = result.isDuplicateAccount;
+                    CheckNameResult = result.isDuplicateName;
+
+                    if (result.isDuplicateAccount) { //如果等於true
+                        CheckAccResult = result.isDuplicateAccount;
+                        $('#duplicateMessage').text("此帳號已存在");
+                        $('#duplicateMessage').css("display", "block"); //顯示錯誤訊息
+                    } else {
+                        CheckAccResult = result.isDuplicateAccount;
+                        $('#duplicateMessage').text("");
+                        $('#duplicateMessage').css("display", "none"); //顯示錯誤訊息
+                    }
+
+                    if (result.isDuplicateName) { //如果等於true
+                        CheckNameResult = result.isDuplicateName;
+                        $('#duplicateNameMessage').text("此姓名已存在");
+                        $('#duplicateNameMessage').css("display", "block"); //顯示錯誤訊息
+                    } else {
+                        CheckNameResult = result.isDuplicateName;
+                        $('#duplicateNameMessage').text("");
+                        $('#duplicateNameMessage').css("display", "none"); //顯示錯誤訊息
+                    }
+                },
+                error: function (error) {
+                    console.error(error);
+                }
+            });
+        }
+
+        function hideErrorMessage() {
+            $('#duplicateMessage').css("display", "none");
+            $('#duplicateNameMessage').css("display", "none");
+        }
+
+        //====================新增會員demo鍵
+        function setValue() {
+            var AdminUsername = $('#AddAdminUsername').val("管理員測試");
+            var AdminAccount = $('#AddAdminAccount').val("catcha");
+            var AdminPassword = $('#AddAdminPassword').val("123456");
+            var CheckAdminPassword = $('#AddCheckAdminPassword').val("1234567");
+
+        }
+
+        //====================新增管理員
+        $('#AddAdminManage').click(function () {
+            var AdminUsername = $('#AddAdminUsername').val();
+            var AdminAccount = $('#AddAdminAccount').val();
+            var AdminPassword = $('#AddAdminPassword').val();
+            var CheckAdminPassword = $('#AddCheckAdminPassword').val();
+
+            CheckDuplicateAccount();
+            checkPassword();
+            isValidCheckPassword();
+
+            if (!AdminUsername || !AdminAccount || !AdminPassword || !CheckAdminPassword) {
+                Swal.fire({
+                    icon: 'error',
+                    title: '錯誤',
+                    text: '請填寫所有必填欄位。'
+                });
+                return;
+            }
+
+            if (CheckAccResult == true || isVaild == false) {
+                return;
+            }
+
+            var newAdmin = {
+                AdminUsername: AdminUsername,
+                AdminAccount: AdminAccount,
+                AdminPassword: AdminPassword,
+            };
+
+            try {
+                $.ajax({
+                    url: '/AdminCMS/AdminManage/AddAdminManage',
+                    type: 'POST',
+                    data: { newAdmin: newAdmin },
+                    success: function (response) {
+                        // console.log(result)
+                        if (response.success) {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '新增成功',
+                                text: response.message
+                            });
+
+                            // 關閉modal
+                            $('#addAdminModalToggle').modal('hide');
+
+                            // 重新整理dataTable
+                            $('#admin-table').DataTable().ajax.reload(); // 這將重新載入dataTable的資料
+                        } else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: response.message
+                            });
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: '錯誤',
+                            text: "An error occurred: " + xhr.responseText
+                        });
+                    }
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
         });
     </script>
 }

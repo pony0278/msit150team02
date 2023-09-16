@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
     ViewData["Title"] = "Membership";
 }
 
@@ -19,7 +20,7 @@
     <link rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/kartik-v/bootstrap-star-rating@4.1.2/themes/krajee-fas/theme.css" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
-    
+
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/style.css">
     <!-- Responsive CSS -->
@@ -29,8 +30,9 @@
     <link rel="stylesheet" href="~/css/forNews.css">
     <link rel="stylesheet" href="~/css/membership.css">
 
-    <!--增加的部分:用於圖片放大預覽-->
+    <!--放入開發者自訂義的css-->
     <style>
+        /*用於圖片放大預覽*/
         /* 原始圖片的視窗 */
         .image-popup {
             display: none;
@@ -47,35 +49,52 @@
             z-index: 1;
         }
 
-
-            .image-popup img {
-                width: 400px;
-            }
+        .image-popup img {
+            width: 325px;
+        }
 
         /* 縮略圖片的樣式 */
         .thumbnail-image {
-            /* position: relative; */
-            cursor: pointer;
-            /* 將鼠標指針設置為手型以指示圖片可懸停 */
+            cursor: pointer;/* 將鼠標指針設置為手型以指示圖片可懸停 */
         }
 
         .test {
             position: relative;
         }
-    </style>
 
-    <!--增加的部分:用於隱藏dataTables的內建搜尋框-->
-    <style>
-        .dataTables_filter {
-            display: none;
+        /*用於訂單明細垂直置中*/
+        #orderDetailModal td {
+            vertical-align: middle;
+        }
+
+        /*大頭貼*/
+        #PhotoStickers {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 3px solid #fff;
+            margin: 0 auto;
+            overflow: hidden;
+        }
+
+        #PhotoStickers img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                background-color: #FFF;
         }
     </style>
 
-    <!--增加的部分:用於搜尋關鍵字採ajax-->
+
+    <!--用於搜尋關鍵字採ajax-->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
-
-
+    <link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css" />
+    <!--用於密碼的眼睛圖案-->
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css" />
+    <!--用於toastr-->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
 }
+
 
 <div class="all-title-box all-title-box-picture">
     <div class="container">
@@ -83,7 +102,7 @@
             <div class="col-lg-12">
                 <h2>會員中心</h2>
                 <ul class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="#">首頁</a></li>
+                    <li class="breadcrumb-item"><a asp-controller="Index" asp-action="Index">首頁</a></li>
                     <li class="breadcrumb-item active">會員中心</li>
                 </ul>
             </div>
@@ -103,20 +122,20 @@
                aria-controls="home" aria-selected="true">基本資料</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="shoppingsheet-tab" data-bs-toggle="tab" href="#shoppingsheet" role="tab"
+            <a class="nav-link" id="shoppingsheet-tab" data-bs-toggle="tab" href="#shoppingsheet" role="tab" onclick="loadOrderRecords()"
                aria-selected="false">消費紀錄</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="return-tab" data-bs-toggle="tab" href="#return" role="tab"
+            <a class="nav-link" id="return-tab" data-bs-toggle="tab" href="#return" role="tab" onclick="loadReturnRecords()"
                aria-selected="false">退貨紀錄</a>
         </li>
 
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="collect-tab" data-bs-toggle="tab" href="#collect" role="tab"
+            <a class="nav-link" id="collect-tab" data-bs-toggle="tab" href="#collect" role="tab" onclick="loadFavoriteData()"
                aria-selected="false">收藏紀錄</a>
         </li>
         <li class="nav-item" role="presentation">
-            <a class="nav-link" id="Complaint-tab" data-bs-toggle="tab" href="#Complaint" role="tab"
+            <a class="nav-link" id="Complaint-tab" data-bs-toggle="tab" href="#Complaint" role="tab" onclick="loadComplaintRecords()"
                aria-selected="false">客訴紀錄</a>
         </li>
         <li class="nav-item" role="presentation">
@@ -127,109 +146,119 @@
 
     <div class="tab-content" id="myTabContent">
 
-        <!--會員基本資料的內容-->
+        <!--1.會員基本資料的內容-->
         <div class="tab-pane fade show active" id="membership" role="tabpanel" aria-labelledby="membership-tab">
             <section class="my-5">
                 <div class="container">
                     <div class="row">
-                        <!-- cart -->
+                        <!--基本資料-->
                         <div class="col-lg-9 order-2 order-sm-2 order-md-2 order-xs-2">
                             <div class="card border shadow-0">
                                 <div class="m-4">
                                     <div class="row gy-3 mb-4">
                                         <div class="container">
                                             <div class="card-body">
-                                                <form id="memberInfoForm">
+                                                <form id="memberInfoForm" >
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>帳號</label>
-                                                            <input type="text" placeholder="帳號" id="memberAccountInput" name="MemberAccount"
-                                                                   class="form-control" readonly/>
+                                                            <label class="fs-6">電子信箱 <i class="fas fa-envelope"></i></label>
+                                                            <input type="email" class="form-control" id="emailInput" name="Email"
+                                                                   placeholder="電子信箱" readonly />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label>密碼</label>
+                                                            <div class="d-flex justify-content-between">
+                                                                <label class="fs-6">密碼</label>
+                                                                <div class="text-right">
+                                                                    <input type="checkbox" onclick="myFunction()" id="changePassword">顯示密碼
+                                                                </div>
+                                                            </div>
                                                             <input type="password" placeholder="密碼" id="passwordInput" name="Password" pattern="^(?=.*[a-zA-Z])(?=.*[0-9]).{6,}$"
                                                                    class="form-control" required />
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>姓名</label>
+                                                            <label class="fs-6">姓名</label>
                                                             <input type="text" placeholder="姓名" id="nameInput" name="Name"
-                                                                   class="form-control" required="required" />
+                                                                   class="form-control" required />
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <label>生日</label>
+                                                            <label class="fs-6">生日</label>
                                                             <input type="date" class="form-control" id="birthdayInput" name="Birthday" required />
                                                         </div>
                                                     </div>
                                                     <div class="form-row">
                                                         <div class="col-md-6">
-                                                            <label>電子信箱</label>
-                                                            <input type="email" class="form-control" id="emailInput" name="Email"
-                                                                   placeholder="電子信箱" required />
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <label>手機號碼</label>
+                                                            <label class="fs-6">手機號碼</label>
                                                             <input type="tel" pattern="^\d{10}$" placeholder="手機號碼" id="phoneNumberInput" name="PhoneNumber"
                                                                    class="form-control" required />
                                                         </div>
+                                                        <div class="col-md-6">
+                                                            <label class="fs-6">訂閱電子報</label>
+                                                            <select class="form-control form-select" id="subscribeInput" name="Subscribe" required>
+                                                                <option value="false">不了，忍痛放棄</option>
+                                                                <option value="true">是的，我想收到最新資訊</option>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <!--常用地址-->
-                                                    <div class="form-row">
+                                                    <!--住址-->
+                                                    <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label>常用宅配地址</label>
+                                                            <label class="fs-6">住址</label>
+                                                            <div class="input-group">
+                                                                <input type="text" placeholder="住址" id="addressInput" name="Address"
+                                                                       class="form-control" required="required" />
+                                                                <div class="input-group-append">
+                                                                    <button class="btn  btn-warning mx-2 btn-sm fs-5" type="button" data-bs-toggle="modal" data-bs-target="#mapModal">+</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <!--常用宅配地址-->
+                                                    <div class="form-row my-1">
+                                                        <div class="col-md-12">
+                                                            <label class="fs-6">常用宅配地址</label>
                                                             <div class="d-flex align-items-center">
-                                                                <select class="form-select"
+                                                                <select class="form-select" id="commonAddressSelect"
                                                                         aria-label="Default select example">
-                                                                    <option selected>常用地址1號</option>
-                                                                    <option value="1">常用地址2號</option>
-                                                                    <option value="2">常用地址3號</option>
-                                                                    <option value="3">常用地址4號</option>
+                                                                    <option selected>常用宅配地址</option>
                                                                 </select>
                                                             </div>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn-sm add-address my-2" id="lookCAButton"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#addressModal">
-                                                                查看已儲存地址
+                                                                查看已儲存宅配地址
                                                             </button>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn-sm add-address my-2"
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#NewAddressModal">
-                                                                新增地址
+                                                                新增宅配地址
                                                             </button>
                                                         </div>
                                                     </div>
-                                                    
                                                     <!--7-11超商取貨地址-->
-                                                    <div class="form-row">
+                                                    <div class="form-row my-1">
                                                         <div class="col-md-12">
-                                                            <label>超商取貨地址</label>
-                                                            <div class="d-flex align-items-center">
-                                                                <select class="form-select"
-                                                                        aria-label="Default select example">
-                                                                    <option selected>取貨地址1號</option>
-                                                                    <option value="1">取貨地址2號</option>
-                                                                    <option value="2">取貨地址3號</option>
-                                                                    <option value="3">取貨地址4號</option>
-                                                                </select>
+                                                            <label class="fs-6">超商取貨地址</label>
+                                                            <div class="d-flex align-items-start">
+                                                                <input type="text" placeholder="請填入門市店名" id="storename" name="storename" class="form-control" value="@ViewBag.storename" />
+                                                                <div class="col-7">
+                                                                    <input type="text" placeholder="請填入門市地址" id="storeaddress" name="storeaddress" class="form-control" value="@ViewBag.storeaddress" />
+                                                                </div>
+                                                                <button class="btn  btn-warning btn-sm fs-5" type="button" id="SelectShop">+</button>
                                                             </div>
-                                                            <button type="button" class="btn add-address"
+                                                            <button type="button" class="btn-sm add-address "
                                                                     data-bs-toggle="modal"
                                                                     data-bs-target="#MarketaddressModal">
-                                                                查看已儲存地址
+                                                                查看已儲存超商門市
                                                             </button>
-                                                            <button type="button" class="btn add-address"
-                                                                    data-bs-toggle="modal"
-                                                                    data-bs-target="#NewMarketAddressModal">
-                                                                新增超商取貨地址
-                                                            </button>
+                                                            <button type="button" class="btn-sm add-address " id="addNewMarket">新增超商門市</button>
+                                                            <button type="button" class="btn-sm add-address " id="addNewMarketDemo">Demo填入超商</button>
+                                                            @* <button type="button" class="btn-sm add-address " id="SelectOtherShop">測試</button> *@
                                                         </div>
                                                     </div>
-                                                    
-                                                    <button class="btn-customs btn hvr-hovers " id="memberInfoButton" type="submit">
-                                                        送出
-                                                    </button>
+                                                    <button class="btn-customs btn hvr-hovers" id="memberInfoButton" type="submit">送出</button>
+                                                    <button class="btn-customs btn hvr-hovers mx-2" id="memberInfoDemo" type="button">Demo填入基本資料</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -237,167 +266,34 @@
                                 </div>
                             </div>
                         </div>
-                        <!--彈跳視窗: 查看已儲存地址-->
-                        <div class="modal fade" id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <input type="text" value="地址一號"><span class="minus-address">
-                                                        <i class="fa-solid fa-circle-minus"></i>
-                                                    </span>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 新增地址-->
-                        <div class="modal fade" id="NewAddressModal" tabindex="-1"
-                             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">新增地址</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li><input type="text" value="" placeholder="填入地址"></li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 查看已儲存超商取貨地址-->
-                        <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">常用地址一覽</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <input type="text" value="地址一號"><span class="minus-address">
-                                                        <i class="fa-solid fa-circle-minus"></i>
-                                                    </span>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <!--彈跳視窗: 新增超商取貨地址-->
-                        <div class="modal fade" id="NewMarketAddressModal" tabindex="-1"
-                             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="addressModalLabel">新增超商取貨地址</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        <div class="col-md-9">
-                                            <ol>
-                                                <li>
-                                                    <select class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option selected>7-11</option>
-                                                        <option value="1">全家</option>
-                                                        <option value="2">OK</option>
-                                                        <option value="3">萊爾富</option>
-                                                    </select>
-                                                    <select id="county2Select" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇縣市</option>
-                                                    </select>
-                                                    <select id="town2Select" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇鄉鎮</option>
-                                                    </select>
-                                                    <select id="roadSelect" class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option value="">請選擇街道</option>
-                                                    </select>
-                                                    <select class="form-select"
-                                                            aria-label="Default select example">
-                                                        <option selected>松慈店</option>
-                                                        <option value="1">民和店</option>
-                                                        <option value="2">成都店</option>
-                                                        <option value="3">南機場店</option>
-                                                    </select>
-                                                </li>
-                                            </ol>
-                                        </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary"
-                                                data-bs-dismiss="modal">
-                                            關閉
-                                        </button>
-                                        <button type="button" class="btn btn-primary">儲存</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- cart -->
                         <!-- 概括summary -->
                         <div class="col-lg-3 order-1 order-sm-1 order-md-1 order-xs-1">
                             <div class="card mb-3 border shadow-0">
                                 <div class="card-body text-center">
-                                    <form method="post" enctype="multipart/form-data" action="/ImageTest/UploadImage">
-                                        <div class="avatar text-center" id="headShotDiv">
-                                            <img class="avatar-img mx-auto"
-                                                 src='@Url.Content("~/images/toy.png")' alt="">
-                                        </div>
-                                    </form>
-                                    <span id="summonName" >會員</span>
+                                    <div class="avatar text-center" id="PhotoStickers">
+                                        <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/whitehead.jpg")' alt="">
+                                        <!--
+                                        <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
+                                                data-bs-target="#personalPictureModal">
+                                            更換個人圖片
+                                        </button>
+                                        -->
+                                    </div>
+                                    <button class="btn btn-warning btn-sm mt-2 mb-3" id="imageModeratorButton">
+                                        更換個人圖片
+                                    </button>
+                                    <h1 id="summonName" class="font-weight-bold fs-3 my-1">會員</h1>
                                     <div class="d-flex justify-content-center">
-                                        <span>您目前持有點數：9點</span><span>/1元</span>
+                                        <h3 id="coinPointShow" class="fs-6">您目前持有紅利：0點</h3>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h3 id="moneyPointShow" class="fs-6"></h3>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <h3 id="catCoinShow" class="fs-6">持有貓幣：0</h3>
                                     </div>
                                     <div class="text-center ">
-                                        <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal"
+                                        <button class="btn-customs btn hvr-hovers " data-bs-toggle="modal" id="searchCoupon"
                                                 data-bs-target="#couponModal">
                                             查看持有優惠券
                                         </button>
@@ -405,7 +301,6 @@
                                 </div>
                             </div>
                         </div>
-                        <!-- summary -->
                     </div>
                 </div>
             </section>
@@ -419,7 +314,68 @@
                         <div class="container">
                             <div class="row align-items-center">
                                 <div class="col">
-                                    <h3>我的優惠券</h3>
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                                            <button class="nav-link active" id="nav-list-tab" data-bs-toggle="tab" data-bs-target="#nav-list" type="button" role="tab" aria-controls="nav-list" aria-selected="true">可使用</button>
+                                            <button class="nav-link" id="nav-invalid-tab" data-bs-toggle="tab" data-bs-target="#nav-invalid" type="button" role="tab" aria-controls="nav-invalid" aria-selected="false">已失效</button>
+                                        </div>
+                                    </nav>
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
+                                        X
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="tab-content" id="nav-tabContent">
+                            <div class="tab-pane fade show active" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
+                                <table class="table table-bordered table-hover" id="couponTable">
+                                    <thead class="table-warning  text-center">
+                                        <tr>
+                                            <th style="white-space: nowrap;">優惠名稱</th>
+                                            <th style="white-space: nowrap;">適用範圍</th>
+                                            <th style="white-space: nowrap;">使用期限</th>
+                                            <th style="white-space: nowrap;">剩餘張數</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                        <!-- 優惠券清單內容 -->
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="tab-pane fade" id="nav-invalid" role="tabpanel" aria-labelledby="nav-invalid-tab">
+                                <table class="table table-bordered table-hover" id="invalidCouponTable">
+                                    <thead class="table-warning  text-center">
+                                        <tr>
+                                            <th style="white-space: nowrap;">優惠名稱</th>
+                                            <th style="white-space: nowrap;">適用範圍</th>
+                                            <th style="white-space: nowrap;">張數</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-left">
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗:更換個人照片-->
+        <div class="modal fade" id="personalPictureModal">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <div class="container">
+                            <div class="row align-items-center">
+                                <div class="col">
+                                    <h3>更換個人照片</h3>
                                 </div>
                                 <div class="col d-flex justify-content-end">
                                     <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
@@ -430,33 +386,143 @@
                         </div>
                     </div>
                     <div class="modal-body">
-                        <table class="table table-condensed">
-                            <thead class="table-warning">
-                                <tr>
-                                    <th>優惠名稱</th>
-                                    <th>適用範圍</th>
-                                    <th>使用期限</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>全站$299起免運券</td>
-                                    <td>本運費抵用券僅適用於全站有開啟四大超商超運費折抵</td>
-                                    <td>2023-8-8 00:00~2023-8-8 24:00</td>
-                                </tr>
-                                <tr>
-                                    <td>全站$299起免運券</td>
-                                    <td>本運費抵用券僅適用於全站有開啟四大超商超運費折抵</td>
-                                    <td>2023-8-8 00:00~2023-8-8 24:00</td>
-                                </tr>
-                                <tr>
-                                    <td>全站$299起免運券</td>
-                                    <td>本運費抵用券僅適用於全站有開啟四大超商超運費折抵</td>
-                                    <td>2023-8-8 00:00~2023-8-8 24:00</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <form method="post" enctype="multipart/form-data" action="/ImageTest/UploadImageToMemberInfo">
+                            <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
+                            <input type="text" name="AnnouncementContent" value="personalPicture" style="display: none;" />
+                            <input type="file" name="image" id="imageInput" accept="image/*" />
+                            <button type="submit">上傳圖片</button>
+                        </form>
+                    </div>
+                    <div class="modal-footer d-flex justify-content-center align-items-center">
+                        <div class="avatar text-center">
+                            <img id="uploadImagePreview" src='@Url.Content("~/images/toy.png")' alt="" style="max-width: 200px; max-height: 200px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
+        <!--彈跳視窗: 查看已儲存宅配地址-->
+        <div class="modal fade " id="addressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title font-weight-bold" id="addressModalLabel">常用地址一覽</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <ol>
+                                <li>
+                                    <input type="text" value="地址一號">
+                                    <span class="minus-address">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗: 新增宅配地址-->
+        <div class="modal fade" id="NewAddressModal" tabindex="-1"
+             aria-labelledby="NewAddressModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content ">
+                    <form id="newAddressForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title font-weight-bold" id="addressModalLabel">新增宅配地址</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="col-md-9">
+                                <ol>
+                                    <li>
+                                        <div class="my-2">
+                                            <label>收件人</label>
+                                            <input type="text" value="" id="fillRecipientNameInput" class="form-control" name="RecipientName" required>
+                                        </div>
+                                        <div class="my-2">
+                                            <label>聯絡電話</label>
+                                            <input type="tel" pattern="^\d{10}$" value="" id="fillRecipientPhoneInput" class="form-control" name="RecipientPhone" required>
+                                        </div>
+                                        <div class="my-2">
+                                            <label>收件地址</label>
+                                            <input type="text" value="" id="fillAddressInput" class="form-control" name="RecipientAddress" required>
+                                        </div>
+                                    </li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary"
+                                    data-bs-dismiss="modal">
+                                關閉
+                            </button>
+                            <button type="submit" class="btn btn-primary" id="commonAddressSaveButton">儲存</button>
+                            <button type="button" class="btn btn-primary" id="commonAddressSaveDemo">Demo填入地址</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗: 查看已儲存超商取貨地址-->
+        <div class="modal fade" id="MarketaddressModal" tabindex="-1" aria-labelledby="addressModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg">
+                <div class="modal-content ">
+                    <div class="modal-header">
+                        <h5 class="modal-title  font-weight-bold" id="addressModalLabel">常用超商門市一覽</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="col-md-12">
+                            <ol>
+                                <li>
+                                    <input type="text" value="地址一號"><span class="minus-address">
+                                        <i class="fa-solid fa-circle-minus"></i>
+                                    </span>
+                                </li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary"
+                                data-bs-dismiss="modal">
+                            關閉
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--彈跳視窗:查看googlemap-->
+        <div class="modal fade" id="mapModal">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header d-flex justify-content-between">
+                        <div>
+                            <input id="locationInput" type="text" placeholder="輸入地址或地標..." style="width: 300px;" />
+                            <button onclick="searchLocation()" class="btn-sm add-address ">搜尋</button>
+                            <button id="nightMarket" class="btn-sm add-address ">demo</button>
+                        </div>
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">X</button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="map" style="height: 400px;"></div>
                     </div>
                     <div class="modal-footer">
                     </div>
@@ -464,164 +530,35 @@
             </div>
         </div>
 
-        <!--消費紀錄的內容-->
+        <!--2.消費紀錄的內容-->
         <div class="tab-pane fade" id="shoppingsheet" role="tabpanel" aria-labelledby="shoppingsheet-tab">
             <section class="my-5">
                 <div class="container">
                     <div class="row">
-                        <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
-                            <div class="card mb-3 border shadow-0">
-                                <form>
-                                    <div class="col">
-                                        <label>選擇日期區間</label>
-                                        <input class="dateRange form-control" type="text" />
-                                        <label>關鍵字搜尋</label>
-                                        <input class="form-control" type="text" value=""
-                                               placeholder="請輸入關鍵字或訂單編號" id="myKeyWord" />
-                                        <div class="text-center mb-2 ">
-                                            <button class="btn-customs btn hvr-hovers" id="btnQuery" type="button">
-                                                查詢
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-lg-9 order-3 order-sm-3 order-md-3 order-xs-3">
+                        <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
                             <div class="row gy-3 mb-4">
                                 <div style="height: 350px; overflow: auto;" class="table-responsive">
-                                    <!--下為切版先把資料寫死-->
-                                    <!--
-                                    <table class="table  table-bordered table-hover " id="example">
-                                        <thead class="table-warning text-center">
+                                    <table border="0" cellspacing="5" cellpadding="5">
+                                        <tbody>
                                             <tr>
-                                                <th scope="col">訂單編號</th>
-                                                <th scope="col">訂單成立日期</th>
-                                                <th scope="col">產品名稱</th>
-                                                <th scope="col">產品規格</th>
-                                                <th scope="col">訂購數量</th>
-                                                <th scope="col">消費金額</th>
-                                                <th scope="col">付款方式</th>
-                                                <th scope="col">付款時間</th>
-                                                <th scope="col">配送狀態</th>
-                                                <th scope="col">完成時間</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="text-left">
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>2023/07/26</td>
-                                                <td>寵愛貓飼料</td>
-                                                <td>家庭號</td>
-                                                <td>3</td>
-                                                <td>600</td>
-                                                <td>信用卡支付</td>
-                                                <td>2023/07/27 12:00</td>
-                                                <td>運送中</td>
-                                                <td>尚未完成</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#invoiceModal">
-                                                            電子發票
-                                                        </button>
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#returnModal">
-                                                            申請退換貨
-                                                        </button>
-                                                        <button type="button" class="btn btn-warning btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#commentModal">
-                                                            評論
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>2023/07/21</td>
-                                                <td>逗貓棒</td>
-                                                <td>單支</td>
-                                                <td>1</td>
-                                                <td>50</td>
-                                                <td>貨到付款</td>
-                                                <td>2023/07/23 12:00</td>
-                                                <td>運送中</td>
-                                                <td>已完成</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#invoiceModal">
-                                                            電子發票
-                                                        </button>
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#returnModal">
-                                                            申請退換貨
-                                                        </button>
-                                                        <button type="button" class="btn btn-warning btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#commentModal">
-                                                            評論
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>2023/06/26</td>
-                                                <td>貓跳台</td>
-                                                <td>特製三層版</td>
-                                                <td>1</td>
-                                                <td>1000</td>
-                                                <td>銀行轉帳</td>
-                                                <td>2023/06/30 12:00</td>
-                                                <td>運送中</td>
-                                                <td>已完成</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#invoiceModal">
-                                                            電子發票
-                                                        </button>
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#returnModal">
-                                                            申請退換貨
-                                                        </button>
-                                                        <button type="button" class="btn btn-warning btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#commentModal">
-                                                            評論
-                                                        </button>
-                                                    </div>
-                                                </td>
+                                                <td>查詢起日:</td>
+                                                <td><input type="text" id="orderMin" name="orderMin"></td>
+                                                <td>查詢迄日:</td>
+                                                <td><input type="text" id="orderMax" name="orderMax"></td>
+                                                <td><button class="btn hvr-hover mx-2" id="shitDownload" type="button">demo圖片</button></td>
                                             </tr>
                                         </tbody>
                                     </table>
-                                    -->
-
                                     <table class="table  table-bordered table-hover" id="orderTable">
                                         <thead class="table-warning text-center">
                                             <tr>
                                                 <th scope="col">訂單編號</th>
                                                 <th scope="col">訂單成立日期</th>
                                                 <th scope="col">收件人</th>
-                                                <th scope="col">收件地址</th>
                                                 <th scope="col">收件電話</th>
                                                 <th scope="col">付款方式</th>
                                                 <th scope="col">訂單狀態</th>
+                                                <th scope="col">付款金額</th>
                                                 <th scope="col"></th>
                                             </tr>
                                         </thead>
@@ -634,6 +571,37 @@
                     </div>
                 </div>
             </section>
+        </div>
+
+        <!--彈跳視窗:訂單明細-->
+        <div class="modal fade" id="orderDetailModal">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="col d-flex justify-content-end my-2">
+                            <button type="button" class="btn btn-warning px-2" data-bs-dismiss="modal">
+                                X
+                            </button>
+                        </div>
+                        <div class="container">
+                            <table class="table  table-bordered " id="orderDetailTable">
+                                <thead class="table-warning text-center">
+                                    <tr>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">圖片</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品名稱</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">訂購數量</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品規格</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">產品售價</th>
+                                        <th scope="col" style="white-space: nowrap;" class="font-weight-bold">再買一次</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-left">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!--彈跳視窗:申請退換貨-->
@@ -647,53 +615,53 @@
                             </button>
                         </div>
                         <div class="container">
-                            <form action="">
+                            <form action="" id="returnForm">
                                 <div class="row my-1 ml-2">
-                                    <label>訂單編號: </label>
+                                    <label>訂單編號: <span id="returnSpan"></span></label>
                                 </div>
                                 <div class="row my-1 ml-2">
-                                    <label>成立日期: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>產品名稱: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>產品規格: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>訂購數量: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>消費金額: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>配送完成日期: </label>
+                                    <div class="d-flex">
+                                        <label>產品的名稱: </label>
+                                        <select class="form-md-select" aria-label="Default select example" id="returnProductSelect">
+                                            <option value="" selected>請選擇產品</option>
+                                        </select>
+                                    </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <div class="d-flex">
                                         <label>退換貨數量: </label>
-                                        <input class="col-md-4" type="number">
+                                        <input class="col-md-4" type="number" min="0" id="returnNumber">
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <div class="d-flex">
                                         <label>退換貨理由: </label>
-                                        <select class="form-md-select" aria-label="Default select example">
-                                            <option selected>太貴</option>
-                                            <option value="1">太難用</option>
-                                            <option value="2">不符合需求</option>
-                                            <option value="3">就想退</option>
+                                        <select class="form-md-select" aria-label="Default select example" id="returnReasonSelect">
+                                            <option value="" selected>請選擇理由</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
                                     <label>備註(非必填): </label>
                                 </div>
-                                <textarea class="form-control" placeholder="內容" rows="4"></textarea>
+                                <textarea class="form-control" placeholder="內容" rows="4" id="returnTextarea"></textarea>
+                                <input type="hidden" name="memberIdForMembership" value="@ViewBag.memberIdForMembership">
+                                <input type="text" name="AnnouncementContent" value="returnPicture" style="display: none;" />
+                                <textarea class="form-control" rows="1" id="hiddenTextarea" style="display: none;"></textarea>
+                                <label for="returnImageInput" class="btn btn-warning btn-sm my-2">
+                                    附上圖片
+                                    <input type="file" name="image" id="returnImageInput" accept="image/*" style="display: none;">
+                                </label>
+                                <button class="btn btn-warning btn-sm my-2" id="catShitReturn" type="button">
+                                    demo備註
+                                </button>
+                                <div class="text-center">
+                                    <img id="uploadReturnImagePreview" src='' alt="" class="mx-auto" style="max-width: 200px; max-height: 200px;">
+                                </div>
                                 <div class="container">
                                     <div class="row">
                                         <div class="col mt-2">
-                                            <button type="button" class="btn btn-danger btn-block">申請退換貨</button>
+                                            <button type="submit" class="btn btn-danger btn-block">申請退換貨</button>
                                         </div>
                                         <div class="col mt-2">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
@@ -703,8 +671,74 @@
                                         </div>
                                     </div>
                                 </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-
+        <!--彈跳視窗:評論-->
+        <div class="modal fade" id="commentModal">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable  modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <div class="col d-flex justify-content-end">
+                            <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">
+                                X
+                            </button>
+                        </div>
+                        <div class="container">
+                            <form action="" id="commentForm">
+                                <div class="row my-1 ml-2">
+                                    <label>訂單編號: <span id="orderIdSpan"></span></label>
+                                </div>
+                                <div class="row my-1 ml-2">
+                                    <label>產品名稱: </label>
+                                </div>
+                                <div class="row my-1 ml-2">
+                                    <select class="form-select" aria-label="Default select example" id="productSelect">
+                                        <option value="" selected>請選擇產品</option>
+                                    </select>
+                                </div>
+                                <div class="row my-1 ml-2 align-items-center">
+                                    <div class="d-flex align-items-center">
+                                        <label>評價: </label>
+                                        <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5" id="startRating"
+                                               dir="ltr" data-size="md" data-show-clear="false"
+                                               data-show-caption="false">
+                                    </div>
+                                </div>
+                                <div class="row my-1 ml-2">
+                                    <label>評論: </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="commentTextarea" rows="2"></textarea>
+                                    </div>
+                                </div>
+                                <div class="row my-1 ml-2" style="display: none;" id="commentTimeDiv">
+                                    <label>發送日期: </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="commentTimeTextarea" rows="1" readonly></textarea>
+                                    </div>
+                                </div>
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-md-3 mx-auto">
+                                            <button type="submit" class="btn btn-danger btn-block" id="saveComment">送出</button>
+                                        </div>
+                                        <div class="col-md-3 mx-auto">
+                                            <button type="button" class="btn btn-outline-secondary btn-block"
+                                                    data-bs-dismiss="modal">
+                                                取消
+                                            </button>
+                                        </div>
+                                        <div class="col-md-3 mx-auto">
+                                            <button type="button" class="btn btn-outline-secondary btn-block" id="commentDemo">
+                                                demo評論
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
                             </form>
                         </div>
 
@@ -713,9 +747,163 @@
             </div>
         </div>
 
-        <!--彈跳視窗:評論-->
-        <div class="modal fade" id="commentModal">
-            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
+        <!-- 跳出視窗:電子發票 -->
+        <div class="modal fade" id="invoiceModal">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        <!-- 頭Header -->
+                        <div class="modal-header">
+                            <div class="container">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <h1>電子發票</h1>
+                                    </div>
+                                    <div class="col d-flex justify-content-end">
+                                        <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
+                                            X
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- 身體Body -->
+                        <div class="modal-body">
+                            <div>
+                                <h3>號碼: ML15495931</h3>
+                                <h3>期別: 112年09-10月</h3>
+                            </div>
+                            <div class="container">
+                                <div id="qrcode"></div>
+                            </div>
+                            <!--上方的qrcode沒有跑出來-->
+                            <!--
+                            <div>
+                                <p>將【QR Code】置於框內以進行掃描輸入</p>
+                            </div>
+                            -->
+                        </div>
+                        <!-- 腳Footer -->
+                        <div class="modal-footer">
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--3.退貨紀錄的內容-->
+        <div class="tab-pane fade" id="return" role="tabpanel" aria-labelledby="return-tab">
+            <section class="my-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
+                            <div class="row gy-3 mb-4">
+                                <div style="height: 350px; overflow: scroll;" class="table-responsive">
+                                    <table border="0" cellspacing="5" cellpadding="5">
+                                        <tbody>
+                                            <tr>
+                                                <td>查詢起日:</td>
+                                                <td><input type="text" id="returnMin" name="returnMin"></td>
+                                                <td>查詢迄日:</td>
+                                                <td><input type="text" id="returnMax" name="returnMax"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered table-hover" id="returnRecordTable">
+                                        <thead class="table-warning text-center">
+                                            <tr>
+                                                <th scope="col">訂單編號</th>
+                                                <th scope="col">退貨日期</th>
+                                                <th scope="col">退貨理由</th>
+                                                <th scope="col">退貨狀態</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-left">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!--4.收藏紀錄的內容-->
+        <div class="tab-pane fade" id="collect" role="tabpanel" aria-labelledby="collect-tab">
+            <section class="my-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
+                            <div class="row gy-3 mb-4">
+                                <div style="height: 400px; overflow: scroll;" class="table-responsive">
+                                    <table class="table table-bordered " id="favoriteRecordTable">
+                                        @* table-hover *@
+                                        <thead class="table-warning text-center ">
+                                            <tr>
+                                                <th scope="col" class="font-weight-bold">圖片</th>
+                                                <th scope="col" class="font-weight-bold">產品名稱</th>
+                                                <th scope="col" class="font-weight-bold">剩餘數量</th>
+                                                <th scope="col" class="font-weight-bold">售價</th>
+                                                <th scope="col" class="font-weight-bold">加入購物車</th>
+                                                <th scope="col" class="font-weight-bold">移除商品</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-left">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!--5.客訴紀錄的內容-->
+        <div class="tab-pane fade" id="Complaint" role="tabpanel" aria-labelledby="Complaint-tab">
+            <section class="my-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
+                            <div class="row gy-3 mb-4">
+                                <div style="height: 350px; overflow: scroll;" class="table-responsive">
+                                    <table border="0" cellspacing="5" cellpadding="5">
+                                        <tbody>
+                                            <tr>
+                                                <td>查詢起日:</td>
+                                                <td><input type="text" id="complaintMin" name="complaintMin"></td>
+                                                <td>查詢迄日:</td>
+                                                <td><input type="text" id="complaintMax" name="complaintMax"></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="table table-bordered table-hover" id="complaintRecordTable">
+                                        <thead class="table-warning text-center">
+                                            <tr>
+                                                <th scope="col">客訴編號</th>
+                                                <th scope="col">成立日期</th>
+                                                <th scope="col">客訴類型</th>
+                                                <th scope="col">客訴主旨</th>
+                                                <th scope="col">客訴狀態</th>
+                                                <th scope="col"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="text-left">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!--彈跳視窗:客訴內容-->
+        <div class="modal fade" id="ComplaintModal">
+            <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable modal-lg">
                 <div class="modal-content">
                     <div class="modal-body">
                         <div class="col d-flex justify-content-end">
@@ -726,55 +914,30 @@
                         <div class="container">
                             <form action="">
                                 <div class="row my-1 ml-2">
-                                    <label>訂單編號: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>成立日期: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>產品名稱: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>產品規格: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>訂購數量: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>消費金額: </label>
-                                </div>
-                                <div class="row my-1 ml-2">
-                                    <label>配送完成日期: </label>
-                                </div>
-                                <div class="row my-1 ml-2 align-items-center">
-                                    <div class="d-flex align-items-center">
-                                        <label>評價: </label>
-                                        <input name="input-1-ltr-star-xs" class="kv-ltr-theme-fas-star" value="5"
-                                               dir="ltr" data-size="md" data-show-clear="false"
-                                               data-show-caption="false">
+                                    <label class="font-weight-bold">客訴內文 </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="compliantContent" rows="4" readonly></textarea>
                                     </div>
                                 </div>
                                 <div class="row my-1 ml-2">
-                                    <label>評論: </label>
-                                    <div class="input-group">
-                                        <textarea class="form-control" aria-label="With textarea"></textarea>
+                                    <label class="font-weight-bold">客服回覆 </label>
+                                    <div>
+                                        <textarea class="form-control" aria-label="With textarea" id="answerContent" rows="2" readonly></textarea> 
                                     </div>
+                                </div>
+                                <div class="row my-1 ml-2">
+                                    <label id="answerTime">回覆時間: </label>
                                 </div>
                                 <div class="container">
                                     <div class="row">
                                         <div class="col mt-2">
-                                            <button type="button" class="btn btn-danger btn-block">送出</button>
-                                        </div>
-                                        <div class="col mt-2">
                                             <button type="button" class="btn btn-outline-secondary btn-block"
                                                     data-bs-dismiss="modal">
-                                                取消
+                                                離開
                                             </button>
                                         </div>
                                     </div>
                                 </div>
-
-
                             </form>
                         </div>
 
@@ -783,237 +946,7 @@
             </div>
         </div>
 
-        <!--退貨紀錄的內容-->
-        <div class="tab-pane fade" id="return" role="tabpanel" aria-labelledby="return-tab">
-            <section class="my-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
-                            <div class="card mb-3 border shadow-0">
-                                <form>
-                                    <div class="col">
-                                        <label>選擇日期區間</label>
-                                        <input class="dateRange form-control" type="text" />
-                                        <label>關鍵字搜尋</label>
-                                        <input class="form-control" type="text" value=""
-                                               placeholder="請輸入關鍵字或訂單編號" id="myKeyWord2" />
-                                        <div class="text-center mb-2 ">
-                                            <button class="btn-customs btn hvr-hovers" id="btnQuery2" type="button">
-                                                查詢
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-lg-9 order-3 order-sm-3 order-md-3 order-xs-3">
-                            <div class="row gy-3 mb-4">
-                                <div style="height: 350px; overflow: scroll;" class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="example2">
-                                        <thead class="table-warning text-center">
-                                            <tr>
-                                                <th scope="col">訂單編號</th>
-                                                <th scope="col">退貨日期</th>
-                                                <th scope="col">產品名稱</th>
-                                                <th scope="col">產品規格</th>
-                                                <th scope="col">退貨數量</th>
-                                                <th scope="col">產品單價</th>
-                                                <th scope="col">退貨理由</th>
-                                                <th scope="col">退貨狀態</th>
-                                                <th scope="col">完成時間</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="text-left">
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>2023/07/26</td>
-                                                <td>寵愛貓飼料</td>
-                                                <td>家庭號</td>
-                                                <td>3</td>
-                                                <td>NT$600</td>
-                                                <td>包裝破損，飼料受潮無法保存與食用</td>
-                                                <td>已退還款項並完成退貨</td>
-                                                <td>2023/07/27 12:00</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>2023/07/21</td>
-                                                <td>逗貓棒</td>
-                                                <td>單支</td>
-                                                <td>1</td>
-                                                <td>NT$50</td>
-                                                <td>型號不符合所需，尚未拆封</td>
-                                                <td>已退還款項並完成退貨</td>
-                                                <td>2023/07/23 12:00</td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>2023/06/26</td>
-                                                <td>貓跳台</td>
-                                                <td>特製三層版</td>
-                                                <td>1</td>
-                                                <td>NT$1000</td>
-                                                <td>商品規格過大，家中擺不下</td>
-                                                <td>已退還款項並完成退貨</td>
-                                                <td>2023/06/29 12:00</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!--收藏紀錄的內容-->
-        <div class="tab-pane fade" id="collect" role="tabpanel" aria-labelledby="collect-tab">
-            <section class="my-5">
-                <div class="container">
-                    <div class="row">
-
-                        <div class="col-lg-12 order-3 order-sm-3 order-md-3 order-xs-3">
-                            <div class="row gy-3 mb-4">
-                                <div class="col-lg-5">
-                                    <div class="me-lg-5">
-                                        <div class="d-flex">
-                                            <img src="~/images/instagram-img-08.jpg" class="border rounded me-3" style="width: 96px; height: 96px;" />
-                                            <div class="mt-auto mb-auto">
-                                                <a href="#" class="nav-link">一個貓罐頭</a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-2 col-sm-6 col-6 d-flex flex-row flex-lg-column flex-xl-row text-nowrap">
-                                    <div class="mt-auto mb-auto">
-                                        <span class="h6">$1,156</span> <br />
-                                        <small class="text-muted text-nowrap"> $460 / 份 </small>
-                                    </div>
-                                </div>
-                                <div class="col-lg col-sm-6 d-flex flex-column justify-content-center align-items-sm-center align-items-md-start align-items-lg-center align-items-xl-end mb-2">
-                                    <div class="float-md-end">
-                                        <span class="add-pr">
-                                            <a class="btn hvr-hover" href="#">
-                                                <i class="fa-solid fa-cart-plus"></i>
-                                            </a>
-                                        </span>
-                                        <a href="#" class="btn btn-light border  icon-hover-danger"> <i class="fa-solid fa-xmark"></i></a>
-                                    </div>
-                                </div>
-                                <hr class="for-hr">
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!--客訴紀錄的內容-->
-        <div class="tab-pane fade" id="Complaint" role="tabpanel" aria-labelledby="Complaint-tab">
-            <section class="my-5">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-lg-3 order-2 order-sm-2 order-md-2 order-xs-2">
-                            <div class="card mb-3 border shadow-0">
-                                <form>
-                                    <div class="col">
-                                        <label>選擇日期區間</label>
-                                        <input class="dateRange form-control" type="text" />
-                                        <label>關鍵字搜尋</label>
-                                        <input class="form-control" type="text" value=""
-                                               placeholder="請輸入關鍵字或訂單編號" id="myKeyWord4" />
-                                        <div class="text-center mb-2 ">
-                                            <button class="btn-customs btn hvr-hovers" id="btnQuery4" type="button">
-                                                查詢
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                        <div class="col-lg-9 order-3 order-sm-3 order-md-3 order-xs-3">
-                            <div class="row gy-3 mb-4">
-                                <div style="height: 350px; overflow: scroll;" class="table-responsive">
-                                    <table class="table table-bordered table-hover" id="example4">
-                                        <thead class="table-warning text-center">
-                                            <tr>
-                                                <th scope="col">客訴編號</th>
-                                                <th scope="col">客訴時間</th>
-                                                <th scope="col">客訴類型</th>
-                                                <th scope="col">客訴主旨</th>
-                                                <th scope="col">客訴狀態</th>
-                                                <th scope="col">完成時間</th>
-                                                <th scope="col"></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody class="text-left">
-                                            <tr>
-                                                <th scope="row">1</th>
-                                                <td>2023/07/26</td>
-                                                <td>1</td>
-                                                <td>1000</td>
-                                                <td>尚未完成</td>
-                                                <td>2023/07/27 12:00</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#ComplaintModal">
-                                                            客訴內容
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">2</th>
-                                                <td>2023/07/26</td>
-                                                <td>1</td>
-                                                <td>1000</td>
-                                                <td>完成</td>
-                                                <td>2023/07/27 12:00</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#ComplaintModal">
-                                                            客訴內容
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th scope="row">3</th>
-                                                <td>2023/07/26</td>
-                                                <td>1</td>
-                                                <td>1000</td>
-                                                <td>完成</td>
-                                                <td>2023/07/27 12:00</td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <button type="button"
-                                                                class="btn btn-outline-dark mb-2 btn-sm"
-                                                                data-bs-toggle="modal"
-                                                                data-bs-target="#ComplaintModal">
-                                                            客訴內容
-                                                        </button>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-
-        <!--客服中心的內容-->
+        <!--6.客服中心的內容-->
         <div class="tab-pane fade" id="CustomerService" role="tabpanel" aria-labelledby="CustomerService-tab">
             <section class="my-5">
                 <div class="container">
@@ -1021,6 +954,7 @@
                         <form id="complaintForm">
                             <div class="col-md-12">
                                 <div class="form-group">
+                                    <h4 class="font-weight-bold">申訴類型</h4>
                                     <select class="form-select" aria-label="Default select example" id="appealCategorySelect">
                                         <option value="" selected>請選擇申訴類型</option>
                                     </select>
@@ -1028,21 +962,33 @@
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <input type="text" class="form-control" id="ComplaintTitle" name="ComplaintTitle" placeholder="標題"
+                                    <h4 class="font-weight-bold">標題</h4>
+                                    <input type="text" class="form-control" id="ComplaintTitle" name="ComplaintTitle"
                                            required data-error="請輸入您的標題">
                                     <div class="help-block with-errors"></div>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-group">
-                                    <textarea class="form-control" id="ComplaintContent" placeholder="內容" rows="4" name="ComplaintContent"
+                                    <h4 class="font-weight-bold">內容</h4>
+                                    <textarea class="form-control" id="ComplaintContent" rows="4" name="ComplaintContent"
                                               data-error="請輸入您的內容" required></textarea>
-                                    <div class="help-block with-errors"></div>
                                 </div>
                                 <div class="submit-button text-center">
                                     <button class="btn hvr-hover" id="complaintSubmit" type="submit">送出訊息</button>
-                                    <div id="msgSubmit" class="h3 text-center hidden"></div>
-                                    <div class="clearfix"></div>
+                                    <button class="btn hvr-hover mx-2" id="lookChart" type="button">查閱圖表</button>
+                                    <button class="btn hvr-hover mx-2" id="totalDemo" type="button">demo訊息</button>
+                                </div>
+                                <div class="form-group" id="aiCheck" style="display: none;">
+                                    <h4 class="font-weight-bold">系統審合</h4>
+                                    <div class="border d-inline-block fs-4 w-100 rounded" id="newCheckComplaint">
+                                        <span id="checkComplaint1"></span>
+                                        <span id="checkComplaint2" class="mx-3"></span>
+                                        <span id="checkComplaint3"></span>
+                                    </div>
+                                </div>
+                                <div id="myChartDiv" style="display: none;">
+                                    <canvas id="myChart"></canvas>
                                 </div>
                             </div>
                         </form>
@@ -1050,109 +996,14 @@
                 </div>
             </section>
         </div>
+
+
     </div>
 </div>
 
-<!--彈跳視窗:客訴內容-->
-<div class="modal fade" id="ComplaintModal">
-    <div class="modal-dialog  modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="col d-flex justify-content-end">
-                    <button type="button" class="btn btn-warning btn-sm px-2" data-bs-dismiss="modal">
-                        X
-                    </button>
-                </div>
-                <div class="container">
-                    <form action="">
-                        <div class="row my-1 ml-2">
-                            <label>客訴編號: </label>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label>成立日期: </label>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label>客訴類型: </label>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label>客訴主旨: </label>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label>客訴內文 </label>
-                            <div class="input-group">
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="row my-1 ml-2">
-                            <label>客服回覆 </label>
-                            <div class="input-group">
-                                <textarea class="form-control" aria-label="With textarea"></textarea>
-                            </div>
-                        </div>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col mt-2">
-                                    <button type="button" class="btn btn-outline-secondary btn-block"
-                                            data-bs-dismiss="modal">
-                                        取消
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
 
 
-                    </form>
-                </div>
 
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- 跳出視窗:電子發票 -->
-<div class="modal fade" id="invoiceModal">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-        <div class="modal-content">
-            <div class="modal-body">
-                <!-- 頭Header -->
-                <div class="modal-header">
-                    <div class="container">
-                        <div class="row align-items-center">
-                            <div class="col">
-                                <h1>電子發票</h1>
-                            </div>
-                            <div class="col d-flex justify-content-end">
-                                <button type="button" class="btn btn-warning btn-sm" data-bs-dismiss="modal">
-                                    X
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- 身體Body -->
-                <div class="modal-body">
-                    <div>
-                        <h3>號碼: ML15495931</h3>
-                        <h3>期別: 112年09-10月</h3>
-                    </div>
-                    <div class="container">
-                        <div id="qrcode"></div>
-                    </div>
-                    <!--上方的qrcode沒有跑出來-->
-                    <!--
-                    <div>
-                        <p>將【QR Code】置於框內以進行掃描輸入</p>
-                    </div>
-                    -->
-                </div>
-                <!-- 腳Footer -->
-                <div class="modal-footer">
-                </div>
-
-            </div>
-        </div>
-    </div>
-</div>
 
 
 
@@ -1184,10 +1035,1590 @@
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
     <script src="~/js/forNews.js"></script>
+    <!--用於datatables套件-->
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
+    <script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
+    <!--用於Maps JavaScript API，有api需替換-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA85cSnUCs6hC6cvBcfMoYjkipojVEpQuM&callback=initMap" async defer></script>
+    <!--用於html2canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+    <!--用於chart.js -->
+    <script src="https://cdn.staticfile.org/Chart.js/3.9.1/chart.js"></script>
+    <!--用於toastr-->
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <!--1.載入時，導入基本資料-->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // 拿取基本資料數據
+            fetch('@Url.Content("~/membership/getmemberinfo")')
+                .then(response => response.json())
+                .then(data => {
+                    //這裡抓資料也要寫成三元判斷式
+                    $('#emailInput').val(data.email  ? data.email : "seoari@gmail.com");
+                    $('#passwordInput').val(data.password  ? data.password : "a12345");
+                    $('#nameInput').val(data.name  ? data.name : "安安");
+                    $('#phoneNumberInput').val(data.phoneNumber ? data.phoneNumber : "0912345678");
+                    document.getElementById("subscribeInput").value = data.subscribe ? data.subscribe : "false";
+                    $('#imagePreview').attr('src', data.memberImage ? data.memberImage : '@Url.Content("~/images/whitehead.jpg")');
+                    $('#uploadImagePreview').attr('src', data.memberImage);
+                    $('#addressInput').val(data.address ? data.address : "台北市大安區信義路三段185號");
 
+                    $('#summonName').text(`會員：${data.name ? data.name : "安安"}`);
+                    $('#coinPointShow').text(`您目前持有紅利:${data.loyaltyPoints ? data.loyaltyPoints : "0"}點`);
+                    $('#moneyPointShow').text(`( ${data.loyaltyPoints ? Math.floor(data.loyaltyPoints / 100) : "0"}元 )`);
+                    $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity ? data.catCoinQuantity : "0"}`);
+
+                    // var dateParts = data.birthday.split('-');
+                    var dateParts2 = "1993-04-12T00:00:00";
+                    var dateParts = data.birthday ? data.birthday.split('-') : dateParts2.split('-');
+                    var year = parseInt(dateParts[0], 10);
+                    var month = parseInt(dateParts[1], 10) - 1;
+                    var day = parseInt(dateParts[2], 10);
+                    var utcDate = new Date(Date.UTC(year, month, day));
+                    var formattedDate = utcDate.toISOString().split('T')[0];
+                    $('#birthdayInput').val(formattedDate);
+
+                });
+
+        });
+
+        $(document).ready(function () {
+
+            //送出修改後的基本資料
+            $('#memberInfoButton').click(function (event) {
+                event.preventDefault();
+
+                // 取得表單元素
+                const form = document.querySelector('#memberInfoForm');
+
+                // 檢查表單的驗證狀態
+                if (form.checkValidity()) {
+                    const formData = new FormData(form);
+
+                    fetch('@Url.Content("/Membership/UpdateMemberInfo")', {
+                        body: formData,
+                        method: 'POST'
+                    })
+                        .then(response => {
+                            if (response.ok) {
+                                $('#summonName').text(`會員：${$('#nameInput').val()}`);
+                                return response.text();
+                            } else {
+                                throw new Error('連線有誤，請向客服人員聯繫');
+                            }
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '修改成功',
+                            });
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: error.message
+                            });
+                        });
+                } else {
+                    // 若表單驗證不通過，顯示相關提示
+                    form.reportValidity();
+                }
+            });
+
+            //拿取優惠券數據
+            $('#searchCoupon').click(function (event) {
+                //可使用的優惠券
+                $.getJSON('@Url.Content("~/membership/GetMemberCouponData")', function (data) {
+                    var tbody = document.querySelector('#couponTable tbody');
+
+                    // 清空表格內容
+                    tbody.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立表格列
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+                        row.insertCell().textContent = item.couponName;
+                        row.insertCell().textContent = item.couponContent;
+
+                        //將日期格式化為 "yyyy-mm-dd"
+                        var formattedDate = new Date(item.expiryDate).toLocaleDateString();
+                        var dateCell = row.insertCell();
+                        dateCell.textContent = formattedDate;
+                        dateCell.style.whiteSpace = 'nowrap';
+
+                        row.insertCell().textContent = item.count;
+                    });
+                });
+
+                //已失效的優惠券
+                $.getJSON('@Url.Content("~/membership/GetInvalidCouponData")', function (data) {
+                    var tbody = document.querySelector('#invalidCouponTable tbody');
+
+                    // 清空表格內容
+                    tbody.innerHTML = '';
+
+                    // 遍歷 JSON 資料並建立表格列
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+                        row.insertCell().textContent = item.couponName;
+                        row.insertCell().textContent = item.couponContent;
+                        row.insertCell().textContent = item.count;
+                    });
+                });
+            });
+
+            //進入頁面時，先呼叫方法載入常用地址的資料
+            GetCommonAddress();
+            
+            //進入頁面時，先呼叫方法載入常用"地址"的資料
+            lookCAButton();
+
+            //進入頁面時，先呼叫方法載入常用超商門市
+            lookCSButton();
+
+            //儲存常用宅配地址
+            $('#commonAddressSaveButton').click(function (event) {
+                event.preventDefault();
+
+                // 取得表單元素
+                const form = document.querySelector('#newAddressForm');
+                // 檢查表單的驗證狀態
+                if (form.checkValidity()) {
+                    const formData = new FormData(form);
+                    fetch('@Url.Content("/Membership/CreateCommonAddress")', {
+                        body: formData,
+                        method: 'POST'
+                    })
+                        .then(response => {
+                            setTimeout(() => {
+                                $('#fillRecipientNameInput').val('');
+                                $('#fillRecipientPhoneInput').val('');
+                                $('#fillAddressInput').val('');
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: '新增成功',
+                                    confirmButtonText: '關閉',
+                                });
+                                GetCommonAddress();
+                                lookCAButton();
+                            }, 300);
+                        })
+                        .catch(error => {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '錯誤',
+                                text: error.message
+                            });
+                        });
+                }
+                else{
+                    form.reportValidity();
+                }
+
+            });
+
+            //儲存超商門市
+            $('#addNewMarket').click(function (event) {
+                event.preventDefault();
+
+
+                var storename = document.querySelector('#storename').value;
+                var storeaddress = document.querySelector('#storeaddress').value;
+
+                if (!storename || storename.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請填入門市店名',
+                    });
+                    event.preventDefault();
+                } else if (!storeaddress || storeaddress.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請填入門市地址',
+                    });
+                    event.preventDefault();
+                } else {
+
+                    // 創建一個包含 storename 和 storeaddress 的 JavaScript 物件
+                    var dataToSend = {
+                        storename: storename,
+                        storeaddress: storeaddress
+                    };
+
+                    fetch('/membership/AddNewMarket', {
+                        method: 'POST', // 使用 POST 方法
+                        headers: {
+                            'Content-Type': 'application/json' // 設置請求標頭
+                        },
+                        body: JSON.stringify(dataToSend) // 將數據轉為 JSON 字符串
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Network response was not ok');
+                            }
+                        })
+                        .then(data => {
+                            Swal.fire({
+                                icon: 'success',
+                                title: '新增成功',
+                                confirmButtonText: '關閉',
+                            });
+                            lookCSButton();
+                        })
+                        .catch(error => {
+                            console.error('There was a problem with the fetch operation:', error);
+                        });
+
+                    
+                }
+
+
+            });
+            
+
+            //Demo鍵:載入基本資料
+            $('#memberInfoDemo').click(function (event) {
+                $('#passwordInput').val("a12345");
+                $('#emailInput').val("seoari@gmail.com");
+                $('#phoneNumberInput').val("0912345678");
+                $('#nameInput').val("徐雅莉");
+            });
+
+            //Demo鍵:載入宅配地址
+            $('#commonAddressSaveDemo').click(function (event) {
+                $('#fillRecipientNameInput').val("徐雅莉");
+                $('#fillRecipientPhoneInput').val("0912345678");
+                $('#fillAddressInput').val("台北市信義區信義路五段20號");
+            });
+
+            //Demo鍵:載入超商門市
+            $('#addNewMarketDemo').click(function (event) {
+                $('#storename').val("OkMart平鎮龍恩店");
+                $('#storeaddress').val("桃園市平鎮區游泳路120巷1弄2、4號1樓");
+            });
+            
+        });
+
+        //密碼轉換明示暗示
+        function myFunction() {
+            var x = document.getElementById("passwordInput");
+            if (x.type === "password") {
+                x.type = "text";
+                document.getElementById("#changePassword").textContent = "顯示密碼";
+            } else {
+                x.type = "password";
+                document.getElementById("#changePassword").textContent = "隱藏密碼";
+            }
+        }
+
+        //拿取常用宅配地址:select
+        function GetCommonAddress() {
+            var commonAddressSelectElement = document.getElementById('commonAddressSelect');
+            commonAddressSelectElement.innerHTML = '';
+
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.addressId;
+                    option.textContent = item.recipientAddress;
+                    commonAddressSelectElement.appendChild(option);
+                });
+            });
+        }
+
+        //查看常用宅配地址:button
+        function lookCAButton(){
+            $.getJSON('@Url.Content("~/membership/GetCommonAddress")', function (data) {
+                var olElement = document.querySelector('#addressModal ol');
+
+                // 清空 <ol> 元素的內容
+                olElement.innerHTML = '';
+
+                // 遍歷 JSON 資料並建立 <li> 元素
+                data.forEach(function (item) {
+
+                    var liElement = document.createElement('li');
+                    liElement.className = 'row align-items-center';
+
+                    var inputDiv = document.createElement('div');
+                    inputDiv.className = 'col-md-9 mb-3';
+
+                    var inputElement = document.createElement('input');
+                    inputElement.type = 'text';
+                    inputElement.value = item.recipientName + " / " + item.recipientAddress;
+                    inputElement.className = 'form-control ';
+
+                    var spanDiv = document.createElement('div');
+                    spanDiv.className = 'col-md-3';
+
+                    var spanElement = document.createElement('span');
+                    spanElement.className = 'minus-address';
+                    spanElement.innerHTML = '<i class="fa-solid fa-circle-minus" style="color: orange;"></i>';
+                    spanElement.setAttribute('data-address-id', item.addressId);
+
+                    spanElement.addEventListener('click', function () {
+                        var clickedAddressId = spanElement.getAttribute('data-address-id');
+
+                        Swal.fire({
+                            title: '確認刪除',
+                            showCancelButton: true,
+                            confirmButtonText: '是的',
+                            cancelButtonText: '取消',
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                $.getJSON('@Url.Content("~/membership/DeleteCommonAddress?addressid=")' + clickedAddressId, function (data) {
+                                    if (data == null) {
+                                        Swal.fire({
+                                            icon: 'fail',
+                                            title: '移除失敗',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '移除成功',
+                                            confirmButtonText: '關閉',
+                                        }).then(() => {
+                                            lookCAButton();
+                                            GetCommonAddress();
+                                        });
+                                    }
+                                })
+                                    .catch(error => {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: '移除失敗',
+                                            text: '此為已成立訂單的地址，恕無法刪除',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    });
+                            }
+                        });
+                    });
+
+                    inputDiv.appendChild(inputElement);
+                    spanDiv.appendChild(spanElement);
+
+                    liElement.appendChild(inputDiv);
+                    liElement.appendChild(spanDiv);
+
+                    olElement.appendChild(liElement);
+                });
+
+                // $('#addressModal').modal('show');
+            });
+        }
+
+        //查看已儲存超商門市
+        function lookCSButton() {
+            $.getJSON('@Url.Content("~/membership/GetCommonShop")', function (data) {
+                var olElement = document.querySelector('#MarketaddressModal ol');
+
+                // 清空 <ol> 元素的內容
+                olElement.innerHTML = '';
+
+                // 遍歷 JSON 資料並建立 <li> 元素
+                data.forEach(function (item) {
+
+                    var liElement = document.createElement('li');
+                    liElement.className = 'row align-items-center';
+
+                    var inputDiv = document.createElement('div');
+                    inputDiv.className = 'col-md-9 mb-3';
+
+                    var inputElement = document.createElement('input');
+                    inputElement.type = 'text';
+                    inputElement.value = item.shopName + " / " + item.cityName + item.discitcName;
+                    inputElement.className = 'form-control ';
+
+                    var spanDiv = document.createElement('div');
+                    spanDiv.className = 'col-md-3';
+
+                    var spanElement = document.createElement('span');
+                    spanElement.className = 'minus-address';
+                    spanElement.innerHTML = '<i class="fa-solid fa-circle-minus" style="color: orange;"></i>';
+                    spanElement.setAttribute('data-shop-id', item.id);
+
+                    spanElement.addEventListener('click', function () {
+                        var clickedShopId = spanElement.getAttribute('data-shop-id');
+
+                        Swal.fire({
+                            title: '確認刪除',
+                            showCancelButton: true,
+                            confirmButtonText: '是的',
+                            cancelButtonText: '取消',
+                        }).then((result) => {
+                            
+                            if (result.isConfirmed) {
+                                $.getJSON('@Url.Content("~/membership/DeleteCommonShop?shopId=")' + clickedShopId, function (data) {
+                                    if (data == null) {
+                                        Swal.fire({
+                                            icon: 'fail',
+                                            title: '移除失敗',
+                                            confirmButtonText: '關閉',
+                                        });
+                                    } else {
+                                        Swal.fire({
+                                            icon: 'success',
+                                            title: '移除成功',
+                                            confirmButtonText: '關閉',
+                                        }).then(() => {
+                                            lookCSButton();
+                                        });
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(error);
+                                });
+                            }
+                            
+                        });
+                    });
+
+                    inputDiv.appendChild(inputElement);
+                    spanDiv.appendChild(spanElement);
+
+                    liElement.appendChild(inputDiv);
+                    liElement.appendChild(spanDiv);
+
+                    olElement.appendChild(liElement);
+                });
+
+                // $('#addressModal').modal('show');
+            });
+        }
+
+        //選擇門市按鈕
+        $('#SelectShop').on('click', function () {
+            var baseUrl = new URL(window.location.href);
+            baseUrl.pathname = "/ConvenienceStore/SlectShop";
+            var encodedBaseUrl = encodeURIComponent(baseUrl.href);
+            window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=" + encodedBaseUrl;
+
+            // window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
+            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop", "_blank");
+        })
+
+
+    </script>
+
+    <!--上傳大頭照-->
+    <script>
+        $(document).ready(function () {
+            //彈出上傳大頭照的視窗
+            $('#imagePreview').click(function () {
+                $('#personalPictureModal').modal('show');
+            });
+
+            //導向圖片審核的頁面
+            $('#imageModeratorButton').click(function () {
+                window.location.href = '@Url.Action("ImageModerator", "Membership")';
+            });
+        });
+
+        //圖片預覽
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+            var previewImage = document.getElementById('uploadImagePreview');
+            var selectedImage = event.target.files[0];
+
+            if (selectedImage) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(selectedImage);
+            } else {
+                previewImage.src = '@Url.Content("~/images/whitehead.jpg")';
+            }
+        });
+    </script>
+
+    <!--google地圖-->
+    <script>
+        $(document).ready(function () {
+            $('#mapModal').on('shown.bs.modal', function () {
+                initMap();
+            });
+
+            //Demo鍵:載入總客訴-->其他事項
+            $('#nightMarket').click(function (event) {
+                $('#locationInput').val("逢甲夜市");
+            });
+        });
+
+        // 初始化地址的地圖
+        var map;
+        var geocoder;
+        function initMap() {
+            console.log("initMap");
+            // 創建地圖
+            map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 25.040862, lng: 121.563904 }, // 台北市政府坐標
+                zoom: 15,
+            });
+
+            // 初始化地理編碼器
+            geocoder = new google.maps.Geocoder();
+
+            // 在地圖上定位
+            var address = "Taipei City Hall, 1 Shifu Road, Xinyi District, Taipei City, Taiwan 110204"; 
+            geocoder.geocode({ address: address }, function (results, status) {
+                if (status === "OK") {
+                    map.setCenter(results[0].geometry.location);
+                    var marker = new google.maps.Marker({
+                        map: map,
+                        position: results[0].geometry.location,
+                        title: "Your Location",
+                    });
+
+                    // 在地圖上添加點擊事件監聽器
+                    map.addListener("click", function (event) {
+                        // 獲取點擊位置的坐標
+                        var clickedLat = event.latLng.lat();
+                        var clickedLng = event.latLng.lng();
+
+                        // 創建新的地理位置對象以便反向地理編碼
+                        var clickedLocation = new google.maps.LatLng(clickedLat, clickedLng);
+
+                        // 使用反向地理編碼獲取點擊位置的地址
+                        geocoder.geocode({ location: clickedLocation }, function (results, status) {
+                            if (status === "OK" && results[0]) {
+                                var clickedAddress = results[0].formatted_address;
+                                console.log("使用者點擊的地址：", clickedAddress);
+                                $('#addressInput').val(clickedAddress);
+                            } else {
+                                console.log("無法獲取地址：" + status);
+                            }
+                        });
+                    });
+                } else {
+                    console.log("無法獲得地址原因: " + status);
+                }
+            });
+        }
+
+        // 使用者點擊搜尋地標時，用於常用地址
+        function searchLocation() {
+            var locationInput = document.getElementById("locationInput");
+            var location = locationInput.value;
+
+            if (location) {
+                // 使用地理編碼器獲取位置的坐標
+                geocoder.geocode({ address: location }, function (results, status) {
+                    if (status === "OK" && results[0]) {
+                        var clickedLocation = results[0].geometry.location;
+                        map.setCenter(clickedLocation);
+
+                        // 在地圖上添加標記以標示位置
+                        var marker = new google.maps.Marker({
+                            map: map,
+                            position: clickedLocation,
+                            title: location,
+                        });
+                    } else {
+                        console.log("無法找到位置：" + status);
+                    }
+                });
+            }
+        }
+    </script>
+
+    <!--2.載入時，導入消費紀錄-->
+    <script>
+
+        //進入頁面時，先呼叫方法載入資料
+        $(document).ready(function () {
+
+            loadOrderRecords()
+        });
+
+        //載入消費紀錄資料
+        function loadOrderRecords() {
+            $.getJSON('@Url.Content("~/membership/GetOrders")')
+                .then(function (data) {
+                    var tbody = document.querySelector('#orderTable tbody');
+
+                    if (data.length == 0) {
+                        $('#shoppingsheet-tab').text(`消費紀錄`);
+                    } else {
+                        $('#shoppingsheet-tab').text(`消費紀錄 (${data.length})`);
+                        // 清空表格內容
+                        tbody.innerHTML = '';
+
+                        // 遍歷 JSON 資料並建立表格列
+                        data.forEach(function (item) {
+                            var row = tbody.insertRow();
+                            row.insertCell().textContent = item.orderId;
+
+                            //將日期格式化為 "yyyy-mm-dd"
+                            var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
+                            row.insertCell().textContent = formattedDate;
+
+                            row.insertCell().textContent = item.recipientName ? item.recipientName : '徐雅莉';
+                            row.insertCell().textContent = item.recipientPhone ? item.recipientPhone : '0912345678';
+                            row.insertCell().textContent = item.paymentMethodName ? item.paymentMethodName : '信用卡';
+                            row.insertCell().textContent = item.statusName ? item.statusName : '處理中';
+                            row.insertCell().textContent = item.resultPrice ? "NT$ " + item.resultPrice : "NT$ 1250";
+
+
+                            var buttonContainer = document.createElement('div');
+                            buttonContainer.classList.add('d-flex', 'flex-column');
+
+                            //處理訂單明細的按鈕
+                            var detailButton = document.createElement('button');
+                            detailButton.textContent = '訂單明細';
+                            detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+                            detailButton.addEventListener('click', function () {
+                                $('#orderDetailModal').modal('show');
+
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                    var orderDetailTbody = document.querySelector('#orderDetailTable tbody');
+
+                                    // 清空表格內容
+                                    orderDetailTbody.innerHTML = '';
+
+                                    var totalAmount = 0;
+                                    data.forEach(function (item) {
+                                        var row = orderDetailTbody.insertRow();
+
+                                        // 在表格行中插入圖像元素
+                                        var imgCell = row.insertCell();
+                                        var imgContainer = document.createElement('div');
+                                        imgContainer.className = 'image-container';
+
+                                        var thumbnailImage = document.createElement('img');
+                                        thumbnailImage.src = item.firstImage.productPhoto ? item.firstImage.productPhoto : '@Url.Content("~/images/prod-eg-5.png")';
+                                        thumbnailImage.style.width = '100px';
+                                        thumbnailImage.style.height = 'auto';
+                                        thumbnailImage.classList.add('thumbnail-image', 'img-fluid');
+                                        thumbnailImage.id = 'thumbnailImage';
+                                        thumbnailImage.addEventListener('mousemove', function () {
+                                            var imagePopup = document.getElementById('imagePopup');
+                                            var originalImage = document.getElementById('originalImage');
+                                            originalImage.src = thumbnailImage.src;
+                                            imagePopup.style.display = 'block';
+                                        });
+                                        thumbnailImage.addEventListener('mouseout', function () {
+                                            var imagePopup = document.getElementById('imagePopup');
+                                            imagePopup.style.display = 'none';
+                                        });
+
+                                        var imagePopup = document.createElement('div');
+                                        imagePopup.className = 'image-popup';
+                                        imagePopup.id = 'imagePopup';
+                                        imagePopup.style.display = 'none'; // 初始時隱藏
+
+                                        var originalImage = document.createElement('img');
+                                        originalImage.src = ''; // 初始時為空
+                                        originalImage.alt = 'Original Image';
+                                        originalImage.id = 'originalImage';
+
+                                        imagePopup.appendChild(originalImage);
+                                        imgContainer.appendChild(thumbnailImage);
+                                        imgContainer.appendChild(imagePopup);
+                                        imgCell.appendChild(imgContainer);
+
+
+                                        row.insertCell().textContent = item.productName ? item.productName : "毛小孩專屬用品";
+                                        row.insertCell().textContent = item.productQuantity ? item.productQuantity : "1";;
+                                        if (item.size == null) {
+                                            row.insertCell().textContent = "標準型";
+                                        } else {
+                                            row.insertCell().textContent = item.size;
+                                        }
+                                        // totalAmount += item.productQuantity * item.productPrice;
+                                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice : 'NT$ 1280';
+                                        //===============================
+                                        
+                                        var cell = row.insertCell();
+                                        cell.classList.add('text-center');
+
+                                        var contentDiv = document.createElement('div');
+                                        contentDiv.className = 'd-flex flex-column align-items-center';
+
+                                        var buttonDiv = document.createElement('div');
+
+                                        var cartLink = document.createElement('a');
+                                        cartLink.className = 'btn hvr-hover btn-sm';
+                                        var cartIcon = document.createElement('i');
+                                        cartIcon.className = 'fa-solid fa-cart-plus';
+                                        cartLink.appendChild(cartIcon);
+                                        cartLink.addEventListener('click', function () {
+                                            fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                                .then(response => {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: '加入成功',
+                                                    });
+                                                })
+                                                .catch(error => {
+                                                });
+                                        });
+
+                                        buttonDiv.appendChild(cartLink);
+
+
+                                        contentDiv.appendChild(buttonDiv);
+
+                                        cell.appendChild(contentDiv);
+                                        
+                                    });
+                                    
+
+                                    // document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
+                                });
+
+                            });
+
+                            buttonContainer.appendChild(detailButton);
+
+                            //處理申請退換貨的按鈕
+                            var applyReturnButton = document.createElement('button');
+                            applyReturnButton.textContent = '申請退換貨';
+                            applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
+
+                            applyReturnButton.addEventListener('click', function () {
+                                document.querySelector('#returnSpan').textContent = item.orderId;
+                                $('#returnModal').modal('show');
+
+                                var returnProductElement = document.getElementById('returnProductSelect');
+                                returnProductElement.innerHTML = '';
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+
+                                    //拿取退貨理由數據
+                                    var returnReasonElement = document.getElementById('returnReasonSelect');
+                                    returnReasonElement.innerHTML = '';
+                                    $.getJSON('@Url.Content("~/membership/GetReturnReasonCategory")', function (data) {
+                                        data.forEach(function (item) {
+                                            var option = document.createElement('option');
+                                            option.value = item.returnReasonId;
+                                            option.textContent = item.returnReason;
+                                            returnReasonElement.appendChild(option);
+                                        });
+                                    });
+
+                                    data.forEach(function (item) {
+                                        var option = document.createElement('option');
+                                        option.value = item.productId;
+                                        option.textContent = item.productName;
+                                        returnProductElement.appendChild(option);
+                                    });
+                                });
+
+                            });
+
+                            buttonContainer.appendChild(applyReturnButton);
+
+                            //處理評論的按鈕
+                            var commentButton = document.createElement('button');
+                            commentButton.textContent = '評論';
+                            commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2');
+                            commentButton.addEventListener('click', function () {
+                                document.querySelector('#orderIdSpan').textContent = item.orderId;
+                                $('#commentModal').modal('show');
+
+                                var selectElement = document.getElementById('productSelect');
+                                selectElement.innerHTML = '';
+                                $.getJSON('@Url.Content("~/membership/GetProductByOrderId?orderid=")' + item.orderId, function (data) {
+                                    data.forEach(function (item) {
+                                        var option = document.createElement('option');
+                                        option.value = item.productId;
+                                        option.textContent = item.productName;
+                                        selectElement.appendChild(option);
+                                    });
+                                    //載入過往評論
+                                    loadProductReview();
+                                });
+                            });
+
+                            buttonContainer.appendChild(commentButton);
+
+                            var buttonCell = row.insertCell();
+                            buttonCell.appendChild(buttonContainer);
+                        });
+
+                        initializeDataTableWithDateFilter('#orderTable', '#orderMin', '#orderMax', 1);
+
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+        //送出退換貨
+        document.getElementById('returnForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            var orderId = document.querySelector('#returnSpan').textContent;
+            var reasonId = document.querySelector('#returnReasonSelect').value;
+            var returnNumber = document.querySelector('#returnNumber').value;
+            var returnTextarea = document.querySelector('#returnTextarea').value;
+            var returnImageInput = document.getElementById('hiddenTextarea').value;
+
+            var returnProductSelectElement = document.getElementById('returnProductSelect');
+            var returnProductSelectedValue = returnProductSelectElement.value;
+            returnProductSelectElement.addEventListener('change', function () {
+                returnProductSelectedValue = returnProductSelectElement.value;
+            });
+
+            const formData = new FormData(document.querySelector('#returnForm'));
+            formData.append("orderId", orderId);
+            formData.append("reasonId", reasonId);
+            formData.append("returnNumber", returnNumber);
+            formData.append("returnTextarea", returnTextarea);
+            formData.append("returnProductSelectedValue", returnProductSelectedValue);
+            formData.append("returnImageInput", returnImageInput);
+
+            fetch('@Url.Content("/Membership/SaveReturn")', {
+                body: formData,
+                method: 'POST'
+
+            })
+                .then(response => {
+                    if (response.ok) {
+                        $('#returnTextarea').val('');
+                        $('#returnNumber').val('');
+                        document.getElementById('uploadReturnImagePreview').src = '';
+
+                        loadReturnRecords();
+
+                        return response.text();
+                    } else {
+                        throw new Error('連線有誤');
+                    }
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '送出成功',
+                    });
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: error.message
+                    });
+                });
+
+        })
+
+        //送出評論
+        document.getElementById('commentForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+            var productId = document.querySelector('#productSelect').value;
+            var commentText = document.querySelector('#commentTextarea').value;
+            var startRating = document.querySelector('#startRating').value;
+            var orderIdSpan = document.getElementById('orderIdSpan').textContent;
+
+            const formData = new FormData(document.querySelector('#commentForm'));
+            formData.append("commentText", commentText);
+            formData.append("productId", productId);
+            formData.append("startRating", startRating);
+            formData.append("orderIdSpan", orderIdSpan);
+
+            fetch('@Url.Content("/Membership/SaveComment")', {
+                body: formData,
+                method: 'POST'
+
+            })
+                .then(response => {
+                    if (response.ok) {
+                        return response.text();
+                    } else {
+                        throw new Error('連線有誤');
+                    }
+                })
+                .then(data => {
+                    Swal.fire({
+                        icon: 'success',
+                        title: '送出成功',
+                    });
+                    loadProductReview();
+                })
+                .catch(error => {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '錯誤',
+                        text: error.message
+                    });
+                });
+        })
+
+        //載入過往評論:需要商品ID跟訂單編號
+        function loadProductReview() {
+            $('#commentTextarea').val("");
+
+            var orderid = document.querySelector('#orderIdSpan').textContent;
+            var productid = document.getElementById('productSelect').value;
+
+            $.getJSON('@Url.Content("~/membership/GetCommentByOrderId?orderid=")' + orderid + "&productid="+ productid, function (data) {
+
+                if (data.length == 0) {
+                    document.getElementById('commentTextarea').readOnly = false;
+                    document.getElementById('saveComment').disabled = false;
+                    document.getElementById('commentTimeDiv').style.display = 'none';
+
+                } else {
+
+                    data.forEach(function (item) {
+                        $('#commentTextarea').val(item.reviewContent);
+
+                        //星星插件無法處理
+                        // document.getElementById('startRating').value = 4;
+                        // 選取元素
+                        // var inputElement = document.getElementById('startRating');
+                        // 設定新的值
+                        // inputElement.value = 2;
+
+                        document.getElementById('commentTextarea').readOnly = true;
+                        document.getElementById('saveComment').disabled = true;
+
+                        var dateTimeString = item.reviewTime;// 使用Date物件解析日期時間字串
+                        var dateTime = new Date(dateTimeString);// 取得日期部分
+                        var date = dateTime.toLocaleDateString();// 取得時間部分
+                        var time = dateTime.toLocaleTimeString();// 最終的日期和時間
+                        var formattedDateTime = date + " " + time;
+                        $('#commentTimeTextarea').val(formattedDateTime);
+
+                        document.getElementById('commentTimeDiv').style.display = 'block';
+
+                    });
+
+                 }
+
+            });
+        }
+
+        //若使用者轉動商品，載入新商品的過往評論
+        document.getElementById('productSelect').addEventListener('change', function () {
+            loadProductReview();
+        });
+
+        //退貨圖片預覽
+        document.getElementById('returnImageInput').addEventListener('change', function (event) {
+            var previewImage = document.getElementById('uploadReturnImagePreview');
+            var selectedImage = event.target.files[0];
+
+            if (selectedImage) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    previewImage.src = e.target.result;
+                };
+                reader.readAsDataURL(selectedImage);
+            } else {
+                previewImage.src = '@Url.Content("~/images/noimage.jpg")';
+            }
+
+            event.preventDefault();
+            // 取得表單元素
+            const form = document.querySelector('#returnForm');
+
+            const formData = new FormData(form);
+            fetch('@Url.Content("/ImageTest/UploadImageToImageModerator")', {
+                body: formData,
+                method: 'POST'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    //取到照片連結了
+                    console.log(data.url);
+                    document.getElementById('hiddenTextarea').value = data.url;
+            })
+            .catch(error => {
+                console.log("error");
+            });
+        });
+
+        //Demo鍵:下載貓咪拉肚子的圖片
+        document.getElementById('shitDownload').addEventListener('click', function () {
+            const imageUrl = '/images/catshit.jpg';
+            const a = document.createElement('a'); // 創建一個隱藏的 a 標籤元素
+            a.style.display = 'none';
+            document.body.appendChild(a);
+            a.href = imageUrl;// 設置 a 標籤的下載屬性和鏈接到圖片的 URL
+            a.download = 'catabdomen.jpg'; // 可以自行更改下載的文件名稱
+            a.click(); // 模擬點擊 a 標籤，觸發下載
+            document.body.removeChild(a);// 移除 a 標籤
+        });
+
+        //Demo鍵:載入退換貨的備註
+        $('#catShitReturn').click(function (event) {
+            $('#returnTextarea').val("貓咪在食用產品後，出現了身體不適、腹痛、噁心、嘔吐的狀況，詳如附件照片");
+        });
+
+
+        //Demo鍵:載入商品評價的評論
+        $('#commentDemo').click(function (event) {
+            // $('#commentTextarea').val("貓咪在食用產品後，出現了身體不適的狀況，購買的人需要三思產品是否合毛小孩的胃!");
+            $('#commentTextarea').val("貓咪在食用產品後，出現了身體極不適的狀況，欲購買者請打消念頭! 😡");
+        });
+    </script>
+
+    <!--用於dataTables搜尋關鍵字採ajax-->
+    <script>
+        function initializeDataTableWithDateFilter(tableSelector, minDateSelector, maxDateSelector, dateIndex) {
+            let minDate, maxDate;
+
+            DataTable.ext.search.push(function (settings, data, dataIndex) {
+                let min = minDate.val();
+                let max = maxDate.val();
+                let date = new Date(data[dateIndex]); // 使用傳入的 dateIndex
+
+                if (
+                    (min === null && max === null) ||
+                    (min === null && date <= max) ||
+                    (min <= date && max === null) ||
+                    (min <= date && date <= max)
+                ) {
+                    return true;
+                }
+                return false;
+            });
+
+            // Create date inputs
+            minDate = new DateTime(minDateSelector, {
+                format: 'MMMM Do YYYY'
+            });
+            maxDate = new DateTime(maxDateSelector, {
+                format: 'MMMM Do YYYY'
+            });
+
+
+            let table = new DataTable(tableSelector, {
+                language: {
+                    url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                },
+                pageLength: 10,
+                lengthMenu: [10, 20, 30],
+                retrieve: true,
+            });
+            
+
+            document.querySelectorAll(`${minDateSelector}, ${maxDateSelector}`).forEach((el) => {
+                el.addEventListener('change', () => table.draw());
+            });
+        }
+
+    </script>
+
+    <!--3.載入時，導入退貨紀錄-->
+    <script>
+
+        //進入頁面時，先呼叫方法載入資料
+        $(document).ready(function () {
+            loadReturnRecords();
+        });
+        //載入退貨紀錄資料
+        function loadReturnRecords() {
+            $.getJSON('@Url.Content("~/membership/GetReturnRecord")')
+                .then(function (data) {
+                    var tbody = document.querySelector('#returnRecordTable tbody');
+
+                    if (data == null) {
+                        $('#return-tab').text(`退貨紀錄`);
+                    } else {
+                        $('#return-tab').text(`退貨紀錄 (${data.length})`);
+
+                        // 清空表格內容
+                        tbody.innerHTML = '';
+
+                        // 遍歷 JSON 資料並建立表格列
+                        data.forEach(function (item) {
+                            var row = tbody.insertRow();
+                            row.insertCell().textContent = item.orderId;
+
+                            // 將日期格式化為 "yyyy-mm-dd"
+                            var formattedDate = new Date(item.returnDate).toISOString().split('T')[0];
+                            row.insertCell().textContent = formattedDate;
+                            row.insertCell().textContent = item.returnReason;
+                            row.insertCell().textContent = item.statusName;
+                        });
+
+                        initializeDataTableWithDateFilter('#returnRecordTable', '#returnMin', '#returnMax', 1);
+                    }
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+
+    <!--4.載入時，導入收藏紀錄-->
+    <script>
+
+        //進入頁面時，先呼叫方法載入資料
+        $(document).ready(function () {
+            loadFavoriteData();
+        });
+
+        //載入收藏紀錄的表格
+        function loadFavoriteData() {
+            $.getJSON('@Url.Content("~/membership/GetFavoriteData")', function (data) {
+
+                if ( data == null) {
+                    var tbody = document.querySelector('#favoriteRecordTable tbody');
+                    $('#collect-tab').text('收藏紀錄');
+                    tbody.innerHTML = '';
+                } else {
+                    var tbody = document.querySelector('#favoriteRecordTable tbody');
+                    $('#collect-tab').text(`收藏紀錄 (${data.length})`);
+
+                    tbody.innerHTML = '';
+
+                    data.forEach(function (item) {
+                        var row = tbody.insertRow();
+
+                        // 在表格行中插入圖像元素
+                        var imgCell = row.insertCell();
+                        var imgContainer = document.createElement('div');
+                        imgContainer.className = 'image-container';
+
+                        var thumbnailImage = document.createElement('img');
+                        thumbnailImage.src = item.productPhoto ? item.productPhoto : '@Url.Content("~/images/prod-eg-5.png")';
+                        thumbnailImage.style.width = '100px';
+                        thumbnailImage.style.height = 'auto';
+
+                        // 使用唯一的id，例如使用item.productId作為id
+                        thumbnailImage.id = 'thumbnailImage_' + item.productId;
+
+                        thumbnailImage.addEventListener('mousemove', function () {
+                            var imagePopup = document.getElementById('imagePopup_' + item.productId);
+                            var originalImage = document.getElementById('originalImage_' + item.productId);
+                            originalImage.src = thumbnailImage.src;
+                            imagePopup.style.display = 'block';
+                        });
+
+                        thumbnailImage.addEventListener('mouseout', function () {
+                            var imagePopup = document.getElementById('imagePopup_' + item.productId);
+                            imagePopup.style.display = 'none';
+                        });
+
+                        var imagePopup = document.createElement('div');
+                        imagePopup.className = 'image-popup';
+                        imagePopup.id = 'imagePopup_' + item.productId;
+                        imagePopup.style.display = 'none'; // 初始時隱藏
+
+                        var originalImage = document.createElement('img');
+                        originalImage.src = ''; // 初始時為空
+                        originalImage.alt = 'Original Image';
+                        originalImage.id = 'originalImage_' + item.productId;
+
+                        imagePopup.appendChild(originalImage);
+                        imgContainer.appendChild(thumbnailImage);
+                        imgContainer.appendChild(imagePopup);
+                        imgCell.appendChild(imgContainer);
+
+
+                        row.insertCell().textContent = item.productName ? item.productName : "毛寵物用品";
+                        row.insertCell().textContent = item.remainingQuantity ? item.remainingQuantity : "1";
+                        row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice + " / 份" : "NT$ 350 / 份";
+
+                        var cartCell = row.insertCell();
+                        var deleteCell = row.insertCell();
+
+                        // 設定格子內容水平置中的樣式
+                        cartCell.classList.add('text-center');
+                        deleteCell.classList.add('text-center');
+
+                        var cartDiv = document.createElement('div');
+                        cartDiv.className = 'd-inline-block';
+
+                        var cartLink = document.createElement('a');
+                        cartLink.className = 'btn hvr-hover';
+                        var cartIcon = document.createElement('i');
+                        cartIcon.className = 'fa-solid fa-cart-plus';
+                        cartLink.appendChild(cartIcon);
+
+
+                        cartLink.addEventListener('click', function () {
+                            fetch('@Url.Content("~/membership/AddToCart?pId=")' + item.productId)
+                                .then(response => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '加入成功',
+                                    });
+                                })
+                                .catch(error => {
+                                });
+                        });
+
+                        cartDiv.appendChild(cartLink);
+
+                        cartCell.appendChild(cartDiv);
+
+                        var deleteDiv = document.createElement('div');
+                        deleteDiv.className = 'd-inline-block';
+
+                        var deleteLink = document.createElement('a');
+                        deleteLink.className = 'btn btn-light border icon-hover-danger';
+                        var deleteIcon = document.createElement('i');
+                        deleteIcon.className = 'fa-solid fa-xmark';
+                        deleteLink.appendChild(deleteIcon);
+
+                        deleteLink.addEventListener('click', function () {
+                            fetch('@Url.Content("~/membership/DeleteFavoriteProduct?favoriteId=")' + item.favoriteId)
+                                .then(response => {
+                                    if (response.status === 200) {
+                                        // 操作成功
+                                        loadFavoriteData();
+                                        toastr["success"]("移除成功");
+                                    } else if (response.status === 404) {
+                                        console.log("找不到要刪除的收藏產品");
+                                    } else if (response.status === 500) {
+                                        console.log("伺服器錯誤");
+                                    }
+                                })
+
+                        });
+
+                        deleteDiv.appendChild(deleteLink);
+                        deleteCell.appendChild(deleteDiv);
+                    });
+
+                    //表格化:套入dataTables套件會壞掉
+                    /*
+                    new DataTable('#favoriteRecordTable', {
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
+                        },
+                        pageLength: 5,
+                        lengthMenu: [5, 10, 15],
+                        retrieve: true,
+                        "destroy": true,
+                        searching: true // 啟用搜尋功能
+                    });
+                    */
+                }
+                
+            });
+        }
+
+
+
+        function downloadPDF() {
+            window.jsPDF = window.jspdf.jsPDF;
+
+            // 創建一個新的 jsPDF 實例
+            const pdf = new jsPDF('p', 'pt', 'letter');
+
+            // 選取要下載的 HTML 元素（這裡是表格）
+            const table = document.getElementById('favoriteRecordTable');
+
+            // 使用 html2canvas 將 HTML 元素轉換為圖像，然後將圖像添加到 PDF 中
+            html2canvas(table).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
+                pdf.addImage(imgData, 'PNG', 40, 40, 500, 500); // 設置圖像位置和大小
+                pdf.save('table.pdf'); // 下載 PDF 文件
+            });
+        }
+
+
+    </script>
+
+    <!--5.載入時，導入客訴紀錄-->
+    <script>
+
+        //進入頁面時，先呼叫方法載入資料
+        $(document).ready(function () {
+            loadComplaintRecords();
+        });
+
+        //載入客訴紀錄的表格
+        function loadComplaintRecords() {
+
+            $.ajaxSetup({ cache: false });
+            
+            $.getJSON('@Url.Content("~/membership/GetComplaintCase")')
+                .then(function (data) {
+                    var tbody = document.querySelector('#complaintRecordTable tbody');
+                    tbody.innerHTML = '';
+
+                    data.forEach(function (item) {
+                        $('#Complaint-tab').text(`客訴紀錄 (${data.length})`);
+                        var row = tbody.insertRow();
+
+                        row.insertCell().textContent = item.complaintCaseId;
+                        row.insertCell().textContent = new Date(item.creationTime).toISOString().split('T')[0];
+                        row.insertCell().textContent = item.categoryName;
+                        row.insertCell().textContent = item.complaintTitle;
+                        row.insertCell().textContent = item.complaintStatusName;
+
+                        var actionCell = row.insertCell();
+
+                        var actionContainer = document.createElement('div');
+                        actionContainer.style.textAlign = 'center'; // 設置文本對齊屬性
+
+                        var viewButton = document.createElement('button');
+                        viewButton.textContent = '客訴內容';
+                        viewButton.classList.add('btn', 'btn-warning', 'btn-sm'); // 添加樣式類
+                        viewButton.addEventListener('click', function () {
+                            document.querySelector('#answerContent').textContent = "";
+                            document.querySelector('#answerTime').textContent = "";
+                            $('#ComplaintModal').modal('show');
+                            document.querySelector('#compliantContent').textContent = item.complaintContent;
+
+                            $.getJSON('@Url.Content("~/membership/GetComplaintCaseDetail?complaintcaseid=")' + item.complaintCaseId, function (datas) {
+                                if (datas !== null && datas.length > 0) {
+                                    var detailItem = datas[0];
+                                    document.querySelector('#answerContent').textContent = detailItem.messageRecipientContent;
+
+                                    var dateParts = detailItem.sentTime.split('-');
+                                    var year = parseInt(dateParts[0], 10);
+                                    var month = parseInt(dateParts[1], 10) - 1;
+                                    var day = parseInt(dateParts[2], 10);
+                                    var utcDate = new Date(Date.UTC(year, month, day));
+                                    var formattedDate = utcDate.toISOString().split('T')[0];
+                                    document.querySelector('#answerTime').textContent = "回覆時間: " + formattedDate;
+                                } else {
+                                    //這一段好像都不會觸發到
+                                    document.querySelector('#answerContent').textContent = "無回覆內容";
+                                    document.querySelector('#answerTime').textContent = "無回覆時間";
+                                }
+                            });
+                        });
+
+                        actionContainer.appendChild(viewButton);
+                        actionCell.appendChild(actionContainer);
+                    });
+
+                    initializeDataTableWithDateFilter('#complaintRecordTable', '#complaintMin', '#complaintMax', 1);
+                })
+                .catch(function (error) {
+                    console.error('Error:', error);
+                });
+        }
+
+    </script>
+
+    <!--6.載入時: 導入客服中心-->
+    <script>
+        $(document).ready(function () {
+            //拿取客訴類型數據
+            var selectElement = document.getElementById('appealCategorySelect');
+            $.getJSON('@Url.Content("~/membership/GetAppealCategory")', function (data) {
+                data.forEach(function (item) {
+                    var option = document.createElement('option');
+                    option.value = item.appealCategoryId;
+                    option.textContent = item.categoryName;
+                    selectElement.appendChild(option);
+                });
+            });
+
+            //送出客訴內容
+            $('#complaintSubmit').click(function (event) {
+                var selectedValue = $('#appealCategorySelect').val();
+                var subjectValue = $('#ComplaintTitle').val();
+                var messageValue = $('#ComplaintContent').val();
+
+                if (!selectedValue) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請選擇申訴類型',
+                    });
+                    event.preventDefault();
+                } else if (!subjectValue || subjectValue.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請輸入標題',
+                    });
+                    event.preventDefault();
+                } else if (!messageValue || messageValue.trim() === "") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: '請輸入內容',
+                    });
+                    event.preventDefault();
+                } else {
+                    event.preventDefault();
+
+                    var params = {
+                        "autocorrect": true,
+                        "PII": true,
+                        "classify": true,
+                        "language": "eng",
+                    };
+                    $.ajax({
+                        url: "https://msit150team02contentmoderator.cognitiveservices.azure.com/contentmoderator/moderate/v1.0/ProcessText/Screen?" + $.param(params),
+                        beforeSend: function (xhrObj) {
+                            xhrObj.setRequestHeader("Content-Type", "text/plain");
+                            xhrObj.setRequestHeader("Ocp-Apim-Subscription-Key", "b4fcd4ce931442748ba5e0467bccfd67");
+                        },
+                        type: "POST",
+                        data: messageValue,
+                    }).done(function (data) {
+
+                        // 製作爬蟲分析仲裁結果 數據1: 成人內容 數據2: 性暗示 數據3:冒犯性
+                        // 數據1 ： 成人內容
+                        var Category1 = data['Classification']['Category1']['Score'];
+                        // // 數據2 ： 性暗示
+                        var Category2 = data['Classification']['Category2']['Score'];
+                        // // 數據3 ： 冒犯性
+                        var Category3 = data['Classification']['Category3']['Score'];
+
+                        $('#checkComplaint1').text(`成人內容：${(Category1 * 100).toFixed(2)}%`);
+                        if (Category1 > 0.7) {
+                            document.getElementById('checkComplaint1').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint1').style.color = 'green';
+                        }
+                        $('#checkComplaint2').text(`色情內容：${(Category2 * 100).toFixed(2)}%`);
+                        if (Category2 > 0.7) {
+                            document.getElementById('checkComplaint2').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint2').style.color = 'green';
+                        }
+                        $('#checkComplaint3').text(`冒犯語言：${(Category3 * 100).toFixed(2)}%`);
+                        if (Category3 > 0.7) {
+                            document.getElementById('checkComplaint3').style.color = 'red';
+                        } else {
+                            document.getElementById('checkComplaint3').style.color = 'green';
+                        }
+
+                        document.getElementById('aiCheck').style.display = 'block';
+
+                        $('#myChart').remove();
+                        $('#myChartDiv').append('<canvas id="myChart" height="75"> </canvas>');
+                        var backgroundColor1 = Category1 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor2 = Category2 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var backgroundColor3 = Category3 >= 0.7 ? 'rgba(255, 99, 132, 0.2)' : 'rgba(75, 192, 192, 0.2)';
+                        var borderColor1 = Category1 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor2 = Category2 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+                        var borderColor3 = Category3 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
+
+                        const ctx = document.getElementById('myChart');
+                        const labels = ['成人內容', '色情內容', '冒犯語言'];  // 设置 X 轴上对应的标签
+                        const dataChart = {
+                            labels: labels,
+                            datasets: [{
+                                axis: 'y',
+                                label: '審核結果圖',
+                                data: [(Category1 * 100).toFixed(2), (Category2 * 100).toFixed(2), (Category3 * 100).toFixed(2)],
+                                fill: true,
+                                backgroundColor: [      // 设置每个柱形图的背景颜色
+                                    backgroundColor1,
+                                    backgroundColor2,
+                                    backgroundColor3,
+                                ],
+                                borderColor: [     //设置每个柱形图边框线条颜色
+                                    borderColor1,
+                                    borderColor2,
+                                    borderColor3,
+                                ],
+                                borderWidth: 1     // 设置线条宽度
+                            }]
+                        };
+                        const config = {
+                            type: 'bar', // 设置图表类型
+                            data: dataChart,  // 设置数据集
+                            options: {
+                                indexAxis: 'y',
+                                scales: {
+                                    x: {
+                                        max: 100, // 设置 x 轴的最大值为 100
+                                        min: 0,   // 如果需要，也可以设置 x 轴的最小值
+                                    },
+                                },
+                                plugins: {
+                                    legend: {
+                                        labels: {
+                                            fontSize: 25, // 設定文字大小為 16 像素
+                                        },
+                                    },
+                                },
+                            }
+                        };
+                        const myChart = new Chart(ctx, config);
+
+                        if (Category1 >= 0.7 || Category2 >= 0.7 || Category3 >= 0.7) {
+                            Swal.fire({
+                                icon: 'error',
+                                title: '系統判讀',
+                                text: `冒犯指數過高：${(Category3 * 100).toFixed(2)}%`
+                            })
+
+                        } else {
+                            const formData = new FormData(document.querySelector('#complaintForm'));
+                            formData.append("selectedValue", selectedValue);
+
+                            fetch('@Url.Content("/Membership/SaveComplaint")', {
+                                body: formData,
+                                method: 'POST'
+
+                            })
+                                .then(response => {
+                                    if (response.ok) {
+                                        return response.text();
+                                    } else {
+                                        throw new Error('連線有誤，請向客服人員聯繫');
+                                    }
+                                })
+                                .then(data => {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: '送出成功',
+                                        text: '感謝您來信'
+                                    });
+
+                                    loadComplaintRecords();
+                                })
+                                .catch(error => {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: '錯誤',
+                                        text: error.message
+                                    });
+                                });
+                        }
+
+                    }).fail(function (err) {
+                        // alert(err.statusText);
+                        document.getElementById('aiCheck').style.display = 'block';
+                        console.log(err.statusText);
+
+                    });
+                        
+                }
+            });
+
+            //查閱圖表的按鈕鍵:用於秀出和隱藏
+            $('#lookChart').click(function (event) {
+                const myChartDiv = document.getElementById('myChartDiv');
+                if (myChartDiv.style.display === 'none') {
+                    myChartDiv.style.display = 'block';
+                } else {
+                    myChartDiv.style.display = 'none';
+                }
+            });
+
+
+            //Demo鍵:載入總客訴-->其他事項
+            $('#totalDemo').click(function (event) {
+                $('#ComplaintTitle').val("新會員對平台不熟悉，需要有專人來服務");
+                $('#ComplaintContent').val(
+                    "1.貓咪在食用產品後，遇到了以下身體不適症狀：腹痛、噁心、嘔吐shit\n" +
+                    "2.最近才發現網站有寄送電子報的服務，想請客服人員改成寄送每期電子報到信箱。\n" +
+                    "3.註冊時生日誤填，正確的日期為2000/1/1，請幫我做更新!\n" +
+                    "4.為何我參加多次扭蛋抽獎都抽不到貓咪和優惠券呢 ?"
+                );
+            });
+
+        });
+
+    </script>
+
+
+
+
+    <!--==========================================================-->
     <!--增加的部分:用於圖片放大預覽-->
     <script>
         // 當頁面載入完成後執行
@@ -1213,17 +2644,6 @@
         });
     </script>
 
-    <!--新加入qrcode的cdn
-    <script  src='http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js'></script>
-    <script  src="http://cdn.staticfile.org/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
-    <script>
-        const qrcode = new QRCode(document.getElementById("qrcode"), {
-            width: 250,
-            height: 250,
-            text: "https://www.youtube.com/"
-        });
-    </script>
-    -->
     <!--新加入sweetalert2的cdn-->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
@@ -1254,377 +2674,4 @@
     </script>
 
 
-    <!--導入7-11超商的script，之後可以做address.cshtml導入老師的script.js-->
-    <script>
-        const countySelect = document.getElementById('countySelect');
-        const townSelect = document.getElementById('townSelect');
-
-        // 假設 countyData 是一個包含縣市和鄉鎮資料的物件陣列
-        const countyData = [
-            {
-                county: '台北市',
-                towns: ['中正區', '大同區', '中山區', '松山區', '大安區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '新北市',
-                towns: ['板橋區', '三重區', '新莊區', '永和區', '中和區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '基隆市',
-                towns: ['中正區', '七堵區', '暖暖區', '仁愛區', '安樂區']
-            },
-            {
-                county: '澎湖縣',
-                towns: ['馬公市', '湖西鄉', '白沙鄉', '西嶼鄉', '望安鄉', /* ... */]
-            }
-            // 其他縣市的資料...
-        ];
-
-        // 初始化縣市選單
-        countyData.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.county;
-            option.textContent = item.county;
-            countySelect.appendChild(option);
-        });
-
-        // 當縣市選項改變時，動態生成鄉鎮選單
-        countySelect.addEventListener('change', () => {
-            const selectedCounty = countySelect.value;
-            const selectedData = countyData.find(item => item.county === selectedCounty);
-
-            townSelect.innerHTML = ''; // 清空鄉鎮選單
-
-            selectedData.towns.forEach(town => {
-                const option = document.createElement('option');
-                option.value = town;
-                option.textContent = town;
-                townSelect.appendChild(option);
-            });
-        });
-
-    </script>
-    <!--導入全家超商的script，之後可以做address.cshtml導入老師的script.js-->
-    <script>
-        const county2Select = document.getElementById('county2Select');
-        const town2Select = document.getElementById('town2Select');
-
-        // 假設 countyData 是一個包含縣市和鄉鎮資料的物件陣列
-        const county2Data = [
-            {
-                county: '台北市',
-                towns: ['中正區', '大同區', '中山區', '松山區', '大安區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '新北市',
-                towns: ['板橋區', '三重區', '新莊區', '永和區', '中和區'] // 這裡只列了部分鄉鎮
-            },
-            {
-                county: '基隆市',
-                towns: ['中正區', '七堵區', '暖暖區', '仁愛區', '安樂區']
-            },
-            {
-                county: '澎湖縣',
-                towns: ['馬公市', '湖西鄉', '白沙鄉', '西嶼鄉', '望安鄉', /* ... */]
-            }
-            // 其他縣市的資料...
-        ];
-
-        // 初始化縣市選單
-        county2Data.forEach(item => {
-            const option = document.createElement('option');
-            option.value = item.county;
-            option.textContent = item.county;
-            county2Select.appendChild(option);
-        });
-
-        // 當縣市選項改變時，動態生成鄉鎮選單
-        county2Select.addEventListener('change', () => {
-            const selected2County = county2Select.value;
-            const selected2Data = county2Data.find(item => item.county === selected2County);
-
-            town2Select.innerHTML = ''; // 清空鄉鎮選單
-
-            selected2Data.towns.forEach(town => {
-                const option = document.createElement('option');
-                option.value = town;
-                option.textContent = town;
-                town2Select.appendChild(option);
-            });
-        });
-
-    </script>
-
-
-
-    <!--1.載入時，導入基本資料-->
-    <script>
-        $(document).ready(function () {
-            //拿取基本資料數據
-            $.getJSON('@Url.Content("~/membership/getmemberinfo")', function (data) {
-                $('#memberAccountInput').val(data.memberAccount);
-                $('#passwordInput').val(data.password);
-                $('#nameInput').val(data.name);
-                $('#emailInput').val(data.email);
-                $('#phoneNumberInput').val(data.phoneNumber);
-                $('#summonName').text(data.name);
-
-                var dateParts = data.birthday.split('-');
-                var year = parseInt(dateParts[0], 10);
-                var month = parseInt(dateParts[1], 10) - 1;
-                var day = parseInt(dateParts[2], 10);
-                var utcDate = new Date(Date.UTC(year, month, day));
-                var formattedDate = utcDate.toISOString().split('T')[0];
-                $('#birthdayInput').val(formattedDate);
-            });
-            //送出修改後的基本資料
-            $('#memberInfoButton').click(function (event) {
-                /*
-                var passwordValue = $('#passwordInput').val();
-                var nameValue = $('#nameInput').val();
-                var emailValue = $('#emailInput').val();
-                var phoneNumberValue = $('#phoneNumberInput').val();
-                var birthdayValue = $('#birthdayInput').val();
-                */
-                event.preventDefault();
-
-                const formData = new FormData(document.querySelector('#memberInfoForm'));
-
-                fetch('@Url.Content("/Membership/UpdateMemberInfo")', {
-                    body: formData,
-                    method: 'POST'
-
-                })
-                .then(response => {
-                    if (response.ok) {
-                        //這裡要放入新資料
-                        //像是 $('#summonName').text(data.name);
-                        return response.text();
-                    } else {
-                        throw new Error('連線有誤，請向客服人員聯繫');
-                    }
-                })
-                .then(data => {
-                    Swal.fire({
-                        icon: 'success',
-                        title: '修改成功',
-                        // text: '感謝您來信'
-                    });
-                })
-                .catch(error => {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '錯誤',
-                        text: error.message
-                    });
-                });
-            });
-        });
-    </script>
-
-
-
-    <!--2.載入時，導入消費紀錄-->
-    <script>
-
-        $(document).ready(function () {
-            $.getJSON('@Url.Content("~/membership/GetOrders")', function (data) {
-                var tbody = document.querySelector('#orderTable tbody');
-
-                // 清空表格內容
-                tbody.innerHTML = '';
-
-                // 遍歷 JSON 資料並建立表格列
-                data.forEach(function (item) {
-                    var row = tbody.insertRow();
-                    row.insertCell().textContent = item.orderId;
-
-                    //將日期格式化為 "yyyy-mm-dd"
-                    var formattedDate = new Date(item.orderCreationDate).toISOString().split('T')[0];
-                    row.insertCell().textContent = formattedDate;
-
-                    row.insertCell().textContent = item.recipientName;
-                    row.insertCell().textContent = item.recipientAddress;
-                    row.insertCell().textContent = item.recipientPhone;
-                    row.insertCell().textContent = item.paymentMethodName;
-                    row.insertCell().textContent = item.statusName;
-
-                    // 創建 "訂單明細" 按鈕
-                    var detailButton = document.createElement('button');
-                    detailButton.textContent = '訂單明細';
-                    detailButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
-
-                    // 為按鈕添加點擊事件處理程序
-                    detailButton.addEventListener('click', function () {
-                        // 在這裡添加訂單明細的處理邏輯，例如彈出模態或導向到訂單詳細頁面
-                        alert('顯示訂單明細：' + item.orderId);
-                    });
-
-                    // 創建 "申請退換貨" 按鈕
-                    var applyReturnButton = document.createElement('button');
-                    applyReturnButton.textContent = '申請退換貨';
-                    applyReturnButton.classList.add('btn', 'btn-outline-dark', 'btn-sm', 'mb-2');
-
-                    // 為按鈕添加點擊事件處理程序
-                    applyReturnButton.addEventListener('click', function () {
-                        // 在這裡添加申請退換貨的處理邏輯
-                        alert('申請退換貨：' + item.orderId);
-                    });
-
-                    // 創建 "評論" 按鈕
-                    var commentButton = document.createElement('button');
-                    commentButton.textContent = '評論';
-                    commentButton.classList.add('btn', 'btn-warning', 'btn-sm', 'mb-2', 'flex-fill');
-
-                    // 為按鈕添加點擊事件處理程序
-                    commentButton.addEventListener('click', function () {
-                        // 在這裡添加評論的處理邏輯
-                        alert('評論：' + item.orderId);
-                    });
-
-                    // 創建包含按鈕的 div 元素並設置樣式
-                    var buttonContainer = document.createElement('div');
-                    buttonContainer.classList.add('d-flex', 'flex-column', 'align-items-center');
-                    buttonContainer.appendChild(detailButton);
-                    buttonContainer.appendChild(applyReturnButton);
-                    buttonContainer.appendChild(commentButton);
-
-                    // 在表格中插入包含按鈕的單元格
-                    var buttonCell = row.insertCell();
-                    buttonCell.appendChild(buttonContainer);
-
-
-
-
-                });
-
-                initializeDataTable('#orderTable', '#myKeyWord', '#btnQuery');
-
-            });
-        });
-        
-    </script>
-
-    <!--用於dataTables搜尋關鍵字採ajax-->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script>
-        
-
-
-        var dataTableConfig = {
-            language: {
-                url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-            },
-            pageLength: 5,
-            lengthMenu: [5, 10, 15], // 下拉選單每頁顯示幾筆
-        };
-        function initializeDataTable(tableId, keywordId, btnId) {
-            var customTable = new DataTable(tableId, dataTableConfig);
-            $(btnId).on("click", function (event) {
-                customTable.search($(keywordId).val()).draw();
-            });
-        }
-
-        initializeDataTable('#example2', '#myKeyWord2', '#btnQuery2');
-        initializeDataTable('#example3', '#myKeyWord3', '#btnQuery3');
-        initializeDataTable('#example4', '#myKeyWord4', '#btnQuery4');
-
-
-    </script>
-
-    <!--上傳大頭照-->
-    <script>
-
-        $(document).ready(function () {
-
-            $('#headShotDiv').on('click', function () {
-               
-
-            });
-        });
-
-    </script>
-
-    <!--6.載入: 導入客服中心。點擊: 送出填寫資料到控制台-->
-    <script>
-        $(document).ready(function () {
-            //拿取客訴類型數據
-            var selectElement = document.getElementById('appealCategorySelect');
-            $.getJSON('@Url.Content("~/membership/GetAppealCategory")', function (data) {
-                data.forEach(function (item) {
-                    var option = document.createElement('option');
-                    option.value = item.appealCategoryId;
-                    option.textContent = item.categoryName;
-                    selectElement.appendChild(option);
-                });
-            });
-            //送出客訴內容
-            $('#complaintSubmit').click(function (event) {
-                var selectedValue = $('#appealCategorySelect').val();
-                var subjectValue = $('#ComplaintTitle').val();
-                var messageValue = $('#ComplaintContent').val();
-
-                if (!selectedValue) {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '請選擇申訴類型',
-                    });
-                    event.preventDefault();
-                } else if (!subjectValue || subjectValue.trim() === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '請輸入標題',
-                    });
-                    event.preventDefault();
-                } else if (!messageValue || messageValue.trim() === "") {
-                    Swal.fire({
-                        icon: 'error',
-                        title: '請輸入內容',
-                    });
-                    event.preventDefault();
-                } else {
-                    event.preventDefault();
-
-                    const formData = new FormData(document.querySelector('#complaintForm'));
-                    formData.append("selectedValue", selectedValue);
-
-                    fetch('@Url.Content("/Membership/SaveComplaint")', {
-                        body: formData,
-                        method: 'POST'
-
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                                $('#appealCategorySelect').val('');  // 清空select的值
-                                $('#ComplaintTitle').val('');         // 清空input的值
-                                $('#ComplaintContent').val('');       // 清空textarea的值
-
-                            return response.text();
-                        } else {
-                            throw new Error('連線有誤，請向客服人員聯繫');
-                        }
-                    })
-                    .then(data => {
-                        Swal.fire({
-                            icon: 'success',
-                            title: '送出成功',
-                            text: '感謝您來信'
-                        });
-
-
-                    })
-                    .catch(error => {
-                        Swal.fire({
-                            icon: 'error',
-                            title: '錯誤',
-                            text: error.message
-                        });
-                    });
-                }
-            });
-        });
-
-    </script>
-}
-
-
+    }

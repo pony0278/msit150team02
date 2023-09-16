@@ -25,6 +25,8 @@ public partial class GameProductTotal
 
     public decimal? LotteryProbability { get; set; }
 
+    public int? CouponId { get; set; }
+
     public virtual ICollection<GameItemPurchaseRecord> GameItemPurchaseRecord { get; set; } = new List<GameItemPurchaseRecord>();
 
     public virtual GameProductCategory ProductCategory { get; set; }

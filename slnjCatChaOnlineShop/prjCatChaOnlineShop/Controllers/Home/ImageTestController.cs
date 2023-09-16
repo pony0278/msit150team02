@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using prjCatChaOnlineShop.Models.CModels;
 using prjCatChaOnlineShop.Models;
+using prjCatChaOnlineShop.Areas.AdminCMS.Models;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
@@ -68,5 +69,73 @@ namespace prjCatChaOnlineShop.Controllers.Home
             return Json(new { uploaded = true, url = $"{imageUrl}" });
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UploadImageToMemberInfo(IFormFile image, string AnnouncementContent)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+
+            string imageUrl;
+            try
+            {
+                imageUrl = await _imageService.UploadImageAsync(image);
+            }
+            catch
+            {
+
+                return BadRequest("Error uploading the image.");
+            }
+
+            if (string.IsNullOrWhiteSpace(AnnouncementContent))
+            {
+                return BadRequest("Announcement content cannot be empty.");
+            }
+
+            try
+            {
+                if (int.TryParse(Request.Form["memberIdForMembership"], out int memberIdForMembership))
+                {
+                    var memberToUpdate = _cachaContext.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
+                    memberToUpdate.MemberImage = imageUrl;
+                    await _cachaContext.SaveChangesAsync();
+                }
+
+            }
+            catch
+            {
+                return BadRequest("Error saving the announcement.");
+            }
+
+            return RedirectToAction("membership", "membership");
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadImageToImageModerator(IFormFile image, string AnnouncementContent)
+        {
+            if (image == null || image.Length == 0)
+            {
+                return BadRequest("No image provided.");
+            }
+
+            string imageUrl;
+            try
+            {
+                imageUrl = await _imageService.UploadImageAsync(image);
+            }
+            catch
+            {
+
+                return BadRequest("Error uploading the image.");
+            }
+
+            if (string.IsNullOrWhiteSpace(AnnouncementContent))
+            {
+                return BadRequest("Announcement content cannot be empty.");
+            }
+
+            return Json(new { uploaded = true, url = $"{imageUrl}" });
+        }
     }
 }

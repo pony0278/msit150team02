@@ -52,3 +52,10 @@
     color: rgba(17, 5, 5, 0.575);
     font-family: ·L³n¥¿¶ÂÅé;
 }
+
+#confirmWin-fillin {
+    position: absolute;
+    top:115px;
+    display: none;
+    
+}

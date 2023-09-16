@@ -67,13 +67,14 @@
         $("#go-to-game").fadeOut();
       }
     });
-    $("#go-to-game").click(function () {
+      $("#go-to-game").click(function (event) {
       $("html, body").animate(
         {
           scrollTop: 0,
         },
         600
-      );
+        );
+        event.preventDefault();
       return false;
     });
   });
@@ -275,4 +276,7 @@
   $(".brand-box").niceScroll({
     cursorcolor: "#9b9b9c",
   });
+
+
+
 })(jQuery);

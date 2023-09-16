@@ -55,6 +55,8 @@
                 {
                     @foreach (var content in group.Value)
                     {
+                        DateTime publishTime = DateTime.Parse(content.PublishTime);
+                        string formattedTime = publishTime.ToString("yyyy-MM-dd tt hh:mm");
                         <div class="container mt-4 ">
                             <a asp-controller="ShopNews" asp-action="NewsContent" asp-route-id="@content.AnnouncementId">
                                 <div class="clickable-row w-100 position-relative">
@@ -64,11 +66,14 @@
                                         <h1>@content.AnnouncementTitle</h1>
                                     </div>
                                     <div class="content-News">
-                                        <p id="shopNewContent">@content.AnnouncementContent</p>
+                                        <p class="shopNewContent">@content.AnnouncementContent</p>
                                     </div>
                                     <div class="pulishtime-News">
-                                        <h3>@content.PublishTime</h3>
+                                        <h3>
+                                            @formattedTime
+                                        </h3>
                                     </div>
+
                                 </div>
                             </a>
                         </div>
@@ -84,8 +89,10 @@
                 {
                     @foreach (var content in group.Value)
                     {
+                        DateTime publishTime = DateTime.Parse(content.PublishTime);
+                        string formattedTime = publishTime.ToString("yyyy-MM-dd tt hh:mm");
                         <div class="container mt-4 ">
-                            <a asp-controller="ShopNews" asp-action="NewsContent">
+                            <a asp-controller="ShopNews" asp-action="NewsContent" asp-route-id="@content.AnnouncementId">
                                 <div class="clickable-row w-100 position-relative">
                                     <img class="w-25 m-2 rounded shadow" src="@content.AnnouncementImageHeader"
                                          alt="...">
@@ -93,10 +100,10 @@
                                         <h1>@content.AnnouncementTitle</h1>
                                     </div>
                                     <div class="content-News">
-                                        <p id="gameNewContent">@content.AnnouncementContent</p>
+                                        <p class="gameNewContent">@content.AnnouncementContent</p>
                                     </div>
                                     <div class="pulishtime-News">
-                                        <h3>@content.PublishTime</h3>
+                                        <h3>@formattedTime</h3>
                                     </div>
                                 </div>
                             </a>
@@ -131,21 +138,21 @@
     <script src="~/js/custom.js"></script>
     <script src="~/js/forNews.js"></script>
     <script>
-        const content = $('#shopNewContent').text();
+        const content = $('.shopNewContent').text();
         const textOnly = $('<div>').html(content).text();
         const onlytext = (textOnly).replace(/<\/?[^>]+(>|$)/g, "");
-        const gamecontent = $('#gameNewContent').text();
+        const gamecontent = $('.gameNewContent').text();
         const gametextOnly = $('<div>').html(gamecontent).text();
         const gameonlytext = (gametextOnly).replace(/<\/?[^>]+(>|$)/g, "");
-        $('#shopNewContent').text(onlytext);
-        $('#gameNewContent').text(gameonlytext);
-        if ($('#shopNewContent').text().length>30){
-            const truncatedText = $('#shopNewContent').text().substr(0, 30) + "...";
-            $('#shopNewContent').text(truncatedText);
+        $('.shopNewContent').text(onlytext);
+        $('.gameNewContent').text(gameonlytext);
+        if ($('.shopNewContent').text().length>30){
+            const truncatedText = $('.hopNewContent').text().substr(0, 30) + "...";
+            $('.shopNewContent').text(truncatedText);
         }
-        if ($('#gameNewContent').text().length > 30) {
-            const truncatedText = $('#gameNewContent').text().substr(0, 30) + "...";
-            $('#gameNewContent').text(truncatedText);
+        if ($('.gameNewContent').text().length > 30) {
+            const truncatedText = $('.gameNewContent').text().substr(0, 30) + "...";
+            $('.gameNewContent').text(truncatedText);
         }
     </script>
 }

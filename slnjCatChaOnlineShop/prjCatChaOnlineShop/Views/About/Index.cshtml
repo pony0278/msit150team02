@@ -1,0 +1,230 @@
+﻿@{
+    ViewData["Title"] = "Index";
+}
+@section Styles{
+    <style>
+        #sidebar {
+            position: absolute;
+            top:10%;
+            right: -400px;
+        }
+        #sidebar-inside{
+            position:relative;
+        }
+        .toggle{
+            position:absolute;
+            top:10%;
+            right:100%;
+            z-index:999;
+        }
+        .toggle button{
+            border:0.5px solid orange;
+            border-radius:10px 0 0 10px;
+            background-color : orange;
+            color:whitesmoke;
+        }
+        .chat-container {
+            position: relative;
+            width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            z-index:9999;
+            background-color:wheat;
+            opacity:1;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .chat-messages {
+            position:relative;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column-reverse;
+            z-index: 999;
+        }
+
+        .message {
+            padding: 5px;
+            margin: 5px 0;
+            z-index: 999;
+        }
+
+        .username {
+            font-weight: bold;
+            z-index: 999;
+        }
+
+        .chat-input {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+            .chat-input input {
+                width: 80%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                z-index: 999;
+            }
+
+            .chat-input button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                background-color: #4CAF50;
+                color: white;
+                z-index: 999;
+            }
+
+        .message.own-message {
+            text-align: right;
+            background-color: #e6f7ff;
+            border-radius: 10px;
+            margin: 5px;
+        }
+
+        .message.other-message {
+            text-align: left;
+            background-color: #f1f1f1;
+            border-radius: 10px;
+            margin: 5px;
+        }
+    </style>
+
+}
+
+<h1>Index</h1>
+@* <div id="sidebar">
+    <div id="sidebar-inside">
+        <div class="toggle">
+            <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
+        </div>
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>聊天室</h2>
+            </div>
+
+            <div class="chat-messages" id="chatWindow">
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="輸入消息" />
+                <button onclick="sendMessage()">發送</button>
+            </div>
+        </div>
+    </div>
+</div> *@
+<textarea id="messageBoxA"></textarea>
+<button onclick="sendMessageToUserA()">Send Message</button>
+<div id="chatBoxA"></div>
+
+
+
+
+
+@section Scripts{
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+    <script>
+        $('#toggleSidebar').click(function () {
+            var right = $('#sidebar').css('right') === '0px' ? '-400px' : '0px';
+            $('#sidebar').animate({ right: right });
+        });
+        // const userName = @ViewBag.UserName
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("/chathub", {
+        //         accessTokenFactory: () => userName
+        //     })
+        //     .build();
+        // // 收到消息後更新 UI
+        // connection.on("ReceiveMessage", (user, message) => {
+        //     const chatWindow = document.getElementById("chatWindow");
+        //     const newMessage = document.createElement("div");
+
+        //     newMessage.className = "message";
+        //     newMessage.innerHTML = `<span class="username"><strong>${user}:</strong></span> ${message}`;
+
+        //     if (user === userName) {
+        //         newMessage.classList.add("own-message");
+        //     } else {
+        //         newMessage.classList.add("other-message");
+        //     }
+
+            
+        //     chatWindow.prepend(newMessage);
+        // });
+
+        // // 開始連接
+        // connection.start().catch(err => console.error(err));
+
+        // // 發送消息
+        // function sendMessage(user, message) {
+        //     const users = userName; // 這裡可以從登入信息中獲取
+        //     const messageInput = document.getElementById("messageInput");
+        //     const inputMessage = messageInput.value;
+        //     console.log(message)
+        //     console.log(inputMessage)
+        //     connection.invoke("SendMessage", users, inputMessage).catch(err => console.error(err));
+        // }
+        // const connection = new signalR.HubConnectionBuilder()
+        //     .withUrl("/chatHub")
+        //     .build();
+
+        // connection.on("ReceiveMessage", (message) => {
+        //     const msg = `Received: ${message}`;
+        //     const chatBox = document.getElementById('chatBoxA');
+        //     chatBox.innerHTML += `<div>${msg}</div>`;
+        // });
+
+        // connection.start().then(() => {
+        //     joinGroup("groupAB");
+        // }).catch(err => console.error(err.toString()));
+
+        // function joinGroup(groupName) {
+        //     connection.invoke("JoinGroup", groupName).catch(err => console.error(err.toString()));
+        // }
+
+        // function sendMessage() {
+        //     const message = document.getElementById('messageBoxA').value;
+        //     sendMessageToGroup("groupAB", message);
+        // }
+
+        // function sendMessageToGroup(groupName, message) {
+        //     connection.invoke("SendMessageToGroup", groupName, message).catch(err => console.error(err.toString()));
+        // }
+        // function sendMessageToUser(username) {
+        //     const message = document.getElementById('messageBoxA').value;
+        //     sendMessageToGroup(username, "User A: " + message);
+        // }
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chatHub")
+            .build();
+
+        connection.on("ReceiveMessage", (message) => {
+            const msg = `Received: ${message}`;
+            const chatBox = document.getElementById('chatBoxA');
+            chatBox.innerHTML += `<div>${msg}</div>`;
+        });
+
+        connection.start().catch(err => console.error(err.toString()));
+
+        function sendMessageToUserA() {
+            const message = document.getElementById('messageBoxA').value;
+            connection.invoke("SendMessageToUserA", message).catch(err => console.error(err.toString()));
+        }
+
+    </script>
+
+}

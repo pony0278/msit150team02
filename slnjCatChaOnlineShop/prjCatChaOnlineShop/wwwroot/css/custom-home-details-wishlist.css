@@ -1,5 +1,17 @@
 
 /** ADD YOUR AWESOME CODES HERE **/
+
+/** ADD YOUR AWESOME CODES HERE **/
+
+
+.material-symbols-outlined, .Login span {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.all-title-box-picture {
+    background-image: url(../images/CatCha/Cart_BigTitle.jpg);
+}
 /*-----------------------------首頁圓形分類-----------------------------*/
 body{
   background-color: #f8f9fa;
@@ -92,7 +104,7 @@ body{
     position: fixed;
     bottom: 280px;
     right: 0px;
-    z-index: 9999;
+    z-index: 5;
     width: 60px;
     height: 200px;
     text-align: center;
@@ -113,7 +125,7 @@ body{
         position: fixed;
         bottom: 280px;
         right: 0px;
-        z-index: 9999;
+        z-index: 5;
         width: 60px;
         height: 200px;
         text-align: center;
@@ -135,7 +147,7 @@ body{
   position: fixed;
   bottom: 280px;
   right: 20px;
-  z-index: 9999;
+  z-index: 5;
   width: 30px;
   height: 200px;
   line-height: 5px;
@@ -152,7 +164,7 @@ body{
   position: fixed;
   bottom: 280px;
   right: 20px;
-  z-index: 9999;
+  z-index: 5;
   width: 60px;
   height: 200px;
   text-align: center;
@@ -357,9 +369,9 @@ del{
 }
 /*-----------------------------顯示更多按鈕-----------------------------*/
 .shop-content-right{
-  display: flex;
-  justify-content: center;
-  align-items: end;
+  /*display: flex;*/
+  /*justify-content: center;
+  align-items: end;*/
   height: auto;
 }
 
@@ -939,14 +951,32 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     letter-spacing: 1px;
 }
 
-.shop-image:hover {
+/*detail商品圖*/
+.detail-prod-img {
+    height: 260px;
+    width: 260px;
+}
+
+.detail-prod-img:hover {
     opacity: 0.6;
     transform: translate3d(-2px, -2px, 0);
 }
+/*index商品圖*/
+.index-prod-img {
+    height:300px;
+    width:300px;
+}
+.index-prod-img:hover {
+    opacity: 0.6;
+    transform: translate3d(-2px, -2px, 0);
+}
+/*shop商品圖*/
+.img-box-size{
+    width: 100%;
+}
 /* -------------------end補給站/商品遮罩------------------*/
-
-.breadcrumb{
-    padding:0px;
+.breadcrumb {
+    padding: 0px;
 }
 .btn-custom {
     margin-top: 20px;
@@ -954,4 +984,31 @@ nav.navbar.bootsnav ul.nav li > a:hover {
     border: 2px solid #ddd;
     padding: 12px 40px;
     font-size: 16px;
+}
+
+#sp-products{
+    background-color: #DE9E4F;
+}
+.favorited {
+    background-color: #000;
+}
+
+
+
+.toast {
+    font-size: 18px;
+    font-weight: 900;
+    background-color: #fcd7aadc;
+}
+.toast-warn {
+    color: #FF9224;
+    background-color: none;
+}
+.toast-added {
+    color: forestgreen;
+    background-color: none;
+}
+.toast-err {
+    color: red;
+    background-color: none;
 }

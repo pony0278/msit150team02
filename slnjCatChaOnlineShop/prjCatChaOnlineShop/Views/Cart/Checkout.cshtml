@@ -1,19 +1,42 @@
-﻿@{
+﻿@using System.Text.Json;
+@using Microsoft.AspNetCore.Mvc.RazorPages;
+@using prjCatChaOnlineShop.Models.CDictionary;
+@using prjCatChaOnlineShop.Models.ViewModels;
+@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+@model prjCatChaOnlineShop.Models.ViewModels.CCheckoutViewModel
+@{
+    var jsonString = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER);
+    ShopMemberInfo memberinfo = null;
+
+    if (jsonString != null)
+    {
+        memberinfo = JsonSerializer.Deserialize<ShopMemberInfo>(jsonString);
+    }
+}
+@{
+    var json = HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL);
+    CPayModel payModel = null;
+    if (json != null)
+    {
+        payModel = JsonSerializer.Deserialize<CPayModel>(json);
+
+    }
+
+}
+@{
     ViewData["Title"] = "Checkout";
 }
 
 @section Styles{
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0" />
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
-    <link rel="stylesheet" href="~/css/bootstrap.min.css">
     <!-- Site CSS -->
     <link rel="stylesheet" href="~/css/style.css">
     <!--myCss-->
     <link rel="stylesheet" href="~/css/myCss.css">
+    <link rel="stylesheet" href="~/css/game/IndexAnimateforGame.css" />
     <style>
         .input-group {
             position: relative;
@@ -39,6 +62,23 @@
             vertical-align: middle;
         }
 
+        .selectwithBtn {
+            display: flex;
+            align-items: center;
+        }
+
+            .selectwithBtn select {
+                flex: 1; /* 自動填充剩餘空間 */
+                padding: 8px; /* 調整選項框的內邊距 */
+            }
+
+            .selectwithBtn button {
+                padding: 8px 16px; /* 調整按鈕的內邊距 */
+                background-color: #007bff; /* 設置按鈕背景顏色 */
+                color: #fff; /* 設置按鈕文字顏色 */
+                border: none; /* 移除按鈕邊框 */
+                cursor: pointer; /* 讓鼠標顯示為手型 */
+            }
     </style>
 }
 
@@ -50,7 +90,7 @@
                 <h2>填寫結帳資料</h2>
                 <ul class="breadcrumb">
                     <li class="breadcrumb-item"><a asp-controller="Index" asp-action="Index">首頁</a></li>
-                    <li class="breadcrumb-item active">結帳</li>
+                    <li class="breadcrumb-item active">填寫結帳資料</li>
                 </ul>
             </div>
         </div>
@@ -58,6 +98,7 @@
 </div>
 <!-- End All Title Box -->
 <!--中間主畫面Start-->
+
 <div class="cart-box-main">
     <div class="container">
         <div class="row ">
@@ -67,33 +108,23 @@
                         <h3>購物明細</h3>
                     </div>
                     <div class="rounded p-2 bg-light">
-                        <div class="media mb-2 border-bottom">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> 熱帶雨林芭蕉樹貓跳台</a>
-                                <div class="small text-muted">
-                                    價格: NT1,280 <span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT1,280
-                                </div>
-                            </div>
-                        </div>
-                        <div class="media mb-2 border-bottom">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> 小黃花仙人掌貓抓柱</a>
-                                <div class="small text-muted">
-                                    價格: NT699<span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT699
-                                </div>
-                            </div>
-                        </div>
-                        <div class="media mb-2">
-                            <div class="media-body">
-                                <a asp-controller="Index" asp-action="ShopDetail"> ZEZE 好柿幸運貓抓柱</a>
-                                <div class="small text-muted">
-                                    價格: NT990 <span class="mx-2">|</span> 數量: 1
-                                    <span class="mx-2">|</span> 小計: NT990
-                                </div>
-                            </div>
-                        </div>
+                        @{
+                            if (Model != null && Model.cartItems != null)
+                            {
+                                foreach (var item in Model.cartItems)
+                                {
+                                    <div class="media mb-2 border-bottom">
+                                        <div class="media-body">
+                                            <a href="@Url.Action("ShopDetail", "Index", new {pId = item.cId })"> @item.cName </a>
+                                            <div class="small text-muted">
+                                                價格: NT @item.cPrice <span class="mx-2">|</span> 數量: @item.c數量
+                                                <span class="mx-2">|</span> 小計: NT @item.c小計
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                        }
                     </div>
                 </div>
             </div>
@@ -104,15 +135,19 @@
             <div class="col-sm-12 col-lg-12 mb-3">
                 <div class="checkout-address">
                     <div class="title-left">
-                        <h3>貓幣折抵</h3>
+                        <h3>紅利折抵</h3>
                     </div>
-                    <form class="needs-validation" novalidate>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" id="use_CatCoin">
-                            <label class="custom-control-label" for="use_CatCoin">使用1000貓幣折抵NT100</label>
-                        </div>
-                        <div class="ml-4 mb-2 small">您有75648個貓幣，單筆訂單最多可折抵10%商品金額</div>
-                    </form>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null && Model != null)
+                    {
+                        @*<div id="MemberId"> @memberinfo.MemberId </div>*@
+                        <form class="needs-validation">
+                            <div class="custom-control custom-checkbox">
+                                <input type="checkbox" class="custom-control-input" id="useLoyalityPoint">
+                                <label class="custom-control-label" for="useLoyalityPoint" id="loyalityPointBonus" style="font-size:18px">使用 @Model.getCouponPrice.finalBonus 紅利折抵NT @Model.getCouponPrice.finalPrice</label>
+                            </div>
+                            <div class="ml-4 mb-2">您有<a class="ml-1 mb-2 " style="color:#DE9E4F"> @Model.getCouponPrice.firstloyaltyPoints</a> 個紅利，單筆訂單最多可折抵10%商品金額</div>
+                        </form>
+                    }
                 </div>
             </div>
         </div>
@@ -127,24 +162,14 @@
                     <div class="row">
                         <div class="col-md-6 mb-2">
                             <label for="cc-name">優惠券代碼</label>
+                            <a class="ml-3" id="playGame"　style="color:#DE9E4F" asp-controller="game" asp-action="index">沒有優惠券?點擊此連結玩貓貓大進擊抽優惠券！</a>
                             <div class="input-group mb-2">
-                                <input type="text" class="form-control" placeholder="請輸入優惠券代碼(英數字)"
-                                       aria-label="請輸入優惠券代碼(英數字)" aria-describedby="button-addon2">
-                                <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
-                                        id="button-couponCode">
-                                    使用優惠券
-                                </button>
-                            </div>
-                        </div>
-                        <div class="col-md-1  coupon-box-a">
-                            <a>或</a>
-                        </div>
-                        <div class="col-md-5 mb-2">
-                            <label for="cc-name">使用我的優惠券</label>
-                            <div class="input-group mb-3">
+                                <input id="CouponId" value="" hidden></input>
+                                <input type="text" class="form-control" placeholder="請選擇優惠券" id="couponCodeInput"
+                                       aria-label="請選擇優惠券" aria-describedby="button-addon2" data-coupon-specialoffer readonly>
                                 <!-- 觸發互動視窗的按鈕 -->
-                                <button type="button" class="coupon-box-btn btn hvr-hover coupon-box" data-bs-toggle="modal"
-                                        data-bs-target="#myCouponBackdrop">
+                                <button class="coupon-box-btn ml-auto btn hvr-hover coupon-box" type="button"
+                                        data-bs-toggle="modal" data-bs-target="#myCouponBackdrop">
                                     我的優惠券
                                 </button>
                             </div>
@@ -163,39 +188,50 @@
                                 </div>
                                 <div class="modal-body">
                                     <div id="getCouponList" class="modal-body">
-                                        <div class="coupon-content flex-container">
-                                            <div class="coupon-left flex-container flex-1">
-                                                <div class="coupon-intro text-center">
-                                                    <div class="intro green">免運<br>運費折抵</div>
-                                                </div>
-                                                <div class="coupon-middle flex-container flex-1">
-                                                    <div class="middle-left flex-1">
-                                                        <span class="coupon-tag">
-                                                            限用 1
-                                                            次
-                                                        </span>&ensp;<span class="coupon-name">2023買飼料免運費八月份</span>
-                                                        <div class="coupon-description">
-                                                            買貓狗飼料免運費，指名來好物快寵
-                                                        </div>
-                                                        <div class="coupon-time">
-                                                            有效期限：2023-09-01 00:00
+                                        @if (Model != null)
+                                        {
+                                            @if (Model.memberUsableCoupon != null)
+                                            {
+                                                @foreach (var coupon in Model.memberUsableCoupon)
+                                                {
+
+                                                    <div class="coupon-content flex-container">
+                                                        <div class="coupon-left flex-container flex-1">
+                                                            <div class="coupon-intro  text-center">
+                                                                <!--刪除MyCss.css 123行，增加160行hover-->
+                                                                <div class="coupon-status align-middle text-center">
+                                                                    <button type="button" class="btn useCouponBtn"
+                                                                            data-coupon-id="@coupon.CouponID"
+                                                                            data-coupon-code="@coupon.CouponName"
+                                                                            data-coupon-specialoffer="@coupon.SpecialOffer">
+                                                                        使用
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                            <div class="coupon-middle flex-container flex-1">
+                                                                <div class="middle-left flex-1">
+                                                                    <span class="coupon-tag">
+                                                                        限用1次
+                                                                    </span>&ensp;<span class="coupon-name" name="couponName"> @coupon.CouponName  </span>
+                                                                    <div class="coupon-description">
+                                                                        @coupon.CouponContent
+                                                                    </div>
+                                                                    <div class="coupon-time">
+                                                                        有效期限：@coupon.ExpiryDate
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            </div>
-                                            <div class="coupon-status text-center">
-                                                <div class="coupon-status-left flex-1 text-left">
-                                                    <span>優惠碼</span>
-                                                    <div class="coupon-code">PetFoodFree08</div>
-                                                </div>
-                                                <button type="button" class="btn">立即使用</button>
-                                            </div>
-                                        </div>
-                                    </div>
 
+                                                }
+                                            }
+                                        }
+                                    </div>
                                 </div>
+                                <!--增加style-->
                                 <div class=" modal-footer ">
-                                    <button type=" button" class="coupon-btn"
+                                    <button type="button" class="coupon-btn" style="font-weight:bold;"
                                             data-bs-dismiss="modal">
                                         不使用優惠券
                                     </button>
@@ -214,12 +250,16 @@
                     <h3>訂購人資料</h3>
                 </div>
                 <div>
-                    <ul class="customer_info">
-                        <li>姓名：徐雅莉</li>
-                        <li>電話：0923468145</li>
-                        <li>Email：seoari@gmail.com</li>
-                        <li>地址： 台北市信義區松壽路12號</li>
-                    </ul>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                    {
+                        <ul class="customer_info">
+                            <li>姓名:@memberinfo.Name </li>
+                            <li>電話:@memberinfo.PhoneNumber</li>
+                            <li>Email：@memberinfo.Email</li>
+                            <li>地址：@memberinfo.Address</li>
+                        </ul>
+                    }
+
                 </div>
             </div>
         </div>
@@ -259,12 +299,20 @@
                          aria-labelledby="DeliveryMethod_711-tab">
                         <ul>
                             <li>
-                                超商門市：桂林門市
+                                <label for="711StoreName">取件的門市： </label>
+                                <input id="select-seveneleven" type="text" name="711StoreName" class="checkout-inputs" size="18" readonly />
                                 <!-- 觸發選擇711超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#choose711Store">
-                                    選擇門市
+                                    我儲存的門市
                                 </button>
+                                <!--7-11分頁內容-->
+                                <div class="tab-pane fade show active" id="nav-credit" role="tabpanel" aria-labelledby="nav-credit-tab" style="display: contents;">
+                                    <button class="chooseStore_btn" data-bs-toggle="modal" href="#SevenElevenToggle" role="button" id="showSevenEleven">選擇新的門市</button>
+                                </div>
+                                @*<button type="button" class="chooseStore_btn" id="choose711CVS">
+                                選擇新的超商門市
+                                </button>*@
                                 <!-- 選擇711超商的互動視窗 -->
                                 <div class="modal fade" id="choose711Store" data-bs-backdrop="static"
                                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="my711StoreLabel"
@@ -319,21 +367,61 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                <!--7-11彈出視窗-->
+                                <div class="modal fade" id="SevenElevenToggle" tabindex="-1">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h2 class="modal-title pb-0" id="exampleModalToggleLabel">選擇 7-11 門市</h2>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!--內容表單-->
+                                                <div class="row">
+                                                    <div class="selectwithBtn">
+                                                        <select id="sevenElevenStoreSelect">
+                                                            <option value="">請選擇一家7-11門市</option>
+                                                        </select>
+                                                        <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-sevenEleven" data-bs-dismiss="modal">確定門市</button>
+                                                    </div>
+
+                                                    <div id="sevenElevenMap" style="width: 100%; height: 400px;"></div>
+                                                </div>
+                                                <!--內容表單-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--7-11彈出視窗-->
                             </li>
-                            <li>姓名：韓俊景</li>
-                            <li>電話：0927463518</li>
+                            <li>
+                                <label for="name">取件人姓名：</label>
+                                <input type="text" id="711name" name="name" class="checkout-inputs" size="18" /><button class="ml-1 chooseStore_btn" id="cvsDemo">Demo</button>
+                            </li>
+                            <li>
+                                <label for="phone">取件人電話：</label>
+                                <input type="text" id="711phone" name="phone" class="checkout-inputs" size="18" />
+                            </li>
                         </ul>
                     </div>
                     <div class="tab-pane fade" id="nav-fami" role="tabpanel"
                          aria-labelledby="DeliveryMethod_fami-tab">
                         <ul>
                             <li>
-                                超商門市：全家成都店
+                                <label for="famiStoreName">取件的門市：</label>
+                                <input id="select-familmart" type="text" name="famiStoreName" class="checkout-inputs" size="18" readonly />
                                 <!-- 觸發選擇全家超商的按鈕 -->
                                 <button type="button" class="chooseStore_btn" data-bs-toggle="modal"
                                         data-bs-target="#chooseFamiStore">
                                     選擇門市
                                 </button>
+                                <!--全家分頁內容-->
+                                <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab" style="display: contents;">
+                                    @*取貨門市：<span id="select-familmart"></span>*@
+                                    <button class="chooseStore_btn" data-bs-toggle="modal" href="#FamilyMartToggle" role="button" id="showFamilyMart">選擇新的門市</button>
+                                </div>
                                 <!-- 選擇全家超商的互動視窗 -->
                                 <div class="modal fade" id="chooseFamiStore" data-bs-backdrop="static"
                                      data-bs-keyboard="false" tabindex="-1" aria-labelledby="myFamiStoreLabel"
@@ -341,7 +429,7 @@
                                     <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
                                         <div class="modal-content">
                                             <div class="modal-header">
-                                                <h5 class="modal-title" id="myFamiStoreLabel">我的全家門市</h5>
+                                                <h2 class="modal-title pb-0" id="myFamiStoreLabel">我的全家門市</h2>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
                                             </div>
@@ -388,9 +476,42 @@
                                         </div>
                                     </div>
                                 </div>
+                                <!--全家彈出視窗-->
+                                <div class="modal fade" id="FamilyMartToggle" tabindex="-1">
+                                    <div class="modal-dialog modal-lg modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalToggleLabel">選擇全家門市</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <!--內容表單-->
+                                                <div class="row">
+                                                    <div class="selectwithBtn">
+                                                        <select id="familyMartStoreSelect">
+                                                            <option value="">請選擇一家全家門市</option>
+                                                        </select>
+                                                        <button type="button" class="btn btn-secondary mt-3 mb-3" id="submit-familyMart" data-bs-dismiss="modal">確定門市</button>
+                                                    </div>
+
+                                                    <div id="familyMartMap" style="width: 100%; height: 400px;"></div>
+                                                </div>
+                                                <!--內容表單-->
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--全家彈出視窗-->
                             </li>
-                            <li>姓名：尹程善</li>
-                            <li>電話：0983755199</li>
+                            <li>
+                                <label for="faminame">取件人姓名：</label>
+                                <input type="text" id="faminame" name="name" class="checkout-inputs" size="18" />
+                            </li>
+                            <li>
+                                <label for="famiphone">取件人電話：</label>
+                                <input type="text" id="famiphone" name="phone" class="checkout-inputs" size="18" />
+                            </li>
                         </ul>
                     </div>
                     <!--選擇宅配地址Start-->
@@ -422,21 +543,23 @@
                                 <div class="tab-content" id="nav-tabContent">
                                     <div class="tab-pane fade show active" id="nav-homeMemberInfo" role="tabpanel"
                                          aria-labelledby="nav-homeMemberInfo-tab">
-                                        <ul>
-                                            <li>姓名：徐雅莉</li>
-                                            <li>電話：0923468145</li>
-                                            <li>Email：seoari@gmail.com</li>
-                                            <li>地址： 台北市信義區松壽路12號</li>
-                                        </ul>
+                                        @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_LOINGED_USER) != null)
+                                        {
+                                            <ul>
+                                                <li>姓名：@memberinfo.Name </li>
+                                                <li>電話：@memberinfo.PhoneNumber </li>
+                                                <li>Email：@memberinfo.Email</li>
+                                                <li>地址： @memberinfo.Address</li>
+                                            </ul>
+                                        }
                                     </div>
 
                                     <div class="tab-pane fade" id="nav-profile" role="tabpanel"
                                          aria-labelledby="nav-profile-tab">
                                         <ul>
-                                            <li>姓名：尹詩炫</li>
-                                            <li>電話：0983726593</li>
-                                            <li>Email：chungah@gmail.com</li>
-                                            <li>地址： 新北市板橋區縣民大道二段7號</li>
+                                            <li>姓名：<span id="recipientNameDisplay"></span></li>
+                                            <li>電話：<span id="recipientPhoneDisplay"></span></li>
+                                            <li>地址：<span id="recipientAddressDisplay"></span></li>
                                         </ul>
                                         <div class="input-group mb-3">
                                             <!-- 觸發選擇地址視窗的按鈕 -->
@@ -464,42 +587,35 @@
                                                                 <tr>
                                                                     <th>選擇</th>
                                                                     <th>姓名</th>
-                                                                    <th>電子信箱</th>
                                                                     <th>地址</th>
                                                                     <th>聯絡電話</th>
-                                                                    <th>刪除</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>徐雅莉</td>
-                                                                    <td>123@gmail.com</td>
-                                                                    <td>台北市信義區松壽路12號</td>
-                                                                    <td>0923468145</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
-                                                                <tr>
-                                                                    <td>
-                                                                        <input type="radio" name="select"
-                                                                               value="option1">
-                                                                    </td>
-                                                                    <td>王小美</td>
-                                                                    <td>567@gmail.com</td>
-                                                                    <td>台北市萬華區成都路33號</td>
-                                                                    <td>0985624473</td>
-                                                                    <td><span id="delete">刪除</span></td>
-                                                                </tr>
+                                                                @if (Model != null && Model.memberUsableAddress != null)
+                                                                {
+                                                                    foreach (var address in Model.memberUsableAddress)
+                                                                    {
+                                                                        <tr>
+                                                                            <td>
+                                                                                <input type="radio" name="select" value="option1" class="address-radio"
+                                                                                       data-RecipientName="@address.RecipientName" data-RecipientAddress="@address.RecipientAddress"
+                                                                                       data-RecipientPhone="@address.RecipientPhone">
+
+                                                                            </td>
+                                                                            <td> @address.RecipientName </td>
+                                                                            <td> @address.RecipientAddress </td>
+                                                                            <td> @address.RecipientPhone </td>
+                                                                        </tr>
+                                                                    }
+                                                                }
                                                             </tbody>
                                                         </table>
 
                                                     </div>
                                                     <div class="modal-footer">
                                                         <button type="submit" class="coupon-btn"
-                                                                data-bs-dismiss="modal">
+                                                                data-bs-dismiss="modal" id="selectedAddress">
                                                             確定
                                                         </button>
 
@@ -767,77 +883,31 @@
                 <nav class="customer_info">
                     <div class="nav nav-tabs" id="nav-paymentMethod-tab" role="tablist">
                         <input class="nav-link active" id="nav-credit-tab" type="radio" name="paymentMethod"
-                               data-bs-toggle="tab" data-bs-target="#nav-credit" role="tab" aria-controls="nav-credit"
-                               aria-selected="true" checked>
+                               data-bs-toggle="tab" data-bs-target="#credit" role="tab" aria-controls="nav-credit"
+                               aria-selected="true" value="信用卡付款" checked>
                         <label for="nav-credit-tab" class="mb-0">信用卡付款</label>
 
                         <input class="nav-link" id="nav-ATM-tab" type="radio" name="paymentMethod"
-                               data-bs-toggle="tab" data-bs-target="#nav-ATM" role="tab" aria-controls="nav-ATM"
-                               aria-selected="false">
+                               data-bs-toggle="tab" data-bs-target="#ATM" role="tab" aria-controls="nav-ATM"
+                               aria-selected="false" value="銀行轉帳">
                         <label for="nav-ATM-tab" class="mb-0">銀行轉帳</label>
 
                         <input class="nav-link" id="nav-cashOnDelivery-tab" type="radio" name="paymentMethod"
                                data-bs-toggle="tab" data-bs-target="#nav-cashOnDelivery" role="tab"
-                               aria-controls="nav-cashOnDelivery" aria-selected="false">
+                               aria-controls="nav-cashOnDelivery" aria-selected="false" value="貨到付款">
                         <label for="nav-cashOnDelivery-tab" class="mb-0">貨到付款</label>
                     </div>
                 </nav>
                 <!--三種付款方式的分頁-->
                 <div class="tab-content invoice-size" id="nav-invoice-tabContent">
                     <!--信用卡付款分頁內容-->
-                    <div class="tab-pane fade show active" id="nav-credit" role="tabpanel"
+                    <div class="tab-pane fade show active" id="credit" role="tabpanel"
                          aria-labelledby="nav-credit-tab">
-                        <div class="row ">
-                            <form class="needs-validation" novalidate>
-                                <div class="row">
-                                    <div class="col-md-6 ">
-                                        <label for="cc-name">持卡人姓名</label>
-                                        <input type="text" class="form-control" id="cc-name" placeholder="請輸入全名"
-                                               required>
-                                        <div class="invalid-feedback"> 持卡人姓名為必填 </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <label for="cc-number">信用卡號</label>
-                                        <input type="text" class="form-control" id="cc-number"
-                                               placeholder="XXXX-XXXX-XXXX-XXXX" required>
-                                        <div class="invalid-feedback"> 信用卡號為必填 </div>
-                                    </div>
-                                </div>
-                                <div class="row">
-                                    <div class="col-md-3 ">
-                                        <label for="cc-expiration">到期日</label>
-                                        <input type="text" class="form-control" id="cc-expiration"
-                                               placeholder="MM/YY" required>
-                                        <div class="invalid-feedback"> 到期日為必填 </div>
-                                    </div>
-                                    <div class="col-md-3 ">
-                                        <label for="cc-expiration">CVV</label>
-                                        <input type="text" class="form-control" id="cc-cvv" placeholder="背面末三碼"
-                                               required>
-                                        <div class="invalid-feedback"> 信用卡檢核碼為必填 </div>
-                                    </div>
-                                    <div class="col-md-6 ">
-                                        <div class="payment-icon-mycss payment-icon ">
-                                            <ul>
-                                                <li>
-                                                    <img class="img-fluid" src="~/images/payment-icon/1.png" alt="">
-                                                </li>
-                                                <li>
-                                                    <img class="img-fluid" src="~/images/payment-icon/2.png" alt="">
-                                                </li>
-                                                <li>
-                                                    <img class="img-fluid" src="images/payment-icon/3.png" alt="">
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後進到綠界科技付款頁面進行付款。</label>
                     </div>
                     <!--銀行轉帳分頁內容-->
-                    <div class="tab-pane fade" id="nav-ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
-                        <label class="nav-ATM-css">選擇此方式再送出訂單後會得到一組僅供本次交易使用的轉帳帳號，請在期限內匯款完畢，否則此筆交易將取消。</label>
+                    <div class="tab-pane fade" id="ATM" role="tabpanel" aria-labelledby="nav-ATM-tab">
+                        <label class="nav-ATM-css">選擇此方式會在送出訂單後會得到一組僅供本次交易使用的轉帳帳號，請在期限內匯款完畢，否則此筆交易將取消。</label>
                         <ul class="nav-ATM-fontSize">
                             <li>以下為範例：</li>
                             <li>轉帳銀行：013國泰世華銀行</li>
@@ -849,8 +919,8 @@
                     <!--貨到付款分頁內容-->
                     <div class="tab-pane fade" id="nav-cashOnDelivery" role="tabpanel"
                          aria-labelledby="nav-cashOnDelivery-tab">
+                        <label class="nav-ATM-css">目前僅供超商取貨可使用貨到付款的方式</label>
                         <ul class="nav-ATM-fontSize">
-                            <li>目前僅供超商取貨可使用「超商取貨付款」</li>
                             <li>單筆訂單金額二萬元以內可使用。</li>
                             <li>為確保順利取件，請填寫正確姓名及手機號碼。</li>
                             <li>商品送達門市時會簡訊通知，送達門市後逾期未前往取貨常溫七天/低溫四天，商品將退回貓抓抓購物。</li>
@@ -924,7 +994,7 @@
                                                 <label for="eInvoiceNum">載具條碼：</label>
                                                 <div class="input-group">
 
-                                                    <input type="text" class="form-control" id="eInvoiceNum"
+                                                    <input type="text" class="form-control checkout-inputs" id="eInvoiceNum"
                                                            placeholder="請輸入載具條碼(包含/)" required>
                                                     <div class="invalid-feedback" style="width: 100%; height:100%">
                                                         請輸入載具條碼
@@ -937,6 +1007,7 @@
                                                         data-bs-target="#chooseEinvoice">
                                                     選擇載具條碼
                                                 </button>
+                                                <button class="ml-1 chooseStore_btn" id="invoiceDemo">Demo</button>
                                             </div>
                                         </div>
 
@@ -1140,6 +1211,7 @@
                         <a href="https://www.einvoice.nat.gov.tw/?CSRT=6201288656407980614"
                            class="einvoice-link">財政部電子發票流程說明</a>
                     </label>
+                    <div id="error-message" class="text-danger"></div>
                 </div>
             </div>
         </div>
@@ -1152,33 +1224,75 @@
                 </div>
                 <div class="order-box">
                     <div class="d-flex">
-                        <h4>小計</h4>
-                        <div class="ml-auto font-weight-bold"> NT2969 </div>
+                        <h4 class="mr-auto">小計</h4>
+                        <span class="mr-2 font-weight-bold subprice-font">NT</span><div class=" font-weight-bold subprice-font" id="subtotal">@ViewBag.totalPrice</div>
                     </div>
-                    <div class="d-flex">
-                        <h4>折扣</h4>
-                        <div class="ml-auto font-weight-bold"> NT0</div>
-                    </div>
-                    <hr class="my-1">
-                    <div class="d-flex">
-                        <h4>優惠券折扣</h4>
-                        <div class="ml-auto font-weight-bold"> NT0 </div>
-                    </div>
-                    <div class="d-flex">
-                        <h4>運費</h4>
-                        <div class="ml-auto font-weight-bold"> NT60 </div>
-                    </div>
-                    <hr>
-                    <div class="d-flex gr-total">
-                        <h5>總計</h5>
-                        <div class="ml-auto h5"> NT3029 </div>
-                    </div>
-                    <hr>
+                    @if (Model != null)
+                    {
+                        <div class="d-flex">
+                            <h4 class="mr-auto">紅利折扣</h4>
+                            <span class="mr-2 font-weight-bold subprice-font">- NT</span><div class=" font-weight-bold subprice-font" id="loyaltyPointsBonus"> 0 </div>
+                        </div>
+                        <hr class="my-1">
+                        <div class="d-flex">
+                            <h4 class="mr-auto">優惠券折扣</h4>
+                            <span class="mr-2 font-weight-bold subprice-font">- NT</span><div class=" font-weight-bold subprice-font" id="couponBonus"> 0 </div>
+                        </div> 
+                        <div class="d-flex align-items-center">
+                            <h4 >運費</h4><span class="small mr-auto">(消費金額滿NT2000免運)</span>
+                            <span class="mr-2 font-weight-bold subprice-font">+ NT</span><div class=" font-weight-bold subprice-font" id="shippingFee"> @ViewBag.firstFee</div>
+                        </div>
+                        <hr>
+                        <div class="d-flex gr-total align-items-center">
+                            <h5 class="mr-auto">總計</h5>
+                            <span class="mr-2 font-weight-bold " style="color:#CE0000">NT</span><div class="h3 price-font " id="allTotalPrice">@ViewBag.firstTotalPrice</div>
+                        </div>
+                        <hr>
+                    }
+                </div>
+
+
+
+                <div class="col-12 d-flex align-items-center ">
+                    <a class="ml-auto mr-2" style="color:#DE9E4F;font-size:18px">可獲得的紅利</a>
+                    @if (HttpContextAccessor.HttpContext.Session.GetString(CDictionary.SK_PAY_MODEL) != null)
+                    {
+                        <a class="mr-2" style="color:#DE9E4F;font-size:18px"> @payModel?.getLoyaltyPoints </a>
+                    }
+                    <a class="mr-2" style="color:#DE9E4F;font-size:18px">點</a>
+                    <button type="submit" id="submit-order-btn"
+                            class="checkout-btn btn hvr-hover ">
+                        確認訂單
+                    </button>
                 </div>
             </div>
-            <div class=" coupon-box-btn col-12 d-flex shopping-box ">
-                <a asp-controller="Cart" asp-action="ConfrimOrder"
-                   class=" checkout-btn ml-auto btn hvr-hover">送出訂單</a>
+
+        </div>
+    </div>
+</div>
+
+<!-- 小動畫-->
+<div id="fullScreenContainer">
+    <div class="containers position-relative">
+        <div class="position-absolute top-0 start-0">
+            <div class="animate animate01">
+                <div class="catAnimate"></div>
+            </div>
+        </div>
+        <div class="position-absolute top-0 end-0">
+            <button class="btn btn-primary" id="skip"> Skip </button>
+        </div>
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="popup" id="my-popup">
+                <img src="https://i.imgur.com/z3dc846.png" alt="Popup Image" class="popup-image">
+            </div>
+            <div class="animate animate02">
+                <div class="catAnimate "></div>
+            </div>
+        </div>
+        <div class="position-absolute bottom-0 end-0">
+            <div class="animate animate03">
+                <div class="catAnimate "></div>
             </div>
         </div>
     </div>
@@ -1187,38 +1301,153 @@
 <!--中間主畫面End-->
 @section Scripts{
     <!-- ALL JS FILES -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <!--引用Bundle，這樣nav導覽與頁籤就可以使用-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
             crossorigin="anonymous"></script>
-    <!--引用分離(Separate)-->
-    @*  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"
-            integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p"
-            crossorigin="anonymous"></script> *@
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.min.js"
-            integrity="sha384-lpyLfhYuitXl2zRZ5Bn2fqnhNAKOAaM/0Kr9laMspuaMiZfGmfwRNFh8HlMy49eQ"
-            crossorigin="anonymous"></script>
+
     <!---->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="~/js/jquery-3.2.1.min.js"></script>
-    <script src="~/js/popper.min.js"></script>
-    <script src="~/js/bootstrap.min.js"></script>
-    <!-- ALL PLUGINS -->
-    <script src="~/js/jquery.superslides.min.js"></script>
-    <script src="~/js/bootstrap-select.js"></script>
-    <script src="~/js/inewsticker.js"></script>
-    <script src="~/js/bootsnav.js."></script>
-    <script src="~/js/images-loded.min.js"></script>
-    <script src="~/js/isotope.min.js"></script>
-    <script src="~/js/owl.carousel.min.js"></script>
-    <script src="~/js/baguetteBox.min.js"></script>
-    <script src="~/js/form-validator.min.js"></script>
-    <script src="~/js/contact-form-script.js"></script>
-    <script src="~/js/custom.js"></script>
-    <!--nav導覽與頁籤使用-->
-    <script src="~/js/myScript.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <!--Google Map API-->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDJm9PAx2tKFNLBmiWq6zV_Bz9OxWVB2Yk&libraries=places"></script>
+    <script src="~/js/checkout.js"></script>
+    <script>
+        // 創建一個物件來保存送貨方式和相關資訊
+        var deliveryInfo = {
+            method: '7-11取貨',
+            storeName: '',
+            name: '',
+            phone: ''
+        };
+        //選擇7-11的按鈕
+        $('#submit-sevenEleven').on('click', function () {
+            var selectText = $("#sevenElevenStoreSelect option:selected").val();
+            $('#select-seveneleven').val(selectText);
+        })
+        //選擇全家的按鈕
+        $('#submit-familyMart').on('click', function () {
+            var selectText = $("#familyMartStoreSelect option:selected").val();
+            $('#select-familmart').val(selectText);
+        })
+
+        //儲存使用者選擇哪一種送貨方式
+        var selectedDeliveryMethod = '7-11取貨';
+        function setDeliveryMethod(method) {
+            console.log("選的送貨方式", method)
+            deliveryInfo.method = method;
+            //selectedDeliveryMethod = method;
+        }
+
+        //// 當使用者輸入取件門市時，更新物件中的值
+        $('#sevenElevenStoreSelect').on('change', function () {
+            selectedSevenElevenStore = $(this).val();
+            deliveryInfo.storeName = selectedSevenElevenStore;
+        });
+
+        //DEMO超商姓名電話
+        $('#cvsDemo').click(function () {
+            var name = "吳敏惠";
+            $('#711name').val(name);
+            var phone = "0938475245";
+            $('#711phone').val(phone);
+            deliveryInfo.name = name;
+            deliveryInfo.phone = phone;
+        })
+
+        //DEMO發票的按鍵
+        $('#invoiceDemo').click(function () {
+            $('#eInvoiceNum').val("/9Qj376W");
+        })
+
+        //$('#select-seveneleven').on('input', function () {
+        //    var storeName = $(this).val();
+        //    deliveryInfo.storeName = storeName;
+        //});
+
+        // 當使用者輸入取件姓名時，更新物件中的值
+        $('#711name').on('input', function () {
+            var name = $(this).val();
+            deliveryInfo.name = name;
+        });
+
+        // 當使用者輸入取件人電話時，更新物件中的值
+        $('#711phone').on('input', function () {
+            var phone = $(this).val();
+            deliveryInfo.phone = phone;
+        });
+
+        const fullScreenContainer = document.getElementById('fullScreenContainer');
+        document.getElementById("playGame").addEventListener("click", function (event) {
+            //修復遊戲側邊按鈕
+            event.preventDefault();
+            //動畫內容
+            main();
+            $("#fullScreenContainer").addClass("fullscreen")
+            $(".animate01").addClass("NyanCat-container01");
+            $(".animate02").addClass("NyanCat-container02");
+
+            $(".animate03").one("animationend", function () {
+                $("#my-popup").addClass("show");
+                setTimeout(function () {
+                    $("#my-popup").removeClass("show");
+                    window.location.href = '/Game/Index';
+                }, 3000);
+            })
+                .addClass("NyanCat-container03");
+
+            const nyanCats = document.querySelectorAll('.animate');
+            if (nyanCats.length > 0) {
+                nyanCats.forEach((cat) => {
+                    cat.classList.add('NyanCat-container');
+                });
+            }
+
+            const catAnimate = document.querySelectorAll('.catAnimate');
+            if (catAnimate.length > 0) {
+                catAnimate.forEach((cat) => {
+                    cat.classList.add('NyanCat');
+                });
+            }
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
+            }
+
+
+            function createLine() {
+                const line = document.createElement('div');
+                line.classList.add('line');
+                line.style.width = `${getRandomInt(20, 100)}px`
+                line.style.right = `${getRandomInt(window.innerWidth, 100)}px`;
+                line.style.top = `${getRandomInt(0, window.innerHeight)}px`;
+                fullScreenContainer.appendChild(line);
+                return line;
+            }
+
+
+            function updateLine(line) {
+                const newX = parseInt(line.style.right) + 10;
+                if (newX > window.innerWidth) {
+                    line.style.right = `${getRandomInt(0, -100)}px`;
+                } else {
+                    line.style.right = `${newX}px`;
+                }
+            }
+
+            function main() {
+                const lines = [];
+
+                for (let i = 0; i < 100; i++) {
+                    lines.push(createLine());
+                }
+
+                setInterval(() => {
+                    lines.forEach(updateLine);
+                }, 40);
+            }
+        });
+
+    </script>
 }
 
 

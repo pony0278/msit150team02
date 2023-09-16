@@ -38,7 +38,7 @@
 
     <div class="title_area">
         <div class="back-page"> <a asp-controller="ShopNews" asp-action="News"> ＜返回上一頁 </a></div>
-        <span class="tag_label noti">商城公告</span>
+        <span class="tag_label noti">@(Model.AnnouncementTypeId == 1 ? "商城公告" : "遊戲公告")</span>
         <span class="date">@Model.PublishTime</span>
 
         <strong class="title">@Model.AnnouncementTitle</strong>

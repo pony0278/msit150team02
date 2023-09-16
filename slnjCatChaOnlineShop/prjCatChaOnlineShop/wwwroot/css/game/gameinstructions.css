@@ -15,11 +15,12 @@
 .btn-secondary {
     color: black;
     font-size: 35px;
-    background-color: white;
+    background-color: transparent;
     margin-left: 82%;
     margin-top: 0%;
-    padding: 0px 10px 0px 10px;
-    border: 0;
+    border: none;
+    font-family: initial;
+    
 }
 
 .instructions {

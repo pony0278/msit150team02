@@ -1,5 +1,5 @@
 ﻿@{
-    ViewData["Title"] = "Login";
+    ViewData["Title"] = "管理員登入頁面 - 貓抓抓 CATCHA";
     Layout = null; // 不使用佈局
 }
 
@@ -9,6 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+
+    <!-- Site Icons -->
+    <link rel="shortcut icon" href="~/images/fac.ico" type="image/x-icon" />
 
     <link rel="stylesheet" href="/css/bootstrap.css">
     <link rel="stylesheet" href="/css/index.css">
@@ -21,42 +24,102 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
 
     <title>後台登入頁-貓抓抓</title>
+
+    <style>
+        /*密碼眼睛位置*/
+        .password-container {
+            position: relative;
+        }
+
+        .toggle-password {
+            position: absolute;
+            top: 50%;
+            right: 10px; /* 調整此值以控制圖標與輸入框的距離 */
+            transform: translateY(-50%);
+            cursor: pointer;
+        }
+    </style>
 </head>
 
 <body>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-10 col-xl-8 col-lg-9 col-md-8 col-sm-10">
-                <div class="card" style="box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175) !important;">
-                    <div class="card-body p-0">
-                        <div class="row">
-                            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
-                            <div class="col-lg-6">
-                                <div class="login-right-card p-3 m-5">
-                                    <div class="text-center">
-                                        <h1 class="h4 text-gray-900 mb-4">Welcome Back!</h1>
-                                    </div>
-                                    <form class="user">
-                                        <div class="form-group mb-4">
-                                            <input type="email" class="form-control form-control-user"
-                                                   id="exampleInputEmail" aria-describedby="emailHelp" placeholder="帳號"
-                                                   style="border-radius: 30px;">
-                                        </div>
-                                        <div class="form-group mb-4">
-                                            <input type="password" class="form-control form-control-user"
-                                                   id="exampleInputPassword" placeholder="密碼" style="border-radius: 30px;">
-                                        </div>
-                                        <a href="javascript:;" class="btn btn-primary btn-user btn-block"
-                                           style="width: 100%;border-radius: 30px;">
-                                            登入
-                                        </a>
-                                    </form>
-                                </div>
-                            </div>
+
+    <div class="container d-flex justify-content-center align-items-center vh-100">
+        <div class="row col-8 bg-white">
+            <div class="col-lg-6 d-none d-lg-block bg-login-image"></div>
+            <div class="col-lg-6">
+                <!-- 右側區塊 -->
+                    <div class="login-right-card p-3 m-5">
+                        <div class="text-center">
+                            <h1 class="h4 text-gray-900 mb-4">管理員登入</h1>
                         </div>
-                    </div>
+                        <form id="loginForm" method="post" action="/AdminCMS/CMSHome/Login" onsubmit="return validateForm()">
+                            <div class="user">
+                                <div class="form-group mb-4">
+                                    <input type="text" name="AdminAccount" class="form-control form-control-user" id="InputEmail" aria-describedby="emailHelp" placeholder="帳號" style="border-radius: 30px;">
+                                </div>
+                                <div class="form-group mb-4">
+                                    <div class="password-container">
+                                        <input type="password" name="AdminPassword" class="form-control form-control-user" id="InputPassword" placeholder="密碼" style="border-radius: 30px;">
+                                        <span id="togglePassword" class="toggle-password"><i class="fas fa-eye"></i></span>
+                                    </div>
+                                </div>
+                                <button type="submit" id="loginButton" class="btn btn-primary btn-user btn-block"
+                                        style="width: 100%;border-radius: 30px;">
+                                    登入
+                                </button>
+                            </div>
+                        </form>
+                        <p id="errorMsg" style="color:red;"></p>
+                        @if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+                        {
+                            <p id="ViewBag_ErrorMessage" style="color:red;">@ViewBag.ErrorMessage</p>
+                        }
+                    <!--右側區塊-->
+                    <button class="btn btn-danger" onclick="setAdminValue()">管理員demo</button>
+@*                    <button class="btn btn-dark" onclick="setErrorValue()">驗證demo1</button>
+                    <button class="btn btn-dark" onclick="setEmptyValue()">驗證demo2</button>*@
                 </div>
             </div>
         </div>
     </div>
 </body>
+
+<script src="~/js/jquery-3.2.1.min.js"></script>
+
+<script>
+    //==============demo鍵
+    function setAdminValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("catcha123");
+    }
+
+    function setErrorValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("catch");
+    }
+
+    function setEmptyValue() {
+        $('#InputEmail').val("catcha");
+        $('#InputPassword').val("");
+    }
+    //==============密碼眼睛
+    $('#togglePassword').click(function () {
+        if ($('#InputPassword').attr('type') === 'password') {
+            $('#InputPassword').attr('type', 'text');
+        } else {
+            $('#InputPassword').attr('type', 'password');
+        }
+    });
+
+    function validateForm() {
+        var adminAccount = $("#InputEmail").val();
+        var adminPassword = $("#InputPassword").val();
+
+        if (adminAccount === "" || adminPassword === "") {
+            $('#errorMsg').text("帳號和密碼不得留空");
+            $('#ViewBag_ErrorMessage').text(""); //不讓畫面上有兩條錯誤訊息
+            return false;
+        }
+        return true;
+    }
+</script>

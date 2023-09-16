@@ -2,25 +2,28 @@
 ruby.src = '../../images/game/ruby.png';
 ccoin.src = '../../images/game/catcoin.png';
 floorImg.src = '../../images/game/lobbyFloor.png';
-lobbyBK.src = '../../images/game/lobbyBK_grass.png';
+lobbyBK.src = '../../images/game/testbackground.png';
 bagbk.src = '../../images/game/Inventory_Bar.png';
 bagItem1.src = '../../images/game/Inventory_select.png';
 helpBTNimg.src = '../../images/game/Icon_Question.png';
 rankBTNimg.src = '../../images/game/Icon_Stats.png';
+dailyMissionBTNimg.src = '../../images/game/Icon_Award.png';
 gotoGachaimg.src = '../../images/game/gachaIcon.png';
 gotoRunGameimg.src = '../../images/game/runGameIcon.png';
 heart.src = '../../images/game/thought_bubble.png'
+editNameimg.src = '../../images/game/editName.png'
 
 //大廳背包格子
 bagItem1.src = '../../images/game/staticCats/kittenDefault_stopR.png'
-bagItem2.src = '../../images/game/staticCats/kittenBB_stopR.png'
-bagItem3.src = '../../images/game/staticCats/kittenBK_stopR.png'
-bagItem4.src = '../../images/game/staticCats/kittenGY_stopR.png'
-bagItem5.src = '../../images/game/staticCats/kittenOG_stopR.png'
+bagItem2.src = bagItem3.src = bagItem4.src =bagItem5.src = '../../images/game/staticCats/kitten_lock.png'
 bagItem6.src = '../../images/game/milk_bottle.png'
 bagItem7.src = '../../images/game/tuna_can.png'
 itemSelected.src = '../../images/game/Inventory_select.png'
 
+
+//測試背景
+weatherImage.src = '../../images/game/orig.png';
+weatherImage2.src = '../../images/game/5.png';
 // const lobbyBGData = {
 // Default:'/LAYOUT/images/game/lobbyBK.png',
 // Beach:'/LAYOUT/images/game/lobbyBK_beach.png'

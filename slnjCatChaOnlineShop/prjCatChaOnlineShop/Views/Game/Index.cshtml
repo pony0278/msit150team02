@@ -8,27 +8,148 @@
     <link href="~/css/game/gameinstructions.css" rel="stylesheet" />
     <link href="~/css/game/gachabutton.css" rel="stylesheet" />
     <link href="~/css/game/confirmWin.css" rel="stylesheet" />
+    <link href="~/css/game/tutorial.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,200,0,0" />
+    <style>
+        #sidebar {
+            position: fixed;
+            top: 25%;
+            right: -400px;
+        }
+
+        #sidebar-inside {
+            position: relative;
+        }
+
+        .toggle {
+            position: absolute;
+            top: 25%;
+            right: 100%;
+            z-index: 999;
+        }
+
+            .toggle button {
+                border: 0.5px solid orange;
+                border-radius: 10px 0 0 10px;
+                background-color: #4CAF50;
+                color: whitesmoke;
+            }
+
+        .chat-container {
+            position: relative;
+            width: 400px;
+            margin: auto;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            overflow: hidden;
+            z-index: 9999;
+            background-color: whitesmoke;
+            opacity: 1;
+        }
+
+        .chat-header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        .chat-header h2{
+            color:white;
+        }
+
+        .chat-messages {
+            position: relative;
+            height: 300px;
+            overflow-y: scroll;
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: column-reverse;
+            z-index: 999;
+        }
+
+        .message {
+            padding: 5px;
+            margin: 5px 0;
+            z-index: 999;
+        }
+
+        .username {
+            font-weight: bold;
+            z-index: 999;
+        }
+
+        .chat-input {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            background-color: #f1f1f1;
+        }
+
+            .chat-input input {
+                width: 80%;
+                padding: 10px;
+                border: 1px solid #ccc;
+                border-radius: 5px;
+                z-index: 999;
+            }
+
+            .chat-input button {
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                background-color: #4CAF50;
+                color: white;
+                z-index: 999;
+            }
+
+        .message.own-message {
+            text-align: right;
+            color:purple;
+            border-radius: 10px;
+            margin: 5px;
+            font-weight:900;
+        }
+
+        .message.other-message {
+            text-align: left;
+            color: orange;
+            border-radius: 10px;
+            margin: 5px;
+        }
+    </style>
 }
 
 <!-- Start 遊戲畫面 -->
-<div class="canvas-container">
+<div class="canvas-container" @*style="display:none;"*@>
+    <div id="Probability" style="display:none">
+        <h2 style="text-align:center; color:black">轉蛋機率表(經機率縮放後)</h2>
+        <div id="ItemsProbability" style="font-weight:bolder; color:black;
+">
+        </div>
+
+    </div>
     <div class="gamelayer">
         <canvas id="Canvaslobby"></canvas>
         <!-- Start j轉蛋 -->
         <div id="CatchaGatCha">
-            <div class="animation-container">
-                <img class="catcha SS" src="../images/game/gacha/gacha_Animate_SS.gif" style="display: none;">
-                <img class="catcha S" src="../images/game/gacha/gacha_Animate_S.gif" style="display: none;">
-                <img class="catcha A" src="../images/game/gacha/gacha_Animate_A.gif" style="display: none;">
-            </div>
-            @* 使用者貓幣紅利顯示*@
             <div id="gachaShowCoin">
                 <div id="gachaCCoinIcon"></div><p id="gachaTextCCoin">N/A</p>
                 <div id="gachaRubyIcon"></div> <p id="gachaTextRuby">N/A</p>
             </div>
+            <div class="animation-container">
+                <button id="skipButton" style="display:none"></button>
+                <img class="catcha SS" src="../images/game/gacha/SS.gif" style="display: none; ">
+                <img class="catcha CATS" src="../images/game/gacha/CATS.gif" style="display: none;">
+                <img class="catcha S" src="../images/game/gacha/S.gif" style="display: none;">
+                <img class="catcha A" src="../images/game/gacha/A.gif" style="display: none;">
+            </div>
+
             <div id="summon-buttons">
-                @*轉蛋按鈕*@
+                <button id="btnProBability"></button>
+                @*返回大廳按鈕*@
                 <button id="commonbackBTN"></button>
+                @*轉蛋按鈕*@
                 <div class="buttonRow">
                     <button id="CatPointSingleDrow"></button>
                     <button id="CatPointTenDrows"></button>
@@ -37,8 +158,11 @@
                     <button id="RubySingleDrow"></button>
                     <button id="RubyTenDrows"></button>
                 </div>
+
             </div>
             <div id="result" class="result-container"></div>
+            @* 使用者貓幣紅利顯示*@
+
         </div>
         <!-- End 轉蛋 -->
         <!-- Start 小遊戲說明提示 -->
@@ -65,9 +189,9 @@
             </div>
             <nav class="pagination-container" aria-label="Page navigation example">
                 <ul class="pagination" style="display:none;">
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a')">1</a></li>
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b')">2</a></li>
-                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c')">3</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('a'); return false;" id="pageA">1</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('b'); return false;" id="pageB">2</a></li>
+                    <li class="page-item"><a class="btn btn-outline-info" href="#" onclick="showPage('c'); return false;" id="pageC">3</a></li>
                 </ul>
             </nav>
         </div>
@@ -75,19 +199,69 @@
         <!-- Start 獲得物品確認視窗 -->
         <div id="confirmWin">
             <div id="confirmWin-container">
+                <button id="closeinstruction" class=" btn-secondary" onclick="closeConfirmWin()">x</button>
                 <div id="confirmWin-title">
                     N/A
                 </div>
                 <div id="confirmWin-text">
                     N/A
                 </div>
+                <input id="confirmWin-fillin" maxlength="7" type="text" style="display:none;" />
             </div>
             <button id="confirmWinBTN" onclick="closeConfirmWin()">確認</button>
         </div>
-    </div>
-    <!-- End 獲得物品確認視窗 -->
-    <!-- Start Canvas遊戲畫布 -->
-    <!-- Start 排行榜 -->
+
+        <!-- End 獲得物品確認視窗 -->
+        <!-- Start Canvas遊戲畫布 -->
+
+        <div id="tutorial">
+            <div id="tutorial-container">
+                <!-- 返回鍵 -->
+                <button id="closetutorial" class=" btn-secondary" onclick="">x</button>
+                <button id="commonbackBTN" style="top:20px !important; z-index:99;"onclick="pagesControl(Canvaslobby)"></button>
+                <div class="tutorial-container" style=" position: relative; display: flex; justify-content: center;">
+                    <div id="page1" class="page active">
+                        <!-- 第1頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial1.png"/>
+                    </div>
+                    <div id="page2" class="page">
+                        <!-- 第2頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial2.png" />
+                    </div>
+                    <div id="page3" class="page">
+                        <!-- 第3頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial3.png" />
+                    </div>
+                    <div id="page4" class="page">
+                        <!-- 第4頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial4.png" />
+                    </div>
+                    <div id="page5" class="page">
+                        <!-- 第5頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial5.png" />
+                    </div>
+                    <div id="page6" class="page">
+                        <!-- 第6頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial6.png" />
+                    </div>
+                    <div id="page7" class="page">
+                        <!-- 第6頁的內容 -->
+                        <img src="~/images/game/tutorial/tutorial7.png" />
+                    </div>
+                </div>
+                <div class="pagination-dots-container">
+                    <span class="dot" onclick="handleDotClick(1)"></span>
+                    <span class="dot" onclick="handleDotClick(2)"></span>
+                    <span class="dot" onclick="handleDotClick(3)"></span>
+                    <span class="dot" onclick="handleDotClick(4)"></span>
+                    <span class="dot" onclick="handleDotClick(5)"></span>
+                    <span class="dot" onclick="handleDotClick(6)"></span>
+                    <span class="dot" onclick="handleDotClick(7)"></span>
+                </div>
+            </div>
+        </div>
+
+        </div>
     <div id="CanvasRank">
         <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
         <div id="rank-container">
@@ -101,94 +275,90 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
-                    <tr>
-                        <td>1</td>
-                        <td>艾主席</td>
-                        <td>20</td>
-                    </tr>
                 </tbody>
             </table>
         </div>
-
     </div>
-    <!-- End 排行榜 -->
-    <canvas id="CanvasCheckIn"></canvas>
-    <canvas id="Canvasrungame"></canvas>
-    <canvas id="CanvasGatcha"></canvas>
-    <canvas id="CanvasStore"></canvas>
-    <canvas id="CanvasSummonResult"></canvas>
-    <canvas id="CanvasDoubleCheck"></canvas>
-
+        <div id="Mission">
+            <button id="commonbackBTN" style="top:20px !important;" onclick="pagesControl(Canvaslobby)"></button>
+            <div id="mission-container">
+                <div id="missionpage-title">每日任務</div>
+                <table id="msTable" class="table table-striped">
+                    <tr>
+                        <td >餵食貓貓 1 次</td>
+                        <td>0/1</td>
+                        <td >領取獎勵</td>
+                    </tr>
+                 
+                </table>
+            </div>
+        </div>
+        <canvas id="CanvasCheckIn"></canvas>
+        <canvas id="Canvasrungame"></canvas>
+        <canvas id="CanvasGatcha"></canvas>
+        <canvas id="CanvasStore"></canvas>
+        <canvas id="CanvasSummonResult"></canvas>
+        <canvas id="CanvasDoubleCheck"></canvas>
+    </div>
     <!-- End Canvas遊戲畫布 -->
 </div>
+<div id="userMemberidlogin" style="display: none" ;>
+    <label for="memberId">請輸入memberId: </label>
+    <input type="text" id="memberId" name="memberId" pattern="[0-9]*"><br><br>
+    <input type="submit" id="memberIdLogin" value="Submit">
+</div>
+<div id="registerForm" style="display: none;">
 
-<button type="submit" id="testlogin">測試登入</button>
-<button type="submit" id="testDBlogin">測試資料庫登入</button>
+    <label for="characterName">請輸入CharacterName: </label>
+    <input type="text" id="characterName" name="characterName"><br><br>
+
+    <button id="registerButton">註冊</button>
+</div>
+
+<button type="submit" id="testDBlogin" style="display:none">測試資料庫登入</button>
+
+<button type="submit" id="testTask" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;top: 770px;
+    left: 677px;}">
+    DEMO跨日重置 
+</button>
+<button type="submit" id="makemoney" style="width: 120px; padding: 10px 2px; background-color:#f0cf75; position: absolute;top: 770px;
+    left: 800px;}">
+    DEMO增加錢錢
+</button>
+
+<div id="sidebar">
+    <div id="sidebar-inside">
+        <div class="toggle">
+            <button id="toggleSidebar"><i class="fa-solid fa-arrow-left-long"></i>遊戲聊天室</button>
+        </div>
+        <div class="chat-container">
+            <div class="chat-header">
+                <h2>聊天室</h2>
+            </div>
+
+            <div class="chat-messages" id="chatWindow">
+            </div>
+
+            <div class="chat-input">
+                <input type="text" id="messageInput" placeholder="輸入訊息" />
+                <button onclick="sendMessage()">發送</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- End 遊戲畫面 -->
 <!-- 遊戲相關js -->
 @section Scripts{
-   @* <script src="~/js/game/DBIformation.js"></script>*@
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/7.0.10/signalr.min.js"></script>
+    <script src="~/js/game/DBIformation.js"></script>
+    <script src="~/js/game/GameLogin.js"></script>
     <script src="~/js/game/Main.js"></script>
     <script src="~/js/game/function.js"></script>
     <script src="~/js/game/button.js"></script>
     <script src="~/js/game/RunGame.js"></script>
     <script src="~/js/game/Checkin.js"></script>
-    <script src="~/js/game/Rank.js"></script>
     <script src="~/js/game/doubleCheckWindow.js"></script>
     <script src="~/js/game/Summon.js"></script>
     <script src="~/js/game/SummonResult.js"></script>
@@ -196,30 +366,123 @@
     <script src="~/js/game/loadImages.js"></script>
     <script src="~/js/game/instructions.js"></script>
     <script src="~/js/game/catFeed.js"></script>
-    <<<<<<< HEAD
+    <script src="~/js/game/taskFunction.js"></script>
 
-
+    <!--SWEET ALERT-->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--排行榜測試資料-->
     <script>
+
+
+        $('#toggleSidebar').click(function () {
+            var right = $('#sidebar').css('right') === '0px' ? '-400px' : '0px';
+            $('#sidebar').animate({ right: right });
+        });
+        const userName = '@ViewBag.UserName'
+
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/chathub")
+            .build();
+            $(document).ready(function(){
+            console.log(userName);
+            })
+        // 收到消息後更新 UI
+            connection.on("ReceiveMessage", (user, message) => {
+                const chatWindow = $("#chatWindow");
+                const userClass = (user === userName) ? "own-message" : "other-message";
+
+                const newMessage = $(`<div class="message ${userClass}">
+                                    <span class="username"><strong>${user}:</strong></span> ${message}
+                                  </div>`);
+
+                chatWindow.prepend(newMessage);
+            });
+
+
+
+        // 開始連接
+        connection.start().then(function () {
+            connection.invoke("SetUserName", userName);
+        }).catch(function (err) {
+            return console.error(err.toString());
+        });
+
+        // 發送消息
+        function sendMessage(user, message) {
+            const userNameFromSession = userName; 
+            const messageInput = $("#messageInput");
+            const inputMessage = messageInput.val();  
+            console.log(message);  
+            console.log(inputMessage);  
+
+            connection.invoke("SendMessage", userNameFromSession, inputMessage)
+            .then(() => {
+                    messageInput.value = ""
+            }).catch(err => console.error(err));
+        }
         const rank = {
             "排名": [
-                { "name": "艾主席", "排名": 1, "分數": 50 },
-                { "name": "貓仔", "排名": 2, "分數": 30 },
-                { "name": "遊戲之鬼", "排名": 3, "分數": 20 }
+                { "name": "N/A", "排名": "N/A", "分數": "N/A" },
+
             ]
         };
-
-        const datas = rank.排名.map(r => `
-                                    <tr>
-                                                 <td>${r.排名}</td>
-                                         <td>${r.name}</td>
-                                         <td>${r.分數}</td>
-                                    </tr>
-                                    ` );
-        document.querySelector('#emTable > tbody').innerHTML = datas.join("")
+        fetchDataAndProcess();
+        initialize();
 
 
+        $('#testTask').click(function () {
+            
+            demoRestTask();
+            Swal.fire({
+                title: "日期已更新，請重新登入",
+                customClass: {
+                    confirmButton: 'alert-btn-login'
+                },
+                confirmButtonText: '確定'
+            }).then(() => {
+                $.ajax({
+                    type: "post",
+                    url: "/MemberLogout/Logout", // API 的 URL
+                    contentType: 'application/json', // 指定資料類型為 JSON
+                    success: function () {
+                        window.location.reload();
+                    },
+                    error: function (error) {
+                        console.log("登出失敗", error);
+                    }
 
+                });
+            });
+            
+        });
+
+
+        $('#makemoney').click(function () {
+
+            updateCCoint(10000);
+            fetchDataAndProcess();
+            initialize();
+        });
+
+        //function showTutorial(){
+           
+
+        //    $.ajax({
+        //        type: "post",
+        //        url: "/MemberLogout/Logout", // API 的 URL
+        //        contentType: 'application/json', // 指定資料類型為 JSON
+        //        success: function (data) {
+        //            if (data[0] == true)
+        //                tutorial.style.display = "block"
+        //        },
+        //        error: function (error) {
+        //            console.log("登出失敗", error);
+        //        }
+
+        //    });
+        //}
+
+        //showTutorial()
     </script>
 
         }

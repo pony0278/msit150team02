@@ -1,4 +1,5 @@
-﻿@{
+﻿@model IEnumerable<prjCatChaOnlineShop.Models.CModels.CProductItem>
+@{
     ViewData["Title"] = "Shop";
 }
 
@@ -6,6 +7,8 @@
     <!-- Site Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.css" rel="stylesheet" />
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/css/bootstrap.min.css" />
     <!-- Site CSS -->
@@ -17,64 +20,42 @@
     <link rel="stylesheet" href="~/css/shop.css">
     <link rel="stylesheet" href="~/css/custom-home-details-wishlist.css" />
 }
-
+<!--提示訊息-->
+<div class="toast-container position-fixed top-25 start-50 translate-middle">
+    <div id="shop-toast" class="toast align-items-center" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i></i>
+                <strong></strong>
+            </div>
+            <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+    </div>
+</div>
 <!-- Start All Title Box -->
 <div class="categories-shop">
     <div class="container">
         <div class="title-all text-left">
             <!--增加:Start當前分類-->
-            <h1>[當前分類]</h1>
+            <h1 id="categoryTitle" data-category-name="@ViewBag.CategoryName" data-order-by="@ViewBag.OrderBy"></h1>
         </div>
         <!--增加:End當前分類-->
-        <div class="row">
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
-            <div class="col-md-2 col-4">
-                <div class="shop-cat-boxs">
-                    <a href="#">
-                        <img class="img-fluid" src="~/images/categories_img_01.jpg" alt="" />
-                        <span>安心正餐</span>
-                    </a>
-                </div>
-            </div>
+        <div id="categoryList" class="row">
+            @{
+
+                @foreach (var item in Model.Where(item =>item.pCategoryName!=null).DistinctBy(item => item.pCategoryId))
+                {
+
+                    <div class="col-md-2 col-4">
+                        <div class="shop-cat-boxs">
+                            <a class="for-ajax" href="/Index/Shop?categoryName=@item.pCategoryName" data-category-name="@item.pCategoryName">
+                                <img class="img-fluid" src="~/images/category_@{@item.pCategoryName}.jpg" alt="" />
+                                <span>@item.pCategoryName</span>
+                            </a>
+                        </div>
+                    </div>
+                }
+            }
         </div>
     </div>
 </div>
@@ -87,45 +68,47 @@
                 <div class="right-product-box">
                     <div class="d-flex text-center align-items-center flex-wrap justify-content-between mb-4">
                         <h3>篩選 <i class="fa-solid fa-grip-lines-vertical"></i></h3>
-                        <div class=" shop-filter-select pt-1">
-                            <label class="switch pt-1">
-                                <input type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
-                            <span>最熱銷</span>
-                        </div>
+
+
+                        <div class="w-25" style="text-align:end">商品排序</div>
                         <div class="shop-filter-select ">
-                            <select class="form-select form-select-md" aria-label="排序方式">
-                                <option selected>商品排序</option>
-                                <option value="2">上架時間:新到舊</option>
-                                <option value="3">上架時間:舊到新</option>
-                                <option value="4">價格:高至低</option>
-                                <option value="4">價格:低至高</option>
+                            <select id="selOrder" class="form-select form-select-md" aria-label="排序方式">
+                                <option value="0" selected>無</option>
+                                <option value="1">熱賣程度:高到低</option>
+                                <option value="2">熱賣程度:低到高</option>
+                                <option value="3">上架時間:新到舊</option>
+                                <option value="4">上架時間:舊到新</option>
+                                <option value="5">價格:高至低</option>
+                                <option value="6">價格:低至高</option>
                             </select>
                         </div>
-                        <div class="shop-filter-select  ">
-                            <select class="form-select form-select-md" aria-label="品牌篩選">
-                                <option selected>以品牌篩選</option>
-                                <option value="2">貓抓嚴選</option>
-                                <option value="3">貓貓01</option>
-                                <option value="4">好貓貓</option>
-                                <option value="4">壞貓貓</option>
+
+                        <div>以品牌篩選</div>
+                        <div class="shop-filter-select">
+
+                            <select id="selBrand" class="form-select form-select-md" aria-label="品牌篩選">
+
+                                <option value="" selected>無</option>
+                                @foreach (var p in Model.DistinctBy(p => p.pBrandName).OrderBy(p => p.pBrandName))
+                                {
+                                    <option value="@p.pBrandName">@p.pBrandName</option>
+                                }
                             </select>
                         </div>
                         <div class="filter-btn">
-                            <button class="btn hvr-hover  item-d" type="submit">篩選</button>
+                            <button id="filter-submit" class="btn hvr-hover item-d" type="button">篩選</button>
                         </div>
                     </div>
                     <div class="d-flex text-center align-items-center justify-content-between">
-                        <span> 共 x 項商品</span>
+                        <span>共<span style="font-size:large;color:red"> @ViewBag.ProductCount </span>項商品</span>
                         <div class="filter">
                             <span>顯示</span>
                             <div class="shop-filter-select">
-                                <select class="form-select" aria-label="顯示多少筆數">
-                                    <option value="1" selected>10</option>
-                                    <option value="2">20</option>
-                                    <option value="3">30</option>
-                                    <option value="4">40</option>
+                                <select id="itemPerPageSelect" class="form-select" aria-label="顯示多少筆數">
+                                    <option value="10" selected>10</option>
+                                    <option value="20">20</option>
+                                    <option value="30">30</option>
+                                    <option value="40">40</option>
                                 </select>
                             </div>
                             <span>筆</span>
@@ -135,218 +118,14 @@
                     <div class="product-categorie-box">
                         <div class="tab-content">
                             <div role="tabpanel" class="tab-pane fade show active" id="grid-view">
-                                <div class="row">
-                                    <!-- start prod1 -->
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- end prod1 -->
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-sm-6 col-md-6 col-lg-4 col-xl-4">
-                                        <div class="products-single fix">
-                                            <div class="box-img-hover shop-image">
-                                                <div class="type-lb">
-                                                    <p class="sale">Sale</p>
-                                                </div>
-                                                <a asp-controller="Index" asp-action="ShopDetail">
-                                                    <img src="~/images/img-pro-01.jpg" class="img-fluid" alt="Image" />
-                                                </a>
-                                            </div>
-                                            <div class="why-text">
-                                                <h4>喵洽普 | 貓咪營養肉泥</h4>
-                                                <h5>$65</h5>
-                                                <a asp-controller="Cart" asp-action="Cart" type="button" class="add-to-cart-coustom">
-                                                    <i class="fa-solid fa-cart-plus"></i>
-                                                </a>
-                                                <a asp-controller="Membership" asp-action="Membership" class="add-to-wishlist-coustom" type="button">
-                                                    <i class="far fa-heart"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
+                                @* start 商品 *@
+                                <div id=productList class="row ">
                                 </div>
+                                @* end 商品 *@
                             </div>
                             <!-- end 商品圖示 -->
                             <div class="text-center ">
-                                <button class="btn-custom btn hvr-hover">
+                                <button id="showMore" class="btn-custom btn hvr-hover">
                                     顯示更多<i class="fas fa-angle-down"></i>
                                 </button>
                             </div>
@@ -361,6 +140,8 @@
 @section Scripts{
     <!-- ALL JS FILES -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js"></script>
     <!-- ALL PLUGINS -->
     <script src="~/js/jquery.superslides.min.js"></script>
     <script src="~/js/bootstrap-select.js"></script>
@@ -375,5 +156,6 @@
     <script src="~/js/form-validator.min.js"></script>
     <script src="~/js/contact-form-script.js"></script>
     <script src="~/js/custom.js"></script>
+    <script src="~/js/forshop.js"></script>
 }
 

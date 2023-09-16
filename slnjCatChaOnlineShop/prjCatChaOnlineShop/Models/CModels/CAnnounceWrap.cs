@@ -115,5 +115,6 @@
             get { return _news.PublishEndTime; }
             set { _news.PublishEndTime = value;}
         }
+        public List<AnnouncementTypeData> NewsType { get; set; }
     }
 }

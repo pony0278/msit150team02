@@ -127,9 +127,10 @@
     padding: 10px;
     width: 100%;
     border: none;
-    border-top: 1px dashed #666;
     margin-left: -1px;
 }
+
+
 
 .text-center {
     text-align: center;
@@ -157,6 +158,11 @@
     padding: 0 10px;
     width: 100px;
 }
+
+    #getCouponList .coupon-status button:hover {
+        background-color: #B98046;
+    }
+
 
 #getCouponList .coupon_cancel button {
     border: 2px solid #b4793594;
@@ -363,4 +369,69 @@ background-color:#EDD8C0 ;
 
 .checokoutbtn {
     color: #ffffff
+}
+
+/* 自訂錯誤訊息的文字顏色 */
+.error-message-color {
+    color: red !important;
+    font-size: 15px !important;
+    font-family: 'Dosis', sans-serif;
+    line-height: 1.80857;
+}
+
+.form-control[readonly] {
+    color: #CE0000;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #F8F0E7 !important;
+}
+
+/*MemberLogin頁面logo*/
+.logo-wrapper:hover {
+    transform: scale(1.1); /* 放大 10% */
+    transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+}
+
+/*Cart頁面垃圾桶圖樣樣式*/
+.trashBtn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0; /* 清除默認的 padding，使按鈕更小 */
+}
+
+    .trashBtn:hover {
+        transform: scale(1.3); /* 放大 10% */
+        transition: transform 0.3s ease-in-out; /* 添加平滑過渡效果 */
+    }
+
+.bi-trash {
+    color: #b4793594;
+}
+
+body {
+    font-family: "Open Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.custom-size {
+    width: 400px; /* 調整視窗寬度 */
+    height: 300px; /* 調整視窗高度 */
+}
+
+/*Cart頁面垃圾桶圖樣樣式End*/
+
+.checkout-inputs {
+    background-color: #F8F0E7;
+    border: solid #dee2e6;
+    border-radius: 5px;
+}
+
+.price-font {
+    color: #CE0000;
+    font-size: 30px !important;
+    font-weight:bold;
+}
+
+.subprice-font {
+    font-size: 22px !important;
 }

@@ -7,13 +7,17 @@ namespace prjCatChaOnlineShop.Models;
 
 public partial class GameMemberTask
 {
+    public int MemberTaskId { get; set; }
+
     public int? MemberId { get; set; }
 
-    public int TaskId { get; set; }
+    public int? TaskId { get; set; }
+
+    public int? TaskProgress { get; set; }
 
     public DateTime? CompleteDate { get; set; }
 
-    public virtual ICollection<GameTaskList> GameTaskList { get; set; } = new List<GameTaskList>();
-
     public virtual ShopMemberInfo Member { get; set; }
+
+    public virtual GameTaskList Task { get; set; }
 }

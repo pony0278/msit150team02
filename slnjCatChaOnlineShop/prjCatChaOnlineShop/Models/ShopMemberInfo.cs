@@ -39,7 +39,7 @@ public partial class ShopMemberInfo
 
     public int? FavoriteId { get; set; }
 
-    public int? CheckinDayCount { get; set; }
+    public bool? CheckinDayCount { get; set; }
 
     public int? MyCatNameListId { get; set; }
 
@@ -49,9 +49,17 @@ public partial class ShopMemberInfo
 
     public string MemberImage { get; set; }
 
-    public virtual ICollection<Game1on1MessageData> Game1on1MessageDataReceiver { get; set; } = new List<Game1on1MessageData>();
+    public bool? FreeNameChange { get; set; }
 
-    public virtual ICollection<Game1on1MessageData> Game1on1MessageDataSender { get; set; } = new List<Game1on1MessageData>();
+    public bool? Subscribe { get; set; }
+
+    public bool? EmailVerified { get; set; }
+
+    public bool? IsBanned { get; set; }
+
+    public DateTime? BannedTime { get; set; }
+
+    public DateTime? UnBannedTime { get; set; }
 
     public virtual ICollection<GameCoinExchangeRecord> GameCoinExchangeRecord { get; set; } = new List<GameCoinExchangeRecord>();
 
