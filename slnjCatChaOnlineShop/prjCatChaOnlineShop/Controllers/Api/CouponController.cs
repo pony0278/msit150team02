@@ -37,7 +37,7 @@ namespace prjCatChaOnlineShop.Controllers.Api
             decimal totalPrice = 0;
             decimal couponBonus = 0;
 
-            if (couponSpecialOffer != 0)
+            if (couponSpecialOffer != null)
             {
                 //計算使用優惠券折扣後的金額，並且只取整數
                 totalPrice = Math.Floor((decimal)(cartItem.Sum(item => item.c小計) * couponSpecialOffer));
