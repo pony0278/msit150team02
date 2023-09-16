@@ -47,11 +47,5 @@ namespace prjCatChaOnlineShop.Controllers.Api
                 return StatusCode(500, "發生錯誤：" + ex.Message);
             }
         }
-
-        //public IActionResult 轉蛋數據2()
-        //{
-        //    var datas = _context.GameProductTotal.Select(c => c.LotteryProbability).Distinct();
-        //    return new JsonResult(datas);
-        //}
     }
 }

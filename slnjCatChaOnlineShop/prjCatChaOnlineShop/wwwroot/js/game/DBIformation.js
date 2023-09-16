@@ -87,12 +87,6 @@ testDBlogin.addEventListener('click', async function () {
         const gachaData = await fetchData(); // 取得轉蛋資料
         const information = await fetchDBData();
         const userData = await initialize();
-        //gachaData.forEach(testlProbability => {
-        //    const pElement = document.createElement("p");
-        //    pElement.textContent = `道具: ${testlProbability.itemName} 機率: ${testlProbability.scaledProbability}%`;
-        //    itemsProbabilityContainer.appendChild(pElement);
-        //    console.log(testlProbability.scaledProbability)
-        //})
         information.forEach(IFM => {
             console.log(
                 'ProductId:', IFM.ProductId,

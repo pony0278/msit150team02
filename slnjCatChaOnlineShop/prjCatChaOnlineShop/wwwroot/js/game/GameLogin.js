@@ -22,14 +22,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const testGameDB = document.getElementById('testGameDB');
 
     let _memberId
-    //// memberId 輸入，只允許數字
-    //document.getElementById("memberId").addEventListener("input", function (e) {
-    //    const input = e.target;
-    //    const value = input.value;
-    //    if (/[^0-9]/.test(value)) {
-    //        input.value = value.replace(/[^0-9]/g, '');
-    //    }
-    //});
+
 
     //meberId登入
     submitButton.addEventListener("click", function (event) {
