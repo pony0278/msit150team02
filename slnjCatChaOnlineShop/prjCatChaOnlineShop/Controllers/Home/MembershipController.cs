@@ -18,8 +18,7 @@ using MailKit;
 
 namespace prjCatChaOnlineShop.Controllers.Home
 {
-    //[Route("api/[controller]")]
-    //[ApiController]
+
 
     public class MembershipController : SuperController
     {
@@ -394,16 +393,13 @@ namespace prjCatChaOnlineShop.Controllers.Home
                 var memberToUpdate = _context.ShopMemberInfo.FirstOrDefault(m => m.MemberId == memberIdForMembership);
 
                 memberToUpdate.MemberImage = imageUrl;
-                //memberToUpdate.MemberImage = "https://msit150team02blob.blob.core.windows.net/msit150team02/allun2.png";
 
                 _context.SaveChangesAsync();
 
-                //return new JsonResult(datas);
                 return Content(imageUrl);
             }
             catch (Exception ex)
             {
-                //return BadRequest("Error saving the announcement.");
                 return Content(ex.Message);
 
             }
@@ -414,34 +410,6 @@ namespace prjCatChaOnlineShop.Controllers.Home
         //取得訂單資訊
         public IActionResult GetOrders()
         {
-            /*
-            var datas = from p in _context.ShopOrderTotalTable
-                        where p.MemberId == 1
-                        select new
-                        {
-                            p.OrderId, //訂單編號
-                            p.OrderCreationDate,  //訂單成立日期
-                            p.Address, //收款地址
-                            p.RecipientName, //收款人
-                            p.RecipientPhone,  //收款電話
-                            p.ShippingMethod, //付款方式
-                        };*/
-            //var datas = _context.ShopOrderTotalTable.Where(p => p.MemberId == 4).ToList();
-
-            /*
-            var query = from order in _context.ShopOrderTotalTable
-                        //join payment in _context.ShopPaymentMethodData on order.PaymentMethodId equals payment.PaymentMethodId
-                        where order.MemberId == 4
-                        select new
-                        {
-                            order.OrderId,
-                            order.OrderCreationDate,
-                            order.RecipientName,
-                            order.RecipientAddress,
-                            order.RecipientPhone,
-                            order.PaymentMethod.PaymentMethodName,
-                            order
-                        };*/
 
             try
             {
@@ -752,27 +720,10 @@ namespace prjCatChaOnlineShop.Controllers.Home
                                 p.Product.ProductDescription,
                                 p.Product.ProductId,
                                 p.FavoriteId,
-                                //p.Product.ShopProductImageTable.Count
+
                                 ProductPhoto = p.Product.ShopProductImageTable.FirstOrDefault().ProductPhoto,
                             };
 
-
-                /*
-                var datas = from p in _context.ShopFavoriteDataTable
-                            join q in _context.ShopProductImageTable on p.ProductId equals q.ProductId
-                            orderby p.CreationDate descending
-                            where p.MemberId == 1033
-                            select new
-                            {
-                                p.Product.ProductName,
-                                p.Product.ProductPrice,
-                                p.Product.RemainingQuantity,
-                                p.Product.ProductDescription,
-                                p.Product.ProductId,
-                                p.FavoriteId,
-                                q.ProductPhoto
-                            };
-                */
 
                 if (datas.Any())
                 {
@@ -962,15 +913,12 @@ namespace prjCatChaOnlineShop.Controllers.Home
         public IActionResult SlectShop(IFormCollection ShopDetail)
         {
 
-            //var storeid = ShopDetail["storeid"];
             string storename = "7-11" + ShopDetail["storename"];
             string storeaddress = ShopDetail["storeaddress"];
 
             TempData["storename"] = storename;
             TempData["storeaddress"] = storeaddress;
 
-            //return Content(storeid + "/" + storename + "/" + storeaddress);
-            //return RedirectToAction("Index", "Shopping", new { ifRe = storeaddress });
             return RedirectToAction("membership", "membership", null);
 
         }

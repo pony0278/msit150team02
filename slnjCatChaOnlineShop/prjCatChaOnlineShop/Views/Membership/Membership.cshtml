@@ -112,7 +112,6 @@
 
 
 <!-- 開始公告頁 -->
-<!-- cart + summary -->
 <div class="container mt-4 mb-4">
 
     <!--導覽列:選單-->
@@ -254,7 +253,6 @@
                                                             </button>
                                                             <button type="button" class="btn-sm add-address " id="addNewMarket">新增超商門市</button>
                                                             <button type="button" class="btn-sm add-address " id="addNewMarketDemo">Demo填入超商</button>
-                                                            @* <button type="button" class="btn-sm add-address " id="SelectOtherShop">測試</button> *@
                                                         </div>
                                                     </div>
                                                     <button class="btn-customs btn hvr-hovers" id="memberInfoButton" type="submit">送出</button>
@@ -272,12 +270,6 @@
                                 <div class="card-body text-center">
                                     <div class="avatar text-center" id="PhotoStickers">
                                         <img class="avatar-img mx-auto" id="imagePreview" src='@Url.Content("~/images/whitehead.jpg")' alt="">
-                                        <!--
-                                        <button class="btn btn-warning btn-sm mt-2 mb-3" data-bs-toggle="modal" id="renewPersonalPicture"
-                                                data-bs-target="#personalPictureModal">
-                                            更換個人圖片
-                                        </button>
-                                        -->
                                     </div>
                                     <button class="btn btn-warning btn-sm mt-2 mb-3" id="imageModeratorButton">
                                         更換個人圖片
@@ -342,7 +334,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-left">
-                                        <!-- 優惠券清單內容 -->
+                                        <!-- 有效優惠券清單內容 -->
                                     </tbody>
                                 </table>
                             </div>
@@ -356,6 +348,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-left">
+                                        <!-- 失效優惠券清單內容 -->
                                     </tbody>
                                 </table>
                             </div>
@@ -776,12 +769,6 @@
                             <div class="container">
                                 <div id="qrcode"></div>
                             </div>
-                            <!--上方的qrcode沒有跑出來-->
-                            <!--
-                            <div>
-                                <p>將【QR Code】置於框內以進行掃描輸入</p>
-                            </div>
-                            -->
                         </div>
                         <!-- 腳Footer -->
                         <div class="modal-footer">
@@ -839,7 +826,6 @@
                             <div class="row gy-3 mb-4">
                                 <div style="height: 400px; overflow: scroll;" class="table-responsive">
                                     <table class="table table-bordered " id="favoriteRecordTable">
-                                        @* table-hover *@
                                         <thead class="table-warning text-center ">
                                             <tr>
                                                 <th scope="col" class="font-weight-bold">圖片</th>
@@ -940,7 +926,6 @@
                                 </div>
                             </form>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -996,8 +981,6 @@
                 </div>
             </section>
         </div>
-
-
     </div>
 </div>
 
@@ -1057,7 +1040,6 @@
             fetch('@Url.Content("~/membership/getmemberinfo")')
                 .then(response => response.json())
                 .then(data => {
-                    //這裡抓資料也要寫成三元判斷式
                     $('#emailInput').val(data.email  ? data.email : "seoari@gmail.com");
                     $('#passwordInput').val(data.password  ? data.password : "a12345");
                     $('#nameInput').val(data.name  ? data.name : "安安");
@@ -1072,7 +1054,6 @@
                     $('#moneyPointShow').text(`( ${data.loyaltyPoints ? Math.floor(data.loyaltyPoints / 100) : "0"}元 )`);
                     $('#catCoinShow').text(`持有貓幣:${data.catCoinQuantity ? data.catCoinQuantity : "0"}`);
 
-                    // var dateParts = data.birthday.split('-');
                     var dateParts2 = "1993-04-12T00:00:00";
                     var dateParts = data.birthday ? data.birthday.split('-') : dateParts2.split('-');
                     var year = parseInt(dateParts[0], 10);
@@ -1411,7 +1392,6 @@
                     olElement.appendChild(liElement);
                 });
 
-                // $('#addressModal').modal('show');
             });
         }
 
@@ -1490,7 +1470,6 @@
                     olElement.appendChild(liElement);
                 });
 
-                // $('#addressModal').modal('show');
             });
         }
 
@@ -1500,9 +1479,6 @@
             baseUrl.pathname = "/ConvenienceStore/SlectShop";
             var encodedBaseUrl = encodeURIComponent(baseUrl.href);
             window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=" + encodedBaseUrl;
-
-            // window.location.href = "https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop";
-            // window.open("https://emap.presco.com.tw/c2cemap.ashx?eshopid=870&&servicetype=1&url=https://localhost:7218/ConvenienceStore/SlectShop", "_blank");
         })
 
 
@@ -1732,9 +1708,9 @@
                                         } else {
                                             row.insertCell().textContent = item.size;
                                         }
-                                        // totalAmount += item.productQuantity * item.productPrice;
+
                                         row.insertCell().textContent = item.productPrice ? 'NT$ ' + item.productPrice : 'NT$ 1280';
-                                        //===============================
+
                                         
                                         var cell = row.insertCell();
                                         cell.classList.add('text-center');
@@ -1770,8 +1746,6 @@
                                         
                                     });
                                     
-
-                                    // document.querySelector('#consumptionAmount').textContent = 'NT$ ' + totalAmount;
                                 });
 
                             });
@@ -1971,12 +1945,6 @@
                     data.forEach(function (item) {
                         $('#commentTextarea').val(item.reviewContent);
 
-                        //星星插件無法處理
-                        // document.getElementById('startRating').value = 4;
-                        // 選取元素
-                        // var inputElement = document.getElementById('startRating');
-                        // 設定新的值
-                        // inputElement.value = 2;
 
                         document.getElementById('commentTextarea').readOnly = true;
                         document.getElementById('saveComment').disabled = true;
@@ -2057,7 +2025,6 @@
 
         //Demo鍵:載入商品評價的評論
         $('#commentDemo').click(function (event) {
-            // $('#commentTextarea').val("貓咪在食用產品後，出現了身體不適的狀況，購買的人需要三思產品是否合毛小孩的胃!");
             $('#commentTextarea').val("貓咪在食用產品後，出現了身體極不適的狀況，欲購買者請打消念頭! 😡");
         });
     </script>
@@ -2083,7 +2050,7 @@
                 return false;
             });
 
-            // Create date inputs
+
             minDate = new DateTime(minDateSelector, {
                 format: 'MMMM Do YYYY'
             });
@@ -2284,19 +2251,6 @@
                         deleteCell.appendChild(deleteDiv);
                     });
 
-                    //表格化:套入dataTables套件會壞掉
-                    /*
-                    new DataTable('#favoriteRecordTable', {
-                        language: {
-                            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/zh-HANT.json',
-                        },
-                        pageLength: 5,
-                        lengthMenu: [5, 10, 15],
-                        retrieve: true,
-                        "destroy": true,
-                        searching: true // 啟用搜尋功能
-                    });
-                    */
                 }
                 
             });
@@ -2495,7 +2449,7 @@
                         var borderColor3 = Category3 >= 0.7 ? 'rgb(255, 99, 132)' : 'rgb(75, 192, 192)';
 
                         const ctx = document.getElementById('myChart');
-                        const labels = ['成人內容', '色情內容', '冒犯語言'];  // 设置 X 轴上对应的标签
+                        const labels = ['成人內容', '色情內容', '冒犯語言'];  
                         const dataChart = {
                             labels: labels,
                             datasets: [{
@@ -2503,28 +2457,28 @@
                                 label: '審核結果圖',
                                 data: [(Category1 * 100).toFixed(2), (Category2 * 100).toFixed(2), (Category3 * 100).toFixed(2)],
                                 fill: true,
-                                backgroundColor: [      // 设置每个柱形图的背景颜色
+                                backgroundColor: [     
                                     backgroundColor1,
                                     backgroundColor2,
                                     backgroundColor3,
                                 ],
-                                borderColor: [     //设置每个柱形图边框线条颜色
+                                borderColor: [  
                                     borderColor1,
                                     borderColor2,
                                     borderColor3,
                                 ],
-                                borderWidth: 1     // 设置线条宽度
+                                borderWidth: 1     
                             }]
                         };
                         const config = {
-                            type: 'bar', // 设置图表类型
-                            data: dataChart,  // 设置数据集
+                            type: 'bar', 
+                            data: dataChart,  
                             options: {
                                 indexAxis: 'y',
                                 scales: {
                                     x: {
-                                        max: 100, // 设置 x 轴的最大值为 100
-                                        min: 0,   // 如果需要，也可以设置 x 轴的最小值
+                                        max: 100, 
+                                        min: 0,   
                                     },
                                 },
                                 plugins: {
@@ -2580,7 +2534,7 @@
                         }
 
                     }).fail(function (err) {
-                        // alert(err.statusText);
+
                         document.getElementById('aiCheck').style.display = 'block';
                         console.log(err.statusText);
 
