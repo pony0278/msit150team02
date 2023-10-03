@@ -759,14 +759,6 @@
             isChecked = $(this).is(':checked');
             console.log(productImageId);
         });
-        // $("#edit-productSpecifications").on("input", ".specifications", function () {
-        //     lastUsedInputID = $(this).data("attr-id")
-        //     console.log("Last used input ID:", lastUsedInputID);
-        //     specificValue = $(`#edit-productSpecifications input.specifications[data-attr-id="${lastUsedInputID}"]`).val();
-        //     for(let i = 0 ; i<)
-        //     console.log("最后使用的 input 的值是：", specificValue);
-        // });
-
 
         //儲存按鈕==============================
         $('#submitButton-edior').click(function () {
@@ -801,10 +793,7 @@
                 productSpecificationID: filteredSpecificationsArrayID,
                 productSpecification: specificationsArray
             }
-            // var productId = id;
-            // var productSpecificationID = editSpecificationID
-            // var productSpecificationIDforEdit = lastUsedInputID;
-            // var productSpecificationName = specificValue;
+
 
             var formData = new FormData();
             formData.append("ProductId", id);

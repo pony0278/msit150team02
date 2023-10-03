@@ -75,6 +75,7 @@ builder.Services.AddSession();
 
 builder.Services.AddDbContext<cachaContext>(
  options => options.UseSqlServer(builder.Configuration.GetConnectionString("CachaConnection")));
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 
